@@ -6,6 +6,13 @@
 <title>Starting XI</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Anton&family=Oswald:wght@400;500;600;700&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet">
+<link rel="manifest" href="./manifest.json">
+<meta name="theme-color" content="#14202B">
+<link rel="icon" href="./icons/favicon-32.png">
+<link rel="apple-touch-icon" href="./icons/apple-touch-icon.png">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Starting XI">
 <style>
   :root {
     --pitch: #1F4D36;
@@ -2052,6 +2059,10 @@ updateStatsBar();
 renderProfileBar();
 renderPicker();
 if (profile.hasSeenGuide) document.getElementById("helpDot").classList.add("hidden");
+
+if ("serviceWorker" in navigator) {
+  window.addEventListener("load", () => navigator.serviceWorker.register("./sw.js"));
+}
 </script>
 </body>
 </html>

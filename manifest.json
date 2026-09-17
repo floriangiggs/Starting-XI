@@ -1,0 +1,27 @@
+{
+  "name": "Starting XI",
+  "short_name": "Starting XI",
+  "description": "Errate die Startelf legendärer Fußballspiele auf dem Spielfeld.",
+  "id": "/startelf_check.html",
+  "start_url": "./startelf_check.html",
+  "scope": "./",
+  "display": "standalone",
+  "orientation": "portrait",
+  "lang": "de",
+  "background_color": "#14202B",
+  "theme_color": "#14202B",
+  "icons": [
+    {
+      "src": "icons/icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "icons/icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
+  ]
+}
