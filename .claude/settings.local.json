@@ -1,0 +1,14 @@
+{
+  "permissions": {
+    "allow": [
+      "PowerShell(powershell -NoProfile -ExecutionPolicy Bypass -File \".claude/hooks/check-lineups.ps1\" -FilePath \"startelf_check.html\")",
+      "Bash(powershell -NoProfile -ExecutionPolicy Bypass -File \".claude/hooks/check-lineups.ps1\" -FilePath \"startelf_check.html\")",
+      "WebSearch",
+      "WebFetch(domain:www.kicker.de)",
+      "WebFetch(domain:www.weltfussball.de)",
+      "WebFetch(domain:www.transfermarkt.us)",
+      "WebFetch(domain:www.espn.com)",
+      "WebFetch(domain:en.wikipedia.org)"
+    ]
+  }
+}

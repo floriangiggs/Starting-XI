@@ -1,0 +1,2057 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Starting XI</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Anton&family=Oswald:wght@400;500;600;700&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --pitch: #1F4D36;
+    --chalk: #F2EFE6;
+    --gold: #E8B23D;
+    --red: #C1392B;
+    --ink: #14202B;
+    --ink-2: #1C2B38;
+    --line: rgba(242,239,230,0.14);
+  }
+  * { box-sizing: border-box; }
+  html, body { margin: 0; padding: 0; background: var(--ink); color: var(--chalk); font-family: 'Oswald', sans-serif; min-height: 100vh; }
+  body { background-image: repeating-linear-gradient(90deg, rgba(255,255,255,0.02) 0 2px, transparent 2px 40px); display: flex; justify-content: center; padding: 28px 16px 60px; }
+  .app { width: 100%; max-width: 560px; }
+
+  header { position: relative; text-align: center; margin-bottom: 22px; padding-top: 6px; }
+  header::before { content: ""; position: absolute; top: -30px; left: 50%; transform: translateX(-50%); width: 300px; height: 220px; background: radial-gradient(ellipse, rgba(232,178,61,0.16), transparent 70%); pointer-events: none; z-index: -1; }
+  .brand-badge { width: 54px; height: 54px; margin: 0 auto 12px; border-radius: 50%; background: radial-gradient(circle at 35% 30%, #2c6b48, var(--pitch)); border: 2px solid var(--gold); display: flex; align-items: center; justify-content: center; font-size: 24px; box-shadow: 0 6px 18px rgba(0,0,0,0.4), inset 0 0 14px rgba(0,0,0,0.35); }
+
+  .help-btn { position: absolute; top: 0; right: 0; display: inline-flex; align-items: center; gap: 6px; background: linear-gradient(135deg, var(--gold), #f4d58d); color: var(--ink); border: none; border-radius: 20px; padding: 8px 14px; font-family: 'Oswald', sans-serif; font-weight: 700; font-size: clamp(11px, 3vw, 13px); text-transform: uppercase; letter-spacing: 0.02em; cursor: pointer; box-shadow: 0 4px 14px rgba(232,178,61,0.45); animation: helpBtnPulse 2.6s ease-in-out infinite; }
+  .help-btn .help-icon { font-size: 15px; line-height: 1; }
+  .help-btn:active { transform: scale(0.96); }
+  @keyframes helpBtnPulse { 0%, 100% { box-shadow: 0 4px 14px rgba(232,178,61,0.45); } 50% { box-shadow: 0 4px 22px rgba(232,178,61,0.8); } }
+  .help-dot { position: absolute; top: -5px; right: -5px; width: 11px; height: 11px; border-radius: 50%; background: var(--red); border: 2px solid var(--ink); animation: helpPulse 1.6s ease-in-out infinite; }
+  .help-dot.hidden { display: none; }
+  @keyframes helpPulse { 0%,100% { transform: scale(1); opacity: 1; } 50% { transform: scale(1.3); opacity: 0.6; } }
+  .kicker { font-family: 'JetBrains Mono', monospace; font-size: 11px; letter-spacing: 0.35em; color: var(--gold); text-transform: uppercase; margin-bottom: 6px; }
+  h1 { font-family: 'Anton', sans-serif; font-weight: 400; font-size: clamp(34px, 9vw, 50px); margin: 0; line-height: 0.95; text-transform: uppercase; letter-spacing: 0.01em; }
+  h1 span { color: var(--gold); text-shadow: 0 0 24px rgba(232,178,61,0.35); }
+  .sub { color: rgba(242,239,230,0.6); font-size: 16px; margin-top: 10px; font-weight: 300; line-height: 1.4; max-width: 420px; margin-left: auto; margin-right: auto; }
+
+  .scoreboard { display: flex; background: var(--ink-2); border: 1px solid var(--line); border-radius: 4px; overflow: hidden; margin-bottom: 22px; font-family: 'JetBrains Mono', monospace; }
+  .scoreboard div { flex: 1; text-align: center; padding: 13px 4px; border-right: 1px solid var(--line); }
+  .scoreboard div:last-child { border-right: none; }
+  .scoreboard .label { font-family: 'Oswald', sans-serif; font-size: 12.5px; font-weight: 700; letter-spacing: 0.12em; color: rgba(232,178,61,0.85); text-transform: uppercase; display: block; margin-bottom: 6px; }
+  .scoreboard .value { font-size: 25px; font-weight: 700; color: var(--gold); }
+
+  /* ---- Match picker ---- */
+  .diff-badge { display: inline-flex; align-items: center; gap: 5px; font-family: 'JetBrains Mono', monospace; font-size: 10.5px; font-weight: 700; letter-spacing: 0.05em; padding: 4px 10px; border-radius: 20px; text-transform: uppercase; }
+  .diff-dots { display: inline-flex; gap: 2px; }
+  .diff-dot { width: 6px; height: 6px; border-radius: 50%; background: rgba(255,255,255,0.2); }
+  .diff-dot.on { background: currentColor; }
+
+  .mode-row { display: flex; gap: 12px; margin-bottom: 20px; }
+  .mode-btn { flex: 1; padding: 22px 10px; border-radius: 14px; border: 2px solid var(--line); background: var(--ink-2); color: rgba(242,239,230,0.55); font-family: 'Anton', sans-serif; font-weight: 400; font-size: clamp(19px, 6vw, 24px); text-transform: uppercase; letter-spacing: 0.01em; line-height: 1.3; cursor: pointer; box-shadow: 0 5px 12px rgba(0,0,0,0.3); transition: transform 0.1s ease, box-shadow 0.15s ease; }
+  .mode-btn .mode-icon { display: block; font-size: clamp(30px, 9vw, 38px); margin-bottom: 4px; }
+  .mode-btn:active { transform: scale(0.96); }
+  .mode-btn.active { background: linear-gradient(160deg, #f6da9c, var(--gold)); color: var(--ink); border-color: var(--gold); box-shadow: 0 10px 22px rgba(232,178,61,0.45), inset 0 2px 0 rgba(255,255,255,0.35); }
+
+  /* ---- Kampagne: Stadion-Roadmap ---- */
+  .roadmap-wrap { position: relative; width: 100%; padding-bottom: 148%; margin-bottom: 10px; }
+  .roadmap-svg { position: absolute; inset: 0; width: 100%; height: 100%; }
+  .roadmap-path { fill: none; stroke: rgba(242,239,230,0.16); stroke-width: 0.9; stroke-dasharray: 2.2 2.6; stroke-linecap: round; }
+  .roadmap-path.lit { stroke: rgba(232,178,61,0.5); }
+
+  .stadium-node { position: absolute; transform: translate(-50%, -50%); width: 27%; text-align: center; cursor: pointer; z-index: 2; }
+  .stadium-node.disabled { cursor: not-allowed; }
+  .stadium-ring-wrap { position: relative; width: 100%; aspect-ratio: 1; margin: 0 auto; }
+  .stadium-ring-svg { position: absolute; inset: 0; width: 100%; height: 100%; transform: rotate(-90deg); }
+  .stadium-ring-bg { fill: none; stroke: rgba(255,255,255,0.08); stroke-width: 6; }
+  .stadium-ring-fill { fill: none; stroke-width: 6; stroke-linecap: round; transition: stroke-dashoffset 0.5s ease; }
+
+  .stadium-bowl { position: absolute; inset: 12%; border-radius: 50%; background: radial-gradient(circle at 35% 30%, #4a4a4a, #232323 65%, #161616 100%); box-shadow: 0 8px 18px rgba(0,0,0,0.5), inset 0 0 0 3px rgba(255,255,255,0.06), inset 0 0 14px rgba(0,0,0,0.5); display: flex; align-items: center; justify-content: center; transition: filter 0.2s ease, transform 0.1s ease; }
+  .stadium-node:active .stadium-bowl { transform: scale(0.95); }
+  .stadium-node.locked .stadium-bowl, .stadium-node.empty .stadium-bowl { filter: grayscale(1) brightness(0.6); }
+
+  .stadium-pitch { width: 62%; height: 62%; border-radius: 50%; background: radial-gradient(circle, #2d6b47, #1c4530); position: relative; overflow: hidden; box-shadow: inset 0 3px 8px rgba(0,0,0,0.45); }
+  .stadium-pitch::before { content: ""; position: absolute; left: 0; right: 0; top: 50%; height: 5.5%; background: rgba(255,255,255,0.55); transform: translateY(-50%); }
+  .stadium-pitch::after { content: ""; position: absolute; width: 42%; height: 42%; border: 6% solid rgba(255,255,255,0.5); border-radius: 50%; top: 50%; left: 50%; transform: translate(-50%,-50%); box-sizing: border-box; }
+  .stadium-pitch-stripes { position: absolute; inset: 0; background: repeating-linear-gradient(90deg, rgba(255,255,255,0.05) 0 14%, transparent 14% 28%); }
+
+  .stadium-lock-icon { position: absolute; inset: 0; display: flex; align-items: center; justify-content: center; font-size: clamp(16px, 5vw, 22px); z-index: 3; }
+  .stadium-trophy { position: absolute; top: -2px; right: -2px; font-size: clamp(14px, 4vw, 18px); z-index: 3; filter: drop-shadow(0 2px 4px rgba(0,0,0,0.5)); }
+
+  .stadium-node.current .stadium-glow { position: absolute; inset: -18%; border-radius: 50%; background: radial-gradient(circle, var(--glow-color, rgba(232,178,61,0.4)), transparent 70%); animation: floodlightPulse 2.2s ease-in-out infinite; pointer-events: none; }
+  @keyframes floodlightPulse { 0%,100% { opacity: 0.5; transform: scale(0.95); } 50% { opacity: 1; transform: scale(1.08); } }
+  .stadium-ball { position: absolute; top: -22px; left: 50%; transform: translateX(-50%); font-size: 20px; animation: ballBounce 1.1s ease-in-out infinite; filter: drop-shadow(0 3px 4px rgba(0,0,0,0.5)); z-index: 4; }
+  @keyframes ballBounce { 0%,100% { transform: translateX(-50%) translateY(0); } 50% { transform: translateX(-50%) translateY(-7px); } }
+
+  /* ---- Maskottchen (entwickelt sich mit dem Rang) ---- */
+  .mascot { position: relative; display: inline-block; }
+  .mascot::before { content: ""; position: absolute; inset: -9px; border-radius: 50%; background: radial-gradient(circle, var(--mascot-glow), transparent 70%); z-index: -1; }
+  .mascot-ball { display: block; font-size: 20px; }
+  .mascot-accessory { position: absolute; bottom: -5px; right: -7px; font-size: 11px; filter: drop-shadow(0 1px 2px rgba(0,0,0,0.6)); }
+  .mascot.sparkle::after { content: "✨"; position: absolute; top: -8px; left: -10px; font-size: 10px; animation: sparkleTwinkle 1.6s ease-in-out infinite; }
+  @keyframes sparkleTwinkle { 0%,100% { opacity: 0.3; transform: scale(0.8); } 50% { opacity: 1; transform: scale(1.1); } }
+  .mascot.small .mascot-ball { font-size: 15px; }
+  .mascot.small .mascot-accessory { font-size: 9px; bottom: -4px; right: -6px; }
+
+  .stadium-label { margin-top: 8px; font-family: 'Anton', sans-serif; font-size: clamp(13px, 3.8vw, 17px); text-transform: uppercase; letter-spacing: 0.02em; line-height: 1.1; }
+  .stadium-meta { font-family: 'JetBrains Mono', monospace; font-weight: 700; font-size: 13px; letter-spacing: 0.02em; color: var(--chalk); background: rgba(0,0,0,0.3); border: 1px solid var(--line); border-radius: 20px; padding: 3px 11px; margin-top: 7px; display: inline-block; }
+  .stadium-meta.complete { color: var(--ink); background: var(--gold); border-color: var(--gold); box-shadow: 0 2px 10px rgba(232,178,61,0.45); }
+  .world-name { font-family: 'Anton', sans-serif; font-size: 20px; text-transform: uppercase; }
+
+  /* ---- Kampagne: Level-Pfad innerhalb einer Welt ---- */
+  .level-path-wrap { position: relative; width: 100%; margin-bottom: 18px; border-radius: 14px; overflow: hidden; border: 2px solid rgba(255,255,255,0.15); background:
+      radial-gradient(circle at 50% 0%, var(--path-bg, rgba(232,178,61,0.12)), transparent 55%),
+      repeating-linear-gradient(180deg, rgba(255,255,255,0.05) 0 24px, transparent 24px 48px),
+      linear-gradient(180deg, #1f5c3d, #163d29);
+    box-shadow: 0 10px 28px rgba(0,0,0,0.35), inset 0 0 50px rgba(0,0,0,0.25); }
+  .level-path-wrap .field-marking { position: absolute; border: 1.5px solid rgba(255,255,255,0.16); pointer-events: none; }
+  .level-path-wrap .field-halfway { left: 6%; right: 6%; height: 1.5px; background: rgba(255,255,255,0.14); border: none; }
+  .level-path-wrap .field-circle { width: 22%; padding-bottom: 22%; border-radius: 50%; left: 50%; transform: translate(-50%, -50%); }
+  .confetti-dot { position: absolute; width: 5px; height: 5px; border-radius: 50%; opacity: 0.55; pointer-events: none; }
+  .level-path-svg { position: absolute; inset: 0; width: 100%; height: 100%; }
+  .level-node { position: absolute; transform: translate(-50%, -50%); z-index: 2; cursor: pointer; text-align: center; }
+  .level-node.locked { cursor: not-allowed; }
+  .level-node.goal { cursor: default; }
+
+  .level-dot { position: relative; width: 68px; height: 68px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-family: 'JetBrains Mono', monospace; font-weight: 700; font-size: 22px; border: 3px solid var(--line); background: radial-gradient(circle at 35% 30%, #333, #1a1a1a 70%); box-shadow: 0 6px 14px rgba(0,0,0,0.45), inset 0 0 0 2px rgba(255,255,255,0.04); transition: transform 0.1s ease; overflow: hidden; }
+  .level-node:active .level-dot { transform: scale(0.92); }
+  .level-node.locked .level-dot { opacity: 0.35; }
+  .level-node.passed .level-dot { color: var(--chalk); background: radial-gradient(circle at 35% 30%, var(--node-color-light, #3fae63), var(--node-color, #1f6b3f) 75%); border-color: var(--node-color, #2ecc71); }
+  .level-node.passed .level-dot::before { content: ""; position: absolute; left: 6%; right: 6%; top: 50%; height: 8%; background: rgba(255,255,255,0.4); transform: translateY(-50%); }
+  .level-node.passed .level-dot::after { content: ""; position: absolute; width: 46%; height: 46%; border: 8% solid rgba(255,255,255,0.35); border-radius: 50%; top: 50%; left: 50%; transform: translate(-50%,-50%); box-sizing: border-box; }
+  .level-node.passed .level-dot span { position: relative; z-index: 2; }
+  .level-node.current .level-dot { border-color: var(--node-color, var(--gold)); animation: floodlightPulse 1.8s ease-in-out infinite; }
+  .level-node.current .level-spotlight { position: absolute; bottom: 100%; left: 50%; transform: translateX(-50%); width: 4px; height: 44px; background: linear-gradient(180deg, transparent, var(--node-color, var(--gold))55); }
+  .level-node.current .level-spotlight::before { content: ""; position: absolute; bottom: -8px; left: 50%; transform: translateX(-50%); width: 80px; height: 54px; background: radial-gradient(ellipse at 50% 100%, var(--node-color, var(--gold))40, transparent 70%); }
+  .level-node .level-star { position: absolute; top: -9px; right: -9px; font-size: 19px; filter: drop-shadow(0 2px 3px rgba(0,0,0,0.5)); z-index: 3; }
+  .level-node .level-ball { position: absolute; top: -30px; left: 50%; transform: translateX(-50%); font-size: 20px; animation: ballBounce 1.1s ease-in-out infinite; filter: drop-shadow(0 2px 3px rgba(0,0,0,0.5)); z-index: 3; }
+  .level-node .level-label { margin-top: 6px; font-family: 'Oswald', sans-serif; font-weight: 700; font-size: 14px; letter-spacing: 0.02em; color: rgba(242,239,230,0.85); text-shadow: 0 2px 4px rgba(0,0,0,0.6); }
+  .level-node.passed .level-label { color: var(--chalk); }
+  .level-node.locked .level-label { opacity: 0.4; }
+  .goal-node .level-dot { width: 82px; height: 82px; font-size: 30px; }
+
+  .back-btn { display: inline-flex; align-items: center; gap: 8px; background: var(--ink-2); border: 1px solid var(--line); color: var(--chalk); font-family: 'Anton', sans-serif; font-weight: 400; font-size: 17px; text-transform: uppercase; letter-spacing: 0.01em; cursor: pointer; margin-bottom: 18px; padding: 10px 18px 10px 14px; border-radius: 24px; box-shadow: 0 4px 12px rgba(0,0,0,0.3); transition: transform 0.1s ease, border-color 0.15s ease; }
+  .back-btn:active { transform: scale(0.96); }
+  .back-btn .back-arrow { color: var(--gold); font-size: 20px; line-height: 1; }
+
+  /* ---- Hinweis-System ---- */
+  .hint-text { font-family: 'JetBrains Mono', monospace; font-weight: 700; letter-spacing: 0.02em; font-size: clamp(8.5px, 2.3vw, 10.5px); color: var(--gold); background: rgba(232,178,61,0.16); border: 1px solid rgba(232,178,61,0.4); border-radius: 8px; padding: 3px 5px; text-align: center; margin-top: 3px; }
+  .hint-text:empty { display: none; }
+  .pass-banner { text-align: center; font-family: 'Oswald', sans-serif; font-weight: 700; font-size: 15px; padding: 10px; border-radius: 8px; margin-bottom: 10px; }
+  .pass-banner.pass { background: rgba(46,204,113,0.15); color: #2ecc71; border: 1px solid rgba(46,204,113,0.4); }
+  .pass-banner.fail { background: rgba(193,57,43,0.15); color: #E37464; border: 1px solid rgba(193,57,43,0.4); }
+
+  .filter-row { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 16px; }
+  .filter-btn { font-family: 'Oswald', sans-serif; font-weight: 700; font-size: 13px; letter-spacing: 0.01em; padding: 8px 14px; background: transparent; border: 1px solid var(--line); color: rgba(242,239,230,0.65); border-radius: 20px; cursor: pointer; }
+  .filter-btn:hover { border-color: var(--gold); color: var(--chalk); }
+  .filter-btn.active { background: var(--gold); border-color: var(--gold); color: var(--ink); font-weight: 700; }
+  .filter-btn.empty-filter, .filter-btn:disabled { opacity: 0.3; cursor: not-allowed; text-decoration: line-through; }
+
+  .match-list { display: flex; flex-direction: column; gap: 10px; margin-bottom: 18px; }
+  .match-card { background: var(--ink-2); border: 1px solid var(--line); border-radius: 10px; padding: 16px 18px; cursor: pointer; transition: border-color 0.15s, transform 0.1s; text-align: left; }
+  .match-card:hover { border-color: var(--gold); }
+  .match-card:active { transform: scale(0.98); }
+  .match-comp { font-family: 'JetBrains Mono', monospace; font-size: 10px; letter-spacing: 0.1em; text-transform: uppercase; color: var(--gold); margin-bottom: 5px; }
+  .match-teams { font-family: 'Oswald', sans-serif; font-weight: 600; font-size: 16px; color: var(--chalk); margin-bottom: 3px; }
+  .match-shape { font-family: 'JetBrains Mono', monospace; font-size: 10.5px; color: rgba(242,239,230,0.45); }
+
+  .random-btn { width: 100%; background: linear-gradient(135deg, #3fae63, #1f6b3f); color: var(--chalk); border: none; border-radius: 8px; padding: 15px; font-family: 'Oswald', sans-serif; font-weight: 700; font-size: 14.5px; text-transform: uppercase; letter-spacing: 0.03em; cursor: pointer; margin-bottom: 22px; box-shadow: 0 6px 18px rgba(63,174,99,0.3); transition: transform 0.1s ease; }
+  .random-btn:active { transform: scale(0.98); }
+
+  /* ---- Pitch ---- */
+  .bonus-panel { background: linear-gradient(180deg, rgba(193,57,43,0.10), var(--ink-2)); border: 1px solid rgba(193,57,43,0.35); border-radius: 10px; padding: 22px 20px; margin-bottom: 18px; box-shadow: 0 8px 24px rgba(0,0,0,0.28); }
+  .bonus-eyebrow { font-family: 'JetBrains Mono', monospace; font-size: 11px; letter-spacing: 0.25em; color: var(--red); text-transform: uppercase; text-align: center; margin-bottom: 8px; }
+  .bonus-title { font-family: 'Anton', sans-serif; font-size: clamp(20px, 5.5vw, 26px); text-align: center; margin: 0 0 6px; }
+  .bonus-text { font-size: 14px; color: rgba(242,239,230,0.75); line-height: 1.5; text-align: center; margin-bottom: 16px; }
+  .bonus-text b { color: var(--chalk); }
+
+  .pitch-wrap { position: relative; width: 100%; padding-bottom: 138%; margin-bottom: 14px; }
+  .pitch { position: absolute; inset: 0; background: linear-gradient(180deg, #1f5c3d, #163d29); border-radius: 10px; border: 2px solid rgba(255,255,255,0.3); overflow: hidden; box-shadow: 0 10px 28px rgba(0,0,0,0.35), inset 0 0 40px rgba(0,0,0,0.2); }
+  .pitch::before { content: ""; position: absolute; inset: 0; background: repeating-linear-gradient(180deg, rgba(255,255,255,0.035) 0 24px, transparent 24px 48px); pointer-events: none; }
+  .pitch .center-circle { position: absolute; width: 28%; padding-bottom: 28%; border: 2px solid rgba(255,255,255,0.28); border-radius: 50%; top: 50%; left: 50%; transform: translate(-50%,-50%); }
+  .pitch .center-dot { position: absolute; width: 6px; height: 6px; border-radius: 50%; background: rgba(255,255,255,0.28); top: 50%; left: 50%; transform: translate(-50%,-50%); }
+  .pitch .halfway { position: absolute; left: 0; right: 0; top: 50%; height: 2px; background: rgba(255,255,255,0.28); }
+  .pitch .box-top { position: absolute; top: 0; left: 28%; width: 44%; height: 13%; border: 2px solid rgba(255,255,255,0.24); border-top: none; }
+  .pitch .box-bottom { position: absolute; bottom: 0; left: 28%; width: 44%; height: 13%; border: 2px solid rgba(255,255,255,0.24); border-bottom: none; }
+  .pos-slot { position: absolute; transform: translate(-50%, -50%); display: flex; flex-direction: column; align-items: center; gap: clamp(2px, 0.8vw, 4px); z-index: 2; width: clamp(58px, 15.5vw, 82px); }
+  .pos-label { font-family: 'JetBrains Mono', monospace; font-size: clamp(9px, 2.6vw, 12px); font-weight: 700; letter-spacing: 0.04em; color: var(--ink); background: linear-gradient(135deg, var(--gold), #f4d58d); padding: clamp(2px, 0.6vw, 3px) clamp(5px, 1.6vw, 8px); border-radius: 5px; box-shadow: 0 2px 5px rgba(0,0,0,0.3); }
+  .pos-input { width: 100%; text-align: center; font-size: clamp(10.5px, 3vw, 14px); padding: clamp(6px, 1.8vw, 9px) clamp(3px, 1vw, 5px); border-radius: 7px; border: 1px solid rgba(255,255,255,0.4); background: rgba(242,239,230,0.96); color: var(--ink); font-family: 'Oswald', sans-serif; font-weight: 500; box-shadow: 0 2px 6px rgba(0,0,0,0.25), inset 0 1px 0 rgba(255,255,255,0.6); }
+  .pos-input.ok { border-color: #2ecc71; background: rgba(46,204,113,0.4); color: var(--chalk); font-weight: 700; }
+  .pos-input.bad { border-color: var(--red); background: rgba(193,57,43,0.35); color: var(--chalk); }
+  .pos-input.revealed { border-color: #4aa3ff; background: rgba(74,163,255,0.3); color: var(--chalk); font-weight: 700; }
+  .pos-input.prefilled { border-color: #d9a441; background: rgba(217,164,65,0.28); color: var(--chalk); font-weight: 600; }
+  .prefill-tag { font-family: 'JetBrains Mono', monospace; font-size: clamp(8px, 2.2vw, 10px); color: rgba(217,164,65,0.9); text-align: center; margin-top: 2px; }
+  .prefill-note { font-family: 'JetBrains Mono', monospace; font-size: 10.5px; color: rgba(217,164,65,0.9); text-align: center; margin-bottom: 10px; }
+  .pos-actions { display: flex; width: 100%; gap: clamp(3px, 1vw, 5px); }
+  .hint-btn, .token-btn { flex: 1; min-width: 0; background: rgba(232,178,61,0.15); border: 1px solid rgba(232,178,61,0.35); color: var(--gold); font-family: 'JetBrains Mono', monospace; font-weight: 700; font-size: clamp(8.5px, 2.4vw, 11px); border-radius: 5px; padding: clamp(3px, 1vw, 5px) 2px; cursor: pointer; }
+  .token-btn { background: rgba(74,163,255,0.15); border-color: rgba(74,163,255,0.4); color: #7db8ff; }
+  .hint-btn:disabled, .token-btn:disabled { opacity: 0.3; cursor: not-allowed; }
+  .score-badge { font-family: 'JetBrains Mono', monospace; font-size: 15px; font-weight: 700; text-align: center; color: var(--gold); margin-bottom: 10px; }
+
+  .btn-row { display: flex; gap: 10px; margin-bottom: 10px; }
+  button.action { flex: 1; font-family: 'Oswald', sans-serif; font-weight: 600; font-size: 14.5px; text-transform: uppercase; letter-spacing: 0.02em; padding: 15px 8px; border-radius: 8px; border: none; cursor: pointer; transition: transform 0.1s ease, box-shadow 0.15s ease; }
+  button.action:active { transform: scale(0.97); }
+  .btn-gold { background: var(--gold); color: var(--ink); box-shadow: 0 4px 14px rgba(232,178,61,0.25); }
+  .btn-light { background: var(--chalk); color: var(--ink); }
+  .btn-outline { background: transparent; color: var(--chalk); border: 1px solid var(--line); }
+
+  .hidden { display: none !important; }
+
+  /* ---- Profil / Level-System ---- */
+  .profile-bar { background: var(--ink-2); border: 1px solid var(--line); border-radius: 10px; padding: 14px 16px; margin-bottom: 16px; display: flex; align-items: center; gap: 12px; cursor: pointer; box-shadow: 0 4px 14px rgba(0,0,0,0.2); transition: transform 0.1s ease; }
+  .profile-bar:active { transform: scale(0.99); }
+  .rank-icon { position: relative; width: 46px; height: 46px; border-radius: 50%; flex-shrink: 0; display: flex; align-items: center; justify-content: center; font-size: 21px; line-height: 1; border: 2px solid var(--rank-c1, var(--gold)); background: radial-gradient(circle at 35% 30%, var(--rank-c1, #8a6a4a), var(--rank-c2, #5c4326) 75%); box-shadow: 0 4px 12px rgba(0,0,0,0.4), inset 0 0 10px rgba(0,0,0,0.35), 0 0 0 3px rgba(255,255,255,0.03); }
+  .rank-icon.legendary { animation: rankGlow 2s ease-in-out infinite; }
+  @keyframes rankGlow { 0%, 100% { box-shadow: 0 4px 12px rgba(0,0,0,0.4), inset 0 0 10px rgba(0,0,0,0.3), 0 0 10px 2px var(--rank-c1, var(--gold)); } 50% { box-shadow: 0 4px 18px rgba(0,0,0,0.4), inset 0 0 10px rgba(0,0,0,0.3), 0 0 18px 6px var(--rank-c1, var(--gold)); } }
+  .profile-mid { flex: 1; min-width: 0; }
+  .profile-row1 { display: flex; justify-content: space-between; align-items: center; margin-bottom: 7px; gap: 8px; }
+  .rank-name { font-family: 'Oswald', sans-serif; font-weight: 700; font-size: 13.5px; color: var(--chalk); }
+  .rank-title { font-family: 'JetBrains Mono', monospace; font-size: 10px; color: var(--gold); }
+  .level-chip { display: inline-flex; align-items: baseline; gap: 4px; flex-shrink: 0; background: linear-gradient(135deg, var(--gold), #f4d58d); color: var(--ink); padding: 3px 10px; border-radius: 20px; box-shadow: 0 2px 8px rgba(232,178,61,0.4); }
+  .level-chip .level-chip-num { font-family: 'Anton', sans-serif; font-weight: 400; font-size: 16px; line-height: 1; }
+  .level-chip .level-chip-tag { font-family: 'JetBrains Mono', monospace; font-weight: 700; font-size: 9px; letter-spacing: 0.08em; }
+  .xp-bar-track { background: rgba(255,255,255,0.08); border-radius: 20px; height: 10px; overflow: hidden; position: relative; }
+  .xp-bar-fill { background: linear-gradient(90deg, var(--gold), #f4d58d); height: 100%; border-radius: 20px; transition: width 0.5s ease; position: relative; overflow: hidden; box-shadow: 0 0 10px rgba(232,178,61,0.55); }
+  .xp-bar-fill::after { content: ""; position: absolute; inset: 0; width: 40%; background: linear-gradient(90deg, transparent, rgba(255,255,255,0.55), transparent); animation: xpShine 2.4s ease-in-out infinite; }
+  @keyframes xpShine { 0% { transform: translateX(-120%); } 100% { transform: translateX(280%); } }
+  .xp-next { font-family: 'JetBrains Mono', monospace; font-size: 13px; color: rgba(242,239,230,0.7); margin-top: 7px; display: flex; align-items: center; gap: 7px; }
+  .xp-next b { color: var(--gold); font-weight: 700; }
+  .xp-ball { display: inline-block; font-size: 19px; line-height: 1; animation: xpBallDribble 2.6s ease-in-out infinite; }
+  @keyframes xpBallDribble { 0% { transform: translateX(0) rotate(0deg); } 50% { transform: translateX(14px) rotate(220deg); } 100% { transform: translateX(0) rotate(0deg); } }
+  .profile-bar.gold-frame { border-color: var(--gold); box-shadow: 0 0 0 1px var(--gold), 0 0 14px rgba(232,178,61,0.25); }
+  .currency-stack { display: flex; flex-direction: column; gap: 5px; flex-shrink: 0; }
+  .token-count { flex-shrink: 0; font-family: 'JetBrains Mono', monospace; font-size: 13px; font-weight: 700; color: #7db8ff; background: rgba(74,163,255,0.12); border: 1px solid rgba(74,163,255,0.3); border-radius: 20px; padding: 6px 10px; text-align: center; }
+  .hint-count { flex-shrink: 0; font-family: 'JetBrains Mono', monospace; font-size: 12px; font-weight: 700; color: var(--gold); background: rgba(232,178,61,0.12); border: 1px solid rgba(232,178,61,0.3); border-radius: 20px; padding: 5px 9px; text-align: center; }
+
+  .toast-stack { position: fixed; top: 16px; left: 50%; transform: translateX(-50%); z-index: 50; display: flex; flex-direction: column; gap: 8px; width: 92%; max-width: 500px; pointer-events: none; }
+  .toast { background: var(--ink-2); border: 1px solid var(--gold); border-radius: 8px; padding: 12px 16px; font-family: 'Oswald', sans-serif; font-size: 13.5px; color: var(--chalk); box-shadow: 0 6px 20px rgba(0,0,0,0.4); animation: toastIn 0.3s ease, toastOut 0.3s ease 3.2s forwards; }
+  .toast b { color: var(--gold); }
+  @keyframes toastIn { from { opacity: 0; transform: translateY(-10px); } to { opacity: 1; transform: translateY(0); } }
+  @keyframes toastOut { to { opacity: 0; transform: translateY(-10px); } }
+
+  .modal-backdrop { position: fixed; inset: 0; background: rgba(0,0,0,0.65); z-index: 40; display: flex; align-items: flex-end; justify-content: center; }
+  .modal-sheet { background: var(--ink-2); border: 1px solid var(--line); border-radius: 14px 14px 0 0; padding: 22px 20px 28px; width: 100%; max-width: 560px; max-height: 82vh; overflow-y: auto; }
+  .modal-close { display: block; margin: 0 auto 16px; background: transparent; border: 1px solid var(--line); color: var(--chalk); border-radius: 20px; padding: 8px 18px; font-family: 'JetBrains Mono', monospace; font-size: 11px; text-transform: uppercase; cursor: pointer; }
+  .ach-row { display: flex; align-items: center; gap: 12px; padding: 10px 0; border-bottom: 1px solid var(--line); }
+  .ach-row:last-child { border-bottom: none; }
+  .ach-icon { font-size: 20px; width: 28px; text-align: center; flex-shrink: 0; }
+  .ach-row.locked .ach-icon { opacity: 0.25; }
+  .ach-row.locked .ach-name { opacity: 0.4; }
+  .ach-name { font-family: 'Oswald', sans-serif; font-weight: 600; font-size: 14px; }
+  .ach-desc { font-family: 'JetBrains Mono', monospace; font-size: 10.5px; color: rgba(242,239,230,0.45); margin-top: 2px; }
+
+  .guide-title { font-family: 'Anton', sans-serif; font-size: 22px; text-transform: uppercase; text-align: center; margin-bottom: 14px; color: var(--gold); }
+  .guide-row { display: flex; align-items: flex-start; gap: 12px; padding: 11px 0; border-bottom: 1px solid var(--line); }
+  .guide-row:last-child { border-bottom: none; }
+  .guide-icon { font-size: 20px; width: 28px; text-align: center; flex-shrink: 0; margin-top: 1px; }
+  .guide-heading { font-family: 'Oswald', sans-serif; font-weight: 700; font-size: 14px; margin-bottom: 2px; }
+  .guide-desc { font-family: 'Oswald', sans-serif; font-weight: 300; font-size: 12.5px; color: rgba(242,239,230,0.65); line-height: 1.4; }
+
+  .unlock-row { display: flex; flex-direction: column; gap: 7px; margin-bottom: 16px; }
+  .unlock-row-label { font-family: 'JetBrains Mono', monospace; font-size: 10px; letter-spacing: 0.12em; text-transform: uppercase; color: rgba(242,239,230,0.4); }
+  .unlock-row-chips { display: flex; gap: 8px; flex-wrap: wrap; }
+  .unlock-chip { font-family: 'JetBrains Mono', monospace; font-size: 10.5px; padding: 6px 11px; border-radius: 20px; border: 1px solid var(--line); background: transparent; color: rgba(242,239,230,0.6); cursor: pointer; }
+  .unlock-chip.active { background: var(--gold); border-color: var(--gold); color: var(--ink); font-weight: 700; }
+
+  body.theme-flutlicht .pitch { background: linear-gradient(180deg, #1a2a5c, #0f1638); }
+  body.theme-flutlicht .pitch .halfway, body.theme-flutlicht .pitch .center-circle, body.theme-flutlicht .pitch .box-top, body.theme-flutlicht .pitch .box-bottom { border-color: rgba(180,180,255,0.3); }
+  body.theme-flutlicht .pitch .center-dot { background: rgba(180,180,255,0.3); }
+
+  .confetti-piece { position: fixed; top: -12px; width: 8px; height: 14px; z-index: 60; pointer-events: none; border-radius: 2px; animation: confettiFall 2.3s ease-in forwards; }
+  @keyframes confettiFall { to { transform: translateY(112vh) rotate(560deg); opacity: 0.4; } }
+
+  /* ---- Level-Up-Zeremonie ---- */
+  .levelup-overlay { position: fixed; inset: 0; background: rgba(10,14,20,0.88); z-index: 70; display: flex; align-items: center; justify-content: center; animation: fadeIn 0.25s ease; }
+  @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+  .levelup-card { text-align: center; padding: 30px 26px; animation: levelupPop 0.5s cubic-bezier(.34,1.56,.64,1); }
+  @keyframes levelupPop { from { transform: scale(0.6); opacity: 0; } to { transform: scale(1); opacity: 1; } }
+  .levelup-rank-icon { font-size: 64px; margin-bottom: 6px; filter: drop-shadow(0 0 20px currentColor); animation: levelupPulse 1.4s ease-in-out infinite; }
+  @keyframes levelupPulse { 0%,100% { transform: scale(1); } 50% { transform: scale(1.08); } }
+  .levelup-title { font-family: 'JetBrains Mono', monospace; font-size: 12px; letter-spacing: 0.3em; color: var(--gold); text-transform: uppercase; margin-bottom: 8px; }
+  .levelup-level { font-family: 'Anton', sans-serif; font-size: clamp(40px, 12vw, 64px); color: var(--chalk); line-height: 1; margin-bottom: 10px; }
+  .levelup-rank-name { font-family: 'Oswald', sans-serif; font-weight: 700; font-size: 20px; margin-bottom: 22px; }
+  .levelup-close { background: var(--gold); color: var(--ink); border: none; border-radius: 8px; padding: 13px 30px; font-family: 'Oswald', sans-serif; font-weight: 700; text-transform: uppercase; letter-spacing: 0.03em; cursor: pointer; }
+
+  footer { margin-top: 26px; text-align: center; font-size: 11.5px; color: rgba(242,239,230,0.35); line-height: 1.6; font-weight: 300; }
+</style>
+</head>
+<body>
+<div class="app">
+
+  <header>
+    <button class="help-btn" id="helpBtn"><span class="help-icon">🎮</span>So geht's<span class="help-dot" id="helpDot"></span></button>
+    <div class="brand-badge">⚽</div>
+    <div class="kicker">Football Lineup Trivia</div>
+    <h1>Starting<span> XI</span></h1>
+    <div class="sub">Echte Spiele aus der Fußballgeschichte - stell die Startelf nach und zeig, wer sich wirklich auskennt.</div>
+  </header>
+
+  <div class="toast-stack" id="toastStack"></div>
+
+  <div class="profile-bar" id="profileBar">
+    <div class="rank-icon" id="rankIcon">🟫</div>
+    <div class="profile-mid">
+      <div class="profile-row1">
+        <span><span class="rank-name" id="rankName">Kreisliga</span> <span class="rank-title" id="rankTitle"></span></span>
+        <span class="level-chip"><span class="level-chip-num" id="levelChipNum">1</span><span class="level-chip-tag">LVL</span></span>
+      </div>
+      <div class="xp-bar-track"><div class="xp-bar-fill" id="xpBarFill" style="width:0%"></div></div>
+      <div class="xp-next" id="xpNext">Noch <b>100</b> XP bis Lvl 2</div>
+    </div>
+    <div class="currency-stack">
+      <div class="token-count" id="tokenCount">🔍 0</div>
+      <div class="hint-count" id="hintCount">💡 0</div>
+    </div>
+  </div>
+
+  <div class="scoreboard">
+    <div><span class="label">Absolviert</span><span class="value" id="playedCount">0</span></div>
+    <div><span class="label">Ø Treffer</span><span class="value" id="avgScore">0/11</span></div>
+    <div><span class="label">Perfekt</span><span class="value" id="perfectCount">0</span></div>
+  </div>
+
+  <div id="unlockRow" class="unlock-row hidden"></div>
+
+  <div id="pickerView">
+    <div class="mode-row">
+      <button class="mode-btn" id="modeCampaignBtn"><span class="mode-icon">🌍</span>Kampagne</button>
+      <button class="mode-btn" id="modeFreeplayBtn"><span class="mode-icon">🎲</span>Frei spielen</button>
+    </div>
+
+    <div id="campaignView"></div>
+
+    <div id="freeplayView" class="hidden">
+      <div class="filter-row" id="filterRow"></div>
+      <div class="filter-row" id="diffFilterRow"></div>
+      <button class="random-btn" id="randomBtn">🎲 Zufällige Aufstellung</button>
+      <div class="bonus-text" style="margin-top:-6px">Die Partien bleiben geheim, bis du sie spielst - so bleibt's spannend.</div>
+    </div>
+  </div>
+
+  <div id="pitchView" class="hidden"></div>
+
+  <footer>
+    Alle Aufstellungen sind recherchiert und stammen aus echten, konkreten Spielen -<br>
+    keine "typischen Stammelf"-Angaben, sondern reale Startelf einer bestimmten Partie.
+  </footer>
+
+</div>
+
+<script>
+/* ================= FORMATIONEN ================= */
+const PITCH_LAYOUTS = {
+  "4-4-2": [
+    {abbr:"TW", x:50, y:90}, {abbr:"RV", x:80, y:72}, {abbr:"RIV", x:60, y:76}, {abbr:"LIV", x:40, y:76}, {abbr:"LV", x:20, y:72},
+    {abbr:"RM", x:83, y:47}, {abbr:"RZM", x:60, y:51}, {abbr:"LZM", x:40, y:51}, {abbr:"LM", x:17, y:47},
+    {abbr:"RST", x:62, y:16}, {abbr:"LST", x:38, y:16}
+  ],
+  "4-3-3": [
+    {abbr:"TW", x:50, y:90}, {abbr:"RV", x:80, y:72}, {abbr:"RIV", x:60, y:76}, {abbr:"LIV", x:40, y:76}, {abbr:"LV", x:20, y:72},
+    {abbr:"RZM", x:68, y:50}, {abbr:"ZM", x:50, y:54}, {abbr:"LZM", x:32, y:50},
+    {abbr:"RA", x:80, y:18}, {abbr:"ST", x:50, y:12}, {abbr:"LA", x:20, y:18}
+  ],
+  "3-5-2": [
+    {abbr:"TW", x:50, y:90}, {abbr:"RIV", x:65, y:76}, {abbr:"ZIV", x:50, y:80}, {abbr:"LIV", x:35, y:76},
+    {abbr:"RM", x:86, y:50}, {abbr:"RZM", x:64, y:53}, {abbr:"ZM", x:50, y:57}, {abbr:"LZM", x:36, y:53}, {abbr:"LM", x:14, y:50},
+    {abbr:"RST", x:60, y:16}, {abbr:"LST", x:40, y:16}
+  ],
+  "3-4-2-1": [
+    {abbr:"TW", x:50, y:90}, {abbr:"RIV", x:65, y:76}, {abbr:"ZIV", x:50, y:80}, {abbr:"LIV", x:35, y:76},
+    {abbr:"RM", x:83, y:55}, {abbr:"RZM", x:60, y:58}, {abbr:"LZM", x:40, y:58}, {abbr:"LM", x:17, y:55},
+    {abbr:"ROM", x:65, y:28}, {abbr:"LOM", x:35, y:28},
+    {abbr:"ST", x:50, y:12}
+  ],
+  "4-2-3-1": [
+    {abbr:"TW", x:50, y:90}, {abbr:"RV", x:80, y:72}, {abbr:"RIV", x:60, y:76}, {abbr:"LIV", x:40, y:76}, {abbr:"LV", x:20, y:72},
+    {abbr:"RZM", x:62, y:58}, {abbr:"LZM", x:38, y:58},
+    {abbr:"ROM", x:75, y:32}, {abbr:"ZOM", x:50, y:32}, {abbr:"LOM", x:25, y:32},
+    {abbr:"ST", x:50, y:12}
+  ],
+  "4-1-4-1": [
+    {abbr:"TW", x:50, y:90}, {abbr:"RV", x:80, y:72}, {abbr:"RIV", x:60, y:76}, {abbr:"LIV", x:40, y:76}, {abbr:"LV", x:20, y:72},
+    {abbr:"ZDM", x:50, y:62},
+    {abbr:"RM", x:83, y:46}, {abbr:"RZM", x:60, y:50}, {abbr:"LZM", x:40, y:50}, {abbr:"LM", x:17, y:46},
+    {abbr:"ST", x:50, y:14}
+  ],
+  "4-5-1": [
+    {abbr:"TW", x:50, y:90}, {abbr:"RV", x:80, y:72}, {abbr:"RIV", x:60, y:76}, {abbr:"LIV", x:40, y:76}, {abbr:"LV", x:20, y:72},
+    {abbr:"RM", x:86, y:50}, {abbr:"RZM", x:64, y:53}, {abbr:"ZM", x:50, y:57}, {abbr:"LZM", x:36, y:53}, {abbr:"LM", x:14, y:50},
+    {abbr:"ST", x:50, y:14}
+  ],
+  "5-4-1": [
+    {abbr:"TW", x:50, y:94}, {abbr:"RV", x:85, y:68}, {abbr:"RIV", x:65, y:71}, {abbr:"ZIV", x:50, y:73}, {abbr:"LIV", x:35, y:71}, {abbr:"LV", x:15, y:68},
+    {abbr:"RM", x:82, y:46}, {abbr:"RZM", x:60, y:49}, {abbr:"LZM", x:40, y:49}, {abbr:"LM", x:18, y:46},
+    {abbr:"ST", x:50, y:14}
+  ],
+  "5-3-2": [
+    {abbr:"TW", x:50, y:94}, {abbr:"RV", x:85, y:68}, {abbr:"RIV", x:65, y:71}, {abbr:"ZIV", x:50, y:73}, {abbr:"LIV", x:35, y:71}, {abbr:"LV", x:15, y:68},
+    {abbr:"RZM", x:65, y:48}, {abbr:"ZM", x:50, y:52}, {abbr:"LZM", x:35, y:48},
+    {abbr:"RST", x:60, y:16}, {abbr:"LST", x:40, y:16}
+  ]
+};
+
+/* Schwierigkeitsgrad 1-5, berechnet aus: Turnier-Prominenz (Finale > Halbfinale >
+   Viertelfinale > Gruppenphase), Bekanntheit der gezeigten Mannschaft/Spieler,
+   Formations-Seltenheit und wie lange das Spiel zurückliegt. Gleiches Liga-Schema
+   wie im Trinkspiel, damit es sich vertraut anfühlt. */
+const DIFF_LABEL = { 1: "Kreisliga", 2: "Regionalliga", 3: "Bundesliga", 4: "Champions League", 5: "Weltklasse" };
+const DIFF_COLOR = { 1: "#7fd99a", 2: "#a8d94a", 3: "#e8b23d", 4: "#e8863d", 5: "#c1392b" };
+
+/* ================= AUFSTELLUNGEN =================
+   Jeder Eintrag: konkretes, echtes Spiel (kein "Stammelf der Saison"), recherchierte Startelf.
+   "difficulty" (1-5) ersetzt das alte hard:true/false. Neue Einträge einfach nach diesem Schema ergänzen. */
+const LINEUP_CHALLENGES = [
+  {
+    id: "fck-pokalfinale-2024",
+    comp: "DFB-Pokal-Finale, 25.05.2024",
+    league: "Bundesliga / DFB-Pokal",
+    teams: "1. FC Kaiserslautern gegen Bayer Leverkusen 0:1",
+    side: "Aufstellung von 1. FC Kaiserslautern",
+    context: "Der Zweitligist FCK erreichte sensationell das Pokalfinale und traf dort im Berliner Olympiastadion auf Leverkusens historische Meister-Mannschaft, die mit dem Sieg (Tor: Xhaka) das nationale Double perfekt machte.",
+    formation: "4-2-3-1",
+    difficulty: 4,
+    players: { TW:"Krahl", RV:"Zolinski", RIV:"Tomiak", LIV:"Elvedi", LV:"Puchacz", RZM:"Zimmer", LZM:"Kaloc", ROM:"Redondo", ZOM:"Ritter", LOM:"Raschl", ST:"Hanslik" }
+  },
+  {
+    id: "cl-finale-istanbul-2005",
+    comp: "Champions-League-Finale, 25.05.2005 (\"Wunder von Istanbul\")",
+    league: "Champions League",
+    teams: "AC Mailand gegen FC Liverpool 3:3 n.V., Liverpool siegt 3:2 i.E.",
+    side: "Aufstellung von FC Liverpool",
+    context: "Liverpool lag zur Halbzeit 0:3 zurück und drehte die Partie zwischen der 54. und 60. Minute komplett.",
+    formation: "4-4-2",
+    difficulty: 3,
+    players: { TW:"Dudek", RV:"Finnan", RIV:"Carragher", LIV:"Hyypiä", LV:"Traoré", RM:"García", RZM:"Gerrard", LZM:"Alonso", LM:"Riise", RST:"Kewell", LST:"Baroš" }
+  },
+  {
+    id: "schalke-meister-der-herzen-2001",
+    comp: "Bundesliga, 34. Spieltag, 19.05.2001 (\"Meister der Herzen\")",
+    league: "Bundesliga",
+    teams: "FC Schalke 04 gegen SpVgg Unterhaching 5:3",
+    side: "Aufstellung von FC Schalke 04",
+    context: "Schalke feierte schon den Titel, ehe Bayern in Hamburg in der Nachspielzeit doch noch zum Meister wurde.",
+    formation: "4-3-3",
+    difficulty: 4,
+    players: { TW:"Reck", RV:"Hajto", RIV:"Van Kerckhoven", LIV:"Van Hoogdalem", LV:"Waldoch", RZM:"Böhme", ZM:"Möller", LZM:"Němec", RA:"Asamoah", ST:"Mpenza", LA:"Sand" }
+  },
+  {
+    id: "el-clasico-2009",
+    comp: "LaLiga, 34. Spieltag, 02.05.2009 (\"El Clásico\")",
+    league: "LaLiga",
+    teams: "Real Madrid gegen FC Barcelona 2:6",
+    side: "Aufstellung von FC Barcelona",
+    context: "Guardiolas Barça zerlegte die Königlichen im eigenen Stadion - der Auftakt zum Sextuple-Jahr 2009. Messi spielte an diesem Abend als falsche Neun.",
+    formation: "4-3-3",
+    difficulty: 2,
+    players: { TW:"Valdés", RV:"Alves", RIV:"Puyol", LIV:"Piqué", LV:"Abidal", RZM:"Xavi", ZM:"Touré", LZM:"Iniesta", RA:"Messi", ST:"Eto'o", LA:"Henry" }
+  },
+  {
+    id: "leicester-liverpool-2016",
+    comp: "Premier League, 24. Spieltag, 02.02.2016",
+    league: "Premier League",
+    teams: "Leicester City gegen FC Liverpool 2:0",
+    side: "Aufstellung von Leicester City",
+    context: "Mittendrin in der sensationellsten Meistersaison der Fußballgeschichte - Leicester stand zu diesem Zeitpunkt an der Tabellenspitze.",
+    formation: "4-4-2",
+    difficulty: 2,
+    players: { TW:"Schmeichel", RV:"Simpson", RIV:"Morgan", LIV:"Huth", LV:"Fuchs", RM:"Mahrez", RZM:"Drinkwater", LZM:"Kanté", LM:"Albrighton", RST:"Vardy", LST:"Okazaki" }
+  },
+  {
+    id: "el-finale-frankfurt-2022",
+    comp: "Europa-League-Finale, 18.05.2022",
+    league: "Europa League",
+    teams: "Eintracht Frankfurt gegen Glasgow Rangers 1:1 n.V., Frankfurt siegt 5:4 i.E.",
+    side: "Aufstellung von Eintracht Frankfurt",
+    context: "Frankfurts erster europäischer Titel seit dem UEFA-Cup-Sieg 1980 - vor einer riesigen Fan-Kulisse in Sevilla.",
+    formation: "3-4-2-1",
+    difficulty: 3,
+    players: { TW:"Trapp", RIV:"Touré", ZIV:"Tuta", LIV:"Ndicka", RM:"Knauff", RZM:"Sow", LZM:"Rode", LM:"Kostić", ROM:"Lindström", LOM:"Kamada", ST:"Borré" }
+  },
+  {
+    id: "wm-finale-2014",
+    comp: "WM-Finale, 13.07.2014",
+    league: "Weltmeisterschaft",
+    teams: "Deutschland gegen Argentinien 1:0 n.V.",
+    side: "Aufstellung von Deutschland",
+    context: "Mario Götze erzielte in der 113. Minute das Tor zum vierten deutschen WM-Titel - es war zugleich Miroslav Kloses letztes Länderspiel.",
+    formation: "4-2-3-1",
+    difficulty: 1,
+    players: { TW:"Neuer", RV:"Lahm", RIV:"Hummels", LIV:"Boateng", LV:"Höwedes", RZM:"Kramer", LZM:"Schweinsteiger", ROM:"Müller", ZOM:"Kroos", LOM:"Özil", ST:"Klose" }
+  },
+  {
+    id: "wm-finale-2022",
+    comp: "WM-Finale, 18.12.2022",
+    league: "Weltmeisterschaft",
+    teams: "Argentinien gegen Frankreich 3:3 n.V., Argentinien siegt 4:2 i.E.",
+    side: "Aufstellung von Argentinien",
+    context: "Eines der besten WM-Finals aller Zeiten - Messi krönte seine Karriere mit dem WM-Titel, Mbappé traf dreifach für Frankreich.",
+    formation: "4-3-3",
+    difficulty: 1,
+    players: { TW:"Martínez", RV:"Molina", RIV:"Romero", LIV:"Otamendi", LV:"Tagliafico", RZM:"De Paul", ZM:"Fernández", LZM:"Mac Allister", RA:"Di María", ST:"Álvarez", LA:"Messi" }
+  },
+  {
+    id: "em-finale-2021",
+    comp: "EM-Finale, 11.07.2021",
+    league: "Europameisterschaft",
+    teams: "Italien gegen England 1:1 n.V., Italien siegt 3:2 i.E.",
+    side: "Aufstellung von Italien",
+    context: "Italien gewann im Wembley-Stadion vor englischem Publikum den zweiten EM-Titel der Vereinsgeschichte nach 1968.",
+    formation: "4-3-3",
+    difficulty: 2,
+    players: { TW:"Donnarumma", RV:"Di Lorenzo", RIV:"Bonucci", LIV:"Chiellini", LV:"Emerson", RZM:"Barella", ZM:"Jorginho", LZM:"Verratti", RA:"Chiesa", ST:"Immobile", LA:"Insigne" }
+  },
+  {
+    id: "bayern-wolfsburg-2026",
+    comp: "Bundesliga, 16. Spieltag, 11.01.2026",
+    league: "Bundesliga",
+    teams: "FC Bayern München gegen VfL Wolfsburg 8:1",
+    side: "Aufstellung von FC Bayern München",
+    context: "Höchster Saisonsieg der Bayern zum Jahresauftakt 2026 - Michael Olise traf doppelt, dazu Tore von Diaz, Kane und Goretzka.",
+    formation: "4-2-3-1",
+    difficulty: 2,
+    players: { TW:"Neuer", RV:"Laimer", RIV:"Upamecano", LIV:"Tah", LV:"Stanišić", RZM:"Bischof", LZM:"Pavlović", ROM:"Olise", ZOM:"Karl", LOM:"Diaz", ST:"Kane" }
+  },
+  {
+    id: "cl-finale-la-decima-2014",
+    comp: "Champions-League-Finale, 24.05.2014 (\"La Décima\")",
+    league: "Champions League",
+    teams: "Real Madrid gegen Atlético Madrid 4:1 n.V.",
+    side: "Aufstellung von Real Madrid",
+    context: "Atlético führte bis in die Nachspielzeit, ehe Ramos in der 93. Minute ausglich - in der Verlängerung drehte Real komplett auf und holte den ersehnten zehnten Europapokal.",
+    formation: "4-2-3-1",
+    difficulty: 2,
+    players: { TW:"Casillas", RV:"Carvajal", RIV:"Ramos", LIV:"Varane", LV:"Coentrão", RZM:"Modrić", LZM:"Khedira", ROM:"Bale", ZOM:"Di María", LOM:"Ronaldo", ST:"Benzema" }
+  },
+  {
+    id: "wm-finale-2006",
+    comp: "WM-Finale, 09.07.2006",
+    league: "Weltmeisterschaft",
+    teams: "Italien gegen Frankreich 1:1 n.V., Italien siegt 5:3 i.E.",
+    side: "Aufstellung von Italien",
+    context: "Das Finale, in dem Zinedine Zidane wegen eines Kopfstoßes gegen Marco Materazzi vom Platz flog - Italien holte danach im Elfmeterschießen seinen vierten WM-Titel.",
+    formation: "4-4-2",
+    difficulty: 3,
+    players: { TW:"Buffon", RV:"Zambrotta", RIV:"Cannavaro", LIV:"Materazzi", LV:"Grosso", RM:"Camoranesi", RZM:"Gattuso", LZM:"Pirlo", LM:"Perrotta", RST:"Toni", LST:"Totti" }
+  },
+  {
+    id: "em-finale-2008",
+    comp: "EM-Finale, 29.06.2008",
+    league: "Europameisterschaft",
+    teams: "Deutschland gegen Spanien 0:1",
+    side: "Aufstellung von Spanien",
+    context: "Fernando Torres erzielte in der 33. Minute das einzige Tor - der Auftakt zur spanischen Dominanz-Ära mit WM-Titel 2010 und EM-Titel 2012.",
+    formation: "4-1-4-1",
+    difficulty: 3,
+    players: { TW:"Casillas", RV:"Ramos", RIV:"Marchena", LIV:"Puyol", LV:"Capdevila", ZDM:"Senna", RM:"Silva", RZM:"Xavi", LZM:"Iniesta", LM:"Fàbregas", ST:"Torres" }
+  },
+  {
+    id: "mancity-qpr-2012",
+    comp: "Premier League, 38. Spieltag, 13.05.2012 (\"Aguerooooo\")",
+    league: "Premier League",
+    teams: "Manchester City gegen Queens Park Rangers 3:2",
+    side: "Aufstellung von Manchester City",
+    context: "City lag in der Nachspielzeit noch 1:2 zurück, ehe Dzeko und Agüero (93.) innerhalb von zwei Minuten den ersten Meistertitel seit 44 Jahren klarmachten - einer der berühmtesten Momente der Premier-League-Geschichte.",
+    formation: "4-4-2",
+    difficulty: 4,
+    players: { TW:"Hart", RV:"Zabaleta", RIV:"Kompany", LIV:"Lescott", LV:"Clichy", RM:"Silva", RZM:"Touré", LZM:"Barry", LM:"Nasri", RST:"Agüero", LST:"Tevez" }
+  },
+  {
+    id: "milan-scudetto-2022",
+    comp: "Serie A, 38. Spieltag, 22.05.2022",
+    league: "Serie A",
+    teams: "Sassuolo Calcio gegen AC Mailand 0:3",
+    side: "Aufstellung von AC Mailand",
+    context: "Milan sicherte sich am letzten Spieltag den ersten Scudetto seit 2011 - der Beginn der Rückkehr in die italienische Spitzengruppe.",
+    formation: "4-3-3",
+    difficulty: 4,
+    players: { TW:"Maignan", RV:"Calabria", RIV:"Tomori", LIV:"Kalulu", LV:"Hernández", RZM:"Tonali", ZM:"Kessié", LZM:"Krunić", RA:"Saelemaekers", ST:"Giroud", LA:"Leão" }
+  },
+  {
+    id: "hsv-ulm-2025",
+    comp: "2. Bundesliga, 33. Spieltag, 10.05.2025",
+    league: "2. Bundesliga",
+    teams: "Hamburger SV gegen SSV Ulm 1846 6:1",
+    side: "Aufstellung des Hamburger SV",
+    context: "Nach sieben Jahren Zweitliga-Odyssee machte der HSV vor 57.000 Zuschauern im ausverkauften Volksparkstadion die Rückkehr in die Bundesliga perfekt.",
+    formation: "4-3-3",
+    difficulty: 5,
+    players: { TW:"Heuer Fernandes", RV:"Mikelbrencis", RIV:"Poreba", LIV:"Elfadli", LV:"Muheim", RZM:"Königsdörffer", ZM:"Meffert", LZM:"Reis", RA:"Dompé", ST:"Selke", LA:"Sahiti" }
+  },
+  {
+    id: "atletico-titel-2014",
+    comp: "LaLiga, 38. Spieltag, 17.05.2014",
+    league: "LaLiga",
+    teams: "FC Barcelona gegen Atlético Madrid 1:1",
+    side: "Aufstellung von Atlético Madrid",
+    context: "Ein einziger Punkt im Camp Nou reichte Atlético, um Barcelona und Real Madrid noch abzufangen - unter Diego Simeone wurde der Klub sensationell spanischer Meister.",
+    formation: "4-4-2",
+    difficulty: 4,
+    players: { TW:"Courtois", RV:"Juanfran", RIV:"Miranda", LIV:"Godín", LV:"Filipe Luís", RM:"Turan", RZM:"Gabi", LZM:"Tiago", LM:"Koke", RST:"Costa", LST:"Villa" }
+  },
+  {
+    id: "senegal-frankreich-2002",
+    comp: "WM, Gruppenphase Eröffnungsspiel, 31.05.2002",
+    league: "Weltmeisterschaft",
+    teams: "Frankreich gegen Senegal 0:1",
+    side: "Aufstellung von Senegal",
+    context: "Der amtierende Welt- und Europameister Frankreich verlor sein Auftaktspiel gegen den WM-Debütanten Senegal - bis heute eine der größten Überraschungen der Turniergeschichte.",
+    formation: "4-5-1",
+    difficulty: 5,
+    players: { TW:"Sylva", RV:"Daf", RIV:"Diatta", LIV:"Diop", LV:"Coly", RM:"Fadiga", RZM:"Bouba Diop", ZM:"Cissé", LZM:"N'Diaye", LM:"Diao", ST:"Diouf" }
+  },
+  {
+    id: "island-england-2016",
+    comp: "EM-Achtelfinale, 27.06.2016",
+    league: "Europameisterschaft",
+    teams: "England gegen Island 1:2",
+    side: "Aufstellung von Island",
+    context: "Ein Land mit rund 330.000 Einwohnern warf England aus dem Turnier - einer der größten Schocks der englischen Fußballgeschichte, live im ganzen Land bejubelt.",
+    formation: "4-4-2",
+    difficulty: 5,
+    players: { TW:"Halldórsson", RV:"Sævarsson", RIV:"Árnason", LIV:"Sigurðsson", LV:"Skúlason", RM:"G. Sigurðsson", RZM:"Gunnarsson", LZM:"Bjarnason", LM:"Guðmundsson", RST:"Sigþórsson", LST:"Böðvarsson" }
+  },
+  {
+    id: "ajax-real-madrid-2019",
+    comp: "Champions-League-Achtelfinale Rückspiel, 05.03.2019",
+    league: "Champions League",
+    teams: "Real Madrid gegen Ajax Amsterdam 1:4",
+    side: "Aufstellung von Ajax Amsterdam",
+    context: "Der dreimalige Titelverteidiger Real Madrid wurde im eigenen Stadion regelrecht vorgeführt - Ajax mit seiner jungen Generation um de Ligt, de Jong und Tadic zog sensationell ins Viertelfinale ein.",
+    formation: "4-3-3",
+    difficulty: 4,
+    players: { TW:"Onana", RV:"Mazraoui", RIV:"de Ligt", LIV:"Blind", LV:"Tagliafico", RZM:"Schöne", ZM:"de Jong", LZM:"van de Beek", RA:"Ziyech", ST:"Tadic", LA:"Neres" }
+  },
+  {
+    id: "costarica-uruguay-2014",
+    comp: "WM, Gruppenphase 1. Spieltag, 14.06.2014",
+    league: "Weltmeisterschaft",
+    teams: "Uruguay gegen Costa Rica 1:3",
+    side: "Aufstellung von Costa Rica",
+    context: "In der 'Gruppe des Todes' mit Uruguay, Italien und England schlug Außenseiter Costa Rica gleich zum Auftakt den zweimaligen Weltmeister - mit einem ungewöhnlichen 5-4-1-System.",
+    formation: "5-4-1",
+    difficulty: 5,
+    players: { TW:"Navas", RV:"Gamboa", RIV:"Duarte", ZIV:"González", LIV:"Umaña", LV:"Junior Díaz", RM:"Bolaños", RZM:"Borges", LZM:"Tejeda", LM:"Ruiz", ST:"Campbell" }
+  },
+  {
+    id: "wolfsburg-real-2016",
+    comp: "Champions-League-Viertelfinale Hinspiel, 06.04.2016",
+    league: "Champions League",
+    teams: "VfL Wolfsburg gegen Real Madrid 2:0",
+    side: "Aufstellung des VfL Wolfsburg",
+    context: "Die Wölfe schockten den späteren Champions-League-Sieger im eigenen Stadion - ehe Cristiano Ronaldo im Rückspiel mit einem Solo-Hattrick das Weiterkommen für Real Madrid sicherte.",
+    formation: "4-4-2",
+    difficulty: 5,
+    players: { TW:"Benaglio", RV:"Vieirinha", RIV:"Dante", LIV:"Naldo", LV:"Rodríguez", RM:"Draxler", RZM:"Arnold", LZM:"Gustavo", LM:"Guilavogui", RST:"Schürrle", LST:"Henrique" }
+  },
+  {
+    id: "barcelona-frankfurt-2022",
+    comp: "Europa-League-Viertelfinale Rückspiel, 14.04.2022",
+    league: "Europa League",
+    teams: "FC Barcelona gegen Eintracht Frankfurt 2:3",
+    side: "Aufstellung von Eintracht Frankfurt",
+    context: "Vor rund 30.000 mitgereisten Frankfurt-Fans im Camp Nou entzauberte die Eintracht den großen FC Barcelona und zog sensationell ins Halbfinale ein.",
+    formation: "3-4-2-1",
+    difficulty: 4,
+    players: { TW:"Trapp", RIV:"Touré", ZIV:"Hinteregger", LIV:"Ndicka", RM:"Knauff", RZM:"Jakić", LZM:"Rode", LM:"Kostić", ROM:"Lindström", LOM:"Kamada", ST:"Borré" }
+  },
+  {
+    id: "wales-belgien-2016",
+    comp: "EM-Viertelfinale, 01.07.2016",
+    league: "Europameisterschaft",
+    teams: "Wales gegen Belgien 3:1",
+    side: "Aufstellung von Wales",
+    context: "Wales, angeführt von Gareth Bale, warf den WM-Halbfinalisten und Favoriten Belgien raus und stand erstmals in der Vereinsgeschichte im Halbfinale eines großen Turniers.",
+    formation: "3-4-2-1",
+    difficulty: 4,
+    players: { TW:"Hennessey", RIV:"Chester", ZIV:"Williams", LIV:"Davies", RM:"Gunter", RZM:"Allen", LZM:"Ledley", LM:"Taylor", ROM:"Ramsey", LOM:"Bale", ST:"Robson-Kanu" }
+  },
+  {
+    id: "deutschland-japan-2022",
+    comp: "WM, Gruppenphase 1. Spieltag, 23.11.2022",
+    league: "Weltmeisterschaft",
+    teams: "Deutschland gegen Japan 1:2",
+    side: "Aufstellung von Japan",
+    context: "Deutschland führte durch einen Gündogan-Elfmeter zur Halbzeit, doch Japan drehte die Partie durch zwei eingewechselte Bundesliga-Legionäre - der verpatzte Auftakt endete am Ende sogar im deutschen Vorrunden-Aus.",
+    formation: "4-5-1",
+    difficulty: 4,
+    players: { TW:"Gonda", RV:"Sakai", RIV:"Yoshida", LIV:"Itakura", LV:"Nagatomo", RM:"Ito", RZM:"Tanaka", ZM:"Endo", LZM:"Kamada", LM:"Kubo", ST:"Maeda" }
+  },
+  {
+    id: "spanien-schweiz-2010",
+    comp: "WM, Gruppenphase 1. Spieltag, 16.06.2010",
+    league: "Weltmeisterschaft",
+    teams: "Spanien gegen Schweiz 0:1",
+    side: "Aufstellung der Schweiz",
+    context: "Die einzige Niederlage Spaniens auf dem gesamten Weg zum WM-Titel 2010 - ausgerechnet im ersten Gruppenspiel gegen die Schweiz.",
+    formation: "4-4-2",
+    difficulty: 3,
+    players: { TW:"Benaglio", RV:"Lichtsteiner", RIV:"Senderos", LIV:"Grichting", LV:"Ziegler", RM:"Barnetta", RZM:"Inler", LZM:"Huggel", LM:"Fernandes", RST:"Nkufo", LST:"Derdiyok" }
+  },
+  {
+    id: "mexiko-deutschland-2018",
+    comp: "WM, Gruppenphase 1. Spieltag, 17.06.2018",
+    league: "Weltmeisterschaft",
+    teams: "Deutschland gegen Mexiko 0:1",
+    side: "Aufstellung von Mexiko",
+    context: "Der amtierende Weltmeister verlor sein Auftaktspiel - Hirving Lozano traf zum vielumjubelten Siegtor, Deutschland schied bei diesem Turnier später sogar in der Vorrunde aus.",
+    formation: "4-3-3",
+    difficulty: 2,
+    players: { TW:"Ochoa", RV:"Salcedo", RIV:"Ayala", LIV:"Moreno", LV:"Gallardo", RZM:"Layún", ZM:"Herrera", LZM:"Guardado", RA:"Lozano", ST:"Hernández", LA:"Vela" }
+  },
+  {
+    id: "youngboys-manutd-2021",
+    comp: "Champions-League-Gruppenphase, 1. Spieltag, 14.09.2021",
+    league: "Champions League",
+    teams: "Young Boys Bern gegen Manchester United 2:1",
+    side: "Aufstellung von Young Boys Bern",
+    context: "Ausgerechnet in Cristiano Ronaldos zweitem Debüt für Manchester United schockten die Schweizer Meister die Red Devils mit dem Siegtreffer in der Nachspielzeit.",
+    formation: "4-2-3-1",
+    difficulty: 5,
+    players: { TW:"von Ballmoos", RV:"Hefti", RIV:"Lauper", LIV:"Camara", LV:"Garcia", RZM:"Martins", LZM:"Sierro", ROM:"Ngamaleu", ZOM:"Aebischer", LOM:"Fassnacht", ST:"Elia" }
+  },
+  {
+    id: "villarreal-manutd-2021",
+    comp: "Europa-League-Finale, 26.05.2021",
+    league: "Europa League",
+    teams: "FC Villarreal gegen Manchester United 1:1 n.V., Villarreal siegt 11:10 i.E.",
+    side: "Aufstellung von FC Villarreal",
+    context: "Das bis heute längste Elfmeterschießen eines europäischen Pokalfinales - Villarreal holte unter Unai Emery seinen allerersten großen internationalen Titel der Vereinsgeschichte.",
+    formation: "4-4-2",
+    difficulty: 3,
+    players: { TW:"Rulli", RV:"Foyth", RIV:"Albiol", LIV:"Torres", LV:"Pedraza", RM:"Pino", RZM:"Capoue", LZM:"Parejo", LM:"Trigueros", RST:"Moreno", LST:"Bacca" }
+  },
+  {
+    id: "freiburg-leipzig-2022",
+    comp: "DFB-Pokal-Finale, 21.05.2022",
+    league: "Bundesliga / DFB-Pokal",
+    teams: "SC Freiburg gegen RB Leipzig 1:1 n.V., Leipzig siegt 4:2 i.E.",
+    side: "Aufstellung des SC Freiburg",
+    context: "Freiburg verlor das Finale im Elfmeterschießen, holte sich aber die Herzen der neutralen Fans - ein Jahr später gewannen sie doch noch ihren ersten Pokaltitel der Vereinsgeschichte.",
+    formation: "5-3-2",
+    difficulty: 3,
+    players: { TW:"Flekken", RV:"Kübler", RIV:"Lienhart", ZIV:"Gulde", LIV:"Schlotterbeck", LV:"Günter", RZM:"Höfler", ZM:"Eggestein", LZM:"Grifo", RST:"Höler", LST:"Sallai" }
+  },
+  {
+    id: "wm-finale-2026",
+    comp: "WM-Finale, 19.07.2026",
+    league: "Weltmeisterschaft",
+    teams: "Spanien gegen Argentinien 1:0 n.V.",
+    side: "Aufstellung von Spanien",
+    context: "Ferran Torres traf in der 106. Minute zum zweiten spanischen WM-Titel nach 2010 - Rodri wurde zum besten Spieler des Turniers gekürt.",
+    formation: "4-2-3-1",
+    difficulty: 1,
+    players: { TW:"Simón", RV:"Porro", RIV:"Cubarsí", LIV:"Laporte", LV:"Cucurella", RZM:"Rodri", LZM:"Fabián Ruiz", ROM:"Yamal", ZOM:"Olmo", LOM:"Baena", ST:"Oyarzabal" }
+  },
+  {
+    id: "psg-arsenal-2026",
+    comp: "Champions-League-Finale, 30.05.2026",
+    league: "Champions League",
+    teams: "Paris Saint-Germain gegen FC Arsenal 1:1 n.V., PSG siegt 4:3 i.E.",
+    side: "Aufstellung von Paris Saint-Germain",
+    context: "PSG verteidigte als erst zweiter Verein nach Real Madrid den Champions-League-Titel - Havertz brachte Arsenal in Führung, am Ende versagten den Gunners im Elfmeterschießen die Nerven.",
+    formation: "4-3-3",
+    difficulty: 1,
+    players: { TW:"Safonov", RV:"Hakimi", RIV:"Marquinhos", LIV:"Pacho", LV:"Nuno Mendes", RZM:"Fabián Ruiz", ZM:"Vitinha", LZM:"João Neves", RA:"Doué", ST:"Dembélé", LA:"Kvaratskhelia" }
+  },
+  {
+    id: "bayern-stuttgart-2026",
+    comp: "Bundesliga, 30. Spieltag, 19.04.2026",
+    league: "Bundesliga",
+    teams: "FC Bayern München gegen VfB Stuttgart 4:2",
+    side: "Aufstellung von FC Bayern München",
+    context: "Der Meister-Matchball saß: Bayern machte die 35. deutsche Meisterschaft bereits vier Spieltage vor Saisonende perfekt - Trainer Kompany rotierte dafür acht Positionen im Vergleich zum vorherigen Spiel.",
+    formation: "4-5-1",
+    difficulty: 1,
+    players: { TW:"Urbig", RV:"Stanišić", RIV:"Kim", LIV:"Ito", LV:"Davies", RM:"Guerreiro", RZM:"Kimmich", ZM:"Goretzka", LZM:"Musiala", LM:"Díaz", ST:"Jackson" }
+  },
+  {
+    id: "em-finale-2024",
+    comp: "EM-Finale, 14.07.2024",
+    league: "Europameisterschaft",
+    teams: "Spanien gegen England 2:1",
+    side: "Aufstellung von Spanien",
+    context: "Mikel Oyarzabal traf in der 86. Minute zum vierten spanischen EM-Titel - Lamine Yamal war mit 16 Jahren der jüngste Torschütze der EM-Geschichte auf dem Weg ins Finale.",
+    formation: "4-2-3-1",
+    difficulty: 1,
+    players: { TW:"Simón", RV:"Carvajal", RIV:"Le Normand", LIV:"Laporte", LV:"Cucurella", RZM:"Rodri", LZM:"Fabián Ruiz", ROM:"Yamal", ZOM:"Olmo", LOM:"Williams", ST:"Morata" }
+  },
+  {
+    id: "liverpool-tottenham-2025",
+    comp: "Premier League, 34. Spieltag, 27.04.2025",
+    league: "Premier League",
+    teams: "Liverpool FC gegen Tottenham Hotspur 5:1",
+    side: "Aufstellung von Liverpool FC",
+    context: "Liverpool machte in Arne Slots erster Saison als Trainer den 20. englischen Meistertitel perfekt und zog damit mit Rekordhalter Manchester United gleich.",
+    formation: "4-2-3-1",
+    difficulty: 1,
+    players: { TW:"Alisson", RV:"Alexander-Arnold", RIV:"Konaté", LIV:"Van Dijk", LV:"Robertson", RZM:"Mac Allister", LZM:"Gravenberch", ROM:"Szoboszlai", ZOM:"Gakpo", LOM:"Díaz", ST:"Salah" }
+  },
+  {
+    id: "argentinien-kolumbien-2024",
+    comp: "Copa-América-Finale, 15.07.2024",
+    league: "Copa América",
+    teams: "Argentinien gegen Kolumbien 1:0 n.V.",
+    side: "Aufstellung von Argentinien",
+    context: "Lautaro Martínez traf in der 112. Minute zum Titel - Messi musste bereits in der 66. Minute verletzt und unter Tränen vom Feld, es war Di Marías letztes Länderspiel.",
+    formation: "4-3-3",
+    difficulty: 1,
+    players: { TW:"Martínez", RV:"Montiel", RIV:"Romero", LIV:"Lisandro Martínez", LV:"Tagliafico", RZM:"De Paul", ZM:"Fernández", LZM:"Mac Allister", RA:"Di María", ST:"Álvarez", LA:"Messi" }
+  },
+  {
+    id: "leverkusen-augsburg-2024",
+    comp: "Bundesliga, 34. Spieltag, 18.05.2024",
+    league: "Bundesliga",
+    teams: "Bayer 04 Leverkusen gegen FC Augsburg 2:1",
+    side: "Aufstellung von Bayer 04 Leverkusen",
+    context: "Mit diesem Sieg wurde Leverkusen als erster Verein der Bundesliga-Geschichte ungeschlagener Deutscher Meister - 28 Siege, 6 Unentschieden, 0 Niederlagen in einer ganzen Saison.",
+    formation: "3-4-2-1",
+    difficulty: 1,
+    players: { TW:"Hrádecký", RIV:"Kossounou", ZIV:"Tah", LIV:"Tapsoba", RM:"Frimpong", RZM:"Andrich", LZM:"Palacios", LM:"Grimaldo", ROM:"Adli", LOM:"Hofmann", ST:"Boniface" }
+  },
+  {
+    id: "mancity-inter-2023",
+    comp: "Champions-League-Finale, 10.06.2023",
+    league: "Champions League",
+    teams: "Manchester City gegen Inter Mailand 1:0",
+    side: "Aufstellung von Manchester City",
+    context: "Rodris Tor machte das historische Triple perfekt (Meisterschaft, FA Cup, Champions League) - Guardiola wurde damit erst der zweite Trainer mit zwei europäischen Trebles.",
+    formation: "4-3-3",
+    difficulty: 1,
+    players: { TW:"Ederson", RV:"Stones", RIV:"Dias", LIV:"Aké", LV:"Akanji", RZM:"Gündoğan", ZM:"Rodri", LZM:"De Bruyne", RA:"Silva", ST:"Haaland", LA:"Grealish" }
+  },
+  {
+    id: "napoli-udinese-scudetto-2023",
+    comp: "Serie A, 33. Spieltag, 04.05.2023",
+    league: "Serie A",
+    teams: "Udinese Calcio gegen SSC Neapel 1:1",
+    side: "Aufstellung von SSC Neapel",
+    context: "Ein Remis in Udine reichte dank der Ergebnisse der Konkurrenz zum ersten Meistertitel seit der Maradona-Ära - fünf Spieltage vor Saisonende, Osimhen glich nach Rückstand aus.",
+    formation: "4-3-3",
+    difficulty: 2,
+    players: { TW:"Meret", RV:"Di Lorenzo", RIV:"Kim Min-Jae", LIV:"Rrahmani", LV:"Olivera", RZM:"Anguissa", ZM:"Lobotka", LZM:"Ndombelé", RA:"Elmas", ST:"Osimhen", LA:"Kvaratskhelia" }
+  },
+  {
+    id: "argentinien-brasilien-copa-2021",
+    comp: "Copa-América-Finale, 10.07.2021",
+    league: "Copa América",
+    teams: "Argentinien gegen Brasilien 1:0",
+    side: "Aufstellung von Argentinien",
+    context: "Im Maracanã gewann Argentinien mit Lionel Messi seinen ersten großen Titel seit 1993 - Ángel Di Marías Tor reichte gegen den Rivalen Brasilien.",
+    formation: "4-4-2",
+    difficulty: 2,
+    players: { TW:"Martínez", RV:"Montiel", RIV:"Romero", LIV:"Otamendi", LV:"Acuña", RM:"Di María", RZM:"De Paul", LZM:"Paredes", LM:"Lo Celso", RST:"Messi", LST:"Lautaro Martínez" }
+  },
+  {
+    id: "sevilla-rom-el-finale-2023",
+    comp: "Europa-League-Finale, 31.05.2023",
+    league: "Europa League",
+    teams: "Sevilla FC gegen AS Rom 1:1 n.V., Sevilla siegt 4:1 i.E.",
+    side: "Aufstellung von Sevilla FC",
+    context: "Sevilla holte seinen siebten Europa-League-Titel - Vereinsrekord - nach einem Elfmeterschießen gegen José Mourinhos AS Rom in Budapest.",
+    formation: "4-2-3-1",
+    difficulty: 2,
+    players: { TW:"Bounou", RV:"Navas", RIV:"Badé", LIV:"Gudelj", LV:"Telles", RZM:"Fernando", LZM:"Rakitić", ROM:"Ocampos", ZOM:"Óliver Torres", LOM:"Bryan Gil", ST:"En-Nesyri" }
+  },
+  {
+    id: "st-pauli-osnabrueck-2024",
+    comp: "2. Bundesliga, 33. Spieltag, 12.05.2024",
+    league: "2. Bundesliga",
+    teams: "FC St. Pauli gegen VfL Osnabrück 3:1",
+    side: "Aufstellung des FC St. Pauli",
+    context: "Nach 13 Jahren Zweitliga-Zugehörigkeit machte St. Pauli am Millerntor dank eines Doppelpacks von Oladapo Afolayan die Rückkehr in die Bundesliga perfekt.",
+    formation: "3-4-2-1",
+    difficulty: 2,
+    players: { TW:"Vasilj", RIV:"Wahl", ZIV:"Smith", LIV:"Mets", RM:"Metcalfe", RZM:"Irvine", LZM:"Hartel", LM:"Ritzka", ROM:"Afolayan", LOM:"Saad", ST:"Eggestein" }
+  },
+  {
+    id: "mancity-astonvilla-2022",
+    comp: "Premier League, 38. Spieltag, 22.05.2022",
+    league: "Premier League",
+    teams: "Manchester City gegen Aston Villa 3:2",
+    side: "Aufstellung von Manchester City",
+    context: "Am letzten Spieltag lag City zwischenzeitlich 0:2 zurück - eine Serie schneller Tore drehte die Partie und sicherte den vierten Titel in fünf Jahren.",
+    formation: "4-3-3",
+    difficulty: 3,
+    players: { TW:"Ederson", RV:"Fernandinho", RIV:"Stones", LIV:"Laporte", LV:"Cancelo", RZM:"Silva", ZM:"Rodri", LZM:"De Bruyne", RA:"Mahrez", ST:"Jesus", LA:"Foden" }
+  },
+  {
+    id: "atletico-valladolid-titel-2021",
+    comp: "LaLiga, 38. Spieltag, 22.05.2021",
+    league: "LaLiga",
+    teams: "Real Valladolid gegen Atlético Madrid 1:2",
+    side: "Aufstellung von Atlético Madrid",
+    context: "Der Auswärtssieg in Valladolid sicherte Atlético den ersten spanischen Meistertitel seit 2014 und hielt Stadtrivale Real Madrid auf Distanz.",
+    formation: "4-3-3",
+    difficulty: 3,
+    players: { TW:"Oblak", RV:"Trippier", RIV:"Giménez", LIV:"Felipe", LV:"Hermoso", RZM:"Koke", ZM:"Llorente", LZM:"Saúl", RA:"Correa", ST:"Suárez", LA:"Carrasco" }
+  },
+  {
+    id: "real-madrid-villarreal-titel-2020",
+    comp: "LaLiga, 37. Spieltag, 16.07.2020",
+    league: "LaLiga",
+    teams: "Real Madrid gegen Villarreal CF 2:1",
+    side: "Aufstellung von Real Madrid",
+    context: "Nach der Corona-Pause gewann Real Madrid dank eines Doppelpacks von Karim Benzema seinen 34. Meistertitel - den ersten seit 2017.",
+    formation: "4-3-3",
+    difficulty: 3,
+    players: { TW:"Courtois", RV:"Carvajal", RIV:"Ramos", LIV:"Varane", LV:"Mendy", RZM:"Kroos", ZM:"Modrić", LZM:"Casemiro", RA:"Rodrygo", ST:"Benzema", LA:"Hazard" }
+  },
+  {
+    id: "chelsea-bayern-cl-finale-2012",
+    comp: "Champions-League-Finale, 19.05.2012",
+    league: "Champions League",
+    teams: "Bayern München gegen Chelsea FC 1:1 n.V., Chelsea siegt 4:3 i.E.",
+    side: "Aufstellung von Chelsea FC",
+    context: "Im eigenen Stadion verlor Bayern das \"Finale dahoam\" im Elfmeterschießen - Chelsea holte durch Didier Drogbas späten Ausgleich und Torwart Petr Čech seinen ersten Champions-League-Titel.",
+    formation: "4-2-3-1",
+    difficulty: 4,
+    players: { TW:"Čech", RV:"Bosingwa", RIV:"Cahill", LIV:"Luiz", LV:"Cole", RZM:"Mikel", LZM:"Lampard", ROM:"Kalou", ZOM:"Mata", LOM:"Bertrand", ST:"Drogba" }
+  },
+  {
+    id: "basel-manutd-2011",
+    comp: "Champions-League-Gruppenphase, 6. Spieltag, 07.12.2011",
+    league: "Champions League",
+    teams: "FC Basel gegen Manchester United 2:1",
+    side: "Aufstellung von Manchester United",
+    context: "Der Schweizer Meister warf den englischen Rekordmeister aus der Gruppenphase - für Man United nur das dritte Achtelfinal-Aus seit 17 Jahren.",
+    formation: "4-3-3",
+    difficulty: 5,
+    players: { TW:"De Gea", RV:"Smalling", RIV:"Ferdinand", LIV:"Vidić", LV:"Evra", RZM:"Jones", ZM:"Park", LZM:"Giggs", RA:"Young", ST:"Rooney", LA:"Nani" }
+  },
+  {
+    id: "monaco-mancity-2017",
+    comp: "Champions-League-Achtelfinale Rückspiel, 15.03.2017",
+    league: "Champions League",
+    teams: "AS Monaco gegen Manchester City 3:1",
+    side: "Aufstellung von Manchester City",
+    context: "Nach einem 5:3-Hinspielsieg schied City durch die 3:1-Niederlage in Monaco dank der Auswärtstorregel aus - der junge Kylian Mbappé überzeugte auf der Gegenseite.",
+    formation: "4-2-3-1",
+    difficulty: 5,
+    players: { TW:"Caballero", RV:"Sagna", RIV:"Stones", LIV:"Fernandinho", LV:"Clichy", RZM:"D. Silva", LZM:"Kolarov", ROM:"Sané", ZOM:"De Bruyne", LOM:"Sterling", ST:"Agüero" }
+  },
+  {
+    id: "villarreal-bayern-2022",
+    comp: "Champions-League-Viertelfinale Hinspiel, 06.04.2022",
+    league: "Champions League",
+    teams: "Villarreal CF gegen Bayern München 1:0",
+    side: "Aufstellung des FC Bayern München",
+    context: "Arnaut Danjumas frühes Tor reichte dem \"Gelben U-Boot\", das im Rückspiel nachlegte und den amtierenden deutschen Meister aus der Champions League warf.",
+    formation: "4-2-3-1",
+    difficulty: 5,
+    players: { TW:"Neuer", RV:"Pavard", RIV:"Upamecano", LIV:"Hernández", LV:"Davies", RZM:"Kimmich", LZM:"Musiala", ROM:"Coman", ZOM:"Müller", LOM:"Gnabry", ST:"Lewandowski" }
+  },
+  {
+    id: "suedkorea-deutschland-2018",
+    comp: "WM, Gruppenphase 3. Spieltag, 27.06.2018",
+    league: "Weltmeisterschaft",
+    teams: "Südkorea gegen Deutschland 2:0",
+    side: "Aufstellung von Deutschland",
+    context: "Der amtierende Weltmeister schied durch die Niederlage in der Gruppenphase aus - beide Gegentore fielen nach Videobeweis erst in der Nachspielzeit.",
+    formation: "4-5-1",
+    difficulty: 5,
+    players: { TW:"Neuer", RV:"Kimmich", RIV:"Süle", LIV:"Hummels", LV:"Hector", RM:"Reus", RZM:"Kroos", ZM:"Khedira", LZM:"Goretzka", LM:"Özil", ST:"Werner" }
+  }
+];
+
+/* ================= STATE ================= */
+let stats = { played: 0, totalCorrect: 0, perfect: 0 };
+let selectedLeagues = new Set();     // leer = alle Ligen
+let selectedDifficulties = new Set(); // leer = alle Stufen
+let currentMatch = null;
+let matchQueue = [];
+let lastShownId = null;
+
+function shuffle(arr) {
+  const a = [...arr];
+  for (let i = a.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [a[i], a[j]] = [a[j], a[i]];
+  }
+  return a;
+}
+
+/* Baut einen frisch gemischten Stapel für den aktuellen Liga-Filter. Sorgt zusätzlich
+   dafür, dass die zuletzt gezeigte Aufstellung nicht direkt als erste der neuen
+   Mischung wieder auftaucht - so wirkt die Reihenfolge nie vorhersehbar. */
+function refillQueue(pool) {
+  let arr = shuffle(pool);
+  if (lastShownId && arr.length > 1 && arr[0].id === lastShownId) {
+    const swapWith = 1 + Math.floor(Math.random() * (arr.length - 1));
+    [arr[0], arr[swapWith]] = [arr[swapWith], arr[0]];
+  }
+  matchQueue = arr;
+}
+
+function pickRandomMatch() {
+  const pool = poolForActiveLeague();
+  if (pool.length === 0) return null; // Aufrufer muss vorher poolForActiveLeague().length prüfen
+  if (matchQueue.length === 0 || !matchQueue.every(x => pool.includes(x))) refillQueue(pool);
+  const m = matchQueue.shift();
+  lastShownId = m.id;
+  return m;
+}
+
+function normalizeName(s) {
+  return s.normalize("NFD").replace(/[\u0300-\u036f]/g, "").replace(/['’`]/g, "").toLowerCase().trim().replace(/\s+/g, " ");
+}
+
+/* ================= LEVEL- & REWARD-SYSTEM ================= */
+const PROFILE_KEY = "anstoss_profile";
+
+const defaultProfile = {
+  version: 6,
+  createdAt: Date.now(),
+  totalXP: 0,
+  level: 1,
+  hintTokens: 0,
+  hintCredits: 0,
+  hasSeenGuide: false,
+  stats: {
+    lineupsPlayed: 0,
+    lineupsPerfect: 0,
+    positionsCorrectDirect: 0,
+    positionsCorrectCrossMatch: 0,
+    perfectStreak: 0,
+    bestPerfectStreak: 0,
+    playedMatchIds: [],
+    perfectMatchIds: [],
+    lastPlayedDate: null
+  },
+  achievements: [],
+  unlockedTitle: null,
+  unlockedFeatures: [],
+  campaign: {
+    levelPassed: {} // match.id -> true; alles andere (freigeschaltete Level/Welten) wird daraus abgeleitet
+  }
+};
+
+const PASS_THRESHOLD = 7; // von 11 Positionen richtig, um ein Level zu bestehen und das nächste freizuschalten
+
+function loadProfile() {
+  try {
+    const raw = localStorage.getItem(PROFILE_KEY);
+    if (!raw) return structuredClone(defaultProfile);
+    const parsed = JSON.parse(raw);
+    const profile = parsed.version !== defaultProfile.version
+      ? { ...structuredClone(defaultProfile), ...parsed, version: defaultProfile.version }
+      : parsed;
+    // Kampagnen-Fortschritt: nur levelPassed wird gespeichert, alles Freigeschaltete
+    // wird daraus live berechnet - so kann kein veralteter Freischalt-Zustand entstehen.
+    if (!profile.campaign || typeof profile.campaign !== "object") profile.campaign = { levelPassed: {} };
+    if (!profile.campaign.levelPassed || typeof profile.campaign.levelPassed !== "object") profile.campaign.levelPassed = {};
+    if (typeof profile.hintTokens !== "number") profile.hintTokens = 0;
+    if (typeof profile.hintCredits !== "number") profile.hintCredits = 0;
+    if (typeof profile.hasSeenGuide !== "boolean") profile.hasSeenGuide = false;
+    return profile;
+  } catch (e) {
+    return structuredClone(defaultProfile);
+  }
+}
+
+function saveProfile(p) {
+  try { localStorage.setItem(PROFILE_KEY, JSON.stringify(p)); } catch (e) { /* Speicher evtl. voll/deaktiviert - Spiel läuft trotzdem weiter */ }
+}
+
+function xpForLevel(n) { return 100 * n * (n + 1) / 2; }
+function levelFromXP(totalXP) {
+  let level = 1;
+  while (xpForLevel(level + 1) <= totalXP) level++;
+  return level;
+}
+
+const RANKS = [
+  { min: 1,  max: 4,  icon: "⚽", name: "Kreisliga",       c1: "#a37b4a", c2: "#5c4326" },
+  { min: 5,  max: 9,  icon: "🥉", name: "Regionalliga",    c1: "#cd8a4a", c2: "#7a4d24" },
+  { min: 10, max: 14, icon: "🥈", name: "2. Bundesliga",   c1: "#c7ccd6", c2: "#6c7280" },
+  { min: 15, max: 19, icon: "🥇", name: "Bundesliga",      c1: "#f4d58d", c2: "#b8862a" },
+  { min: 20, max: 29, icon: "🌟", name: "Champions League", c1: "#9b8bf4", c2: "#4b3a9e" },
+  { min: 30, max: Infinity, icon: "👑", name: "Weltklasse", c1: "#ffe9ab", c2: "#e8b23d", legendary: true }
+];
+function rankForLevel(level) {
+  return RANKS.find(r => level >= r.min && level <= r.max) || RANKS[0];
+}
+
+/* Das Maskottchen entwickelt sich mit dem Gesamt-Level weiter - vom Bolzplatz-Anfänger
+   bis zur Legende, angelehnt an die gleichen Rang-Stufen wie das Profil selbst. */
+const MASCOT_STAGES = [
+  { accessory: "", glow: "rgba(140,140,140,0.3)", sparkle: false },     // Kreisliga - blank
+  { accessory: "👟", glow: "rgba(168,217,74,0.4)", sparkle: false },     // Regionalliga - eigene Schuhe
+  { accessory: "🧤", glow: "rgba(74,163,255,0.4)", sparkle: false },     // 2. Bundesliga - Vereinsausrüstung
+  { accessory: "🎽", glow: "rgba(232,178,61,0.45)", sparkle: false },    // Bundesliga - Trikot
+  { accessory: "⭐", glow: "rgba(232,134,61,0.55)", sparkle: true },     // Champions League - Star
+  { accessory: "👑", glow: "rgba(193,57,43,0.6)", sparkle: true }        // Weltklasse - Legende
+];
+function mascotStage() {
+  const idx = RANKS.findIndex(r => profile.level >= r.min && profile.level <= r.max);
+  return MASCOT_STAGES[idx === -1 ? 0 : idx];
+}
+function renderMascotHTML(sizeClass) {
+  const stage = mascotStage();
+  return `<div class="mascot ${sizeClass || ""}${stage.sparkle ? " sparkle" : ""}" style="--mascot-glow:${stage.glow}">
+    <span class="mascot-ball">⚽</span>
+    ${stage.accessory ? '<span class="mascot-accessory">' + stage.accessory + '</span>' : ""}
+  </div>`;
+}
+
+const ACHIEVEMENTS = [
+  { id: "erstkontakt", name: "Erstkontakt", desc: "Erste Aufstellung gestartet", icon: "👋",
+    check: p => p.stats.lineupsPlayed >= 1 },
+  { id: "chefscout", name: "Chefscout", desc: "Erste perfekte Aufstellung (11/11)", icon: "🎯", title: "Chefscout",
+    check: p => p.stats.lineupsPerfect >= 1 },
+  { id: "serien_scout", name: "Serien-Scout", desc: "3 perfekte Aufstellungen in Folge", icon: "🔥", title: "Unfehlbar",
+    check: p => p.stats.bestPerfectStreak >= 3 },
+  { id: "historiker", name: "Der Historiker", desc: "50 Aufstellungen absolviert", icon: "📚", title: "Der Historiker",
+    check: p => p.stats.lineupsPlayed >= 50 },
+  { id: "taktik_fuchs", name: "Taktik-Fuchs", desc: "Aufstellungen in 5 verschiedenen Formationen absolviert", icon: "🦊", title: "Taktikfuchs",
+    check: p => new Set(LINEUP_CHALLENGES.filter(m => p.stats.playedMatchIds.includes(m.id)).map(m => m.formation)).size >= 5 },
+  { id: "turnier_experte", name: "Weltmeister-Wissen", desc: "Alle WM/EM-Aufstellungen mind. einmal perfekt gelöst", icon: "🌍", title: "Turnier-Experte",
+    check: p => LINEUP_CHALLENGES.filter(m => m.league === "Weltmeisterschaft" || m.league === "Europameisterschaft").every(m => p.stats.perfectMatchIds.includes(m.id)) },
+  { id: "kompletter_kader", name: "Vollständigkeitsfanatiker", desc: "Jede verfügbare Aufstellung mind. einmal gespielt", icon: "✅", title: "Kompletter Kader",
+    check: p => LINEUP_CHALLENGES.every(m => p.stats.playedMatchIds.includes(m.id)) },
+  { id: "cross_talent", name: "Cross-Talent", desc: "10 Cross-Position-Treffer gesammelt", icon: "🔀", title: "Talentscout",
+    check: p => p.stats.positionsCorrectCrossMatch >= 10 }
+];
+
+function checkAchievements(profile) {
+  const newlyUnlocked = [];
+  ACHIEVEMENTS.forEach(a => {
+    if (!profile.achievements.includes(a.id) && a.check(profile)) {
+      profile.achievements.push(a.id);
+      newlyUnlocked.push(a);
+    }
+  });
+  return newlyUnlocked;
+}
+
+function isFeatureUnlocked(profile, level) { return profile.level >= level; }
+
+function awardXP(profile, amount, reason) {
+  profile.totalXP += amount;
+  const newLevel = levelFromXP(profile.totalXP);
+  const levelsGained = newLevel - profile.level;
+  const leveledUp = levelsGained > 0;
+  // Hinweis-Punkte/Scout-Token hängen bewusst NICHT am XP-Level (das kann bei einem
+  // großen XP-Schub mehrere Stufen auf einmal springen und die Belohnung aus dem Ruder
+  // laufen lassen) - siehe stattdessen die Kampagnen-Level-Belohnung in evaluatePitch().
+  profile.level = newLevel;
+  return { leveledUp, newLevel, amount, reason };
+}
+
+function showToast(html) {
+  const stack = document.getElementById("toastStack");
+  const el = document.createElement("div");
+  el.className = "toast";
+  el.innerHTML = html;
+  stack.appendChild(el);
+  setTimeout(() => el.remove(), 3600);
+}
+
+function launchConfetti(colors) {
+  const palette = colors || ["#E8B23D", "#F2EFE6", "#C1392B", "#2ecc71", "#4aa3ff"];
+  for (let i = 0; i < 28; i++) {
+    const el = document.createElement("div");
+    el.className = "confetti-piece";
+    el.style.left = Math.random() * 100 + "vw";
+    el.style.background = palette[Math.floor(Math.random() * palette.length)];
+    el.style.animationDelay = (Math.random() * 0.3) + "s";
+    el.style.transform = "rotate(" + Math.floor(Math.random() * 360) + "deg)";
+    document.body.appendChild(el);
+    setTimeout(() => el.remove(), 2700);
+  }
+}
+function showLevelUpToast(newLevel) {
+  const rank = rankForLevel(newLevel);
+  const rankChanged = rankForLevel(newLevel - 1).name !== rank.name;
+  launchConfetti(["#E8B23D", "#4aa3ff", "#F2EFE6"]);
+  const overlay = document.createElement("div");
+  overlay.className = "levelup-overlay";
+  overlay.innerHTML = `
+    <div class="levelup-card">
+      <div class="levelup-rank-icon" style="color:${DIFF_COLOR[Math.min(newLevel >= 30 ? 5 : Math.ceil(newLevel/6), 5)] || "#E8B23D"}">${rank.icon}</div>
+      <div class="levelup-title">Level Up</div>
+      <div class="levelup-level">${newLevel}</div>
+      <div class="levelup-rank-name">${rankChanged ? "Neuer Rang: " + rank.name + " 🔍 +1 · 💡 +4" : "🔍 +1 Scout-Token · 💡 +4 Hinweise verdient"}</div>
+      <button class="levelup-close" id="levelupClose">Weiter</button>
+    </div>`;
+  document.body.appendChild(overlay);
+  const close = () => overlay.remove();
+  document.getElementById("levelupClose").onclick = close;
+  overlay.addEventListener("click", (e) => { if (e.target === overlay) close(); });
+  setTimeout(close, 4500);
+}
+function showAchievementToast(a) {
+  showToast(a.icon + " Achievement freigeschaltet: <b>" + a.name + "</b>" + (a.title ? " (Titel: \"" + a.title + "\")" : ""));
+}
+
+function renderProfileBar() {
+  const rank = rankForLevel(profile.level);
+  const baseXP = xpForLevel(profile.level - 1);
+  const nextXP = xpForLevel(profile.level);
+  const progress = Math.max(0, Math.min(1, (profile.totalXP - baseXP) / (nextXP - baseXP)));
+
+  const remainingXP = Math.max(0, nextXP - profile.totalXP);
+
+  const rankIconEl = document.getElementById("rankIcon");
+  rankIconEl.textContent = rank.icon;
+  rankIconEl.style.setProperty("--rank-c1", rank.c1);
+  rankIconEl.style.setProperty("--rank-c2", rank.c2);
+  rankIconEl.classList.toggle("legendary", !!rank.legendary);
+  document.getElementById("rankName").textContent = rank.name;
+  document.getElementById("rankTitle").textContent = profile.unlockedTitle ? "· \"" + profile.unlockedTitle + "\"" : "";
+  document.getElementById("levelChipNum").textContent = profile.level;
+  document.getElementById("xpBarFill").style.width = (progress * 100).toFixed(0) + "%";
+  document.getElementById("xpNext").innerHTML = "<span class=\"xp-ball\">⚽</span> Noch <b>" + remainingXP + " XP</b> bis Lvl " + (profile.level + 1);
+  document.getElementById("tokenCount").textContent = "🔍 " + profile.hintTokens;
+  document.getElementById("hintCount").textContent = "💡 " + profile.hintCredits;
+  document.getElementById("profileBar").classList.toggle("gold-frame", profile.level >= 30);
+
+  applyUnlockedFeatures();
+  renderUnlockRow();
+}
+
+function applyUnlockedFeatures() {
+  document.body.classList.toggle("theme-flutlicht", profile.level >= 3 && profile.selectedTheme === "flutlicht");
+}
+
+function renderUnlockRow() {
+  const row = document.getElementById("unlockRow");
+  const chips = [];
+  if (profile.level >= 3) {
+    chips.push({ id: "theme_default", label: "Klassisch", active: profile.selectedTheme !== "flutlicht" });
+    chips.push({ id: "theme_flutlicht", label: "🔵 Flutlicht", active: profile.selectedTheme === "flutlicht" });
+  }
+  if (profile.level >= 15) {
+    chips.push({ id: "hardcore", label: "🔥 Hardcore-Modus", active: !!profile.hardcoreMode });
+  }
+  if (chips.length === 0) { row.classList.add("hidden"); row.innerHTML = ""; return; }
+  row.classList.remove("hidden");
+  row.innerHTML = `<div class="unlock-row-label">🔓 Freigeschaltet - Spielfeld-Design &amp; Modi</div><div class="unlock-row-chips"></div>`;
+  const chipRow = row.querySelector(".unlock-row-chips");
+  chips.forEach(c => {
+    const btn = document.createElement("button");
+    btn.className = "unlock-chip" + (c.active ? " active" : "");
+    btn.textContent = c.label;
+    btn.title = c.id === "hardcore"
+      ? "Hardcore-Modus: nur die schwersten Aufstellungen (Stufe 4-5)"
+      : "Wechselt die Optik des Spielfelds";
+    btn.onclick = () => {
+      if (c.id === "theme_default") profile.selectedTheme = "default";
+      if (c.id === "theme_flutlicht") profile.selectedTheme = "flutlicht";
+      if (c.id === "hardcore") { profile.hardcoreMode = !profile.hardcoreMode; matchQueue = []; }
+      saveProfile(profile);
+      renderProfileBar();
+    };
+    chipRow.appendChild(btn);
+  });
+}
+
+function openAchievementsModal() {
+  const backdrop = document.createElement("div");
+  backdrop.className = "modal-backdrop";
+  backdrop.innerHTML = `
+    <div class="modal-sheet">
+      <button class="modal-close" id="closeAchModal">Schließen</button>
+      ${ACHIEVEMENTS.map(a => {
+        const unlocked = profile.achievements.includes(a.id);
+        return `<div class="ach-row ${unlocked ? "" : "locked"}">
+          <div class="ach-icon">${a.icon}</div>
+          <div>
+            <div class="ach-name">${a.name}</div>
+            <div class="ach-desc">${a.desc}</div>
+          </div>
+        </div>`;
+      }).join("")}
+    </div>`;
+  document.body.appendChild(backdrop);
+  document.getElementById("closeAchModal").onclick = () => backdrop.remove();
+  backdrop.onclick = (e) => { if (e.target === backdrop) backdrop.remove(); };
+}
+
+/* ================= SPIELANLEITUNG ================= */
+const GUIDE_SECTIONS = [
+  { icon: "🎯", title: "Ziel", desc: "Jede Karte zeigt ein echtes Spiel aus der Fußballgeschichte. Trag die komplette Startelf auf ihrer richtigen Position ein." },
+  { icon: "⌨️", title: "Eingabe", desc: "Nachname reicht. Tippst du ihn versehentlich in die falsche Zeile, landet er trotzdem automatisch auf seiner echten Position." },
+  { icon: "💡", title: "Hinweis", desc: "Kostet 1 Hinweis-Punkt (verdient durch gute Leistung, häufiger verfügbar) und etwas XP. Verrät den Anfangsbuchstaben." },
+  { icon: "🔍", title: "Scout-Token", desc: "Kostet 1 Scout-Token (seltener verdient - lohnt sich mehr) und deckt einen Namen komplett auf, ohne XP-Abzug." },
+  { icon: "🏟️", title: "Kampagne", desc: "Fünf Welten von Kreisliga bis Weltklasse. Mindestens 7 von 11 richtig, um ein Level zu bestehen und das nächste freizuschalten." },
+  { icon: "🎲", title: "Frei spielen", desc: "Liga und Schwierigkeit frei wählbar, ganz ohne Fortschrittsdruck - für schnelle Runden zwischendurch." },
+  { icon: "📈", title: "Level & Rang", desc: "Richtige Positionen, perfekte Aufstellungen und der Tagesbonus bringen XP. Dein Rang steigt automatisch mit." },
+  { icon: "🏅", title: "Achievements", desc: "Sammelbare Abzeichen für besondere Leistungen - manche schalten sogar einen eigenen Titel frei." },
+  { icon: "🔓", title: "Freischaltungen", desc: "Ab bestimmten Leveln gibt's neue Spielfeld-Looks und den Hardcore-Modus mit den schwersten Aufstellungen." }
+];
+
+function openGuideModal() {
+  const backdrop = document.createElement("div");
+  backdrop.className = "modal-backdrop";
+  backdrop.innerHTML = `
+    <div class="modal-sheet">
+      <button class="modal-close" id="closeGuideModal">Schließen</button>
+      <div class="guide-title">So funktioniert's</div>
+      ${GUIDE_SECTIONS.map(s => `
+        <div class="guide-row">
+          <div class="guide-icon">${s.icon}</div>
+          <div>
+            <div class="guide-heading">${s.title}</div>
+            <div class="guide-desc">${s.desc}</div>
+          </div>
+        </div>`).join("")}
+    </div>`;
+  document.body.appendChild(backdrop);
+  document.getElementById("closeGuideModal").onclick = () => backdrop.remove();
+  backdrop.onclick = (e) => { if (e.target === backdrop) backdrop.remove(); };
+
+  if (!profile.hasSeenGuide) {
+    profile.hasSeenGuide = true;
+    saveProfile(profile);
+    document.getElementById("helpDot").classList.add("hidden");
+  }
+}
+
+document.getElementById("helpBtn").onclick = openGuideModal;
+
+let profile = loadProfile();
+document.getElementById("profileBar").onclick = openAchievementsModal;
+
+function updateStatsBar() {
+  document.getElementById("playedCount").textContent = stats.played;
+  document.getElementById("avgScore").textContent = stats.played === 0 ? "0/11" : (stats.totalCorrect / stats.played).toFixed(1) + "/11";
+  document.getElementById("perfectCount").textContent = stats.perfect;
+}
+
+function buildFilterBar() {
+  const leagues = [...new Set(LINEUP_CHALLENGES.map(m => m.league))];
+  const bar = document.getElementById("filterRow");
+  bar.innerHTML = "";
+
+  const allBtn = document.createElement("button");
+  allBtn.className = "filter-btn" + (selectedLeagues.size === 0 ? " active" : "");
+  allBtn.textContent = "Alle (" + LINEUP_CHALLENGES.length + ")";
+  allBtn.onclick = () => { selectedLeagues.clear(); matchQueue = []; renderPicker(); };
+  bar.appendChild(allBtn);
+
+  leagues.forEach(l => {
+    const count = LINEUP_CHALLENGES.filter(m => m.league === l).length;
+    const btn = document.createElement("button");
+    btn.className = "filter-btn" + (selectedLeagues.has(l) ? " active" : "") + (count === 0 ? " empty-filter" : "");
+    btn.textContent = l + " (" + count + ")";
+    if (count === 0) {
+      btn.disabled = true;
+    } else {
+      btn.onclick = () => {
+        if (selectedLeagues.has(l)) selectedLeagues.delete(l); else selectedLeagues.add(l);
+        matchQueue = [];
+        renderPicker();
+      };
+    }
+    bar.appendChild(btn);
+  });
+}
+
+function buildDifficultyFilterBar() {
+  const bar = document.getElementById("diffFilterRow");
+  bar.innerHTML = "";
+
+  const allBtn = document.createElement("button");
+  allBtn.className = "filter-btn" + (selectedDifficulties.size === 0 ? " active" : "");
+  allBtn.textContent = "Alle Stufen";
+  allBtn.onclick = () => { selectedDifficulties.clear(); matchQueue = []; renderPicker(); };
+  bar.appendChild(allBtn);
+
+  [1, 2, 3, 4, 5].forEach(d => {
+    const count = LINEUP_CHALLENGES.filter(m => m.difficulty === d).length;
+    const btn = document.createElement("button");
+    const isActive = selectedDifficulties.has(d);
+    btn.className = "filter-btn" + (isActive ? " active" : "") + (count === 0 ? " empty-filter" : "");
+    btn.style.color = isActive ? "" : DIFF_COLOR[d];
+    btn.textContent = DIFF_LABEL[d] + " (" + count + ")";
+    if (count === 0) {
+      btn.disabled = true;
+    } else {
+      btn.onclick = () => {
+        if (selectedDifficulties.has(d)) selectedDifficulties.delete(d); else selectedDifficulties.add(d);
+        matchQueue = [];
+        renderPicker();
+      };
+    }
+    bar.appendChild(btn);
+  });
+}
+
+let pickerMode = "campaign"; // "campaign" | "freeplay"
+let campaignView = "worlds";  // "worlds" | "levels"
+let campaignTier = null;
+let currentLevelContext = null; // { tier, index, m } - gesetzt, wenn gerade ein Kampagnen-Level läuft
+
+function getMatchesByTier(tier) {
+  return LINEUP_CHALLENGES.filter(m => m.difficulty === tier);
+}
+
+/* Eine Stufe gilt als freigeschaltet, wenn Stufe 1 (immer offen) oder wenn ALLE
+   Level der vorherigen NICHT-leeren Stufe bestanden sind. Leere Stufen werden
+   übersprungen. Rein aus levelPassed abgeleitet - kann nicht veralten. */
+function isTierUnlocked(tier) {
+  if (tier <= 1) return true;
+  let t = tier - 1;
+  while (t >= 1) {
+    const matches = getMatchesByTier(t);
+    if (matches.length === 0) { t--; continue; }
+    return matches.every(m => profile.campaign.levelPassed[m.id]);
+  }
+  return true;
+}
+
+/* Wie viele Level einer Stufe aktuell spielbar sind: mindestens 1 (das erste),
+   plus eins mehr für jedes in Folge bestandene Level. */
+function unlockedLevelCount(tier) {
+  const matches = getMatchesByTier(tier);
+  if (matches.length === 0) return 0;
+  let count = 1;
+  for (let i = 0; i < matches.length; i++) {
+    if (profile.campaign.levelPassed[matches[i].id]) {
+      count = Math.min(i + 2, matches.length);
+    } else {
+      break;
+    }
+  }
+  return count;
+}
+
+const ROADMAP_NODES = [
+  { tier: 1, x: 22, y: 10 },
+  { tier: 2, x: 76, y: 27 },
+  { tier: 3, x: 24, y: 46 },
+  { tier: 4, x: 76, y: 65 },
+  { tier: 5, x: 50, y: 86 }
+];
+const ROADMAP_SEGMENTS = [
+  "M 22 10 C 55 15, 55 22, 76 27",
+  "M 76 27 C 45 33, 45 40, 24 46",
+  "M 24 46 C 55 52, 55 59, 76 65",
+  "M 76 65 C 60 74, 60 80, 50 86"
+];
+
+function renderCampaignWorlds() {
+  const container = document.getElementById("campaignView");
+  container.innerHTML = "";
+
+  const wrap = document.createElement("div");
+  wrap.className = "roadmap-wrap";
+
+  const segsSvg = ROADMAP_SEGMENTS.map((d, i) => {
+    const destTier = ROADMAP_NODES[i + 1].tier;
+    const lit = isTierUnlocked(destTier);
+    return `<path class="roadmap-path${lit ? " lit" : ""}" d="${d}"></path>`;
+  }).join("");
+
+  wrap.innerHTML = `<svg class="roadmap-svg" viewBox="0 0 100 100" preserveAspectRatio="none">${segsSvg}</svg>`;
+
+  ROADMAP_NODES.forEach(({ tier, x, y }) => {
+    const matches = getMatchesByTier(tier);
+    const unlocked = isTierUnlocked(tier);
+    const passedCount = matches.filter(m => profile.campaign.levelPassed[m.id]).length;
+    const pct = matches.length ? Math.round((passedCount / matches.length) * 100) : 0;
+    const isEmpty = matches.length === 0;
+    const isCurrent = unlocked && !isEmpty && pct < 100;
+    const isComplete = unlocked && !isEmpty && pct === 100;
+    const color = DIFF_COLOR[tier];
+
+    const circumference = 2 * Math.PI * 45;
+    const dashoffset = circumference * (1 - pct / 100);
+
+    const node = document.createElement("div");
+    node.className = "stadium-node" + (isEmpty || !unlocked ? " disabled" : "") + (isEmpty ? " empty" : "") + (!unlocked && !isEmpty ? " locked" : "") + (isCurrent ? " current" : "");
+    node.style.left = x + "%";
+    node.style.top = y + "%";
+    node.innerHTML = `
+      ${isCurrent ? `<div class="stadium-glow" style="--glow-color:${color}66"></div><div class="stadium-ball">${renderMascotHTML()}</div>` : ""}
+      <div class="stadium-ring-wrap">
+        <svg class="stadium-ring-svg" viewBox="0 0 100 100">
+          <circle class="stadium-ring-bg" cx="50" cy="50" r="45"></circle>
+          <circle class="stadium-ring-fill" cx="50" cy="50" r="45" stroke="${color}" stroke-dasharray="${circumference}" stroke-dashoffset="${unlocked ? dashoffset : circumference}"></circle>
+        </svg>
+        <div class="stadium-bowl">
+          <div class="stadium-pitch"><div class="stadium-pitch-stripes"></div></div>
+        </div>
+        ${!unlocked ? `<div class="stadium-lock-icon">${isEmpty ? "🚧" : "🔒"}</div>` : ""}
+        ${isComplete ? `<div class="stadium-trophy">🏆</div>` : ""}
+      </div>
+      <div class="stadium-label" style="color:${unlocked ? color : "rgba(242,239,230,0.4)"}">${DIFF_LABEL[tier]}</div>
+      <div class="stadium-meta${isComplete ? " complete" : ""}"${!isComplete && unlocked ? ` style="color:${color}; border-color:${color}66"` : ""}">${isEmpty ? "bald verfügbar" : passedCount + "/" + matches.length}</div>
+    `;
+    if (unlocked && !isEmpty) {
+      node.onclick = () => { campaignTier = tier; campaignView = "levels"; renderCampaignView(); };
+    }
+    wrap.appendChild(node);
+  });
+
+  container.appendChild(wrap);
+}
+
+function renderCampaignLevels() {
+  const container = document.getElementById("campaignView");
+  container.innerHTML = "";
+  const tier = campaignTier;
+  const matches = getMatchesByTier(tier);
+  const unlockedCount = unlockedLevelCount(tier);
+  const color = DIFF_COLOR[tier];
+
+  const back = document.createElement("button");
+  back.className = "back-btn";
+  back.innerHTML = `<span class="back-arrow">←</span> Weltkarte`;
+  back.onclick = () => { campaignView = "worlds"; renderCampaignView(); };
+  container.appendChild(back);
+
+  const heading = document.createElement("div");
+  heading.style.marginBottom = "12px";
+  heading.innerHTML = `<span class="world-name" style="color:${color}">${DIFF_LABEL[tier]}</span>`;
+  container.appendChild(heading);
+
+  // Ein schlängelnder Pfad aus Level-Stationen, mündet in ein Ziel-Symbol Richtung nächste Welt.
+  const Y_STEP = 98; // px pro Level - kompakter, damit das Feld nicht leer wirkt
+  const totalNodes = matches.length + 1; // +1 für die Ziel-Station am Ende
+  const wrapHeight = totalNodes * Y_STEP + 20;
+
+  const wrap = document.createElement("div");
+  wrap.className = "level-path-wrap";
+  wrap.style.height = wrapHeight + "px";
+  wrap.style.setProperty("--path-bg", color + "14");
+
+  const points = [];
+  for (let i = 0; i < totalNodes; i++) {
+    const x = 50 + 37 * Math.sin(i * 1.15);
+    const y = ((i + 0.6) / totalNodes) * 100;
+    points.push({ x, y });
+  }
+
+  let pathD = "";
+  for (let i = 0; i < points.length - 1; i++) {
+    const p1 = points[i], p2 = points[i + 1];
+    const midY = (p1.y + p2.y) / 2;
+    pathD += (i === 0 ? "M " + p1.x + " " + p1.y + " " : "") + "C " + p1.x + " " + midY + ", " + p2.x + " " + midY + ", " + p2.x + " " + p2.y + " ";
+  }
+
+  let nodesHtml = "";
+  matches.forEach((m, idx) => {
+    const isPassed = !!profile.campaign.levelPassed[m.id];
+    const isUnlocked = idx < unlockedCount;
+    const isCurrent = isUnlocked && !isPassed;
+    const p = points[idx];
+    const nodeStyle = "--node-color:" + color + "; --node-color-light:" + color + "cc;" + (isCurrent ? " border-color:" + color + ";" : "");
+    nodesHtml += `
+      <div class="level-node ${isPassed ? "passed" : isUnlocked ? "current" : "locked"}" style="left:${p.x}%; top:${p.y}%;" data-idx="${idx}">
+        ${isCurrent ? '<div class="level-spotlight"></div><div class="level-ball">' + renderMascotHTML("small") + '</div>' : ""}
+        <div class="level-dot" style="${nodeStyle}">
+          <span>${isUnlocked ? (idx + 1) : "🔒"}</span>
+        </div>
+        ${isPassed ? '<div class="level-star">⭐</div>' : ""}
+        <div class="level-label">Level ${idx + 1}</div>
+      </div>`;
+  });
+
+  const allPassed = matches.every(m => profile.campaign.levelPassed[m.id]);
+  const goalPoint = points[points.length - 1];
+  const nextTierLabel = tier < 5 ? DIFF_LABEL[tier + 1] : null;
+  nodesHtml += `
+    <div class="level-node goal goal-node" style="left:${goalPoint.x}%; top:${goalPoint.y}%;">
+      <div class="level-dot" style="${allPassed ? "background:" + color + ";border-color:" + color : "border-color:" + color + "55"}">
+        <span>${allPassed ? "🏆" : "🔒"}</span>
+      </div>
+      <div class="level-label">${tier === 5 ? "Weltklasse!" : (nextTierLabel ? "Weiter zu " + nextTierLabel : "")}</div>
+    </div>`;
+
+  const confettiColors = ["#E8B23D", "#4aa3ff", "#2ecc71", "#F2EFE6", "#e8863d"];
+  let confettiHtml = "";
+  const confettiCount = Math.max(14, totalNodes * 3);
+  for (let i = 0; i < confettiCount; i++) {
+    const cx = 8 + Math.random() * 84;
+    const cy = 4 + Math.random() * 92;
+    const c = confettiColors[i % confettiColors.length];
+    const size = 3 + Math.random() * 4;
+    confettiHtml += `<div class="confetti-dot" style="left:${cx}%; top:${cy}%; background:${c}; width:${size}px; height:${size}px;"></div>`;
+  }
+
+  wrap.innerHTML = `
+    ${confettiHtml}
+    <div class="field-marking field-halfway" style="top:50%;"></div>
+    <div class="field-marking field-circle" style="top:50%;"></div>
+    <svg class="level-path-svg" viewBox="0 0 100 100" preserveAspectRatio="none">
+      <path class="roadmap-path${allPassed ? " lit" : ""}" d="${pathD}"></path>
+    </svg>${nodesHtml}`;
+
+  wrap.querySelectorAll(".level-node:not(.goal)").forEach(node => {
+    const idx = parseInt(node.dataset.idx, 10);
+    if (idx < unlockedCount) {
+      node.onclick = () => {
+        currentLevelContext = { tier, index: idx, m: matches[idx] };
+        startMatch(matches[idx]);
+      };
+    }
+  });
+
+  container.appendChild(wrap);
+}
+
+function renderCampaignView() {
+  if (campaignView === "worlds") renderCampaignWorlds();
+  else renderCampaignLevels();
+}
+
+function setPickerMode(mode) {
+  pickerMode = mode;
+  document.getElementById("modeCampaignBtn").classList.toggle("active", mode === "campaign");
+  document.getElementById("modeFreeplayBtn").classList.toggle("active", mode === "freeplay");
+  document.getElementById("campaignView").classList.toggle("hidden", mode !== "campaign");
+  document.getElementById("freeplayView").classList.toggle("hidden", mode !== "freeplay");
+  if (mode === "campaign") renderCampaignView();
+}
+document.getElementById("modeCampaignBtn").onclick = () => setPickerMode("campaign");
+document.getElementById("modeFreeplayBtn").onclick = () => setPickerMode("freeplay");
+
+function renderPicker() {
+  document.getElementById("pickerView").classList.remove("hidden");
+  document.getElementById("pitchView").classList.add("hidden");
+  buildFilterBar();
+  buildDifficultyFilterBar();
+  setPickerMode(pickerMode);
+}
+
+function poolForActiveLeague() {
+  let pool = selectedLeagues.size === 0 ? LINEUP_CHALLENGES : LINEUP_CHALLENGES.filter(m => selectedLeagues.has(m.league));
+  if (selectedDifficulties.size > 0) pool = pool.filter(m => selectedDifficulties.has(m.difficulty));
+  if (profile.level >= 15 && profile.hardcoreMode) {
+    const hardOnly = pool.filter(m => m.difficulty >= 4);
+    if (hardOnly.length > 0) pool = hardOnly;
+  }
+  return pool; // kann leer sein - das wird bewusst NICHT still aufgefüllt, siehe randomBtn-Handler
+}
+
+document.getElementById("randomBtn").onclick = () => {
+  const pool = poolForActiveLeague();
+  if (pool.length === 0) {
+    showToast("⚠️ Für diese Filterkombination gibt's noch keine Aufstellung - Filter anpassen.");
+    return;
+  }
+  currentLevelContext = null;
+  startMatch(pickRandomMatch());
+};
+
+function renderDiffBadge(difficulty) {
+  const color = DIFF_COLOR[difficulty];
+  const dots = [1, 2, 3, 4, 5].map(n => `<span class="diff-dot${n <= difficulty ? " on" : ""}"></span>`).join("");
+  return `<span class="diff-badge" style="background:${color}22; color:${color}; border:1px solid ${color}66">
+    ${DIFF_LABEL[difficulty]} <span class="diff-dots">${dots}</span>
+  </span>`;
+}
+
+// Bricht die laufende Aufstellung ab (kein Fortschritt/keine Statistik wird gewertet) und
+// springt zurück zum Kampagnen-Pfad bzw. zur Auswahl, je nachdem wo man herkam.
+function exitMatch() {
+  if (currentLevelContext) {
+    campaignView = "levels";
+    pickerMode = "campaign";
+  }
+  renderPicker();
+}
+
+function startMatch(m) {
+  currentMatch = m;
+  document.getElementById("pickerView").classList.add("hidden");
+  const pitchView = document.getElementById("pitchView");
+  pitchView.classList.remove("hidden");
+  pitchView.innerHTML = `
+    <div class="bonus-panel">
+      <button class="back-btn" id="exitMatchBtn"><span class="back-arrow">←</span>Abbrechen</button>
+      <div class="bonus-eyebrow">${m.comp}</div>
+      <div class="bonus-title">${m.teams}</div>
+      <div style="text-align:center; margin-bottom:12px">${renderDiffBadge(m.difficulty)}</div>
+      <div class="bonus-text"><b>${m.side}</b><br>${m.context}</div>
+      <button class="action btn-gold" id="toPitchBtn" style="width:100%">Aufstellung eintragen</button>
+    </div>`;
+  document.getElementById("toPitchBtn").onclick = renderPitch;
+  document.getElementById("exitMatchBtn").onclick = exitMatch;
+}
+
+let hintsUsed = new Set(); // Positionen (Kürzel) dieser Aufstellung, bei denen ein Hinweis genutzt wurde
+let tokenRevealed = new Set(); // Positionen, die per Scout-Token direkt aufgedeckt wurden
+let prefilledAbbrs = new Set(); // Positionen, die kostenlos vorgegeben wurden (nur Kampagne)
+
+/* ================= PROGRESSIVES VORGEBEN =================
+   Frühe Kampagnen-Level schenken einen Teil der Positionen, damit der Einstieg
+   leichter fällt. Menge sinkt sowohl von Welt zu Welt als auch innerhalb einer
+   Welt - rein formelbasiert aus tier/index/Levelanzahl, keine neuen Pflegedaten
+   pro Aufstellung nötig, funktioniert automatisch weiter bei neuen/entfernten
+   Aufstellungen. Torwart und Stürmer bleiben immer dem Spieler vorbehalten (am
+   einprägsamsten); welche der übrigen Positionen geschenkt werden, wird bei
+   jedem Versuch neu gemischt - sonst wäre es z.B. bei einer Vierer-Abwehr immer
+   exakt dieselbe komplette Kette, das wirkt eintönig/vorhersehbar. */
+const PREFILL_PROTECTED = new Set(["TW", "RST", "LST", "ST"]);
+const PREFILL_MAX_BY_TIER = { 1: 4, 2: 3, 3: 2, 4: 1, 5: 0 };
+
+function prefillCountForLevel(tier, index, levelCount) {
+  const max = PREFILL_MAX_BY_TIER[tier] || 0;
+  if (max === 0) return 0;
+  const ratio = levelCount > 1 ? (1 - index / (levelCount - 1)) : 1;
+  return Math.max(0, Math.round(max * ratio));
+}
+
+function shuffled(arr) {
+  const a = arr.slice();
+  for (let i = a.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [a[i], a[j]] = [a[j], a[i]];
+  }
+  return a;
+}
+
+function selectPrefillAbbrs(positions, count) {
+  if (count <= 0) return new Set();
+  const abbrs = positions.map(p => p.abbr);
+  const eligible = shuffled(abbrs.filter(a => !PREFILL_PROTECTED.has(a)));
+  const chosen = eligible.slice(0, count);
+  if (chosen.length < count) {
+    const rest = shuffled(abbrs.filter(a => !chosen.includes(a)));
+    chosen.push(...rest.slice(0, count - chosen.length));
+  }
+  return new Set(chosen);
+}
+
+function getPrefillAbbrs(m) {
+  if (!currentLevelContext) return new Set(); // Freispielen bleibt voll fordernd
+  const { tier, index } = currentLevelContext;
+  const levelCount = getMatchesByTier(tier).length;
+  return selectPrefillAbbrs(PITCH_LAYOUTS[m.formation], prefillCountForLevel(tier, index, levelCount));
+}
+
+function renderPitch() {
+  const m = currentMatch;
+  hintsUsed = new Set();
+  tokenRevealed = new Set();
+  prefilledAbbrs = getPrefillAbbrs(m);
+  const positions = PITCH_LAYOUTS[m.formation];
+  const pitchView = document.getElementById("pitchView");
+  pitchView.innerHTML = `
+    <div class="bonus-panel">
+      <button class="back-btn" id="exitMatchBtn"><span class="back-arrow">←</span>Abbrechen</button>
+      <div class="bonus-eyebrow">${m.formation} · ${m.comp}</div>
+      <div class="bonus-title" style="font-size:19px">${m.teams}</div>
+      <div style="text-align:center; margin-bottom:10px">${renderDiffBadge(m.difficulty)}</div>
+      <div class="bonus-text" style="margin-bottom:10px">Gesucht: <b>${m.side}</b><br>Namen eintippen - richtige Felder werden sofort grün, auch wenn du in die falsche Zeile tippst. 💡 Hinweis kostet 1 Hinweis-Punkt (du hast <b>${profile.hintCredits}</b>) und etwas XP, 🔍 Scout-Token kostet 1 Token (du hast <b>${profile.hintTokens}</b>) und gibt den Namen komplett gratis preis.</div>
+      ${prefilledAbbrs.size > 0 ? `<div class="prefill-note">🎁 ${prefilledAbbrs.size} von ${positions.length} Positionen bereits vorgegeben</div>` : ""}
+      <div class="pitch-wrap">
+        <div class="pitch">
+          <div class="halfway"></div>
+          <div class="center-circle"></div>
+          <div class="center-dot"></div>
+          <div class="box-top"></div>
+          <div class="box-bottom"></div>
+          ${positions.map(p => prefilledAbbrs.has(p.abbr) ? `
+            <div class="pos-slot" style="left:${p.x}%; top:${p.y}%;">
+              <div class="pos-label">${p.abbr}</div>
+              <input type="text" class="pos-input" data-abbr="${p.abbr}" placeholder="Name" autocomplete="off" autocapitalize="words">
+              <div class="prefill-tag">✓ gratis</div>
+            </div>` : `
+            <div class="pos-slot" style="left:${p.x}%; top:${p.y}%;">
+              <div class="pos-label">${p.abbr}</div>
+              <input type="text" class="pos-input" data-abbr="${p.abbr}" placeholder="Name" autocomplete="off" autocapitalize="words">
+              <div class="pos-actions">
+                <button type="button" class="hint-btn" data-abbr="${p.abbr}" ${profile.hintCredits <= 0 ? "disabled" : ""}>💡 ${profile.hintCredits}</button>
+                <button type="button" class="token-btn" data-abbr="${p.abbr}" ${profile.hintTokens <= 0 ? "disabled" : ""}>🔍 ${profile.hintTokens}</button>
+              </div>
+              <div class="hint-text" id="hint-${p.abbr}"></div>
+            </div>`).join("")}
+        </div>
+      </div>
+      <button class="action btn-gold" id="checkBtn" style="width:100%">Auswerten</button>
+    </div>`;
+
+  prefilledAbbrs.forEach(abbr => {
+    const input = pitchView.querySelector('input[data-abbr="' + abbr + '"]');
+    input.value = m.players[abbr];
+    input.disabled = true;
+    input.dataset.counted = "1"; // keine XP für geschenkte Position
+    input.classList.add("prefilled");
+  });
+
+  // Hinweis (💡) und Scout-Token (🔍) sind zwei getrennte Währungen: ein voller Reveal ist viel
+  // mehr wert als ein einzelner Buchstabe, daher eigener, günstigerer/häufigerer Hinweis-Vorrat
+  // (wird an denselben Erfolgen wie Scout-Token verdient, aber im 4:1-Verhältnis - siehe evaluatePitch).
+  function refreshTokenButtons() {
+    pitchView.querySelectorAll(".token-btn").forEach(b => {
+      b.textContent = "🔍 " + profile.hintTokens;
+      if (profile.hintTokens <= 0) b.disabled = true;
+    });
+    pitchView.querySelectorAll(".hint-btn").forEach(b => {
+      if (!b.dataset.used) b.textContent = "💡 " + profile.hintCredits;
+      if (profile.hintCredits <= 0) b.disabled = true;
+    });
+  }
+
+  pitchView.querySelectorAll(".token-btn").forEach(btn => {
+    btn.addEventListener("click", () => {
+      const abbr = btn.dataset.abbr;
+      const input = pitchView.querySelector('input[data-abbr="' + abbr + '"]');
+      if (profile.hintTokens <= 0 || input.classList.contains("ok") || input.classList.contains("revealed")) return;
+      profile.hintTokens -= 1;
+      saveProfile(profile);
+      tokenRevealed.add(abbr);
+      input.value = m.players[abbr];
+      input.classList.remove("bad", "ok");
+      input.classList.add("revealed");
+      input.disabled = true;
+      input.dataset.counted = "1"; // verhindert nachträgliche XP-Vergabe für diese Position
+      btn.disabled = true;
+      const hintBtn = pitchView.querySelector('.hint-btn[data-abbr="' + abbr + '"]');
+      if (hintBtn) hintBtn.disabled = true;
+      refreshTokenButtons();
+    });
+  });
+
+  pitchView.querySelectorAll(".hint-btn").forEach(btn => {
+    btn.addEventListener("click", () => {
+      const abbr = btn.dataset.abbr;
+      const input = pitchView.querySelector('input[data-abbr="' + abbr + '"]');
+      if (profile.hintCredits <= 0 || btn.dataset.used || input.classList.contains("ok") || input.classList.contains("revealed")) return;
+      const target = m.players[abbr];
+      const hintText = document.getElementById("hint-" + abbr);
+      profile.hintCredits -= 1;
+      saveProfile(profile);
+      hintsUsed.add(abbr);
+      // Genau ein Hinweis pro Position - kein Nachladen von immer mehr Stufen.
+      hintText.textContent = "Beginnt mit " + target[0].toUpperCase();
+      btn.dataset.used = "1";
+      btn.disabled = true;
+      btn.textContent = "💡 ✓";
+      refreshTokenButtons();
+    });
+  });
+
+  // Live-Prüfung: eigene Position wird direkt grün. Passt der Name nicht zur eigenen
+  // Position, aber zu einer ANDEREN Position dieser Aufstellung, wird er automatisch
+  // dorthin "einsortiert" und dort grün markiert - das Feld, in dem getippt wurde, leert sich wieder.
+  pitchView.querySelectorAll(".pos-input").forEach(input => {
+    input.addEventListener("input", () => {
+      const typed = input.value;
+      const ownTarget = m.players[input.dataset.abbr];
+
+      if (normalizeName(typed) === normalizeName(ownTarget) && typed.trim().length > 0) {
+        input.classList.add("ok");
+        input.classList.remove("bad");
+        if (!input.dataset.counted) {
+          input.dataset.counted = "1";
+          profile.stats.positionsCorrectDirect += 1;
+          const usedHint = hintsUsed.has(input.dataset.abbr);
+          const r = awardXP(profile, usedHint ? 5 : 15, usedHint ? "Position richtig (mit Hinweis)" : "Position direkt richtig");
+          saveProfile(profile);
+          renderProfileBar();
+          if (r.leveledUp) showLevelUpToast(r.newLevel);
+          const newlyUnlocked = checkAchievements(profile);
+          saveProfile(profile);
+          newlyUnlocked.forEach(showAchievementToast);
+        }
+        return;
+      }
+      input.classList.remove("ok");
+      if (typed.trim().length === 0) return;
+
+      const normTyped = normalizeName(typed);
+      for (const abbr in m.players) {
+        if (abbr === input.dataset.abbr) continue;
+        if (normalizeName(m.players[abbr]) === normTyped) {
+          const otherInput = pitchView.querySelector('input[data-abbr="' + abbr + '"]');
+          if (otherInput && !otherInput.classList.contains("ok") && !otherInput.classList.contains("prefilled")) {
+            otherInput.value = m.players[abbr];
+            otherInput.classList.add("ok");
+            otherInput.classList.remove("bad");
+            otherInput.dataset.counted = "1";
+            input.value = "";
+            profile.stats.positionsCorrectCrossMatch += 1;
+            const usedHint = hintsUsed.has(abbr);
+            const r = awardXP(profile, usedHint ? 3 : 8, usedHint ? "Cross-Match (mit Hinweis)" : "Position per Cross-Match erkannt");
+            saveProfile(profile);
+            renderProfileBar();
+            if (r.leveledUp) showLevelUpToast(r.newLevel);
+            const newlyUnlocked = checkAchievements(profile);
+            saveProfile(profile);
+            newlyUnlocked.forEach(showAchievementToast);
+          }
+          break;
+        }
+      }
+    });
+  });
+
+  document.getElementById("checkBtn").onclick = evaluatePitch;
+  document.getElementById("exitMatchBtn").onclick = exitMatch;
+}
+
+function evaluatePitch() {
+  const m = currentMatch;
+  const positions = PITCH_LAYOUTS[m.formation];
+  const pitchView = document.getElementById("pitchView");
+  let correct = 0;
+  positions.forEach(p => {
+    const input = pitchView.querySelector('input[data-abbr="' + p.abbr + '"]');
+    const target = m.players[p.abbr];
+    const isCorrect = normalizeName(input.value) === normalizeName(target) && input.value.trim().length > 0;
+    input.classList.remove("ok", "bad");
+    input.classList.add(isCorrect ? "ok" : "bad");
+    input.disabled = true;
+    if (!isCorrect) input.value = target;
+    if (isCorrect) correct++;
+  });
+  pitchView.querySelectorAll(".hint-btn").forEach(btn => btn.disabled = true);
+  pitchView.querySelectorAll(".token-btn").forEach(btn => btn.disabled = true);
+  const total = positions.length;
+  const noHintsUsed = hintsUsed.size === 0 && tokenRevealed.size === 0;
+  const isPerfect = correct === total && noHintsUsed;
+
+  stats.played += 1;
+  stats.totalCorrect += correct;
+  if (isPerfect) stats.perfect += 1;
+  updateStatsBar();
+
+  // Level-System: Aufstellungs-Stats, Streak, Perfekt-Bonus und neue Aufstellung entdeckt
+  profile.stats.lineupsPlayed += 1;
+  const isFirstTimePlayed = !profile.stats.playedMatchIds.includes(m.id);
+  if (isFirstTimePlayed) profile.stats.playedMatchIds.push(m.id);
+
+  let bonusXP = 0;
+  let bonusReason = "";
+  let tokensEarned = 0;
+  if (isPerfect) {
+    profile.stats.lineupsPerfect += 1;
+    profile.stats.perfectStreak += 1;
+    profile.stats.bestPerfectStreak = Math.max(profile.stats.bestPerfectStreak, profile.stats.perfectStreak);
+    if (!profile.stats.perfectMatchIds.includes(m.id)) profile.stats.perfectMatchIds.push(m.id);
+    bonusXP += 150;
+    bonusReason = "Perfekte Aufstellung";
+    launchConfetti();
+  } else {
+    profile.stats.perfectStreak = 0;
+    if (correct >= total - 3) { bonusXP += 40; bonusReason = "Starkes Ergebnis"; }
+  }
+  if (isFirstTimePlayed) bonusXP += 20;
+
+  const today = new Date().toISOString().slice(0, 10);
+  if (profile.stats.lastPlayedDate !== today) {
+    bonusXP += 25;
+    profile.stats.lastPlayedDate = today;
+    bonusReason = bonusReason ? bonusReason + " + Tagesbonus" : "Tagesbonus";
+    tokensEarned += 1;
+  }
+
+  if (bonusXP > 0) {
+    const r = awardXP(profile, bonusXP, bonusReason);
+    if (r.leveledUp) showLevelUpToast(r.newLevel);
+  }
+
+  // Kampagnen-Logik: bestanden ab PASS_THRESHOLD. Freischaltungen ergeben sich automatisch
+  // aus levelPassed (siehe isTierUnlocked/unlockedLevelCount) - hier wird nur das Ergebnis vermerkt.
+  // Hinweis-Punkte/Scout-Token hängen EINZIG am erstmaligen Bestehen eines Kampagnen-Levels -
+  // ein fester, vorhersehbarer Kanal statt mehrerer sich stapelnder Boni. Wiederholtes
+  // Bestehen desselben Levels (z. B. in der Kampagne nochmal gespielt) gibt keine Belohnung
+  // mehr, sonst ließe sich das leicht erfarmen.
+  let campaignResult = null;
+  let creditsEarned = 0;
+  let campaignTokensEarned = 0;
+  if (currentLevelContext) {
+    const { tier, index } = currentLevelContext;
+    const passed = correct >= PASS_THRESHOLD;
+    const alreadyPassed = !!profile.campaign.levelPassed[m.id];
+    if (passed) {
+      profile.campaign.levelPassed[m.id] = true;
+      if (!alreadyPassed) {
+        const totalLevelsPassed = Object.keys(profile.campaign.levelPassed).length;
+        if (totalLevelsPassed % 2 === 0) creditsEarned += 1; // alle 2 Level 1 Hinweis-Punkt
+        if (totalLevelsPassed % 5 === 0) campaignTokensEarned += 1; // alle 5 Level 1 Scout-Token
+      }
+    }
+    campaignResult = { passed, tier, index };
+  }
+
+  if (tokensEarned > 0 || creditsEarned > 0 || campaignTokensEarned > 0) {
+    const totalTokens = tokensEarned + campaignTokensEarned;
+    const totalCredits = tokensEarned * 4 + creditsEarned; // Tagesbonus zählt weiter im 4:1-Verhältnis
+    profile.hintTokens += totalTokens;
+    profile.hintCredits += totalCredits;
+    const parts = [];
+    if (totalTokens > 0) parts.push("🔍 +" + totalTokens);
+    if (totalCredits > 0) parts.push("💡 +" + totalCredits);
+    showToast(parts.join(" · ") + " verdient");
+  }
+
+  const newlyUnlocked = checkAchievements(profile);
+  saveProfile(profile);
+  renderProfileBar();
+  newlyUnlocked.forEach(showAchievementToast);
+  if (bonusXP > 0) showToast("+" + bonusXP + " XP — " + bonusReason);
+
+  const panel = pitchView.querySelector(".bonus-panel");
+  document.getElementById("checkBtn").remove();
+
+  if (campaignResult) {
+    const banner = document.createElement("div");
+    banner.className = "pass-banner " + (campaignResult.passed ? "pass" : "fail");
+    banner.textContent = campaignResult.passed
+      ? "✅ Bestanden! (mind. " + PASS_THRESHOLD + "/" + total + " nötig)"
+      : "❌ Noch nicht geschafft - mind. " + PASS_THRESHOLD + "/" + total + " nötig, nochmal versuchen!";
+    panel.appendChild(banner);
+  }
+
+  const scoreDiv = document.createElement("div");
+  scoreDiv.className = "score-badge";
+  scoreDiv.textContent = correct + " / " + total + " richtig" + (!noHintsUsed ? " (mit Hinweisen)" : "") + (prefilledAbbrs.size > 0 ? " · davon " + prefilledAbbrs.size + " vorgegeben" : "");
+  panel.appendChild(scoreDiv);
+
+  const row = document.createElement("div");
+  row.className = "btn-row";
+
+  if (campaignResult) {
+    const { tier, index, passed } = campaignResult;
+    const tierMatches = getMatchesByTier(tier);
+    const hasNext = index + 1 < tierMatches.length;
+    if (passed && hasNext) {
+      row.innerHTML = `<button class="action btn-gold" id="backBtn" style="width:100%">← Zurück zum Pfad</button>`;
+    } else if (passed && !hasNext) {
+      row.innerHTML = `<button class="action btn-gold" id="backBtn" style="width:100%">🏆 Stufe geschafft! Zur Weltkarte</button>`;
+    } else {
+      row.innerHTML = `
+        <button class="action btn-outline" id="backBtn">Zurück zum Pfad</button>
+        <button class="action btn-gold" id="retryBtn">Nochmal versuchen</button>`;
+    }
+    panel.appendChild(row);
+    document.getElementById("backBtn").onclick = () => {
+      campaignView = (passed && !hasNext) ? "worlds" : "levels";
+      pickerMode = "campaign";
+      renderPicker();
+    };
+    const retryBtn = document.getElementById("retryBtn");
+    if (retryBtn) retryBtn.onclick = () => { startMatch(m); };
+  } else {
+    row.innerHTML = `
+      <button class="action btn-outline" id="backBtn">Andere wählen</button>
+      <button class="action btn-light" id="againBtn">Nochmal (zufällig)</button>`;
+    panel.appendChild(row);
+    document.getElementById("backBtn").onclick = renderPicker;
+    document.getElementById("againBtn").onclick = () => {
+      const pool = poolForActiveLeague();
+      if (pool.length === 0) {
+        showToast("⚠️ Für diese Filterkombination gibt's noch keine Aufstellung - Filter anpassen.");
+        renderPicker();
+        return;
+      }
+      startMatch(pickRandomMatch());
+    };
+  }
+}
+
+/* ================= INIT ================= */
+updateStatsBar();
+renderProfileBar();
+renderPicker();
+if (profile.hasSeenGuide) document.getElementById("helpDot").classList.add("hidden");
+</script>
+</body>
+</html>
