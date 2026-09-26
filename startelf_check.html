@@ -193,11 +193,14 @@
   .pos-input.prefilled { border-color: #d9a441; background: rgba(217,164,65,0.28); color: var(--chalk); font-weight: 600; }
   .pos-input.long-name { font-size: clamp(8.5px, 2.4vw, 11.5px); }
   .pos-input.active-field { box-shadow: 0 0 0 3px var(--gold), 0 2px 6px rgba(0,0,0,0.25); }
+  .pos-input.near { border-color: var(--gold); background: rgba(232,178,61,0.28); color: var(--chalk); font-weight: 600; }
+  .pos-slot:has(.pos-input.near)::after { content: "✏️"; position: absolute; top: -4px; right: -4px; font-size: 10px; }
   .prefill-tag { font-family: 'JetBrains Mono', monospace; font-size: clamp(8px, 2.2vw, 10px); color: rgba(217,164,65,0.9); text-align: center; margin-top: 2px; }
   .prefill-note { font-family: 'JetBrains Mono', monospace; font-size: 10.5px; color: rgba(217,164,65,0.9); text-align: center; margin-bottom: 10px; }
   .position-panel { background: rgba(242,239,230,0.06); border: 1px solid var(--line); border-radius: 10px; padding: 12px; margin-bottom: 14px; }
   .position-panel .panel-title { font-family: 'JetBrains Mono', monospace; font-weight: 700; font-size: 13px; color: var(--gold); letter-spacing: 0.04em; margin-bottom: 8px; }
   .position-panel .panel-solved { font-family: 'Oswald', sans-serif; font-size: 14px; color: rgba(242,239,230,0.75); text-align: center; padding: 6px 0; }
+  .position-panel .panel-near { font-family: 'Oswald', sans-serif; font-weight: 600; font-size: 14px; color: var(--gold); text-align: center; padding: 4px 0 8px; }
   .pos-actions { display: flex; width: 100%; gap: 8px; }
   .hint-btn, .token-btn { flex: 1; min-width: 0; background: rgba(232,178,61,0.15); border: 1px solid rgba(232,178,61,0.35); color: var(--gold); font-family: 'JetBrains Mono', monospace; font-weight: 700; font-size: 13px; border-radius: 6px; padding: 8px 4px; cursor: pointer; }
   .token-btn { background: rgba(74,163,255,0.15); border-color: rgba(74,163,255,0.4); color: #7db8ff; }
@@ -1057,6 +1060,40 @@ function isAcceptedFor(challenge, abbr, typedRaw) {
   return false;
 }
 
+// Optimal String Alignment (Damerau-Levenshtein mit Transposition = 1), ohne Bibliothek.
+function damerauLevenshtein(a, b) {
+  const al = a.length, bl = b.length;
+  const d = Array.from({ length: al + 1 }, () => new Array(bl + 1).fill(0));
+  for (let i = 0; i <= al; i++) d[i][0] = i;
+  for (let j = 0; j <= bl; j++) d[0][j] = j;
+  for (let i = 1; i <= al; i++) {
+    for (let j = 1; j <= bl; j++) {
+      const cost = a[i - 1] === b[j - 1] ? 0 : 1;
+      d[i][j] = Math.min(d[i - 1][j] + 1, d[i][j - 1] + 1, d[i - 1][j - 1] + cost);
+      if (i > 1 && j > 1 && a[i - 1] === b[j - 2] && a[i - 2] === b[j - 1]) {
+        d[i][j] = Math.min(d[i][j], d[i - 2][j - 2] + 1);
+      }
+    }
+  }
+  return d[al][bl];
+}
+
+const FUZZY = { maxDist: (len) => (len <= 4 ? 0 : len <= 8 ? 1 : 2), debounceMs: 800, correctedXP: 10 };
+
+// "Fast richtig": jeden acceptedNames()-Eintrag EINZELN gegen seine eigene (laengenabhaengige)
+// Toleranz pruefen - nah, wenn irgendeiner passt. Nie auf Cross-Match anwenden (Prompt 4).
+function isNearFor(challenge, abbr, typedRaw) {
+  const typed = typedRaw.trim();
+  if (!typed) return false;
+  const normTyped = normalizeName(typed);
+  for (const name of acceptedNames(challenge, abbr)) {
+    const normName = normalizeName(name);
+    const dist = damerauLevenshtein(normTyped, normName);
+    if (dist > 0 && dist <= FUZZY.maxDist(normName.length)) return true;
+  }
+  return false;
+}
+
 // Lange Nachnamen (z.B. "Schweinsteiger") nicht im schmalen .pos-input abschneiden -
 // Schrift etwas verkleinern statt abzuschneiden.
 function applyNameFit(input) {
@@ -1079,6 +1116,7 @@ const defaultProfile = {
     lineupsPerfect: 0,
     positionsCorrectDirect: 0,
     positionsCorrectCrossMatch: 0,
+    positionsCorrectFuzzy: 0,
     perfectStreak: 0,
     bestPerfectStreak: 0,
     playedMatchIds: [],
@@ -1110,6 +1148,7 @@ function loadProfile() {
     if (typeof profile.hintTokens !== "number") profile.hintTokens = 0;
     if (typeof profile.hintCredits !== "number") profile.hintCredits = 0;
     if (typeof profile.hasSeenGuide !== "boolean") profile.hasSeenGuide = false;
+    if (typeof profile.stats.positionsCorrectFuzzy !== "number") profile.stats.positionsCorrectFuzzy = 0;
     return profile;
   } catch (e) {
     return structuredClone(defaultProfile);
@@ -1340,6 +1379,7 @@ const GUIDE_SECTIONS = [
   { icon: "🎯", title: "Ziel", desc: "Jede Karte zeigt ein echtes Spiel aus der Fußballgeschichte. Trag die komplette Startelf auf ihrer richtigen Position ein." },
   { icon: "⌨️", title: "Eingabe", desc: "Nachname reicht. Tippst du ihn versehentlich in die falsche Zeile, landet er trotzdem automatisch auf seiner echten Position." },
   { icon: "💡", title: "Hinweis", desc: "Kostet 1 Hinweis-Punkt (verdient durch gute Leistung, häufiger verfügbar) und etwas XP. Verrät den Anfangsbuchstaben." },
+  { icon: "✏️", title: "Fast richtig", desc: "Kleiner Tippfehler? Das Feld färbt sich gold - mit \"Korrigieren\" trägst du die richtige Schreibweise ein, für etwas weniger XP als beim ersten Versuch." },
   { icon: "🔍", title: "Scout-Token", desc: "Kostet 1 Scout-Token (seltener verdient - lohnt sich mehr) und deckt einen Namen komplett auf, ohne XP-Abzug." },
   { icon: "🏟️", title: "Kampagne", desc: "Fünf Welten von Kreisliga bis Weltklasse. Mindestens 7 von 11 richtig, um ein Level zu bestehen und das nächste freizuschalten." },
   { icon: "🎲", title: "Frei spielen", desc: "Liga und Schwierigkeit frei wählbar, ganz ohne Fortschrittsdruck - für schnelle Runden zwischendurch." },
@@ -1742,6 +1782,7 @@ function startMatch(m) {
 let hintsUsed = new Set(); // Positionen (Kürzel) dieser Aufstellung, bei denen ein Hinweis genutzt wurde
 let tokenRevealed = new Set(); // Positionen, die per Scout-Token direkt aufgedeckt wurden
 let prefilledAbbrs = new Set(); // Positionen, die kostenlos vorgegeben wurden (nur Kampagne)
+let fuzzyCorrected = new Set(); // Positionen, die per "Fast richtig -> Korrigieren" gelöst wurden
 
 /* ================= PROGRESSIVES VORGEBEN =================
    Frühe Kampagnen-Level schenken einen Teil der Positionen, damit der Einstieg
@@ -1794,6 +1835,7 @@ function renderPitch() {
   const m = currentMatch;
   hintsUsed = new Set();
   tokenRevealed = new Set();
+  fuzzyCorrected = new Set();
   prefilledAbbrs = getPrefillAbbrs(m);
   const positions = PITCH_LAYOUTS[m.formation];
   const pitchView = document.getElementById("pitchView");
@@ -1856,13 +1898,40 @@ function renderPitch() {
       return;
     }
     const hintUsedHere = hintsUsed.has(abbr);
+    const isNear = input.classList.contains("near");
     panel.innerHTML = `
       <div class="panel-title">Position ${abbr}</div>
+      ${isNear ? `
+      <div class="panel-near">✏️ Fast richtig – prüf die Schreibweise</div>
+      <button type="button" class="action btn-gold correct-btn" style="width:100%; margin-bottom:8px;">✏️ Korrigieren</button>` : ""}
       <div class="pos-actions">
         <button type="button" class="hint-btn" ${(profile.hintCredits <= 0 || hintUsedHere) ? "disabled" : ""}>${hintUsedHere ? "💡 ✓" : "💡 " + profile.hintCredits}</button>
         <button type="button" class="token-btn" ${profile.hintTokens <= 0 ? "disabled" : ""}>🔍 ${profile.hintTokens}</button>
       </div>
       <div class="hint-text">${panelHintTexts.get(abbr) || ""}</div>`;
+
+    if (isNear) {
+      panel.querySelector(".correct-btn").addEventListener("click", () => {
+        input.value = m.players[abbr];
+        input.classList.remove("near", "bad");
+        input.classList.add("ok");
+        applyNameFit(input);
+        if (!input.dataset.counted) {
+          input.dataset.counted = "1";
+          fuzzyCorrected.add(abbr);
+          profile.stats.positionsCorrectFuzzy += 1;
+          const usedHint = hintsUsed.has(abbr);
+          const r = awardXP(profile, usedHint ? 5 : FUZZY.correctedXP, usedHint ? "Position korrigiert (mit Hinweis)" : "Position korrigiert");
+          saveProfile(profile);
+          renderProfileBar();
+          if (r.leveledUp) showLevelUpToast(r.newLevel);
+          const newlyUnlocked = checkAchievements(profile);
+          saveProfile(profile);
+          newlyUnlocked.forEach(showAchievementToast);
+        }
+        renderPositionPanel(abbr);
+      });
+    }
 
     panel.querySelector(".token-btn").addEventListener("click", () => {
       if (profile.hintTokens <= 0 || input.classList.contains("ok") || input.classList.contains("revealed")) return;
@@ -1898,8 +1967,22 @@ function renderPitch() {
     renderPositionPanel(abbr);
   }
 
+  // "Fast richtig" (Prompt 4): laeuft NIE waehrend des Tippens, nur nach einer Tipppause
+  // (debounce), bei blur oder Enter - und nie fuer Cross-Match, nur die eigene Position.
+  const fuzzyTimers = new Map();
+  function runFuzzyCheck(input) {
+    const abbr = input.dataset.abbr;
+    clearTimeout(fuzzyTimers.get(abbr));
+    if (input.classList.contains("ok") || input.classList.contains("revealed") || input.classList.contains("prefilled")) return;
+    const near = isNearFor(m, abbr, input.value);
+    input.classList.toggle("near", near);
+    if (activePosAbbr === abbr) renderPositionPanel(abbr);
+  }
+
   pitchView.querySelectorAll(".pos-input").forEach(input => {
     input.addEventListener("focus", () => setActivePosition(input.dataset.abbr));
+    input.addEventListener("blur", () => runFuzzyCheck(input));
+    input.addEventListener("keydown", (e) => { if (e.key === "Enter") runFuzzyCheck(input); });
   });
 
   const firstSelectable = positions.find(p => !prefilledAbbrs.has(p.abbr));
@@ -1911,6 +1994,8 @@ function renderPitch() {
   pitchView.querySelectorAll(".pos-input").forEach(input => {
     input.addEventListener("input", () => {
       const typed = input.value;
+      input.classList.remove("near"); // sobald weitergetippt wird, alten Fast-richtig-Zustand verwerfen
+      clearTimeout(fuzzyTimers.get(input.dataset.abbr));
 
       if (isAcceptedFor(m, input.dataset.abbr, typed)) {
         input.classList.add("ok");
@@ -1963,6 +2048,9 @@ function renderPitch() {
         newlyUnlocked.forEach(showAchievementToast);
         if (activePosAbbr === abbr) renderPositionPanel(activePosAbbr);
       }
+
+      // Fuzzy-Pruefung erst nach einer Tipppause - nie waehrend des Tippens selbst.
+      fuzzyTimers.set(input.dataset.abbr, setTimeout(() => runFuzzyCheck(input), FUZZY.debounceMs));
     });
   });
 
@@ -1989,7 +2077,7 @@ function evaluatePitch() {
   pitchView.querySelectorAll(".token-btn").forEach(btn => btn.disabled = true);
   const total = positions.length;
   const noHintsUsed = hintsUsed.size === 0 && tokenRevealed.size === 0;
-  const isPerfect = correct === total && noHintsUsed;
+  const isPerfect = correct === total && noHintsUsed && fuzzyCorrected.size === 0;
 
   stats.played += 1;
   stats.totalCorrect += correct;
@@ -2086,7 +2174,7 @@ function evaluatePitch() {
 
   const scoreDiv = document.createElement("div");
   scoreDiv.className = "score-badge";
-  scoreDiv.textContent = correct + " / " + total + " richtig" + (!noHintsUsed ? " (mit Hinweisen)" : "") + (prefilledAbbrs.size > 0 ? " · davon " + prefilledAbbrs.size + " vorgegeben" : "");
+  scoreDiv.textContent = correct + " / " + total + " richtig" + (!noHintsUsed ? " (mit Hinweisen)" : "") + (fuzzyCorrected.size > 0 ? " (" + fuzzyCorrected.size + " × korrigiert)" : "") + (prefilledAbbrs.size > 0 ? " · davon " + prefilledAbbrs.size + " vorgegeben" : "");
   panel.appendChild(scoreDiv);
 
   const row = document.createElement("div");
