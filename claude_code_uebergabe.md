@@ -1,94 +1,72 @@
 # Starting XI — Übergabe an Claude Code
 
-Diese Datei ist der Übergabe-Zettel für zuhause. Leg sie zusammen mit
-`startelf_check.html` in einen Ordner, öffne den mit Claude Code, und du bist
-sofort da weiter, wo wir hier aufgehört haben.
+Stand: 26.09.2026. Diese Datei beschreibt, wo das Projekt steht und wie es
+weitergeht. Die konkreten Arbeitsaufträge stehen in
+**`prompts_naechste_schritte.md`**.
 
 ---
 
-## 1. Claude Code installieren (falls noch nicht geschehen)
+## 1. Loslegen auf dem Mac
 
-1. Gehe auf **claude.com/download** und lade die Desktop-App für dein System
-   (Mac oder Windows) herunter. Auf Linux läuft's stattdessen über die
-   Kommandozeile (CLI) — falls das dein Fall ist, sag Bescheid, dann erklär
-   ich den Weg extra.
-2. App installieren, öffnen, mit deinem Anthropic-Account einloggen.
-3. Oben in der App auf den Tab **"Code"** klicken.
-   - Falls du zum Upgrade aufgefordert wirst: Claude Code braucht ein
-     bezahltes Abo (Pro, Max, Team oder Enterprise) — reines kostenloses
-     Konto reicht nicht.
-4. Im Code-Tab: **"Local"** wählen, um direkt mit den Dateien auf deinem
-   Rechner zu arbeiten (empfohlen für unseren Fall).
-   - Unter Windows muss dafür **Git** installiert sein
-     ([git-scm.com/downloads/win](https://git-scm.com/downloads/win)) — auf
-     dem Mac ist Git in der Regel schon vorinstalliert.
-5. Ordner mit den beiden Dateien auswählen, Modell aussuchen (Sonnet reicht
-   für unseren Fall völlig), und loslegen.
+1. Claude-Desktop-App öffnen → Tab **„Code“** → **„Local“**.
+2. Den Projektordner `Starting-XI` auswählen (der lokale Klon dieses Repos).
+3. Als Erstes eingeben:
+   > Hol den aktuellen Stand von GitHub (git pull) und lies CLAUDE.md,
+   > claude_code_uebergabe.md und prompts_naechste_schritte.md. Fass mir
+   > kurz zusammen, was ansteht – noch nichts ändern.
+4. Danach die Prompts aus `prompts_naechste_schritte.md` **einzeln und in
+   Reihenfolge** einfügen.
+
+Hinweis: Der Hook `.claude/hooks/check-lineups.ps1` braucht PowerShell
+(`pwsh`) auf dem Mac.
 
 ---
 
 ## 2. Wo wir aktuell stehen
 
-- **1 Datei**, `startelf_check.html`, komplett eigenständig (kein Server
-  nötig), ca. 1.780 Zeilen (~1.460 JS, ~245 CSS)
-- **Spielprinzip**: echte historische Fußball-Aufstellungen erraten, auf
-  einem visuellen Spielfeld mit Positions-Feldern
-- **38 Aufstellungen** über 11 Kategorien, Ziel: 50-70
-- **Komplettes Level-System**: XP, Level, Ränge (Kreisliga bis Weltklasse),
-  Achievements, Scout-Token-Ökonomie fürs Hinweis-System
-- **Kampagnen-Modus**: Stadion-Weltkarte + geschlängelter Level-Pfad pro
-  Welt, mit sauber abgeleiteter (nicht mehr speicherbarer, damit nicht mehr
-  veraltbarer) Freischalt-Logik
-- **Freispiel-Modus**: Liga-/Schwierigkeits-Filter, alles mehrfach wählbar
-- Alles lokal in `localStorage` gespeichert, kein Backend
+- **1 Datei**, `startelf_check.html`, eigenständig (kein Server), ca. 2.070 Zeilen
+- **Spielprinzip**: echte historische Startelfs auf einem Spielfeld erraten
+- **50 Aufstellungen**, genau 10 pro Schwierigkeitsstufe (Kreisliga bis
+  Weltklasse). Ziel 50–70 → Untergrenze erreicht.
+- **Level-System**: XP, Ränge, Achievements, Scout-Token + Hinweis-Punkte
+- **Kampagnen-Modus** (Weltkarte + Level-Pfad) und **Freispiel-Modus**
+- Speicherung lokal in `localStorage` (Key `anstoss_profile`)
+- **PWA fertig**: `manifest.json`, `sw.js`, Icons (Commit `ffb697b`)
 
-**Was schon stabil ist:** Die Kernmechanik ist mehrfach isoliert getestet
-und ausgereift. Zwei Freischalt-Bugs wurden nicht nur gepatcht, sondern
-strukturell behoben (Freischalt-Status wird jetzt live aus der
-Erfolgshistorie berechnet statt separat gespeichert).
-
-**Was noch fehlt:** echter Gerätetest (bisher nur simulierte Logiktests),
-mehr Inhalt, und die komplette Store-Verpackung (siehe unten).
+### Bekannte Probleme (Prompts 1–4 beheben sie)
+- iPhone zoomt beim Antippen der Namensfelder (Schrift < 16 px)
+- Namensfelder überlappen sich bei allen Formationen
+- Namen wie „Fabián Ruiz“, „Lautaro Martínez“, „D. Silva“ müssen exakt so
+  getippt werden; isländische Sonderzeichen (ð, þ, æ) sind nicht eingebbar
+- Service Worker liefert HTML aus dem Cache → Updates nur mit neuer
+  `CACHE_NAME`-Version sichtbar
 
 ---
 
-## 3. Das Ziel: App-Store-Launch
+## 3. Beschlossene Neuerungen
 
-Reihenfolge, die sich anbietet:
-
-1. **PWA-Umbau** — `manifest.json`, Service Worker, Icons in allen Größen,
-   Offline-Fähigkeit. Erster Schritt, komplett ohne Store-Accounts machbar.
-2. **Android über Capacitor** — verpackt den bestehenden Web-Code in eine
-   echte Android-App. Läuft auf jedem Rechner mit Android Studio/SDK.
-3. **iOS über Capacitor + Xcode** — braucht zwingend einen Mac (Apple-Vorgabe,
-   keine Umgehung möglich). Ein MacBook Air reicht dafür locker.
-4. **Store-Accounts anlegen** (musst du selbst machen, Identitätsprüfung):
-   - Apple Developer Program: 99 $/Jahr
-   - Google Play Console: 25 $ einmalig
-5. **Store-Einreichung vorbereiten**: Datenschutzerklärung, Screenshots,
-   App-Beschreibung — Claude Code kann die Inhalte dafür bauen, hochladen
-   musst du selbst über App Store Connect / Play Console.
-
-Parallel dazu: **Content weiter Richtung 50-70 Aufstellungen ausbauen.**
+- **Positions-Panel** unter dem Spielfeld statt Buttons in jedem Feld
+- **Namensvarianten/Aliase**: die Position entscheidet bei Mehrdeutigkeit
+- **„Fast richtig“** bei Tippfehlern mit Button „Korrigieren“ (10 statt 15 XP,
+  blockiert „Perfekt“); Umlaute (ue/ü) zählen als exakt richtig
+- **Eine Währung** (🔍 Scout-Token) statt zwei; transparente Token-Quittung
+- **Scout-Rad**: Anfangsbuchstabe 30 · Rückennummer 30 · Nationalität 30
+  (nicht bei Nationalteams) · ganzer Name 10 (Jackpot). Optik/Animation:
+  `prototypes/scout-rad.html`
+- Rückennummer/Nationalität werden mit Quellen recherchiert (Feld `details`,
+  plus `source` pro Aufstellung)
 
 ---
 
-## 4. Vorschlag für deinen ersten Prompt in Claude Code
+## 4. Das Ziel: App-Store-Launch
 
-Kannst du so oder so ähnlich direkt reinkopieren:
+1. ~~PWA-Umbau~~ ✅
+2. Korrekturen + neue Features (Prompts 1–6)
+3. PWA-Nacharbeit: Fonts lokal (DSGVO), Update-Strategie (Prompt 7)
+4. Capacitor-Vorbereitung (Prompt 8), dann Android und iOS (Xcode auf dem Mac)
+5. Store-Accounts selbst anlegen: Apple Developer Program 99 $/Jahr,
+   Google Play Console 25 $ einmalig
+6. Store-Einreichung: Datenschutzerklärung, Screenshots, Beschreibung
 
-> Hier ist der aktuelle Stand meines Fußball-Aufstellungsspiels
-> (`startelf_check.html`). Ich will das Schritt für Schritt zu einer
-> App-Store-fähigen App ausbauen. Fang bitte mit dem PWA-Umbau an
-> (manifest.json, Service Worker, Icons), erklär mir dabei kurz, was du
-> tust, und frag nach, bevor du größere strukturelle Änderungen machst.
-> Später geht's dann um Android/iOS-Verpackung über Capacitor.
-
----
-
-## 5. Kleiner Reminder für dich selbst
-
-Wenn optisches Feintuning ("gefällt mir noch nicht ganz") ansteht: in
-Claude Code siehst du die Änderungen direkt im echten Browser/Vorschau,
-nicht nur als Beschreibung wie hier im Chat — das macht diese Art von
-Iteration spürbar schneller.
+Parallel: Inhalte ausbauen (siehe Ideen-Speicher in
+`prompts_naechste_schritte.md`).

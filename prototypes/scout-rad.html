@@ -1,0 +1,534 @@
+<!doctype html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, viewport-fit=cover">
+<!-- Referenz-Prototyp für Prompt 6 (Scout-Rad). Nicht in die App einbinden, nur als Vorlage für Optik und Animation. -->
+<title>Scout-Rad</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Anton&family=Oswald:wght@400;500;600;700&family=JetBrains+Mono:wght@500;700&display=swap">
+<style>
+  :root {
+    --ink: #14202B;
+    --ink-2: #1A2A38;
+    --ink-3: #243A4D;
+    --pitch: #1F4D36;
+    --pitch-2: #2B6647;
+    --chalk: #F2EFE6;
+    --muted: rgba(242, 239, 230, 0.62);
+    --faint: rgba(242, 239, 230, 0.14);
+    --gold: #E8B23D;
+    --gold-2: #F4D58D;
+    --ok: #2ECC71;
+    --token: #7DB8FF;
+    color-scheme: dark;
+  }
+  html, body { background: var(--ink); }
+  body {
+    color: var(--chalk);
+    font-family: Oswald, "Arial Narrow", system-ui, sans-serif;
+    padding-inline: 16px;
+    padding-block: 20px 48px;
+    -webkit-tap-highlight-color: transparent;
+  }
+  .app { max-width: 440px; margin: 0 auto; display: flex; flex-direction: column; gap: 18px; }
+
+  header { display: flex; justify-content: space-between; align-items: flex-end; gap: 12px; }
+  .kicker { font-family: "JetBrains Mono", ui-monospace, monospace; font-size: 11px; letter-spacing: 0.3em; text-transform: uppercase; color: var(--gold); }
+  h1 { font-family: Anton, Impact, sans-serif; font-weight: 400; font-size: 38px; line-height: 1; letter-spacing: 0.02em; margin: 6px 0 0; text-wrap: balance; }
+  .tokens {
+    font-family: "JetBrains Mono", ui-monospace, monospace; font-weight: 700; font-size: 15px;
+    color: var(--token); background: rgba(74, 163, 255, 0.12); border: 1px solid rgba(74, 163, 255, 0.35);
+    border-radius: 20px; padding: 7px 12px; white-space: nowrap; font-variant-numeric: tabular-nums;
+  }
+  .tokens.pulse { animation: tokenPulse 0.5s ease-out; }
+  @keyframes tokenPulse { 0% { transform: scale(1); } 35% { transform: scale(1.18); background: rgba(74,163,255,0.3); } 100% { transform: scale(1); } }
+
+  /* Positions-Panel */
+  .panel { background: linear-gradient(180deg, var(--pitch), #173E2B); border: 1px solid rgba(255,255,255,0.18); border-radius: 12px; padding: 14px; display: flex; flex-direction: column; gap: 10px; }
+  .match { font-family: "JetBrains Mono", ui-monospace, monospace; font-size: 10px; letter-spacing: 0.12em; text-transform: uppercase; color: var(--gold); }
+  .teams { font-weight: 700; font-size: 17px; line-height: 1.2; margin-top: -4px; }
+  .pos-row { display: flex; align-items: center; gap: 10px; }
+  .pos-label { font-family: "JetBrains Mono", ui-monospace, monospace; font-weight: 700; font-size: 12px; color: var(--ink); background: linear-gradient(135deg, var(--gold), var(--gold-2)); padding: 4px 8px; border-radius: 5px; box-shadow: 0 2px 5px rgba(0,0,0,0.3); }
+  .pos-input { flex: 1; text-align: center; font-weight: 600; font-size: 16px; padding: 9px 8px; border-radius: 7px; background: rgba(242,239,230,0.96); color: var(--ink); border: 2px solid var(--gold); letter-spacing: 0.04em; transition: background 0.4s, color 0.4s, border-color 0.4s; }
+  .pos-input.ok { background: rgba(46,204,113,0.4); color: var(--chalk); border-color: var(--ok); font-weight: 700; }
+  .chips { display: flex; flex-wrap: wrap; gap: 6px; min-height: 26px; }
+  .chips .empty { font-size: 13px; color: var(--muted); align-self: center; }
+  .chip { font-family: "JetBrains Mono", ui-monospace, monospace; font-size: 12px; font-weight: 700; padding: 4px 9px; border-radius: 20px; background: rgba(20,32,43,0.55); border: 1px solid rgba(232,178,61,0.45); color: var(--gold-2); animation: chipIn 0.45s cubic-bezier(.2,1.4,.4,1); }
+  @keyframes chipIn { from { transform: scale(0.4); opacity: 0; } to { transform: scale(1); opacity: 1; } }
+
+  /* Rad */
+  .stage { position: relative; width: min(340px, 100%); aspect-ratio: 1; margin: 6px auto 0; max-width: 100%; }
+  #wheel { width: 100%; height: 100%; display: block; cursor: pointer; }
+  .pointer { position: absolute; top: -6px; left: 50%; width: 34px; height: 40px; margin-left: -17px; z-index: 3; transform-origin: 50% 20%; filter: drop-shadow(0 3px 4px rgba(0,0,0,0.5)); pointer-events: none; }
+  .pointer.tick { animation: tick 0.12s ease-out; }
+  @keyframes tick { 0% { transform: rotate(0); } 40% { transform: rotate(-16deg); } 100% { transform: rotate(0); } }
+  .hub { position: absolute; left: 50%; top: 50%; width: 27%; aspect-ratio: 1; transform: translate(-50%, -50%); border-radius: 50%; border: 3px solid var(--gold); background: radial-gradient(circle at 35% 30%, var(--ink-3), var(--ink) 70%); color: var(--chalk); font-family: Anton, Impact, sans-serif; font-size: clamp(13px, 4vw, 17px); letter-spacing: 0.05em; cursor: pointer; z-index: 2; box-shadow: 0 4px 14px rgba(0,0,0,0.55), inset 0 0 0 2px rgba(232,178,61,0.25); display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 1px; padding: 0; }
+  .hub small { font-family: "JetBrains Mono", ui-monospace, monospace; font-size: 10px; color: var(--token); letter-spacing: 0.05em; }
+  .hub:disabled { cursor: default; opacity: 0.85; }
+  .hub:focus-visible, .btn:focus-visible, .seg button:focus-visible { outline: 2px solid var(--gold-2); outline-offset: 3px; }
+  .stage.win #wheel { animation: winPop 0.6s cubic-bezier(.2,1.6,.4,1); }
+  @keyframes winPop { 0% { transform: scale(1); } 40% { transform: scale(1.04); } 100% { transform: scale(1); } }
+  .skip-hint { text-align: center; font-family: "JetBrains Mono", ui-monospace, monospace; font-size: 11px; color: var(--muted); min-height: 16px; letter-spacing: 0.04em; }
+
+  /* Ergebnis */
+  .result { position: relative; overflow: hidden; background: var(--ink-2); border: 1px solid rgba(232,178,61,0.4); border-radius: 12px; padding: 16px; display: flex; align-items: center; gap: 16px; animation: resultIn 0.5s cubic-bezier(.2,1.2,.4,1); }
+  .result.jackpot { background: linear-gradient(135deg, #3A2E12, var(--ink-2) 70%); border-color: var(--gold); }
+  @keyframes resultIn { from { transform: translateY(18px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
+  .res-visual { flex: 0 0 auto; width: 84px; height: 84px; display: grid; place-items: center; }
+  .res-letter { width: 72px; height: 84px; border-radius: 8px; background: var(--chalk); color: var(--ink); font-family: Anton, Impact, sans-serif; font-size: 58px; display: grid; place-items: center; box-shadow: 0 4px 0 var(--gold); }
+  .res-flag { font-size: 62px; line-height: 1; }
+  .res-text { display: flex; flex-direction: column; gap: 2px; min-width: 0; }
+  .res-type { font-family: "JetBrains Mono", ui-monospace, monospace; font-size: 10px; letter-spacing: 0.2em; text-transform: uppercase; color: var(--gold); }
+  .res-value { font-family: Anton, Impact, sans-serif; font-size: 30px; line-height: 1.05; letter-spacing: 0.02em; overflow-wrap: anywhere; }
+  .res-note { font-size: 13px; color: var(--muted); }
+  .stamp { position: absolute; right: -8px; top: 10px; transform: rotate(12deg); font-family: Anton, Impact, sans-serif; font-size: 15px; letter-spacing: 0.12em; color: var(--ink); background: var(--gold); padding: 3px 18px; animation: stampIn 0.5s 0.2s both cubic-bezier(.2,1.8,.4,1); }
+  @keyframes stampIn { from { transform: rotate(12deg) scale(2.4); opacity: 0; } to { transform: rotate(12deg) scale(1); opacity: 1; } }
+
+  /* Chancen */
+  .odds { display: flex; flex-direction: column; gap: 8px; }
+  .odds h2, .demo h2 { font-family: "JetBrains Mono", ui-monospace, monospace; font-size: 11px; letter-spacing: 0.22em; text-transform: uppercase; color: var(--muted); font-weight: 700; margin: 0; }
+  .odds ul { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 7px; }
+  .odds li { display: grid; grid-template-columns: 14px 1fr 46px; align-items: center; gap: 10px; font-size: 14px; }
+  .sw { width: 14px; height: 14px; border-radius: 3px; border: 1px solid rgba(255,255,255,0.25); }
+  .odds .name { display: flex; flex-direction: column; gap: 4px; min-width: 0; }
+  .odds .name span { display: flex; justify-content: space-between; gap: 8px; }
+  .odds .name em { font-style: normal; font-size: 11px; color: var(--muted); font-family: "JetBrains Mono", ui-monospace, monospace; }
+  .bar { height: 4px; border-radius: 2px; background: var(--faint); overflow: hidden; }
+  .bar i { display: block; height: 100%; background: var(--gold); transition: width 0.6s ease; }
+  .pct { font-family: "JetBrains Mono", ui-monospace, monospace; font-weight: 700; text-align: right; font-variant-numeric: tabular-nums; }
+  .odds li.off { color: var(--muted); }
+  .odds li.off .pct { color: var(--muted); }
+
+  /* Steuerung */
+  .btn { font-family: Oswald, "Arial Narrow", sans-serif; font-weight: 700; font-size: 17px; letter-spacing: 0.03em; border-radius: 10px; padding: 13px 16px; cursor: pointer; border: none; width: 100%; touch-action: manipulation; }
+  .btn-gold { background: linear-gradient(135deg, var(--gold), var(--gold-2)); color: var(--ink); box-shadow: 0 4px 0 #9C7422; }
+  .btn-gold:active:not(:disabled) { transform: translateY(2px); box-shadow: 0 2px 0 #9C7422; }
+  .btn-gold:disabled { opacity: 0.4; cursor: not-allowed; }
+  .demo { border-top: 1px solid var(--faint); padding-top: 16px; display: flex; flex-direction: column; gap: 10px; }
+  .demo-row { display: flex; gap: 10px; flex-wrap: wrap; align-items: center; }
+  .seg { display: inline-flex; border: 1px solid var(--faint); border-radius: 20px; padding: 3px; gap: 3px; }
+  .seg button, .ghost { font-family: Oswald, sans-serif; font-weight: 600; font-size: 13px; background: transparent; color: var(--muted); border: none; border-radius: 16px; padding: 6px 12px; cursor: pointer; }
+  .seg button[aria-pressed="true"] { background: var(--ink-3); color: var(--chalk); }
+  .ghost { border: 1px solid var(--faint); border-radius: 20px; }
+  .ghost[aria-pressed="true"] { color: var(--gold-2); border-color: rgba(232,178,61,0.5); }
+  .demo p { margin: 0; font-size: 13px; line-height: 1.5; color: var(--muted); max-width: 62ch; }
+  #fx { position: fixed; inset: 0; width: 100%; height: 100%; pointer-events: none; z-index: 50; }
+</style>
+</head>
+<body>
+
+<canvas id="fx"></canvas>
+<main class="app">
+  <header>
+    <div>
+      <div class="kicker">Prototyp · Tipp-System</div>
+      <h1>Scout-Rad</h1>
+    </div>
+    <div class="tokens" id="tokens" aria-live="polite">🔍 5</div>
+  </header>
+
+  <section class="panel" aria-label="Ausgewählte Position">
+    <div class="match">Champions-League-Finale · 10.06.2023</div>
+    <div class="teams">Manchester City – Inter Mailand</div>
+    <div class="pos-row">
+      <span class="pos-label">ST</span>
+      <div class="pos-input" id="posInput">?</div>
+    </div>
+    <div class="chips" id="chips"><span class="empty">Noch keine Tipps für diese Position.</span></div>
+  </section>
+
+  <div class="stage" id="stage">
+    <svg class="pointer" id="pointer" viewBox="0 0 34 40" aria-hidden="true">
+      <defs><linearGradient id="pg" x1="0" x2="1" y1="0" y2="1"><stop offset="0" stop-color="#F4D58D"/><stop offset="1" stop-color="#E8B23D"/></linearGradient></defs>
+      <path d="M17 38 L3 10 A15 15 0 1 1 31 10 Z" fill="url(#pg)" stroke="#14202B" stroke-width="2"/>
+      <circle cx="17" cy="12" r="4.5" fill="#14202B"/>
+    </svg>
+    <canvas id="wheel" role="img" aria-label="Scout-Rad"></canvas>
+    <button class="hub" id="hub" type="button" aria-label="Scout-Rad drehen, kostet 1 Token">DREHEN<small>1 🔍</small></button>
+  </div>
+  <div class="skip-hint" id="skipHint"></div>
+
+  <div id="resultSlot" aria-live="polite"></div>
+
+  <button class="btn btn-gold" id="spinBtn" type="button">🎡 Scout-Rad drehen · 1 Token</button>
+
+  <section class="odds" aria-label="Chancen">
+    <h2>Chancen für diese Position</h2>
+    <ul id="odds"></ul>
+  </section>
+
+  <section class="demo">
+    <h2>Demo-Steuerung</h2>
+    <div class="demo-row">
+      <div class="seg" role="group" aria-label="Spieltyp">
+        <button type="button" id="modeClub" aria-pressed="true">Vereinsspiel</button>
+        <button type="button" id="modeNat" aria-pressed="false">Nationalteam</button>
+      </div>
+      <button type="button" class="ghost" id="soundBtn" aria-pressed="false">Ton aus</button>
+      <button type="button" class="ghost" id="resetBtn">Zurücksetzen</button>
+    </div>
+    <p>Beispieldaten für den Prototyp. Bereits gezogene Tipps verschwinden vom Rad, die übrigen Felder teilen sich die Chancen neu auf. Bei Nationalteams entfällt die Nationalität. Tippen aufs Rad während der Drehung überspringt die Animation.</p>
+  </section>
+</main>
+
+<script>
+(() => {
+  const TAU = Math.PI * 2;
+  const RM = window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+  const PLAYER = { name: "Haaland", nr: 9, flag: "🇳🇴", nation: "Norwegen" };
+  const START_TOKENS = 5;
+
+  const SEGS = [
+    { id: "firstLetter", label: "1. BUCHSTABE", icon: "A", weight: 30, fill: "#1F4D36", fill2: "#256043", text: "#F2EFE6", swatch: "#1F4D36" },
+    { id: "shirtNumber", label: "RÜCKENNR.", icon: "#", weight: 30, fill: "#243A4D", fill2: "#2C475E", text: "#F2EFE6", swatch: "#243A4D" },
+    { id: "nationality", label: "NATION", icon: "flag", weight: 30, fill: "#2B6647", fill2: "#34774F", text: "#F2EFE6", swatch: "#2B6647" },
+    { id: "fullName", label: "NAME", icon: "★", weight: 10, fill: "#E8B23D", fill2: "#F4D58D", text: "#14202B", swatch: "#E8B23D", jackpot: true }
+  ];
+  const LABELS = { firstLetter: "1. Buchstabe", shirtNumber: "Rückennummer", nationality: "Nationalität", fullName: "Ganzer Name" };
+
+  const state = {
+    tokens: START_TOKENS, used: new Set(), national: false, solved: false,
+    rotation: 0, spinning: false, sound: false,
+    disp: SEGS.map(s => s.weight)
+  };
+
+  const $ = id => document.getElementById(id);
+  const wheel = $("wheel"), ctx = wheel.getContext("2d");
+  const fx = $("fx"), fctx = fx.getContext("2d");
+  const pointer = $("pointer"), stage = $("stage");
+
+  function isAvailable(s) {
+    if (state.solved) return false;
+    if (state.used.has(s.id)) return false;
+    if (s.id === "nationality" && state.national) return false;
+    return true;
+  }
+  const targetWeights = () => SEGS.map(s => isAvailable(s) ? s.weight : 0);
+
+  /* ---------- Größe ---------- */
+  let S = 300, DPR = 1;
+  function resize() {
+    DPR = Math.min(window.devicePixelRatio || 1, 3);
+    S = wheel.clientWidth;
+    wheel.width = Math.round(S * DPR); wheel.height = Math.round(S * DPR);
+    fx.width = Math.round(innerWidth * DPR); fx.height = Math.round(innerHeight * DPR);
+    draw();
+  }
+
+  /* ---------- Geometrie ---------- */
+  function layout(weights) {
+    const total = weights.reduce((a, b) => a + b, 0);
+    let start = 0;
+    return SEGS.map((s, i) => {
+      const sweep = total > 0 ? weights[i] / total * TAU : 0;
+      const r = { seg: s, i, start, sweep };
+      start += sweep;
+      return r;
+    });
+  }
+  function segmentUnderPointer() {
+    const lay = layout(state.disp);
+    const local = ((-state.rotation) % TAU + TAU) % TAU;
+    for (const l of lay) if (l.sweep > 0 && local >= l.start && local < l.start + l.sweep) return l.i;
+    return -1;
+  }
+
+  /* ---------- Zeichnen ---------- */
+  let lightPhase = 0, lightMode = "idle", flashUntil = 0;
+  function draw(now = performance.now()) {
+    const c = ctx, cx = S / 2, cy = S / 2;
+    const RO = S / 2 - 3, rimW = Math.max(12, S * 0.05), r = RO - rimW;
+    c.setTransform(DPR, 0, 0, DPR, 0, 0);
+    c.clearRect(0, 0, S, S);
+
+    // Rim
+    c.beginPath(); c.arc(cx, cy, RO, 0, TAU); c.fillStyle = "#101A23"; c.fill();
+    c.lineWidth = 2; c.strokeStyle = "#E8B23D"; c.stroke();
+
+    // Segmente (drehend)
+    c.save(); c.translate(cx, cy); c.rotate(state.rotation);
+    const lay = layout(state.disp);
+    const total = state.disp.reduce((a, b) => a + b, 0);
+    if (total < 0.01) {
+      c.beginPath(); c.arc(0, 0, r, 0, TAU); c.fillStyle = "#1A2A38"; c.fill();
+    }
+    for (const l of lay) {
+      if (l.sweep < 0.002) continue;
+      const a0 = l.start - Math.PI / 2, a1 = a0 + l.sweep;
+      const g = c.createRadialGradient(0, 0, r * 0.2, 0, 0, r);
+      g.addColorStop(0, l.seg.fill2); g.addColorStop(1, l.seg.fill);
+      c.beginPath(); c.moveTo(0, 0); c.arc(0, 0, r, a0, a1); c.closePath();
+      c.fillStyle = g; c.fill();
+      c.strokeStyle = "rgba(242,239,230,0.35)"; c.lineWidth = 1.5; c.stroke();
+
+      // Beschriftung
+      const alpha = Math.min(1, l.sweep / 0.35);
+      if (alpha > 0.05) {
+        c.save();
+        const mid = l.start + l.sweep / 2;
+        const world = ((mid + state.rotation) % TAU + TAU) % TAU;
+        const flip = world > Math.PI / 2 && world < Math.PI * 1.5; // untere Hälfte: Text lesbar halten
+        c.rotate(mid + (flip ? Math.PI : 0));
+        c.globalAlpha = alpha;
+        c.fillStyle = l.seg.text; c.textAlign = "center"; c.textBaseline = "middle";
+        const sgn = flip ? 1 : -1;
+        const iconY = sgn * r * 0.74, labelY = sgn * r * 0.5;
+        const iconSize = Math.max(14, S * 0.075);
+        if (l.seg.icon === "flag") drawFlag(c, 0, iconY, iconSize, l.seg.text);
+        else { c.font = `${iconSize}px Anton, Impact, sans-serif`; c.fillText(l.seg.icon, 0, iconY); }
+        const maxW = 2 * Math.sin(Math.min(l.sweep, Math.PI) / 2) * r * 0.5 * 0.92;
+        let fs = Math.max(9, S * 0.04);
+        c.font = `700 ${fs}px Oswald, "Arial Narrow", sans-serif`;
+        while (c.measureText(l.seg.label).width > maxW && fs > 8) { fs -= 0.5; c.font = `700 ${fs}px Oswald, "Arial Narrow", sans-serif`; }
+        c.fillText(l.seg.label, 0, labelY);
+        c.restore();
+      }
+    }
+    c.restore();
+
+    // Innerer Ring
+    c.beginPath(); c.arc(cx, cy, r, 0, TAU); c.lineWidth = 3; c.strokeStyle = "#E8B23D"; c.stroke();
+
+    // Flutlicht-Birnen (stehend)
+    const N = 24;
+    const flashing = now < flashUntil;
+    for (let k = 0; k < N; k++) {
+      const ang = k / N * TAU - Math.PI / 2;
+      const bx = cx + Math.cos(ang) * (r + rimW / 2 + 0.5), by = cy + Math.sin(ang) * (r + rimW / 2 + 0.5);
+      let on;
+      if (flashing) on = Math.floor((flashUntil - now) / 120) % 2 === 0 ? 1 : 0.15;
+      else if (lightMode === "spin") on = ((k + Math.floor(lightPhase)) % 3 === 0) ? 1 : 0.18;
+      else on = 0.45 + 0.35 * Math.sin(now / 700 + k * 0.5);
+      const br = Math.max(2.2, rimW * 0.2);
+      c.beginPath(); c.arc(bx, by, br, 0, TAU);
+      c.fillStyle = `rgba(244,213,141,${on})`; c.fill();
+      if (on > 0.8) { c.beginPath(); c.arc(bx, by, br * 2.4, 0, TAU); c.fillStyle = "rgba(232,178,61,0.18)"; c.fill(); }
+    }
+  }
+  function drawFlag(c, x, y, size, color) {
+    const w = size * 0.8, h = size * 0.5;
+    c.save(); c.translate(x - w / 2, y - size / 2);
+    c.fillStyle = color; c.fillRect(0, 0, size * 0.09, size);
+    c.beginPath(); c.moveTo(size * 0.09, 0); c.lineTo(size * 0.09 + w, h * 0.15); c.lineTo(size * 0.09 + w * 0.8, h * 0.55); c.lineTo(size * 0.09 + w, h); c.lineTo(size * 0.09, h * 0.95); c.closePath(); c.fill();
+    c.restore();
+  }
+
+  /* ---------- Loop: Idle-Licht + Gewichts-Übergänge ---------- */
+  let lastFrame = performance.now();
+  function loop(now) {
+    const dt = Math.min(64, now - lastFrame); lastFrame = now;
+    const tgt = targetWeights();
+    if (!state.spinning) {
+      const k = RM ? 1 : 1 - Math.pow(0.001, dt / 700);
+      state.disp = state.disp.map((d, i) => Math.abs(tgt[i] - d) < 0.05 ? tgt[i] : d + (tgt[i] - d) * k);
+    }
+    draw(now);
+    requestAnimationFrame(loop);
+  }
+
+  /* ---------- Sound ---------- */
+  let actx = null;
+  function tickSound(strong) {
+    if (!state.sound) return;
+    try {
+      actx = actx || new (window.AudioContext || window.webkitAudioContext)();
+      const o = actx.createOscillator(), g = actx.createGain();
+      o.type = "square"; o.frequency.value = strong ? 880 : 1900;
+      g.gain.setValueAtTime(strong ? 0.08 : 0.035, actx.currentTime);
+      g.gain.exponentialRampToValueAtTime(0.0001, actx.currentTime + (strong ? 0.25 : 0.03));
+      o.connect(g).connect(actx.destination); o.start(); o.stop(actx.currentTime + (strong ? 0.26 : 0.035));
+    } catch (e) {}
+  }
+
+  /* ---------- Drehen ---------- */
+  let skip = false;
+  function spin() {
+    if (state.spinning || state.solved || state.tokens < 1) return;
+    const avail = SEGS.filter(isAvailable);
+    if (!avail.length) return;
+
+    state.disp = targetWeights();               // Layout einfrieren
+    state.tokens -= 1; renderTokens(true);
+    $("resultSlot").innerHTML = "";
+
+    const total = avail.reduce((a, s) => a + s.weight, 0);
+    let x = Math.random() * total, pick = avail[avail.length - 1];
+    for (const s of avail) { if (x < s.weight) { pick = s; break; } x -= s.weight; }
+
+    const l = layout(state.disp).find(o => o.seg === pick);
+    const landAt = l.start + l.sweep * (0.18 + Math.random() * 0.64);
+    const from = state.rotation;
+    const delta = ((-landAt - from) % TAU + TAU) % TAU;
+    const to = from + 5 * TAU + delta;
+    const dur = RM ? 0 : 4300;
+
+    state.spinning = true; skip = false; lightMode = "spin";
+    $("skipHint").textContent = RM ? "" : "Tippen zum Überspringen";
+    renderControls();
+
+    const t0 = performance.now();
+    let lastIdx = segmentUnderPointer(), lastRot = from;
+    function step(now) {
+      let t = dur === 0 || skip ? 1 : Math.min(1, (now - t0) / dur);
+      const e = 1 - Math.pow(1 - t, 4);
+      state.rotation = from + (to - from) * e;
+      lightPhase += Math.abs(state.rotation - lastRot) * 3.2; lastRot = state.rotation;
+      const idx = segmentUnderPointer();
+      if (idx !== lastIdx && !skip && t < 1) { flick(); tickSound(false); }
+      lastIdx = idx;
+      if (t < 1) requestAnimationFrame(step);
+      else finish(pick);
+    }
+    requestAnimationFrame(step);
+  }
+  function flick() {
+    if (RM) return;
+    pointer.classList.remove("tick"); void pointer.getBoundingClientRect(); pointer.classList.add("tick");
+  }
+
+  function finish(pick) {
+    state.rotation = ((state.rotation % TAU) + TAU) % TAU;
+    state.spinning = false; lightMode = "idle";
+    $("skipHint").textContent = "";
+    flashUntil = RM ? 0 : performance.now() + 900;
+    tickSound(true);
+    stage.classList.remove("win"); void stage.offsetWidth; stage.classList.add("win");
+    showResult(pick);
+    burst(pick.jackpot ? 170 : 60, pick.jackpot);
+
+    // Feld vom Rad nehmen (kurz verzögert, damit man sieht, wo es gelandet ist)
+    setTimeout(() => {
+      state.used.add(pick.id);
+      if (pick.id === "fullName") state.solved = true;
+      renderOdds(); renderControls();
+    }, RM ? 0 : 1100);
+    renderControls();
+  }
+
+  /* ---------- Ergebnis ---------- */
+  function showResult(pick) {
+    const slot = $("resultSlot");
+    let visual = "", value = "", note = "", chip = "";
+    if (pick.id === "firstLetter") {
+      const L = PLAYER.name[0].toUpperCase();
+      visual = `<div class="res-letter">${L}</div>`; value = `Beginnt mit „${L}“`; note = "Der Nachname startet mit diesem Buchstaben."; chip = `1. Buchstabe: ${L}`;
+    } else if (pick.id === "shirtNumber") {
+      visual = shirtSVG(PLAYER.nr); value = `Nummer ${PLAYER.nr}`; note = "Rückennummer in diesem Spiel."; chip = `Nr. ${PLAYER.nr}`;
+    } else if (pick.id === "nationality") {
+      visual = `<div class="res-flag" aria-hidden="true">${PLAYER.flag}</div>`; value = PLAYER.nation; note = "Nationalität des Spielers."; chip = `${PLAYER.flag} ${PLAYER.nation}`;
+    } else {
+      visual = shirtSVG(PLAYER.nr, true); value = PLAYER.name.toUpperCase(); note = "Volltreffer – die Position ist gelöst."; chip = `★ ${PLAYER.name}`;
+      const inp = $("posInput"); inp.textContent = PLAYER.name; inp.classList.add("ok");
+    }
+    slot.innerHTML = `<div class="result${pick.jackpot ? " jackpot" : ""}">
+        <div class="res-visual">${visual}</div>
+        <div class="res-text"><div class="res-type">${LABELS[pick.id]}</div><div class="res-value">${value}</div><div class="res-note">${note}</div></div>
+        ${pick.jackpot ? '<div class="stamp">JACKPOT</div>' : ""}
+      </div>`;
+    const chips = $("chips");
+    const empty = chips.querySelector(".empty"); if (empty) empty.remove();
+    const el = document.createElement("span"); el.className = "chip"; el.textContent = chip; chips.appendChild(el);
+  }
+  function shirtSVG(nr, gold) {
+    const body = gold ? "#E8B23D" : "#6CABDD", num = gold ? "#14202B" : "#F2EFE6";
+    return `<svg viewBox="0 0 84 84" width="84" height="84" aria-hidden="true">
+      <path d="M28 8 L20 10 L4 22 L12 36 L20 31 L20 78 L64 78 L64 31 L72 36 L80 22 L64 10 L56 8 C54 15 48 18 42 18 C36 18 30 15 28 8 Z" fill="${body}" stroke="#14202B" stroke-width="2.5" stroke-linejoin="round"/>
+      <text x="42" y="64" text-anchor="middle" font-family="Anton, Impact, sans-serif" font-size="36" fill="${num}">${nr}</text>
+    </svg>`;
+  }
+
+  /* ---------- Konfetti ---------- */
+  let parts = [], fxRunning = false;
+  function burst(n, big) {
+    if (RM) return;
+    const rect = wheel.getBoundingClientRect();
+    const ox = rect.left + rect.width / 2, oy = rect.top + rect.height * 0.12;
+    const cols = big ? ["#E8B23D", "#F4D58D", "#F2EFE6", "#E8B23D", "#2ECC71"] : ["#E8B23D", "#F4D58D", "#F2EFE6", "#2B6647"];
+    for (let i = 0; i < n; i++) {
+      const a = -Math.PI / 2 + (Math.random() - 0.5) * (big ? 2.6 : 1.8);
+      const v = (big ? 7 : 5) + Math.random() * (big ? 8 : 5);
+      parts.push({ x: ox, y: oy, vx: Math.cos(a) * v, vy: Math.sin(a) * v, w: 4 + Math.random() * 5, h: 7 + Math.random() * 7, rot: Math.random() * TAU, vr: (Math.random() - 0.5) * 0.4, c: cols[i % cols.length], life: 0 });
+    }
+    if (!fxRunning) { fxRunning = true; requestAnimationFrame(fxStep); }
+  }
+  function fxStep() {
+    fctx.setTransform(DPR, 0, 0, DPR, 0, 0);
+    fctx.clearRect(0, 0, innerWidth, innerHeight);
+    parts = parts.filter(p => p.life < 140 && p.y < innerHeight + 40);
+    for (const p of parts) {
+      p.life++; p.vy += 0.22; p.vx *= 0.985; p.x += p.vx; p.y += p.vy; p.rot += p.vr;
+      fctx.save(); fctx.translate(p.x, p.y); fctx.rotate(p.rot);
+      fctx.globalAlpha = Math.max(0, 1 - p.life / 140);
+      fctx.fillStyle = p.c; fctx.fillRect(-p.w / 2, -p.h / 2, p.w, p.h * Math.abs(Math.cos(p.rot * 1.7)) + 1);
+      fctx.restore();
+    }
+    if (parts.length) requestAnimationFrame(fxStep);
+    else { fxRunning = false; fctx.clearRect(0, 0, innerWidth, innerHeight); }
+  }
+
+  /* ---------- UI ---------- */
+  function renderTokens(pulse) {
+    const t = $("tokens"); t.textContent = "🔍 " + state.tokens;
+    if (pulse && !RM) { t.classList.remove("pulse"); void t.offsetWidth; t.classList.add("pulse"); }
+  }
+  function renderControls() {
+    const any = SEGS.some(isAvailable);
+    const can = !state.spinning && any && state.tokens > 0;
+    const b = $("spinBtn");
+    b.disabled = !can;
+    b.textContent = state.solved ? "✓ Position gelöst" : !any ? "Alle Tipps gezogen" : state.tokens < 1 ? "Keine Token mehr" : state.spinning ? "Rad dreht …" : "🎡 Scout-Rad drehen · 1 Token";
+    $("hub").disabled = !can && !state.spinning;
+    $("modeClub").disabled = $("modeNat").disabled = state.spinning;
+  }
+  function renderOdds() {
+    const tw = targetWeights(), total = tw.reduce((a, b) => a + b, 0);
+    $("odds").innerHTML = SEGS.map((s, i) => {
+      const pct = total > 0 ? Math.round(tw[i] / total * 100) : 0;
+      let reason = "";
+      if (state.used.has(s.id)) reason = "bereits gezogen";
+      else if (s.id === "nationality" && state.national) reason = "entfällt bei Nationalteams";
+      else if (state.solved) reason = "Position gelöst";
+      return `<li class="${tw[i] ? "" : "off"}">
+        <span class="sw" style="background:${s.swatch}"></span>
+        <span class="name"><span>${LABELS[s.id]}<em>${reason}</em></span><span class="bar"><i style="width:${pct}%"></i></span></span>
+        <span class="pct">${pct} %</span></li>`;
+    }).join("");
+  }
+
+  function setMode(nat) {
+    if (state.spinning) return;
+    state.national = nat;
+    $("modeClub").setAttribute("aria-pressed", String(!nat));
+    $("modeNat").setAttribute("aria-pressed", String(nat));
+    renderOdds(); renderControls();
+  }
+  function reset() {
+    if (state.spinning) return;
+    state.tokens = START_TOKENS; state.used.clear(); state.solved = false;
+    $("resultSlot").innerHTML = "";
+    $("chips").innerHTML = '<span class="empty">Noch keine Tipps für diese Position.</span>';
+    const inp = $("posInput"); inp.textContent = "?"; inp.classList.remove("ok");
+    renderTokens(false); renderOdds(); renderControls();
+  }
+
+  $("spinBtn").addEventListener("click", spin);
+  $("hub").addEventListener("click", () => state.spinning ? (skip = true) : spin());
+  wheel.addEventListener("click", () => state.spinning ? (skip = true) : spin());
+  $("modeClub").addEventListener("click", () => setMode(false));
+  $("modeNat").addEventListener("click", () => setMode(true));
+  $("resetBtn").addEventListener("click", reset);
+  $("soundBtn").addEventListener("click", e => {
+    state.sound = !state.sound;
+    e.currentTarget.setAttribute("aria-pressed", String(state.sound));
+    e.currentTarget.textContent = state.sound ? "Ton an" : "Ton aus";
+    if (state.sound) tickSound(false);
+  });
+  window.addEventListener("resize", resize);
+  if (document.fonts && document.fonts.ready) document.fonts.ready.then(() => draw());
+
+  resize(); renderTokens(false); renderOdds(); renderControls();
+  requestAnimationFrame(loop);
+})();
+</script>
+</body>
+</html>
