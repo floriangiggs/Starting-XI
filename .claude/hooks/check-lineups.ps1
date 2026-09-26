@@ -386,6 +386,43 @@ if ($idxLC -lt 0) {
             }
           }
 
+          # --- details (Prompt 5): optionales Feld mit Rueckennummer/Nationalitaet je Position.
+          # Kuerzel muessen zu 'players' passen, nr 1-99, nat ISO-3166-Alpha-2 oder GB-Sonderfall.
+          $detailsKeyMatch = [regex]::Match($entry, '\bdetails\s*:\s*\{')
+          if ($detailsKeyMatch.Success) {
+            $dOpen = $detailsKeyMatch.Index + $detailsKeyMatch.Length - 1
+            $dClose = Get-MatchingBracket $entry $dOpen '{' '}'
+            if ($dClose -lt 0) {
+              $errors.Add("[LINEUP_CHALLENGES] Eintrag '$entryId': 'details'-Objekt hat keine schliessende Klammer.")
+            } else {
+              $detailsText = $entry.Substring($dOpen + 1, $dClose - $dOpen - 1)
+              $detailBlocks = [regex]::Matches($detailsText, '([A-Za-z0-9_]+)\s*:\s*\{([^}]*)\}')
+              foreach ($db in $detailBlocks) {
+                $dKey = $db.Groups[1].Value
+                $dBody = $db.Groups[2].Value
+                if (-not $playerKeySet.Contains($dKey)) {
+                  $errors.Add("[LINEUP_CHALLENGES] Eintrag '$entryId': details-Kuerzel '$dKey' ist keine Position in 'players' dieser Aufstellung.")
+                }
+                $nrMatch = [regex]::Match($dBody, '\bnr\s*:\s*(-?\d+)')
+                if (-not $nrMatch.Success) {
+                  $errors.Add("[LINEUP_CHALLENGES] Eintrag '$entryId': details['$dKey'] hat kein 'nr'-Feld.")
+                } else {
+                  $nrVal = [int]$nrMatch.Groups[1].Value
+                  if ($nrVal -lt 1 -or $nrVal -gt 99) {
+                    $errors.Add("[LINEUP_CHALLENGES] Eintrag '$entryId': details['$dKey'].nr=$nrVal liegt nicht im Bereich 1-99.")
+                  }
+                }
+                $natMatch = [regex]::Match($dBody, '\bnat\s*:\s*"([^"]*)"')
+                if ($natMatch.Success) {
+                  $natVal = $natMatch.Groups[1].Value
+                  if ($natVal -notmatch '^[A-Z]{2}$' -and $natVal -notmatch '^GB-(ENG|SCT|WLS|NIR)$') {
+                    $errors.Add("[LINEUP_CHALLENGES] Eintrag '$entryId': details['$dKey'].nat='$natVal' ist kein gueltiger Laendercode.")
+                  }
+                }
+              }
+            }
+          }
+
           if ($formationMatch.Success) {
             $fName = $formationMatch.Groups[1].Value
             if (-not $formations.ContainsKey($fName)) {

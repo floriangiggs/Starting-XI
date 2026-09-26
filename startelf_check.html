@@ -496,7 +496,9 @@ const LINEUP_CHALLENGES = [
     context: "Mario Götze erzielte in der 113. Minute das Tor zum vierten deutschen WM-Titel - es war zugleich Miroslav Kloses letztes Länderspiel.",
     formation: "4-2-3-1",
     difficulty: 1,
-    players: { TW:"Neuer", RV:"Lahm", RIV:"Hummels", LIV:"Boateng", LV:"Höwedes", RZM:"Kramer", LZM:"Schweinsteiger", ROM:"Müller", ZOM:"Kroos", LOM:"Özil", ST:"Klose" }
+    players: { TW:"Neuer", RV:"Lahm", RIV:"Hummels", LIV:"Boateng", LV:"Höwedes", RZM:"Kramer", LZM:"Schweinsteiger", ROM:"Müller", ZOM:"Kroos", LOM:"Özil", ST:"Klose" },
+    details: { TW:{nr:1}, RV:{nr:16}, RIV:{nr:5}, LIV:{nr:20}, LV:{nr:4}, RZM:{nr:23}, LZM:{nr:7}, ROM:{nr:13}, ZOM:{nr:18}, LOM:{nr:8}, ST:{nr:11} },
+    source: "https://www.fussballdaten.de/wm/2014/finale/deutschland-argentinien/"
   },
   {
     id: "wm-finale-2022",
@@ -507,7 +509,9 @@ const LINEUP_CHALLENGES = [
     context: "Eines der besten WM-Finals aller Zeiten - Messi krönte seine Karriere mit dem WM-Titel, Mbappé traf dreifach für Frankreich.",
     formation: "4-3-3",
     difficulty: 1,
-    players: { TW:"Martínez", RV:"Molina", RIV:"Romero", LIV:"Otamendi", LV:"Tagliafico", RZM:"De Paul", ZM:"Fernández", LZM:"Mac Allister", RA:"Di María", ST:"Álvarez", LA:"Messi" }
+    players: { TW:"Martínez", RV:"Molina", RIV:"Romero", LIV:"Otamendi", LV:"Tagliafico", RZM:"De Paul", ZM:"Fernández", LZM:"Mac Allister", RA:"Di María", ST:"Álvarez", LA:"Messi" },
+    details: { TW:{nr:23}, RV:{nr:26}, RIV:{nr:13}, LIV:{nr:19}, LV:{nr:3}, RZM:{nr:7}, ZM:{nr:24}, LZM:{nr:20}, RA:{nr:11}, ST:{nr:9}, LA:{nr:10} },
+    source: "https://www.fussballdaten.de/wm/2022/finale/argentinien-frankreich/"
   },
   {
     id: "em-finale-2021",
@@ -763,7 +767,9 @@ const LINEUP_CHALLENGES = [
     formation: "4-2-3-1",
     difficulty: 1,
     players: { TW:"Simón", RV:"Porro", RIV:"Cubarsí", LIV:"Laporte", LV:"Cucurella", RZM:"Rodri", LZM:"Fabián Ruiz", ROM:"Yamal", ZOM:"Olmo", LOM:"Baena", ST:"Oyarzabal" },
-    aliases: { LZM: ["Fabián", "Ruiz"] }
+    aliases: { LZM: ["Fabián", "Ruiz"] },
+    details: { TW:{nr:23}, RV:{nr:12}, RIV:{nr:22}, LIV:{nr:14}, LV:{nr:24}, RZM:{nr:16}, LZM:{nr:8}, ROM:{nr:19}, ZOM:{nr:10}, LOM:{nr:15}, ST:{nr:21} },
+    source: "https://www.fussballdaten.de/wm/2026/finale/spanien-argentinien/"
   },
   {
     id: "psg-arsenal-2026",
@@ -775,7 +781,9 @@ const LINEUP_CHALLENGES = [
     formation: "4-3-3",
     difficulty: 1,
     players: { TW:"Safonov", RV:"Hakimi", RIV:"Marquinhos", LIV:"Pacho", LV:"Nuno Mendes", RZM:"Fabián Ruiz", ZM:"Vitinha", LZM:"João Neves", RA:"Doué", ST:"Dembélé", LA:"Kvaratskhelia" },
-    aliases: { LV: ["Nuno"], RZM: ["Fabián", "Ruiz"], LZM: ["Neves"] }
+    aliases: { LV: ["Nuno"], RZM: ["Fabián", "Ruiz"], LZM: ["Neves"] },
+    details: { TW:{nr:39,nat:"RU"}, RV:{nr:2,nat:"MA"}, RIV:{nr:5,nat:"BR"}, LIV:{nr:51,nat:"EC"}, LV:{nr:25,nat:"PT"}, RZM:{nr:8,nat:"ES"}, ZM:{nr:17,nat:"PT"}, LZM:{nr:87,nat:"PT"}, RA:{nr:14,nat:"FR"}, ST:{nr:10,nat:"FR"}, LA:{nr:7,nat:"GE"} },
+    source: "https://www.fussballdaten.de/championsleague/2026/finale/psg-arsenal/ ; Nationalitäten: https://de.uefa.com/uefachampionsleague/clubs/52747--paris/squad/"
   },
   {
     id: "bayern-stuttgart-2026",
@@ -786,7 +794,9 @@ const LINEUP_CHALLENGES = [
     context: "Der Meister-Matchball saß: Bayern machte die 35. deutsche Meisterschaft bereits vier Spieltage vor Saisonende perfekt - Trainer Kompany rotierte dafür acht Positionen im Vergleich zum vorherigen Spiel.",
     formation: "4-5-1",
     difficulty: 1,
-    players: { TW:"Urbig", RV:"Stanišić", RIV:"Kim", LIV:"Ito", LV:"Davies", RM:"Guerreiro", RZM:"Kimmich", ZM:"Goretzka", LZM:"Musiala", LM:"Díaz", ST:"Jackson" }
+    players: { TW:"Urbig", RV:"Stanišić", RIV:"Kim", LIV:"Ito", LV:"Davies", RM:"Guerreiro", RZM:"Kimmich", ZM:"Goretzka", LZM:"Musiala", LM:"Díaz", ST:"Jackson" },
+    details: { TW:{nr:40,nat:"DE"}, RV:{nr:44,nat:"HR"}, RIV:{nr:3,nat:"KR"}, LIV:{nr:21,nat:"JP"}, LV:{nr:19,nat:"CA"}, RM:{nr:22,nat:"PT"}, RZM:{nr:6,nat:"DE"}, ZM:{nr:8,nat:"DE"}, LZM:{nr:10,nat:"DE"}, LM:{nr:14,nat:"CO"}, ST:{nr:11,nat:"SN"} },
+    source: "https://www.fussballdaten.de/bundesliga/2026/30/bayern-stuttgart/ ; Nationalitäten: https://de.uefa.com/uefachampionsleague/clubs/50037--bayern/squad/"
   },
   {
     id: "em-finale-2024",
