@@ -2,7 +2,7 @@
 <html lang="de">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, viewport-fit=cover">
 <title>Starting XI</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Anton&family=Oswald:wght@400;500;600;700&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet">
@@ -24,7 +24,9 @@
     --line: rgba(242,239,230,0.14);
   }
   * { box-sizing: border-box; }
-  html, body { margin: 0; padding: 0; background: var(--ink); color: var(--chalk); font-family: 'Oswald', sans-serif; min-height: 100vh; }
+  html { -webkit-text-size-adjust: 100%; }
+  html, body { margin: 0; padding: 0; background: var(--ink); color: var(--chalk); font-family: 'Oswald', sans-serif; min-height: 100vh; touch-action: manipulation; }
+  button, input { touch-action: manipulation; }
   body { background-image: repeating-linear-gradient(90deg, rgba(255,255,255,0.02) 0 2px, transparent 2px 40px); display: flex; justify-content: center; padding: 28px 16px 60px; }
   .app { width: 100%; max-width: 560px; }
 
@@ -2066,3 +2068,4 @@ if ("serviceWorker" in navigator) {
 </script>
 </body>
 </html>
+
