@@ -222,6 +222,7 @@ foreach ($m in $scriptMatches) {
 }
 
 $errors = New-Object System.Collections.Generic.List[string]
+$warnings = New-Object System.Collections.Generic.List[string]
 
 if (-not $scriptText) {
   [Console]::Error.WriteLine("check-lineups: Kein <script>-Block mit PITCH_LAYOUTS gefunden in $FilePath")
@@ -340,6 +341,51 @@ if ($idxLC -lt 0) {
             $errors.Add("[LINEUP_CHALLENGES] Eintrag '$entryId': doppelte Positions-Kuerzel in 'players': $($dupeKeys -join ', ').")
           }
 
+          # Anzeigename je Kuerzel merken - fuer die Alias-Kollisionspruefung unten.
+          $displayNameByAbbr = @{}
+          foreach ($nm in [regex]::Matches($playersText, '([A-Za-z0-9_]+)\s*:\s*"([^"]*)"')) {
+            $displayNameByAbbr[$nm.Groups[1].Value] = $nm.Groups[2].Value
+          }
+          $playerKeySet = [System.Collections.Generic.HashSet[string]]::new([string[]]$playerKeys)
+
+          # --- aliases (Prompt 3): optionales Feld, Kuerzel muessen zu 'players' dieser
+          # Aufstellung passen, Arrays duerfen nicht leer sein, Kollisionen sind nur eine Warnung.
+          $aliasesKeyMatch = [regex]::Match($entry, '\baliases\s*:\s*\{')
+          if ($aliasesKeyMatch.Success) {
+            $aOpen = $aliasesKeyMatch.Index + $aliasesKeyMatch.Length - 1
+            $aClose = Get-MatchingBracket $entry $aOpen '{' '}'
+            if ($aClose -lt 0) {
+              $errors.Add("[LINEUP_CHALLENGES] Eintrag '$entryId': 'aliases'-Objekt hat keine schliessende Klammer.")
+            } else {
+              $aliasesText = $entry.Substring($aOpen + 1, $aClose - $aOpen - 1)
+              $aliasBlocks = [regex]::Matches($aliasesText, '([A-Za-z0-9_]+)\s*:\s*\[([^\]]*)\]')
+              $aliasMap = @{}
+              foreach ($ab in $aliasBlocks) {
+                $aKey = $ab.Groups[1].Value
+                $aValues = [regex]::Matches($ab.Groups[2].Value, '"([^"]*)"') | ForEach-Object { $_.Groups[1].Value }
+                if (-not $playerKeySet.Contains($aKey)) {
+                  $errors.Add("[LINEUP_CHALLENGES] Eintrag '$entryId': aliases-Kuerzel '$aKey' ist keine Position in 'players' dieser Aufstellung.")
+                }
+                if (-not $aValues -or @($aValues).Count -eq 0) {
+                  $errors.Add("[LINEUP_CHALLENGES] Eintrag '$entryId': aliases['$aKey'] ist leer.")
+                }
+                $aliasMap[$aKey] = @($aValues)
+              }
+              foreach ($aKey in $aliasMap.Keys) {
+                foreach ($aVal in $aliasMap[$aKey]) {
+                  foreach ($otherAbbr in $playerKeySet) {
+                    if ($otherAbbr -eq $aKey) { continue }
+                    $otherName = $displayNameByAbbr[$otherAbbr]
+                    $otherAliases = if ($aliasMap.ContainsKey($otherAbbr)) { $aliasMap[$otherAbbr] } else { @() }
+                    if ($aVal -eq $otherName -or $otherAliases -contains $aVal) {
+                      $warnings.Add("[LINEUP_CHALLENGES] Eintrag '$entryId': Alias '$aVal' von '$aKey' passt auch auf Position '$otherAbbr' ('$otherName') - Mehrdeutigkeit, Cross-Match wird dafuer automatisch abgelehnt.")
+                    }
+                  }
+                }
+              }
+            }
+          }
+
           if ($formationMatch.Success) {
             $fName = $formationMatch.Groups[1].Value
             if (-not $formations.ContainsKey($fName)) {
@@ -374,6 +420,11 @@ foreach ($d in $dupeIds) {
 }
 
 # --- Ergebnis ausgeben ----------------------------------------------------
+
+if ($warnings.Count -gt 0) {
+  Write-Output "check-lineups: $($warnings.Count) Warnung(en):"
+  foreach ($w in $warnings) { Write-Output " - $w" }
+}
 
 if ($errors.Count -eq 0) {
   Write-Output "check-lineups: OK - $($formations.Count) Formationen, $($allIds.Count) Aufstellungen, keine Inkonsistenzen gefunden."
