@@ -176,7 +176,7 @@
   .bonus-text { font-size: 14px; color: rgba(242,239,230,0.75); line-height: 1.5; text-align: center; margin-bottom: 16px; }
   .bonus-text b { color: var(--chalk); }
 
-  .pitch-wrap { position: relative; width: 100%; padding-bottom: 138%; margin-bottom: 14px; }
+  .pitch-wrap { position: relative; width: 100%; padding-bottom: 138%; margin-bottom: 14px; container-type: inline-size; }
   .pitch { position: absolute; inset: 0; background: linear-gradient(180deg, #1f5c3d, #163d29); border-radius: 10px; border: 2px solid rgba(255,255,255,0.3); overflow: hidden; box-shadow: 0 10px 28px rgba(0,0,0,0.35), inset 0 0 40px rgba(0,0,0,0.2); }
   .pitch::before { content: ""; position: absolute; inset: 0; background: repeating-linear-gradient(180deg, rgba(255,255,255,0.035) 0 24px, transparent 24px 48px); pointer-events: none; }
   .pitch .center-circle { position: absolute; width: 28%; padding-bottom: 28%; border: 2px solid rgba(255,255,255,0.28); border-radius: 50%; top: 50%; left: 50%; transform: translate(-50%,-50%); }
@@ -184,19 +184,25 @@
   .pitch .halfway { position: absolute; left: 0; right: 0; top: 50%; height: 2px; background: rgba(255,255,255,0.28); }
   .pitch .box-top { position: absolute; top: 0; left: 28%; width: 44%; height: 13%; border: 2px solid rgba(255,255,255,0.24); border-top: none; }
   .pitch .box-bottom { position: absolute; bottom: 0; left: 28%; width: 44%; height: 13%; border: 2px solid rgba(255,255,255,0.24); border-bottom: none; }
-  .pos-slot { position: absolute; transform: translate(-50%, -50%); display: flex; flex-direction: column; align-items: center; gap: clamp(2px, 0.8vw, 4px); z-index: 2; width: clamp(58px, 15.5vw, 82px); }
+  .pos-slot { position: absolute; transform: translate(-50%, -50%); display: flex; flex-direction: column; align-items: center; gap: clamp(2px, 0.8vw, 4px); z-index: 2; width: clamp(48px, 17cqw, 80px); }
   .pos-label { font-family: 'JetBrains Mono', monospace; font-size: clamp(9px, 2.6vw, 12px); font-weight: 700; letter-spacing: 0.04em; color: var(--ink); background: linear-gradient(135deg, var(--gold), #f4d58d); padding: clamp(2px, 0.6vw, 3px) clamp(5px, 1.6vw, 8px); border-radius: 5px; box-shadow: 0 2px 5px rgba(0,0,0,0.3); }
   .pos-input { width: 100%; text-align: center; font-size: clamp(10.5px, 3vw, 14px); padding: clamp(6px, 1.8vw, 9px) clamp(3px, 1vw, 5px); border-radius: 7px; border: 1px solid rgba(255,255,255,0.4); background: rgba(242,239,230,0.96); color: var(--ink); font-family: 'Oswald', sans-serif; font-weight: 500; box-shadow: 0 2px 6px rgba(0,0,0,0.25), inset 0 1px 0 rgba(255,255,255,0.6); }
   .pos-input.ok { border-color: #2ecc71; background: rgba(46,204,113,0.4); color: var(--chalk); font-weight: 700; }
   .pos-input.bad { border-color: var(--red); background: rgba(193,57,43,0.35); color: var(--chalk); }
   .pos-input.revealed { border-color: #4aa3ff; background: rgba(74,163,255,0.3); color: var(--chalk); font-weight: 700; }
   .pos-input.prefilled { border-color: #d9a441; background: rgba(217,164,65,0.28); color: var(--chalk); font-weight: 600; }
+  .pos-input.long-name { font-size: clamp(8.5px, 2.4vw, 11.5px); }
+  .pos-input.active-field { box-shadow: 0 0 0 3px var(--gold), 0 2px 6px rgba(0,0,0,0.25); }
   .prefill-tag { font-family: 'JetBrains Mono', monospace; font-size: clamp(8px, 2.2vw, 10px); color: rgba(217,164,65,0.9); text-align: center; margin-top: 2px; }
   .prefill-note { font-family: 'JetBrains Mono', monospace; font-size: 10.5px; color: rgba(217,164,65,0.9); text-align: center; margin-bottom: 10px; }
-  .pos-actions { display: flex; width: 100%; gap: clamp(3px, 1vw, 5px); }
-  .hint-btn, .token-btn { flex: 1; min-width: 0; background: rgba(232,178,61,0.15); border: 1px solid rgba(232,178,61,0.35); color: var(--gold); font-family: 'JetBrains Mono', monospace; font-weight: 700; font-size: clamp(8.5px, 2.4vw, 11px); border-radius: 5px; padding: clamp(3px, 1vw, 5px) 2px; cursor: pointer; }
+  .position-panel { background: rgba(242,239,230,0.06); border: 1px solid var(--line); border-radius: 10px; padding: 12px; margin-bottom: 14px; }
+  .position-panel .panel-title { font-family: 'JetBrains Mono', monospace; font-weight: 700; font-size: 13px; color: var(--gold); letter-spacing: 0.04em; margin-bottom: 8px; }
+  .position-panel .panel-solved { font-family: 'Oswald', sans-serif; font-size: 14px; color: rgba(242,239,230,0.75); text-align: center; padding: 6px 0; }
+  .pos-actions { display: flex; width: 100%; gap: 8px; }
+  .hint-btn, .token-btn { flex: 1; min-width: 0; background: rgba(232,178,61,0.15); border: 1px solid rgba(232,178,61,0.35); color: var(--gold); font-family: 'JetBrains Mono', monospace; font-weight: 700; font-size: 13px; border-radius: 6px; padding: 8px 4px; cursor: pointer; }
   .token-btn { background: rgba(74,163,255,0.15); border-color: rgba(74,163,255,0.4); color: #7db8ff; }
   .hint-btn:disabled, .token-btn:disabled { opacity: 0.3; cursor: not-allowed; }
+  .position-panel .hint-text { margin-top: 8px; }
   .score-badge { font-family: 'JetBrains Mono', monospace; font-size: 15px; font-weight: 700; text-align: center; color: var(--gold); margin-bottom: 10px; }
 
   .btn-row { display: flex; gap: 10px; margin-bottom: 10px; }
@@ -362,12 +368,12 @@ const PITCH_LAYOUTS = {
     {abbr:"RA", x:80, y:18}, {abbr:"ST", x:50, y:12}, {abbr:"LA", x:20, y:18}
   ],
   "3-5-2": [
-    {abbr:"TW", x:50, y:90}, {abbr:"RIV", x:65, y:76}, {abbr:"ZIV", x:50, y:80}, {abbr:"LIV", x:35, y:76},
-    {abbr:"RM", x:86, y:50}, {abbr:"RZM", x:64, y:53}, {abbr:"ZM", x:50, y:57}, {abbr:"LZM", x:36, y:53}, {abbr:"LM", x:14, y:50},
+    {abbr:"TW", x:50, y:92}, {abbr:"RIV", x:70, y:76}, {abbr:"ZIV", x:50, y:77}, {abbr:"LIV", x:30, y:76},
+    {abbr:"RM", x:86, y:50}, {abbr:"RZM", x:68, y:53}, {abbr:"ZM", x:50, y:57}, {abbr:"LZM", x:32, y:53}, {abbr:"LM", x:14, y:50},
     {abbr:"RST", x:60, y:16}, {abbr:"LST", x:40, y:16}
   ],
   "3-4-2-1": [
-    {abbr:"TW", x:50, y:90}, {abbr:"RIV", x:65, y:76}, {abbr:"ZIV", x:50, y:80}, {abbr:"LIV", x:35, y:76},
+    {abbr:"TW", x:50, y:92}, {abbr:"RIV", x:70, y:76}, {abbr:"ZIV", x:50, y:77}, {abbr:"LIV", x:30, y:76},
     {abbr:"RM", x:83, y:55}, {abbr:"RZM", x:60, y:58}, {abbr:"LZM", x:40, y:58}, {abbr:"LM", x:17, y:55},
     {abbr:"ROM", x:65, y:28}, {abbr:"LOM", x:35, y:28},
     {abbr:"ST", x:50, y:12}
@@ -381,22 +387,22 @@ const PITCH_LAYOUTS = {
   "4-1-4-1": [
     {abbr:"TW", x:50, y:90}, {abbr:"RV", x:80, y:72}, {abbr:"RIV", x:60, y:76}, {abbr:"LIV", x:40, y:76}, {abbr:"LV", x:20, y:72},
     {abbr:"ZDM", x:50, y:62},
-    {abbr:"RM", x:83, y:46}, {abbr:"RZM", x:60, y:50}, {abbr:"LZM", x:40, y:50}, {abbr:"LM", x:17, y:46},
+    {abbr:"RM", x:83, y:46}, {abbr:"RZM", x:60, y:47}, {abbr:"LZM", x:40, y:47}, {abbr:"LM", x:17, y:46},
     {abbr:"ST", x:50, y:14}
   ],
   "4-5-1": [
     {abbr:"TW", x:50, y:90}, {abbr:"RV", x:80, y:72}, {abbr:"RIV", x:60, y:76}, {abbr:"LIV", x:40, y:76}, {abbr:"LV", x:20, y:72},
-    {abbr:"RM", x:86, y:50}, {abbr:"RZM", x:64, y:53}, {abbr:"ZM", x:50, y:57}, {abbr:"LZM", x:36, y:53}, {abbr:"LM", x:14, y:50},
+    {abbr:"RM", x:86, y:50}, {abbr:"RZM", x:68, y:53}, {abbr:"ZM", x:50, y:57}, {abbr:"LZM", x:32, y:53}, {abbr:"LM", x:14, y:50},
     {abbr:"ST", x:50, y:14}
   ],
   "5-4-1": [
-    {abbr:"TW", x:50, y:94}, {abbr:"RV", x:85, y:68}, {abbr:"RIV", x:65, y:71}, {abbr:"ZIV", x:50, y:73}, {abbr:"LIV", x:35, y:71}, {abbr:"LV", x:15, y:68},
+    {abbr:"TW", x:50, y:94}, {abbr:"RV", x:88, y:68}, {abbr:"RIV", x:68, y:71}, {abbr:"ZIV", x:50, y:73}, {abbr:"LIV", x:32, y:71}, {abbr:"LV", x:12, y:68},
     {abbr:"RM", x:82, y:46}, {abbr:"RZM", x:60, y:49}, {abbr:"LZM", x:40, y:49}, {abbr:"LM", x:18, y:46},
     {abbr:"ST", x:50, y:14}
   ],
   "5-3-2": [
-    {abbr:"TW", x:50, y:94}, {abbr:"RV", x:85, y:68}, {abbr:"RIV", x:65, y:71}, {abbr:"ZIV", x:50, y:73}, {abbr:"LIV", x:35, y:71}, {abbr:"LV", x:15, y:68},
-    {abbr:"RZM", x:65, y:48}, {abbr:"ZM", x:50, y:52}, {abbr:"LZM", x:35, y:48},
+    {abbr:"TW", x:50, y:94}, {abbr:"RV", x:88, y:68}, {abbr:"RIV", x:68, y:71}, {abbr:"ZIV", x:50, y:73}, {abbr:"LIV", x:32, y:71}, {abbr:"LV", x:12, y:68},
+    {abbr:"RZM", x:68, y:48}, {abbr:"ZM", x:50, y:52}, {abbr:"LZM", x:32, y:48},
     {abbr:"RST", x:60, y:16}, {abbr:"LST", x:40, y:16}
   ]
 };
@@ -1004,6 +1010,12 @@ function pickRandomMatch() {
 
 function normalizeName(s) {
   return s.normalize("NFD").replace(/[\u0300-\u036f]/g, "").replace(/['’`]/g, "").toLowerCase().trim().replace(/\s+/g, " ");
+}
+
+// Lange Nachnamen (z.B. "Schweinsteiger") nicht im schmalen .pos-input abschneiden -
+// Schrift etwas verkleinern statt abzuschneiden.
+function applyNameFit(input) {
+  input.classList.toggle("long-name", input.value.length > 11);
 }
 
 /* ================= LEVEL- & REWARD-SYSTEM ================= */
@@ -1764,14 +1776,10 @@ function renderPitch() {
             <div class="pos-slot" style="left:${p.x}%; top:${p.y}%;">
               <div class="pos-label">${p.abbr}</div>
               <input type="text" class="pos-input" data-abbr="${p.abbr}" placeholder="Name" autocomplete="off" autocapitalize="words">
-              <div class="pos-actions">
-                <button type="button" class="hint-btn" data-abbr="${p.abbr}" ${profile.hintCredits <= 0 ? "disabled" : ""}>💡 ${profile.hintCredits}</button>
-                <button type="button" class="token-btn" data-abbr="${p.abbr}" ${profile.hintTokens <= 0 ? "disabled" : ""}>🔍 ${profile.hintTokens}</button>
-              </div>
-              <div class="hint-text" id="hint-${p.abbr}"></div>
             </div>`).join("")}
         </div>
       </div>
+      <div class="position-panel" id="positionPanel"></div>
       <button class="action btn-gold" id="checkBtn" style="width:100%">Auswerten</button>
     </div>`;
 
@@ -1781,60 +1789,76 @@ function renderPitch() {
     input.disabled = true;
     input.dataset.counted = "1"; // keine XP für geschenkte Position
     input.classList.add("prefilled");
+    applyNameFit(input);
   });
 
-  // Hinweis (💡) und Scout-Token (🔍) sind zwei getrennte Währungen: ein voller Reveal ist viel
-  // mehr wert als ein einzelner Buchstabe, daher eigener, günstigerer/häufigerer Hinweis-Vorrat
-  // (wird an denselben Erfolgen wie Scout-Token verdient, aber im 4:1-Verhältnis - siehe evaluatePitch).
-  function refreshTokenButtons() {
-    pitchView.querySelectorAll(".token-btn").forEach(b => {
-      b.textContent = "🔍 " + profile.hintTokens;
-      if (profile.hintTokens <= 0) b.disabled = true;
-    });
-    pitchView.querySelectorAll(".hint-btn").forEach(b => {
-      if (!b.dataset.used) b.textContent = "💡 " + profile.hintCredits;
-      if (profile.hintCredits <= 0) b.disabled = true;
-    });
-  }
+  // Positions-Panel: eine gemeinsame Stelle für 💡/🔍 statt Buttons in jedem Slot (Prompt 2) -
+  // hält die Slots kompakt genug, um Überlappungen auf schmalen Geräten zu vermeiden.
+  // Kosten/XP-Logik ist 1:1 aus der alten Pro-Slot-Version übernommen, nur auf die aktuell
+  // ausgewählte Position (activePosAbbr) umgestellt statt auf slot-gebundene Buttons.
+  let activePosAbbr = null;
+  const panelHintTexts = new Map();
 
-  pitchView.querySelectorAll(".token-btn").forEach(btn => {
-    btn.addEventListener("click", () => {
-      const abbr = btn.dataset.abbr;
-      const input = pitchView.querySelector('input[data-abbr="' + abbr + '"]');
+  function renderPositionPanel(abbr) {
+    const panel = document.getElementById("positionPanel");
+    if (!panel) return;
+    if (!abbr) { panel.innerHTML = ""; return; }
+    const input = pitchView.querySelector('input[data-abbr="' + abbr + '"]');
+    if (!input) { panel.innerHTML = ""; return; }
+    const solved = input.classList.contains("ok") || input.classList.contains("revealed") || input.classList.contains("prefilled");
+    if (solved) {
+      panel.innerHTML = `<div class="panel-title">Position ${abbr}</div><div class="panel-solved">✓ Position gelöst</div>`;
+      return;
+    }
+    const hintUsedHere = hintsUsed.has(abbr);
+    panel.innerHTML = `
+      <div class="panel-title">Position ${abbr}</div>
+      <div class="pos-actions">
+        <button type="button" class="hint-btn" ${(profile.hintCredits <= 0 || hintUsedHere) ? "disabled" : ""}>${hintUsedHere ? "💡 ✓" : "💡 " + profile.hintCredits}</button>
+        <button type="button" class="token-btn" ${profile.hintTokens <= 0 ? "disabled" : ""}>🔍 ${profile.hintTokens}</button>
+      </div>
+      <div class="hint-text">${panelHintTexts.get(abbr) || ""}</div>`;
+
+    panel.querySelector(".token-btn").addEventListener("click", () => {
       if (profile.hintTokens <= 0 || input.classList.contains("ok") || input.classList.contains("revealed")) return;
       profile.hintTokens -= 1;
       saveProfile(profile);
       tokenRevealed.add(abbr);
       input.value = m.players[abbr];
+      applyNameFit(input);
       input.classList.remove("bad", "ok");
       input.classList.add("revealed");
       input.disabled = true;
       input.dataset.counted = "1"; // verhindert nachträgliche XP-Vergabe für diese Position
-      btn.disabled = true;
-      const hintBtn = pitchView.querySelector('.hint-btn[data-abbr="' + abbr + '"]');
-      if (hintBtn) hintBtn.disabled = true;
-      refreshTokenButtons();
+      renderPositionPanel(abbr);
     });
-  });
 
-  pitchView.querySelectorAll(".hint-btn").forEach(btn => {
-    btn.addEventListener("click", () => {
-      const abbr = btn.dataset.abbr;
-      const input = pitchView.querySelector('input[data-abbr="' + abbr + '"]');
-      if (profile.hintCredits <= 0 || btn.dataset.used || input.classList.contains("ok") || input.classList.contains("revealed")) return;
+    panel.querySelector(".hint-btn").addEventListener("click", () => {
+      if (profile.hintCredits <= 0 || hintsUsed.has(abbr) || input.classList.contains("ok") || input.classList.contains("revealed")) return;
       const target = m.players[abbr];
-      const hintText = document.getElementById("hint-" + abbr);
       profile.hintCredits -= 1;
       saveProfile(profile);
       hintsUsed.add(abbr);
       // Genau ein Hinweis pro Position - kein Nachladen von immer mehr Stufen.
-      hintText.textContent = "Beginnt mit " + target[0].toUpperCase();
-      btn.dataset.used = "1";
-      btn.disabled = true;
-      btn.textContent = "💡 ✓";
-      refreshTokenButtons();
+      panelHintTexts.set(abbr, "Beginnt mit " + target[0].toUpperCase());
+      renderPositionPanel(abbr);
     });
+  }
+
+  function setActivePosition(abbr) {
+    activePosAbbr = abbr;
+    pitchView.querySelectorAll(".pos-input").forEach(inp => {
+      inp.classList.toggle("active-field", inp.dataset.abbr === abbr);
+    });
+    renderPositionPanel(abbr);
+  }
+
+  pitchView.querySelectorAll(".pos-input").forEach(input => {
+    input.addEventListener("focus", () => setActivePosition(input.dataset.abbr));
   });
+
+  const firstSelectable = positions.find(p => !prefilledAbbrs.has(p.abbr));
+  if (firstSelectable) setActivePosition(firstSelectable.abbr);
 
   // Live-Prüfung: eigene Position wird direkt grün. Passt der Name nicht zur eigenen
   // Position, aber zu einer ANDEREN Position dieser Aufstellung, wird er automatisch
@@ -1847,6 +1871,7 @@ function renderPitch() {
       if (normalizeName(typed) === normalizeName(ownTarget) && typed.trim().length > 0) {
         input.classList.add("ok");
         input.classList.remove("bad");
+        applyNameFit(input);
         if (!input.dataset.counted) {
           input.dataset.counted = "1";
           profile.stats.positionsCorrectDirect += 1;
@@ -1859,6 +1884,7 @@ function renderPitch() {
           saveProfile(profile);
           newlyUnlocked.forEach(showAchievementToast);
         }
+        if (activePosAbbr === input.dataset.abbr) renderPositionPanel(activePosAbbr);
         return;
       }
       input.classList.remove("ok");
@@ -1874,6 +1900,7 @@ function renderPitch() {
             otherInput.classList.add("ok");
             otherInput.classList.remove("bad");
             otherInput.dataset.counted = "1";
+            applyNameFit(otherInput);
             input.value = "";
             profile.stats.positionsCorrectCrossMatch += 1;
             const usedHint = hintsUsed.has(abbr);
@@ -1884,6 +1911,7 @@ function renderPitch() {
             const newlyUnlocked = checkAchievements(profile);
             saveProfile(profile);
             newlyUnlocked.forEach(showAchievementToast);
+            if (activePosAbbr === abbr) renderPositionPanel(activePosAbbr);
           }
           break;
         }

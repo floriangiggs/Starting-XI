@@ -1,0 +1,9 @@
+{
+  "name": "starting-xi",
+  "private": true,
+  "version": "1.0.0",
+  "description": "Dev-Tooling fuer startelf_check.html (Overlap-Check etc.)",
+  "devDependencies": {
+    "playwright": "^1.48.0"
+  }
+}
