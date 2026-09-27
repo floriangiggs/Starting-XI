@@ -33,7 +33,7 @@
   html { -webkit-text-size-adjust: 100%; }
   html, body { margin: 0; padding: 0; background: var(--ink); color: var(--chalk); font-family: 'Oswald', sans-serif; min-height: 100vh; touch-action: manipulation; }
   button, input { touch-action: manipulation; }
-  body { background-image: repeating-linear-gradient(90deg, rgba(255,255,255,0.02) 0 2px, transparent 2px 40px); display: flex; justify-content: center; padding: 28px 16px 60px; }
+  body { background-image: repeating-linear-gradient(90deg, rgba(255,255,255,0.02) 0 2px, transparent 2px 40px); display: flex; justify-content: center; padding: max(28px, calc(env(safe-area-inset-top) + 14px)) 16px max(60px, calc(env(safe-area-inset-bottom) + 20px)); }
   .app { width: 100%; max-width: 560px; }
 
   header { position: relative; text-align: center; margin-bottom: 22px; padding-top: 6px; }
@@ -201,7 +201,6 @@
   .pos-input.active-field { box-shadow: 0 0 0 3px var(--gold), 0 2px 6px rgba(0,0,0,0.25); }
   .pos-input.near { border-color: var(--gold); background: rgba(232,178,61,0.28); color: var(--chalk); font-weight: 600; }
   .pos-slot:has(.pos-input.near)::after { content: "✏️"; position: absolute; top: -4px; right: -4px; font-size: 10px; }
-  .pitch.sr-locked .pos-input { pointer-events: none; opacity: 0.55; }
   .prefill-tag { font-family: 'JetBrains Mono', monospace; font-size: clamp(8px, 2.2vw, 10px); color: rgba(217,164,65,0.9); text-align: center; margin-top: 2px; }
   .prefill-note { font-family: 'JetBrains Mono', monospace; font-size: 10.5px; color: rgba(217,164,65,0.9); text-align: center; margin-bottom: 10px; }
   .position-panel { background: rgba(242,239,230,0.06); border: 1px solid var(--line); border-radius: 10px; padding: 12px; margin-bottom: 14px; }
@@ -240,20 +239,14 @@
   @keyframes srStampIn { from { transform: rotate(12deg) scale(2.4); opacity: 0; } to { transform: rotate(12deg) scale(1); opacity: 1; } }
 
   .sr-actions { display: flex; flex-direction: column; gap: 8px; margin-top: 10px; }
+  .sr-open-btn { width: 100%; display: flex; align-items: center; justify-content: center; gap: 10px; font-family: 'Oswald', sans-serif; font-weight: 700; font-size: 16px; letter-spacing: 0.02em; border: none; border-radius: 10px; padding: 14px 16px; cursor: pointer; color: var(--ink); background: linear-gradient(135deg, var(--gold), var(--gold-2)); box-shadow: 0 4px 0 #9C7422; animation: srOpenPulse 2.4s ease-in-out infinite; }
+  .sr-open-btn:active:not(:disabled) { transform: translateY(2px); box-shadow: 0 2px 0 #9C7422; }
+  .sr-open-btn:disabled { opacity: 0.4; cursor: not-allowed; animation: none; box-shadow: none; }
+  .sr-open-icon { display: inline-block; font-size: 19px; animation: srOpenSpin 3.5s linear infinite; }
+  @keyframes srOpenPulse { 0%, 100% { box-shadow: 0 4px 0 #9C7422, 0 0 0 0 rgba(232,178,61,0.5); } 50% { box-shadow: 0 4px 0 #9C7422, 0 0 0 9px rgba(232,178,61,0); } }
+  @keyframes srOpenSpin { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
+  .sr-modal-sheet .sr-chips { justify-content: center; }
 
-  .sr-odds { margin-top: 12px; }
-  .sr-odds h3 { font-family: 'JetBrains Mono', monospace; font-size: 11px; letter-spacing: 0.2em; text-transform: uppercase; color: var(--muted); font-weight: 700; margin: 0 0 8px; }
-  .sr-odds ul { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 7px; }
-  .sr-odds li { display: grid; grid-template-columns: 14px 1fr 42px; align-items: center; gap: 10px; font-size: 13px; }
-  .sr-sw { width: 14px; height: 14px; border-radius: 3px; border: 1px solid rgba(255,255,255,0.25); }
-  .sr-name { display: flex; flex-direction: column; gap: 4px; min-width: 0; }
-  .sr-name span { display: flex; justify-content: space-between; gap: 8px; }
-  .sr-name em { font-style: normal; font-size: 10.5px; color: var(--muted); font-family: 'JetBrains Mono', monospace; }
-  .sr-bar { height: 4px; border-radius: 2px; background: var(--faint); overflow: hidden; }
-  .sr-bar i { display: block; height: 100%; background: var(--gold); transition: width 0.6s ease; }
-  .sr-pct { font-family: 'JetBrains Mono', monospace; font-weight: 700; text-align: right; font-variant-numeric: tabular-nums; }
-  .sr-odds li.sr-off { color: var(--muted); }
-  .sr-odds li.sr-off .sr-pct { color: var(--muted); }
   .score-badge { font-family: 'JetBrains Mono', monospace; font-size: 15px; font-weight: 700; text-align: center; color: var(--gold); margin-bottom: 10px; }
   .token-receipt { background: rgba(74,163,255,0.1); border: 1px solid rgba(74,163,255,0.3); border-radius: 10px; padding: 10px 12px; margin-bottom: 12px; font-family: 'JetBrains Mono', monospace; font-size: 12.5px; }
   .token-receipt-title { color: var(--token); font-weight: 700; letter-spacing: 0.04em; margin-bottom: 6px; }
@@ -1242,6 +1235,18 @@ function applyNameFit(input) {
   input.classList.toggle("long-name", input.value.length > 11);
 }
 
+// Rein optisch: Anfangsbuchstabe wird gross geschrieben, sobald klein getippt -
+// Cursor-Position bleibt dabei erhalten. Die Namensprüfung selbst normalisiert
+// Gross-/Kleinschreibung ohnehin, das hier dient nur der Lesbarkeit im Feld.
+function capitalizeFirstLetter(input) {
+  const v = input.value;
+  if (v.length > 0 && v[0] !== v[0].toUpperCase()) {
+    const start = input.selectionStart, end = input.selectionEnd;
+    input.value = v[0].toUpperCase() + v.slice(1);
+    input.setSelectionRange(start, end);
+  }
+}
+
 /* ================= LEVEL- & REWARD-SYSTEM ================= */
 const PROFILE_KEY = "anstoss_profile";
 
@@ -1515,10 +1520,7 @@ function applyUnlockedFeatures() {
 function renderUnlockRow() {
   const row = document.getElementById("unlockRow");
   const chips = [];
-  if (profile.level >= 3) {
-    chips.push({ id: "theme_default", label: "Klassisch", active: profile.selectedTheme !== "flutlicht" });
-    chips.push({ id: "theme_flutlicht", label: "🔵 Flutlicht", active: profile.selectedTheme === "flutlicht" });
-  }
+  // Theme-Umschalter (Klassisch/Flutlicht) bewusst ausgeblendet - noch nicht Release-reif.
   if (profile.level >= 15) {
     chips.push({ id: "hardcore", label: "🔥 Hardcore-Modus", active: !!profile.hardcoreMode });
   }
@@ -1569,15 +1571,16 @@ function openAchievementsModal() {
 /* ================= SPIELANLEITUNG ================= */
 const GUIDE_SECTIONS = [
   { icon: "🎯", title: "Ziel", desc: "Jede Karte zeigt ein echtes Spiel aus der Fußballgeschichte. Trag die komplette Startelf auf ihrer richtigen Position ein." },
-  { icon: "⌨️", title: "Eingabe", desc: "Nachname reicht. Tippst du ihn versehentlich in die falsche Zeile, landet er trotzdem automatisch auf seiner echten Position." },
-  { icon: "🎡", title: "Scout-Rad", desc: "Dreh für 1 🔍 Scout-Token das Rad: 1. Buchstabe, Rückennummer, Nationalität oder als Jackpot der ganze Name - jeder Dreh zählt als Hinweis (etwas weniger XP, kein \"Perfekt\" mehr für diese Aufstellung). Rückennummer/Nationalität gibt's nur, wo die Daten vorliegen; Nationalität entfällt bei Nationalmannschaftsspielen." },
+  { icon: "⌨️", title: "Eingabe", desc: "Nachname reicht. Tippst du ihn versehentlich in die falsche Zeile, landet er trotzdem automatisch auf seiner echten Position, sofern er zu keiner anderen offenen Position ebenfalls passt." },
   { icon: "✏️", title: "Fast richtig", desc: "Kleiner Tippfehler? Das Feld färbt sich gold - mit \"Korrigieren\" trägst du die richtige Schreibweise ein, für etwas weniger XP als beim ersten Versuch." },
-  { icon: "👁️", title: "Aufdecken", desc: "Kostet 3 🔍 Scout-Token und zeigt den kompletten Namen sofort, ohne XP-Abzug." },
+  { icon: "🎡", title: "Scout-Rad", desc: "Tipp im Positions-Panel auf \"Scout-Rad öffnen\" und dreh für 1 🔍 Scout-Token: 1. Buchstabe, Rückennummer, Nationalität oder als Jackpot der ganze Name. Jeder Dreh zählt als Hinweis (etwas weniger XP, kein \"Perfekt\" mehr für diese Aufstellung). Rückennummer/Nationalität gibt's nur, wo die Daten vorliegen; Nationalität entfällt bei Nationalmannschaftsspielen." },
+  { icon: "👁️", title: "Aufdecken", desc: "Direkt neben dem Scout-Rad: zeigt für 3 🔍 Scout-Token sofort den kompletten Namen, ohne XP-Abzug." },
+  { icon: "🔍", title: "Scout-Token verdienen", desc: "Du bekommst Scout-Token fürs erste Spielen einer Aufstellung, für eine perfekte Aufstellung (einmalig je Aufstellung), täglich fürs erste Spiel des Tages, bei jedem Level-Up und für neu freigeschaltete Achievements." },
   { icon: "🏟️", title: "Kampagne", desc: "Fünf Welten von Kreisliga bis Weltklasse. Mindestens 7 von 11 richtig, um ein Level zu bestehen und das nächste freizuschalten." },
   { icon: "🎲", title: "Frei spielen", desc: "Liga und Schwierigkeit frei wählbar, ganz ohne Fortschrittsdruck - für schnelle Runden zwischendurch." },
   { icon: "📈", title: "Level & Rang", desc: "Richtige Positionen, perfekte Aufstellungen und der Tagesbonus bringen XP. Dein Rang steigt automatisch mit." },
   { icon: "🏅", title: "Achievements", desc: "Sammelbare Abzeichen für besondere Leistungen - manche schalten sogar einen eigenen Titel frei." },
-  { icon: "🔓", title: "Freischaltungen", desc: "Ab bestimmten Leveln gibt's neue Spielfeld-Looks und den Hardcore-Modus mit den schwersten Aufstellungen." }
+  { icon: "🔓", title: "Freischaltungen", desc: "Ab Level 15 gibt's den Hardcore-Modus mit den schwersten Aufstellungen." }
 ];
 
 function openGuideModal() {
@@ -2055,6 +2058,11 @@ function segChipLabel(m, abbr, segId) {
   return "★ " + target;
 }
 
+function chipsHTML(m, abbr, drawnSet) {
+  if (!drawnSet || drawnSet.size === 0) return '<span class="sr-chip-empty">Noch keine Tipps für diese Position.</span>';
+  return [...drawnSet].map(id => `<span class="sr-chip">${segChipLabel(m, abbr, id)}</span>`).join("");
+}
+
 function shirtSVG(nr, gold) {
   const body = gold ? "#E8B23D" : "#6CABDD", num = gold ? "#14202B" : "#F2EFE6";
   return `<svg viewBox="0 0 84 84" width="84" height="84" aria-hidden="true">
@@ -2131,12 +2139,12 @@ function renderPitch() {
           ${positions.map(p => prefilledAbbrs.has(p.abbr) ? `
             <div class="pos-slot" style="left:${p.x}%; top:${p.y}%;">
               <div class="pos-label">${p.abbr}</div>
-              <input type="text" class="pos-input" data-abbr="${p.abbr}" placeholder="Name" autocomplete="off" autocapitalize="words">
+              <input type="text" class="pos-input" data-abbr="${p.abbr}" placeholder="Name" autocomplete="off" autocapitalize="words" autocorrect="off" spellcheck="false">
               <div class="prefill-tag">✓ gratis</div>
             </div>` : `
             <div class="pos-slot" style="left:${p.x}%; top:${p.y}%;">
               <div class="pos-label">${p.abbr}</div>
-              <input type="text" class="pos-input" data-abbr="${p.abbr}" placeholder="Name" autocomplete="off" autocapitalize="words">
+              <input type="text" class="pos-input" data-abbr="${p.abbr}" placeholder="Name" autocomplete="off" autocapitalize="words" autocorrect="off" spellcheck="false">
             </div>`).join("")}
         </div>
       </div>
@@ -2158,14 +2166,12 @@ function renderPitch() {
   // Kosten/XP-Logik ist 1:1 aus der alten Pro-Slot-Version übernommen, nur auf die aktuell
   // ausgewählte Position (activePosAbbr) umgestellt statt auf slot-gebundene Buttons.
   let activePosAbbr = null;
-  let wheelAbort = null; // AbortController der zuletzt gemounteten Scout-Rad-Instanz
-
-  function teardownWheel() {
-    if (wheelAbort) { wheelAbort.abort(); wheelAbort = null; }
+  function getDrawnSet(abbr) {
+    if (!wheelDrawn.has(abbr)) wheelDrawn.set(abbr, new Set());
+    return wheelDrawn.get(abbr);
   }
 
   function renderPositionPanel(abbr) {
-    teardownWheel();
     const panel = document.getElementById("positionPanel");
     if (!panel) return;
     if (!abbr) { panel.innerHTML = ""; return; }
@@ -2177,31 +2183,21 @@ function renderPitch() {
       return;
     }
     const isNear = input.classList.contains("near");
+    const drawnSet = getDrawnSet(abbr);
+    const anyAvail = WHEEL_SEGS.some(seg => segAvailableFor(m, abbr, seg, drawnSet));
+    const canOpenWheel = anyAvail && profile.hintTokens >= ECONOMY.spinCost;
+    const openLabel = !anyAvail ? "Alle Tipps gezogen" : !canOpenWheel ? "Zu wenig Token" : "Scout-Rad öffnen";
+    const canReveal = profile.hintTokens >= ECONOMY.revealCost;
     panel.innerHTML = `
       <div class="panel-title">Position ${abbr}</div>
       ${isNear ? `
       <div class="panel-near">✏️ Fast richtig – prüf die Schreibweise</div>
       <button type="button" class="action btn-gold correct-btn" style="width:100%; margin-bottom:8px;">✏️ Korrigieren</button>` : ""}
-      <div class="sr-chips" id="srChips"></div>
-      <div class="sr-stage" id="srStage">
-        <svg class="sr-pointer" id="srPointer" viewBox="0 0 34 40" aria-hidden="true">
-          <defs><linearGradient id="srPg-${abbr}" x1="0" x2="1" y1="0" y2="1"><stop offset="0" stop-color="#F4D58D"/><stop offset="1" stop-color="#E8B23D"/></linearGradient></defs>
-          <path d="M17 38 L3 10 A15 15 0 1 1 31 10 Z" fill="url(#srPg-${abbr})" stroke="#14202B" stroke-width="2"/>
-          <circle cx="17" cy="12" r="4.5" fill="#14202B"/>
-        </svg>
-        <canvas id="srWheel" role="img" aria-label="Scout-Rad"></canvas>
-        <button type="button" class="sr-hub" id="srHub" aria-label="Scout-Rad drehen, kostet ${ECONOMY.spinCost} Token">DREHEN<small>${ECONOMY.spinCost} 🔍</small></button>
-      </div>
-      <div class="sr-skip-hint" id="srSkipHint"></div>
-      <div id="srResultSlot" aria-live="polite"></div>
+      <div class="sr-chips">${chipsHTML(m, abbr, drawnSet)}</div>
       <div class="sr-actions">
-        <button type="button" class="action btn-gold" id="srSpinBtn" style="width:100%">🎡 Scout-Rad drehen · ${ECONOMY.spinCost} Token</button>
-        <button type="button" class="action btn-outline" id="srRevealBtn" style="width:100%">👁️ Aufdecken · ${ECONOMY.revealCost} Token</button>
-      </div>
-      <section class="sr-odds" aria-label="Chancen für diese Position">
-        <h3>Chancen für diese Position</h3>
-        <ul id="srOddsList"></ul>
-      </section>`;
+        <button type="button" class="sr-open-btn" id="srOpenBtn" ${canOpenWheel ? "" : "disabled"}><span class="sr-open-icon">🎡</span> ${openLabel}</button>
+        <button type="button" class="action btn-outline" id="srRevealBtn" style="width:100%" ${canReveal ? "" : "disabled"}>👁️ Aufdecken · ${ECONOMY.revealCost} Token</button>
+      </div>`;
 
     if (isNear) {
       panel.querySelector(".correct-btn").addEventListener("click", () => {
@@ -2226,19 +2222,74 @@ function renderPitch() {
       });
     }
 
-    wheelAbort = mountScoutWheel(panel, abbr, input);
+    panel.querySelector("#srOpenBtn").addEventListener("click", () => openScoutWheelModal(abbr, input));
+
+    panel.querySelector("#srRevealBtn").addEventListener("click", () => {
+      if (profile.hintTokens < ECONOMY.revealCost || input.classList.contains("ok") || input.classList.contains("revealed")) return;
+      profile.hintTokens -= ECONOMY.revealCost;
+      saveProfile(profile);
+      renderProfileBar();
+      tokenRevealed.add(abbr);
+      input.value = m.players[abbr];
+      applyNameFit(input);
+      input.classList.remove("bad", "ok");
+      input.classList.add("revealed");
+      input.disabled = true;
+      input.dataset.counted = "1";
+      renderPositionPanel(abbr);
+    });
+  }
+
+  // Scout-Rad oeffnet sich als Bottom-Sheet-Modal (gleiches Muster wie Anleitung/
+  // Achievements) statt dauerhaft unter der Aufstellung sichtbar zu sein - der Spieler
+  // fordert den Tipp bewusst per Button an, statt das Rad staendig vor Augen zu haben.
+  function openScoutWheelModal(abbr, input) {
+    const backdrop = document.createElement("div");
+    backdrop.className = "modal-backdrop";
+    backdrop.innerHTML = `
+      <div class="modal-sheet sr-modal-sheet">
+        <button class="modal-close" id="srModalClose">Schließen</button>
+        <div class="panel-title" style="text-align:center">🎡 Scout-Rad · Position ${abbr}</div>
+        <div class="sr-chips" id="srChips"></div>
+        <div class="sr-stage" id="srStage">
+          <svg class="sr-pointer" id="srPointer" viewBox="0 0 34 40" aria-hidden="true">
+            <defs><linearGradient id="srPg-${abbr}" x1="0" x2="1" y1="0" y2="1"><stop offset="0" stop-color="#F4D58D"/><stop offset="1" stop-color="#E8B23D"/></linearGradient></defs>
+            <path d="M17 38 L3 10 A15 15 0 1 1 31 10 Z" fill="url(#srPg-${abbr})" stroke="#14202B" stroke-width="2"/>
+            <circle cx="17" cy="12" r="4.5" fill="#14202B"/>
+          </svg>
+          <canvas id="srWheel" role="img" aria-label="Scout-Rad"></canvas>
+          <button type="button" class="sr-hub" id="srHub" aria-label="Scout-Rad drehen, kostet ${ECONOMY.spinCost} Token">DREHEN<small>${ECONOMY.spinCost} 🔍</small></button>
+        </div>
+        <div class="sr-skip-hint" id="srSkipHint"></div>
+        <div id="srResultSlot" aria-live="polite"></div>
+        <button type="button" class="action btn-gold" id="srSpinBtn" style="width:100%">🎡 Scout-Rad drehen · ${ECONOMY.spinCost} Token</button>
+      </div>`;
+    document.body.appendChild(backdrop);
+    const sheet = backdrop.querySelector(".sr-modal-sheet");
+    let closed = false;
+    function closeModal() {
+      if (closed) return;
+      closed = true;
+      ac.abort();
+      backdrop.remove();
+      renderPositionPanel(abbr); // Chips/Button-Zustaende im Panel aktualisieren
+    }
+    const ac = mountScoutWheel(sheet, abbr, input, closeModal);
+    document.getElementById("srModalClose").addEventListener("click", closeModal, { signal: ac.signal });
+    backdrop.addEventListener("click", (e) => { if (e.target === backdrop) closeModal(); }, { signal: ac.signal });
   }
 
   /* ---- Scout-Rad: an diese Position gebundene Instanz (Canvas-Zeichnung/Animation
-     1:1 aus prototypes/scout-rad.html uebernommen). Gibt den AbortController zurueck,
-     mit dem der Aufrufer den window-resize-Listener beim naechsten Panel-Rerender
-     abbricht; die rAF-Schleifen beenden sich selbst, sobald ihr Canvas durch ein
-     innerHTML-Rerender aus dem DOM entfernt wurde (canvas.isConnected). */
-  function mountScoutWheel(panel, abbr, input) {
+     1:1 aus prototypes/scout-rad.html uebernommen), gemountet in das vom Aufrufer
+     uebergebene Element (Modal-Sheet). Gibt den AbortController zurueck, mit dem der
+     Aufrufer beim Schliessen des Modals den window-resize-Listener abbricht; die
+     rAF-Schleifen beenden sich selbst, sobald das Canvas per backdrop.remove() aus
+     dem DOM entfernt wurde (canvas.isConnected). onSolved wird aufgerufen, sobald der
+     Jackpot (fullName) gezogen wurde - der Aufrufer schliesst darin ueblicherweise
+     das Modal. */
+  function mountScoutWheel(panel, abbr, input, onSolved) {
     const ac = new AbortController();
-    const isNational = NATIONAL_TEAM_LEAGUES.has(m.league);
-    if (!wheelDrawn.has(abbr)) wheelDrawn.set(abbr, new Set());
-    const drawnSet = wheelDrawn.get(abbr);
+    const drawnSet = getDrawnSet(abbr);
 
     const isAvailable = (seg) => segAvailableFor(m, abbr, seg, drawnSet);
     const targetWeights = () => WHEEL_SEGS.map(s => isAvailable(s) ? s.weight : 0);
@@ -2249,11 +2300,9 @@ function renderPitch() {
     const stageEl = panel.querySelector("#srStage");
     const hubEl = panel.querySelector("#srHub");
     const spinBtn = panel.querySelector("#srSpinBtn");
-    const revealBtn = panel.querySelector("#srRevealBtn");
     const skipHintEl = panel.querySelector("#srSkipHint");
     const resultSlotEl = panel.querySelector("#srResultSlot");
     const chipsEl = panel.querySelector("#srChips");
-    const oddsListEl = panel.querySelector("#srOddsList");
 
     let rotation = 0, spinning = false, skip = false;
     let disp = targetWeights();
@@ -2273,7 +2322,7 @@ function renderPitch() {
     }
 
     function draw(now = performance.now()) {
-      if (!wheelCanvas.isConnected) return;
+      if (!wheelCanvas.isConnected || S <= 0) return; // Layout evtl. noch nicht bereit (z.B. direkt nach dem Modal-Mount)
       const c = wctx, cx = S / 2, cy = S / 2;
       const RO = S / 2 - 3, rimW = Math.max(12, S * 0.05), r = RO - rimW;
       c.setTransform(DPR, 0, 0, DPR, 0, 0);
@@ -2343,6 +2392,7 @@ function renderPitch() {
     let lastFrame = performance.now();
     function loop(now) {
       if (!wheelCanvas.isConnected) return;
+      if (S <= 0) resize(); // Layout war beim Mount noch nicht bereit - hier nachholen
       const dt = Math.min(64, now - lastFrame); lastFrame = now;
       const tgt = targetWeights();
       if (!spinning) {
@@ -2358,22 +2408,7 @@ function renderPitch() {
     }
 
     function renderChips() {
-      chipsEl.innerHTML = drawnSet.size === 0
-        ? '<span class="sr-chip-empty">Noch keine Tipps für diese Position.</span>'
-        : [...drawnSet].map(id => `<span class="sr-chip">${segChipLabel(m, abbr, id)}</span>`).join("");
-    }
-    function renderOddsList() {
-      const tw = targetWeights(), total = tw.reduce((a, b) => a + b, 0);
-      oddsListEl.innerHTML = WHEEL_SEGS.map((s, i) => {
-        const pct = total > 0 ? Math.round(tw[i] / total * 100) : 0;
-        let reason = "";
-        if (drawnSet.has(s.id)) reason = "bereits gezogen";
-        else if (s.id === "nationality" && isNational) reason = "entfällt bei Nationalteams";
-        return `<li class="${tw[i] ? "" : "sr-off"}">
-          <span class="sr-sw" style="background:${s.swatch}"></span>
-          <span class="sr-name"><span>${WHEEL_LABELS[s.id]}<em>${reason}</em></span><span class="sr-bar"><i style="width:${pct}%"></i></span></span>
-          <span class="sr-pct">${pct}%</span></li>`;
-      }).join("");
+      chipsEl.innerHTML = chipsHTML(m, abbr, drawnSet);
     }
     function renderButtons() {
       const anyAvail = WHEEL_SEGS.some(isAvailable);
@@ -2381,7 +2416,6 @@ function renderPitch() {
       spinBtn.disabled = !canSpin;
       spinBtn.textContent = !anyAvail ? "Alle Tipps gezogen" : profile.hintTokens < ECONOMY.spinCost ? "Zu wenig Token" : spinning ? "Rad dreht …" : `🎡 Scout-Rad drehen · ${ECONOMY.spinCost} Token`;
       hubEl.disabled = !canSpin && !spinning;
-      revealBtn.disabled = spinning || profile.hintTokens < ECONOMY.revealCost;
     }
 
     function showSpinResult(pick) {
@@ -2406,8 +2440,6 @@ function renderPitch() {
     }
 
     function finishSpin(pick) {
-      pitchView.querySelector(".pitch").classList.remove("sr-locked");
-      document.getElementById("checkBtn").disabled = false;
       rotation = ((rotation % WHEEL_TAU) + WHEEL_TAU) % WHEEL_TAU;
       spinning = false; lightMode = "idle";
       skipHintEl.textContent = "";
@@ -2427,9 +2459,9 @@ function renderPitch() {
           input.classList.add("revealed");
           input.disabled = true;
           input.dataset.counted = "1";
-          renderPositionPanel(abbr); // zeigt jetzt den "geloest"-Zustand, mountet dieses Rad ab
+          if (onSolved) onSolved();
         } else {
-          renderChips(); renderOddsList(); renderButtons();
+          renderChips(); renderButtons();
         }
       }, WHEEL_RM ? 0 : 1100);
       renderButtons();
@@ -2446,8 +2478,6 @@ function renderPitch() {
       saveProfile(profile);
       renderProfileBar();
       resultSlotEl.innerHTML = "";
-      pitchView.querySelector(".pitch").classList.add("sr-locked");
-      document.getElementById("checkBtn").disabled = true;
 
       const total = avail.reduce((a, s) => a + s.weight, 0);
       let x = Math.random() * total, pickSeg = avail[avail.length - 1];
@@ -2484,23 +2514,9 @@ function renderPitch() {
     spinBtn.addEventListener("click", spin, { signal: ac.signal });
     hubEl.addEventListener("click", () => spinning ? (skip = true) : spin(), { signal: ac.signal });
     wheelCanvas.addEventListener("click", () => spinning ? (skip = true) : spin(), { signal: ac.signal });
-    revealBtn.addEventListener("click", () => {
-      if (spinning || profile.hintTokens < ECONOMY.revealCost || input.classList.contains("ok") || input.classList.contains("revealed")) return;
-      profile.hintTokens -= ECONOMY.revealCost;
-      saveProfile(profile);
-      renderProfileBar();
-      tokenRevealed.add(abbr);
-      input.value = m.players[abbr];
-      applyNameFit(input);
-      input.classList.remove("bad", "ok");
-      input.classList.add("revealed");
-      input.disabled = true;
-      input.dataset.counted = "1";
-      renderPositionPanel(abbr);
-    }, { signal: ac.signal });
 
     resize();
-    renderChips(); renderOddsList(); renderButtons();
+    renderChips(); renderButtons();
     requestAnimationFrame(loop);
     return ac;
   }
@@ -2539,6 +2555,7 @@ function renderPitch() {
   // dorthin "einsortiert" und dort grün markiert - das Feld, in dem getippt wurde, leert sich wieder.
   pitchView.querySelectorAll(".pos-input").forEach(input => {
     input.addEventListener("input", () => {
+      capitalizeFirstLetter(input);
       const typed = input.value;
       input.classList.remove("near"); // sobald weitergetippt wird, alten Fast-richtig-Zustand verwerfen
       clearTimeout(fuzzyTimers.get(input.dataset.abbr));
