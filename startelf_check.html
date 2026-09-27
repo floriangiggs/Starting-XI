@@ -615,7 +615,9 @@ const LINEUP_CHALLENGES = [
     context: "Nach sieben Jahren Zweitliga-Odyssee machte der HSV vor 57.000 Zuschauern im ausverkauften Volksparkstadion die Rückkehr in die Bundesliga perfekt.",
     formation: "4-3-3",
     difficulty: 5,
-    players: { TW:"Heuer Fernandes", RV:"Mikelbrencis", RIV:"Poreba", LIV:"Elfadli", LV:"Muheim", RZM:"Königsdörffer", ZM:"Meffert", LZM:"Reis", RA:"Dompé", ST:"Selke", LA:"Sahiti" }
+    players: { TW:"Heuer Fernandes", RV:"Mikelbrencis", RIV:"Poreba", LIV:"Elfadli", LV:"Muheim", RZM:"Königsdörffer", ZM:"Meffert", LZM:"Reis", RA:"Dompé", ST:"Selke", LA:"Sahiti" },
+    details: { TW:{nr:1}, RV:{nr:2,nat:"FR"}, RIV:{nr:6,nat:"PL"}, LIV:{nr:8,nat:"LY"}, LV:{nr:28,nat:"CH"}, RZM:{nr:11,nat:"GH"}, ZM:{nr:23,nat:"DE"}, LZM:{nr:14,nat:"NL"}, RA:{nr:7,nat:"FR"}, ST:{nr:27,nat:"DE"}, LA:{nr:29,nat:"XK"} },
+    source: "https://www.fussballdaten.de/2liga/2025/33/hamburg-ulm/ ; Königsdörffer-Rückennummer per Websuche auf 11 korrigiert (Fussballdaten zeigte fehlerhaft 112); Nationalitäten via HSV.de/Wikipedia-Spielerprofile. Heuer Fernandes: nat weggelassen (deutsch-portugiesische Doppelstaatlerschaft, bislang keine A-Nationalmannschaft für DE oder PT belegt)."
   },
   {
     id: "atletico-titel-2014",
@@ -640,7 +642,9 @@ const LINEUP_CHALLENGES = [
     context: "Der amtierende Welt- und Europameister Frankreich verlor sein Auftaktspiel gegen den WM-Debütanten Senegal - bis heute eine der größten Überraschungen der Turniergeschichte.",
     formation: "4-5-1",
     difficulty: 5,
-    players: { TW:"Sylva", RV:"Daf", RIV:"Diatta", LIV:"Diop", LV:"Coly", RM:"Fadiga", RZM:"Bouba Diop", ZM:"Cissé", LZM:"N'Diaye", LM:"Diao", ST:"Diouf" }
+    players: { TW:"Sylva", RV:"Daf", RIV:"Diatta", LIV:"Diop", LV:"Coly", RM:"Fadiga", RZM:"Bouba Diop", ZM:"Cissé", LZM:"N'Diaye", LM:"Diao", ST:"Diouf" },
+    details: { TW:{nr:1}, RV:{nr:2}, RIV:{nr:13}, LIV:{nr:4}, LV:{nr:17}, RM:{nr:10}, RZM:{nr:19}, ZM:{nr:6}, LZM:{nr:14}, LM:{nr:15}, ST:{nr:11} },
+    source: "https://en.wikipedia.org/wiki/2002_FIFA_World_Cup_Group_A ; Kader-Rueckennummern gegengeprueft via Wikipedia-Spielerprofile (Sylva, Diao, Diatta, N'Diaye). WM = nat weggelassen."
   },
   {
     id: "island-england-2016",
@@ -651,7 +655,9 @@ const LINEUP_CHALLENGES = [
     context: "Ein Land mit rund 330.000 Einwohnern warf England aus dem Turnier - einer der größten Schocks der englischen Fußballgeschichte, live im ganzen Land bejubelt.",
     formation: "4-4-2",
     difficulty: 5,
-    players: { TW:"Halldórsson", RV:"Sævarsson", RIV:"Árnason", LIV:"Sigurðsson", LV:"Skúlason", RM:"G. Sigurðsson", RZM:"Gunnarsson", LZM:"Bjarnason", LM:"Guðmundsson", RST:"Sigþórsson", LST:"Böðvarsson" }
+    players: { TW:"Halldórsson", RV:"Sævarsson", RIV:"Árnason", LIV:"Sigurðsson", LV:"Skúlason", RM:"G. Sigurðsson", RZM:"Gunnarsson", LZM:"Bjarnason", LM:"Guðmundsson", RST:"Sigþórsson", LST:"Böðvarsson" },
+    details: { TW:{nr:1}, RV:{nr:2}, RIV:{nr:14}, LIV:{nr:6}, LV:{nr:23}, RM:{nr:10}, RZM:{nr:17}, LZM:{nr:8}, LM:{nr:7}, RST:{nr:9}, LST:{nr:15} },
+    source: "https://en.wikipedia.org/wiki/UEFA_Euro_2016_knockout_stage (Rohtext, England v Iceland); gegengeprueft via Websuche. EM = nat weggelassen."
   },
   {
     id: "ajax-real-madrid-2019",
@@ -676,7 +682,9 @@ const LINEUP_CHALLENGES = [
     formation: "5-4-1",
     difficulty: 5,
     players: { TW:"Navas", RV:"Gamboa", RIV:"Duarte", ZIV:"González", LIV:"Umaña", LV:"Junior Díaz", RM:"Bolaños", RZM:"Borges", LZM:"Tejeda", LM:"Ruiz", ST:"Campbell" },
-    aliases: { LV: ["Junior"] }
+    aliases: { LV: ["Junior"] },
+    details: { TW:{nr:1}, RV:{nr:16}, RIV:{nr:6}, ZIV:{nr:3}, LIV:{nr:4}, LV:{nr:15}, RM:{nr:7}, RZM:{nr:5}, LZM:{nr:17}, LM:{nr:10}, ST:{nr:9} },
+    source: "https://en.wikipedia.org/w/index.php?title=2014_FIFA_World_Cup_Group_D (Match-Rohtext) gegengeprueft mit https://en.wikipedia.org/wiki/Template:Costa_Rica_squad_2014_FIFA_World_Cup (Kader-Rueckennummern identisch). WM = nat weggelassen."
   },
   {
     id: "wolfsburg-real-2016",
@@ -687,7 +695,9 @@ const LINEUP_CHALLENGES = [
     context: "Die Wölfe schockten den späteren Champions-League-Sieger im eigenen Stadion - ehe Cristiano Ronaldo im Rückspiel mit einem Solo-Hattrick das Weiterkommen für Real Madrid sicherte.",
     formation: "4-4-2",
     difficulty: 5,
-    players: { TW:"Benaglio", RV:"Vieirinha", RIV:"Dante", LIV:"Naldo", LV:"Rodríguez", RM:"Draxler", RZM:"Arnold", LZM:"Gustavo", LM:"Guilavogui", RST:"Schürrle", LST:"Henrique" }
+    players: { TW:"Benaglio", RV:"Vieirinha", RIV:"Dante", LIV:"Naldo", LV:"Rodríguez", RM:"Draxler", RZM:"Arnold", LZM:"Gustavo", LM:"Guilavogui", RST:"Schürrle", LST:"Henrique" },
+    details: { TW:{nr:1,nat:"CH"}, RV:{nr:8,nat:"PT"}, RIV:{nr:18,nat:"BR"}, LIV:{nr:25,nat:"BR"}, LV:{nr:34,nat:"CH"}, RM:{nr:10,nat:"DE"}, RZM:{nr:27,nat:"DE"}, LZM:{nr:22,nat:"BR"}, LM:{nr:23,nat:"FR"}, RST:{nr:17,nat:"DE"}, LST:{nr:16,nat:"BR"} },
+    source: "https://en.wikipedia.org/wiki/2015%E2%80%9316_VfL_Wolfsburg_season (Kader-Rueckennummern) gegengeprueft mit ESPN-Spielbericht (identisch); Bruno Henrique #16 zusaetzlich per Websuche bestaetigt. Nationalitaeten via Wikipedia-Spielerprofile/Websuche."
   },
   {
     id: "barcelona-frankfurt-2022",
