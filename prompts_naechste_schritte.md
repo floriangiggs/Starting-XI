@@ -510,6 +510,11 @@ Umsetzung:
 Lies CLAUDE.md. Größere Änderung am Progressionssystem → Plan Mode, Plan
 zeigen, auf OK warten. Optische Referenz: prototypes/scout-profil.html
 (Sterne unter den Level-Punkten, Sterne-Summe pro Welt).
+WICHTIG: Weltkarte (Stadion-Roadmap) und geschlängelter Level-Pfad pro Welt
+bleiben in Aufbau und Optik unverändert. Der flache Level-Streifen im
+Prototyp ist nur ein Platzhalter, um die Sterne zu zeigen – NICHT nachbauen.
+Es kommen lediglich die Sterne unter die bestehenden Level-Punkte und die
+Sterne-Summe an die Welten.
 
 Ausgangslage (bereits analysiert):
 - xpForLevel(n) = 100·n·(n+1)/2 → Level 30 (Weltklasse) = 46.500 XP.
@@ -656,6 +661,8 @@ Lies CLAUDE.md. Neues Feature → Plan Mode, Plan zeigen, auf OK warten.
 Optik der Startseiten-Karte (offen/gelöst), des 🔥-Chips in der
 Profilleiste und der "Letzte 7 Tage"-Leiste 1:1 aus
 prototypes/scout-profil.html. Voraussetzungen: Prompts 7, 11, 12.
+Die Kampagne (Weltkarte + Level-Pfad) bleibt unverändert; der Level-
+Streifen im Prototyp ist nur Platzhalter.
 
 1. Auswahl der Tages-Aufstellung (ohne Server, für alle gleich)
    - Datum immer LOKAL bestimmen (dateKey "YYYY-MM-DD" aus
