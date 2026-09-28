@@ -1257,6 +1257,7 @@ const defaultProfile = {
   level: 1,
   hintTokens: 0,
   economyVersion: 2,
+  prefillSeed: null, // wird in loadProfile() einmalig zufaellig vergeben und persistiert
   perfectRewarded: {}, // match.id -> true; einmaliger Perfekt-Token-Bonus pro Aufstellung
   hasSeenGuide: false,
   stats: {
@@ -1323,11 +1324,15 @@ function flagEmoji(code) {
 function loadProfile() {
   try {
     const raw = localStorage.getItem(PROFILE_KEY);
-    if (!raw) return structuredClone(defaultProfile);
-    const parsed = JSON.parse(raw);
-    const profile = parsed.version !== defaultProfile.version
-      ? { ...structuredClone(defaultProfile), ...parsed, version: defaultProfile.version }
-      : parsed;
+    const parsed = raw ? JSON.parse(raw) : null;
+    // Kein frueher Return mehr bei fehlendem localStorage-Eintrag: ein brandneues Profil
+    // muss ebenfalls durch die Seed-Vergabe unten laufen, sonst wuerde jedes neue Profil
+    // denselben, beim Skript-Parse einmalig ausgewuerfelten Seed bekommen (siehe Prompt 9).
+    const profile = !parsed
+      ? structuredClone(defaultProfile)
+      : (parsed.version !== defaultProfile.version
+          ? { ...structuredClone(defaultProfile), ...parsed, version: defaultProfile.version }
+          : parsed);
     // Kampagnen-Fortschritt: nur levelPassed wird gespeichert, alles Freigeschaltete
     // wird daraus live berechnet - so kann kein veralteter Freischalt-Zustand entstehen.
     if (!profile.campaign || typeof profile.campaign !== "object") profile.campaign = { levelPassed: {} };
@@ -1344,9 +1349,19 @@ function loadProfile() {
     if (!profile.perfectRewarded || typeof profile.perfectRewarded !== "object") profile.perfectRewarded = {};
     if (typeof profile.hasSeenGuide !== "boolean") profile.hasSeenGuide = false;
     if (typeof profile.stats.positionsCorrectFuzzy !== "number") profile.stats.positionsCorrectFuzzy = 0;
+    // Fester Zufalls-Seed pro Profil (Prompt 9): macht die pro Kampagnen-Level geschenkten
+    // Positionen deterministisch statt bei jedem Neustart neu auszuwuerfeln. Sofort
+    // speichern, sonst wuerde ein Reload vor dem ersten saveProfile()-Aufruf im Spiel
+    // einen neuen, abweichenden Seed erzeugen.
+    if (typeof profile.prefillSeed !== "number") {
+      profile.prefillSeed = generatePrefillSeed();
+      saveProfile(profile);
+    }
     return profile;
   } catch (e) {
-    return structuredClone(defaultProfile);
+    const fallback = structuredClone(defaultProfile);
+    fallback.prefillSeed = generatePrefillSeed();
+    return fallback;
   }
 }
 
@@ -1986,9 +2001,10 @@ let wheelDrawn = new Map(); // abbr -> Set gezogener Scout-Rad-Segment-IDs diese
    Welt - rein formelbasiert aus tier/index/Levelanzahl, keine neuen Pflegedaten
    pro Aufstellung nötig, funktioniert automatisch weiter bei neuen/entfernten
    Aufstellungen. Torwart und Stürmer bleiben immer dem Spieler vorbehalten (am
-   einprägsamsten); welche der übrigen Positionen geschenkt werden, wird bei
-   jedem Versuch neu gemischt - sonst wäre es z.B. bei einer Vierer-Abwehr immer
-   exakt dieselbe komplette Kette, das wirkt eintönig/vorhersehbar. */
+   einprägsamsten); welche der übrigen Positionen geschenkt werden, ist pro
+   Spieler und Level fest (deterministisch aus Match-ID + profile.prefillSeed),
+   zwischen Levels aber unterschiedlich - sonst liesse sich die komplette
+   Aufstellung durch bloßes Neustarten des Levels gratis aufdecken (Prompt 9). */
 const PREFILL_PROTECTED = new Set(["TW", "RST", "LST", "ST"]);
 const PREFILL_MAX_BY_TIER = { 1: 4, 2: 3, 3: 2, 4: 1, 5: 0 };
 
@@ -1999,22 +2015,46 @@ function prefillCountForLevel(tier, index, levelCount) {
   return Math.max(0, Math.round(max * ratio));
 }
 
-function shuffled(arr) {
+// Deterministischer RNG (ohne Library) fuer die Prefill-Auswahl: dieselbe Match-ID +
+// derselbe profile.prefillSeed liefern immer dieselbe Zufallsfolge, ein Neustart des
+// Levels wuerfelt also nichts Neues mehr.
+function hashString(str) { // FNV-1a, 32-bit
+  let h = 0x811c9dc5;
+  for (let i = 0; i < str.length; i++) {
+    h ^= str.charCodeAt(i);
+    h = Math.imul(h, 0x01000193);
+  }
+  return h >>> 0;
+}
+function mulberry32(seed) { // liefert eine Funktion wie Math.random, deterministisch aus seed
+  let a = seed >>> 0;
+  return function () {
+    a |= 0; a = (a + 0x6D2B79F5) | 0;
+    let t = Math.imul(a ^ (a >>> 15), 1 | a);
+    t = (t + Math.imul(t ^ (t >>> 7), 61 | t)) ^ t;
+    return ((t ^ (t >>> 14)) >>> 0) / 4294967296;
+  };
+}
+function generatePrefillSeed() {
+  return Math.floor(Math.random() * 0xFFFFFFFF) >>> 0; // nur EIN Mal pro Profil zufaellig
+}
+
+function shuffled(arr, rng = Math.random) {
   const a = arr.slice();
   for (let i = a.length - 1; i > 0; i--) {
-    const j = Math.floor(Math.random() * (i + 1));
+    const j = Math.floor(rng() * (i + 1));
     [a[i], a[j]] = [a[j], a[i]];
   }
   return a;
 }
 
-function selectPrefillAbbrs(positions, count) {
+function selectPrefillAbbrs(positions, count, rng = Math.random) {
   if (count <= 0) return new Set();
   const abbrs = positions.map(p => p.abbr);
-  const eligible = shuffled(abbrs.filter(a => !PREFILL_PROTECTED.has(a)));
+  const eligible = shuffled(abbrs.filter(a => !PREFILL_PROTECTED.has(a)), rng);
   const chosen = eligible.slice(0, count);
   if (chosen.length < count) {
-    const rest = shuffled(abbrs.filter(a => !chosen.includes(a)));
+    const rest = shuffled(abbrs.filter(a => !chosen.includes(a)), rng);
     chosen.push(...rest.slice(0, count - chosen.length));
   }
   return new Set(chosen);
@@ -2024,7 +2064,8 @@ function getPrefillAbbrs(m) {
   if (!currentLevelContext) return new Set(); // Freispielen bleibt voll fordernd
   const { tier, index } = currentLevelContext;
   const levelCount = getMatchesByTier(tier).length;
-  return selectPrefillAbbrs(PITCH_LAYOUTS[m.formation], prefillCountForLevel(tier, index, levelCount));
+  const rng = mulberry32((hashString(m.id) ^ profile.prefillSeed) >>> 0);
+  return selectPrefillAbbrs(PITCH_LAYOUTS[m.formation], prefillCountForLevel(tier, index, levelCount), rng);
 }
 
 /* ================= SCOUT-RAD (Prompt 6) =================
