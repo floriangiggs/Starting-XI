@@ -140,7 +140,6 @@
   .level-node.current .level-dot { border-color: var(--node-color, var(--gold)); animation: floodlightPulse 1.8s ease-in-out infinite; }
   .level-node.current .level-spotlight { position: absolute; bottom: 100%; left: 50%; transform: translateX(-50%); width: 4px; height: 44px; background: linear-gradient(180deg, transparent, var(--node-color, var(--gold))55); }
   .level-node.current .level-spotlight::before { content: ""; position: absolute; bottom: -8px; left: 50%; transform: translateX(-50%); width: 80px; height: 54px; background: radial-gradient(ellipse at 50% 100%, var(--node-color, var(--gold))40, transparent 70%); }
-  .level-node .level-star { position: absolute; top: -9px; right: -9px; font-size: 19px; filter: drop-shadow(0 2px 3px rgba(0,0,0,0.5)); z-index: 3; }
   .level-node .level-ball { position: absolute; top: -30px; left: 50%; transform: translateX(-50%); font-size: 20px; animation: ballBounce 1.1s ease-in-out infinite; filter: drop-shadow(0 2px 3px rgba(0,0,0,0.5)); z-index: 3; }
   .level-node .level-label { margin-top: 6px; font-family: 'Oswald', sans-serif; font-weight: 700; font-size: 14px; letter-spacing: 0.02em; color: rgba(242,239,230,0.85); text-shadow: 0 2px 4px rgba(0,0,0,0.6); }
   .level-node.passed .level-label { color: var(--chalk); }
@@ -245,6 +244,18 @@
   .sr-modal-sheet .sr-chips { justify-content: center; }
 
   .score-badge { font-family: 'Anton', sans-serif; font-weight: 400; font-size: 15px; text-align: center; color: var(--gold); margin-bottom: 10px; }
+  .combo-chip { text-align: center; font-family: 'Anton', sans-serif; font-weight: 400; font-size: 15px; color: var(--gold); background: rgba(232,178,61,0.14); border: 1px solid rgba(232,178,61,0.4); border-radius: 20px; padding: 5px 14px; margin: 0 auto 10px; width: fit-content; }
+  .combo-chip.combo-pop { animation: srChipIn 0.35s cubic-bezier(.2,1.4,.4,1); }
+  .stars-row { display: inline-flex; gap: 2px; }
+  .stars-row svg { width: 15px; height: 15px; }
+  .star-pop { display: inline-flex; animation: starPop 0.5s cubic-bezier(.2,1.6,.4,1); }
+  @keyframes starPop { from { transform: scale(0.3); opacity: 0; } to { transform: scale(1); opacity: 1; } }
+  .result-stars { display: flex; justify-content: center; margin: -2px 0 10px; }
+  .result-stars .stars-row svg { width: 22px; height: 22px; }
+  .level-stars { display: flex; justify-content: center; gap: 2px; margin-top: 4px; min-height: 12px; }
+  .level-stars svg { width: 11px; height: 11px; }
+  .world-star-total { font-family: 'Oswald', sans-serif; font-weight: 600; font-size: 11px; color: var(--gold); background: rgba(232,178,61,0.12); border: 1px solid rgba(232,178,61,0.3); border-radius: 20px; padding: 3px 10px; }
+  .stadium-stars { font-family: 'Oswald', sans-serif; font-weight: 600; font-size: 9.5px; color: rgba(217,164,65,0.9); text-align: center; margin-top: 3px; }
   .token-receipt { background: rgba(74,163,255,0.1); border: 1px solid rgba(74,163,255,0.3); border-radius: 10px; padding: 10px 12px; margin-bottom: 12px; font-family: 'Oswald', sans-serif; font-size: 12.5px; }
   .token-receipt-title { color: var(--token); font-weight: 700; letter-spacing: 0.04em; margin-bottom: 6px; }
   .token-receipt-line { display: flex; justify-content: space-between; padding: 2px 0; color: rgba(242,239,230,0.85); }
@@ -1210,7 +1221,7 @@ function damerauLevenshtein(a, b) {
   return d[al][bl];
 }
 
-const FUZZY = { maxDist: (len) => (len <= 4 ? 0 : len <= 8 ? 1 : 2), debounceMs: 800, correctedXP: 10 };
+const FUZZY = { maxDist: (len) => (len <= 4 ? 0 : len <= 8 ? 1 : 2), debounceMs: 800 };
 
 // "Fast richtig": jeden acceptedNames()-Eintrag EINZELN gegen seine eigene (laengenabhaengige)
 // Toleranz pruefen - nah, wenn irgendeiner passt. Nie auf Cross-Match anwenden (Prompt 4).
@@ -1256,6 +1267,7 @@ const defaultProfile = {
   economyVersion: 2,
   prefillSeed: null, // wird in loadProfile() einmalig zufaellig vergeben und persistiert
   perfectRewarded: {}, // match.id -> true; einmaliger Perfekt-Token-Bonus pro Aufstellung
+  best: {}, // match.id -> { stars: 0-3, correct, solvedAbbrs: string[] }; immer das beste Ergebnis (Prompt 11)
   hasSeenGuide: false,
   stats: {
     lineupsPlayed: 0,
@@ -1288,6 +1300,23 @@ const ECONOMY = {
   earnLevelUp: 3, earnAchievement: 2,
   wheel: { firstLetter: 30, shirtNumber: 30, nationality: 30, fullName: 10 }
 };
+
+/* ================= XP-REGELN (Prompt 11) =================
+   Zentrale Werte fuer Positions-/Sternen-/Trainings-XP - keine Magic Numbers
+   im Code verteilt. Positions-XP ohne Hilfe skaliert mit der Kombo (siehe
+   bumpCombo() in renderPitch): min(positionBase + positionComboStep*(kombo-1),
+   positionComboCap). Cross-Match nutzt dieselbe Formmechanik mit eigener,
+   niedrigerer Basis/Deckel. */
+const XP_RULES = {
+  positionBase: 15, positionComboStep: 2, positionComboCap: 25,
+  positionWithHint: 5,
+  crossMatchBase: 8, crossMatchComboCap: 18, crossMatchWithHint: 3,
+  fuzzyCorrected: 10, fuzzyCorrectedWithHint: 5,
+  trainingXP: 10,   // Wiederholung ohne jede Verbesserung (weder neue Position noch neuer Stern)
+  firstPlayXP: 20,  // "Erstmals gespielt" - unabhaengig von Sternen/Verbesserung
+  starBonus: { 1: 50, 2: 75, 3: 125 } // einmalig, beim ERSTEN Erreichen der jeweiligen Stufe
+};
+
 const NATIONAL_TEAM_LEAGUES = new Set(["Weltmeisterschaft", "Europameisterschaft", "Copa America"]);
 
 // Nur die ISO-3166/UK-Sondercodes, die in LINEUP_CHALLENGES tatsaechlich vorkommen
@@ -1354,6 +1383,28 @@ function loadProfile() {
       profile.prefillSeed = generatePrefillSeed();
       saveProfile(profile);
     }
+    // Sterne-Migration (Prompt 11): profile.best existierte vorher nicht - aus den
+    // bisherigen groben Erfolgs-Listen werden Sterne rekonstruiert. solvedAbbrs bleibt
+    // dabei leer (keine historischen Detaildaten), das kostet migrierte Spieler beim
+    // naechsten Spielen hoechstens nochmal volles Positions-XP, ist also kein Nachteil.
+    if (!profile.best || typeof profile.best !== "object") profile.best = {};
+    (profile.stats.perfectMatchIds || []).forEach(id => {
+      const cur = profile.best[id];
+      if (!cur || cur.stars < 3) profile.best[id] = { stars: 3, correct: 11, solvedAbbrs: (cur && cur.solvedAbbrs) || [] };
+    });
+    Object.keys(profile.campaign.levelPassed).forEach(id => {
+      if (!profile.campaign.levelPassed[id]) return;
+      if (!profile.best[id]) profile.best[id] = { stars: 1, correct: PASS_THRESHOLD, solvedAbbrs: [] };
+    });
+    // XP-Kurven-Migration (Prompt 11): die Kurvenkonstante sank von 100 auf 75, das
+    // bestehende Level darf dadurch fuer niemanden sinken. Unconditional bei jedem
+    // Load - mathematisch idempotent, da levelFromXP garantiert xpForLevel(level) <= totalXP.
+    // Level 1 braucht per Definition 0 XP (levelFromXP prueft nie xpForLevel(1)) - ohne die
+    // Sonderbehandlung wuerde xpForLevel(1) jedem brandneuen Profil faelschlich Start-XP schenken.
+    if ((profile.level || 1) > 1) {
+      profile.totalXP = Math.max(profile.totalXP || 0, xpForLevel(profile.level));
+    }
+    profile.level = levelFromXP(profile.totalXP || 0);
     return profile;
   } catch (e) {
     const fallback = structuredClone(defaultProfile);
@@ -1366,7 +1417,11 @@ function saveProfile(p) {
   try { localStorage.setItem(PROFILE_KEY, JSON.stringify(p)); } catch (e) { /* Speicher evtl. voll/deaktiviert - Spiel läuft trotzdem weiter */ }
 }
 
-function xpForLevel(n) { return 100 * n * (n + 1) / 2; }
+// Kurven-Konstante 75 (statt vormals 100) - siehe tools/xp-sim.mjs: bei
+// aktuell 50 Aufstellungen und XP_RULES ergibt vollstaendiges 3-Sterne-
+// Durchspielen ca. Level 25; Level 30 bleibt ueber die kommende
+// Tages-Challenge (Prompt 13) in ca. 2 Monaten erreichbar (Prompt 11).
+function xpForLevel(n) { return 75 * n * (n + 1) / 2; }
 function levelFromXP(totalXP) {
   let level = 1;
   while (xpForLevel(level + 1) <= totalXP) level++;
@@ -1585,12 +1640,14 @@ const GUIDE_SECTIONS = [
   { icon: "🎯", title: "Ziel", desc: "Jede Karte zeigt ein echtes Spiel aus der Fußballgeschichte. Trag die komplette Startelf auf ihrer richtigen Position ein." },
   { icon: "⌨️", title: "Eingabe", desc: "Nachname reicht. Tippst du ihn versehentlich in die falsche Zeile, landet er trotzdem automatisch auf seiner echten Position, sofern er zu keiner anderen offenen Position ebenfalls passt." },
   { icon: "✏️", title: "Fast richtig", desc: "Kleiner Tippfehler? Das Feld färbt sich gold - mit \"Korrigieren\" trägst du die richtige Schreibweise ein, für etwas weniger XP als beim ersten Versuch." },
-  { icon: "🎡", title: "Scout-Rad", desc: "Tipp im Positions-Panel auf \"Scout-Rad öffnen\" und dreh für 1 🔍 Scout-Token: 1. Buchstabe, Rückennummer, Nationalität oder als Jackpot der ganze Name. Jeder Dreh zählt als Hinweis (etwas weniger XP, kein \"Perfekt\" mehr für diese Aufstellung). Rückennummer/Nationalität gibt's nur, wo die Daten vorliegen; Nationalität entfällt bei Nationalmannschaftsspielen." },
+  { icon: "🎡", title: "Scout-Rad", desc: "Tipp im Positions-Panel auf \"Scout-Rad öffnen\" und dreh für 1 🔍 Scout-Token: 1. Buchstabe, Rückennummer, Nationalität oder als Jackpot der ganze Name. Jeder Dreh zählt als Hinweis (etwas weniger XP, kein ⭐⭐⭐ mehr für diese Aufstellung). Rückennummer/Nationalität gibt's nur, wo die Daten vorliegen; Nationalität entfällt bei Nationalmannschaftsspielen." },
   { icon: "👁️", title: "Aufdecken", desc: "Direkt neben dem Scout-Rad: zeigt für 3 🔍 Scout-Token sofort den kompletten Namen, ohne XP-Abzug." },
   { icon: "🔍", title: "Scout-Token verdienen", desc: "Du bekommst Scout-Token fürs erste Spielen einer Aufstellung, für eine perfekte Aufstellung (einmalig je Aufstellung), täglich fürs erste Spiel des Tages, bei jedem Level-Up und für neu freigeschaltete Achievements." },
+  { icon: "⭐", title: "Sterne", desc: "Jede Aufstellung bringt dir bis zu 3 Sterne: ⭐ ab 7/11, ⭐⭐ ab 9/11, ⭐⭐⭐ nur für 11/11 ganz ohne Scout-Rad, Aufdecken oder Korrigieren. Nur die erste Verbesserung zählt für XP - Wiederholen ohne Fortschritt bringt nur noch kleine Trainings-XP." },
+  { icon: "🔥", title: "Kombo", desc: "Richtige Positionen ohne Hilfe in Folge erhöhen die Kombo und damit dein Positions-XP. Ein Scout-Rad-Dreh, Aufdecken, Korrigieren oder ein falsch verlassenes Feld setzt die Kombo zurück." },
   { icon: "🏟️", title: "Kampagne", desc: "Fünf Welten von Kreisliga bis Weltklasse. Mindestens 7 von 11 richtig, um ein Level zu bestehen und das nächste freizuschalten." },
   { icon: "🎲", title: "Frei spielen", desc: "Liga und Schwierigkeit frei wählbar, ganz ohne Fortschrittsdruck - für schnelle Runden zwischendurch." },
-  { icon: "📈", title: "Level & Rang", desc: "Richtige Positionen, perfekte Aufstellungen und der Tagesbonus bringen XP. Dein Rang steigt automatisch mit." },
+  { icon: "📈", title: "Level & Rang", desc: "Neue Positionen, neue Sterne und der Tagesbonus bringen XP. Dein Rang steigt automatisch mit." },
   { icon: "🏅", title: "Achievements", desc: "Sammelbare Abzeichen für besondere Leistungen - manche schalten sogar einen eigenen Titel frei." },
   { icon: "🔓", title: "Freischaltungen", desc: "Ab Level 15 gibt's den Hardcore-Modus mit den schwersten Aufstellungen." }
 ];
@@ -1701,6 +1758,13 @@ function getMatchesByTier(tier) {
   return LINEUP_CHALLENGES.filter(m => m.difficulty === tier);
 }
 
+// Sterne-Summe einer Stufe (Prompt 11): x = tatsaechlich erreichte Sterne ueber alle
+// Level dieser Welt, y = maximal moegliche (3 je Level).
+function starsSummaryForTier(matches) {
+  const earned = matches.reduce((sum, m) => sum + ((profile.best[m.id] && profile.best[m.id].stars) || 0), 0);
+  return { earned, max: matches.length * 3 };
+}
+
 /* Eine Stufe gilt als freigeschaltet, wenn Stufe 1 (immer offen) oder wenn ALLE
    Level der vorherigen NICHT-leeren Stufe bestanden sind. Leere Stufen werden
    übersprungen. Rein aus levelPassed abgeleitet - kann nicht veralten. */
@@ -1769,6 +1833,7 @@ function renderCampaignWorlds() {
     const isCurrent = unlocked && !isEmpty && pct < 100;
     const isComplete = unlocked && !isEmpty && pct === 100;
     const color = DIFF_COLOR[tier];
+    const starSummary = starsSummaryForTier(matches);
 
     const circumference = 2 * Math.PI * 45;
     const dashoffset = circumference * (1 - pct / 100);
@@ -1792,6 +1857,7 @@ function renderCampaignWorlds() {
       </div>
       <div class="stadium-label" style="color:${unlocked ? color : "rgba(242,239,230,0.4)"}">${DIFF_LABEL[tier]}</div>
       <div class="stadium-meta${isComplete ? " complete" : ""}"${!isComplete && unlocked ? ` style="color:${color}; border-color:${color}66"` : ""}">${isEmpty ? "bald verfügbar" : passedCount + "/" + matches.length}</div>
+      ${!isEmpty ? `<div class="stadium-stars">⭐ ${starSummary.earned}/${starSummary.max}</div>` : ""}
     `;
     if (unlocked && !isEmpty) {
       node.onclick = () => { campaignTier = tier; campaignView = "levels"; renderCampaignView(); };
@@ -1816,9 +1882,14 @@ function renderCampaignLevels() {
   back.onclick = () => { campaignView = "worlds"; renderCampaignView(); };
   container.appendChild(back);
 
+  const worldStars = starsSummaryForTier(matches);
   const heading = document.createElement("div");
   heading.style.marginBottom = "12px";
-  heading.innerHTML = `<span class="world-name" style="color:${color}">${DIFF_LABEL[tier]}</span>`;
+  heading.style.display = "flex";
+  heading.style.alignItems = "center";
+  heading.style.justifyContent = "space-between";
+  heading.style.gap = "10px";
+  heading.innerHTML = `<span class="world-name" style="color:${color}">${DIFF_LABEL[tier]}</span><span class="world-star-total">⭐ ${worldStars.earned}/${worldStars.max}</span>`;
   container.appendChild(heading);
 
   // Ein schlängelnder Pfad aus Level-Stationen, mündet in ein Ziel-Symbol Richtung nächste Welt.
@@ -1850,6 +1921,7 @@ function renderCampaignLevels() {
     const isPassed = !!profile.campaign.levelPassed[m.id];
     const isUnlocked = idx < unlockedCount;
     const isCurrent = isUnlocked && !isPassed;
+    const levelStars = (profile.best[m.id] && profile.best[m.id].stars) || 0;
     const p = points[idx];
     const nodeStyle = "--node-color:" + color + "; --node-color-light:" + color + "cc;" + (isCurrent ? " border-color:" + color + ";" : "");
     nodesHtml += `
@@ -1858,7 +1930,7 @@ function renderCampaignLevels() {
         <div class="level-dot" style="${nodeStyle}">
           <span>${isUnlocked ? (idx + 1) : "🔒"}</span>
         </div>
-        ${isPassed ? '<div class="level-star">⭐</div>' : ""}
+        <div class="level-stars">${isUnlocked ? starsRowHTML(levelStars) : ""}</div>
         <div class="level-label">Level ${idx + 1}</div>
       </div>`;
   });
@@ -2101,6 +2173,21 @@ function chipsHTML(m, abbr, drawnSet) {
   return [...drawnSet].map(id => `<span class="sr-chip">${segChipLabel(m, abbr, id)}</span>`).join("");
 }
 
+// Stern-SVG 1:1 aus prototypes/scout-profil.html uebernommen (Prompt 11).
+function STAR_SVG(filled) {
+  return `<svg viewBox="0 0 24 24"><path d="M12 2.5l2.9 6.1 6.6.8-4.9 4.6 1.3 6.6L12 17.3l-5.9 3.3 1.3-6.6-4.9-4.6 6.6-.8z" fill="${filled ? "#E8B23D" : "rgba(0,0,0,0.35)"}" stroke="${filled ? "#9C7422" : "rgba(242,239,230,0.3)"}" stroke-width="1"/></svg>`;
+}
+// n = Anzahl gefuellter Sterne (0-3). animateFromIndex (0-basiert) laesst alle Sterne ab
+// diesem Index mit einem kurzen Pop einblenden - fuer neu auf dem Ergebnisbildschirm
+// errungene Sterne.
+function starsRowHTML(n, animateFromIndex) {
+  const items = [0, 1, 2].map(i => {
+    const animate = typeof animateFromIndex === "number" && i >= animateFromIndex && i < n;
+    return `<span class="${animate ? "star-pop" : ""}">${STAR_SVG(i < n)}</span>`;
+  }).join("");
+  return `<span class="stars-row" aria-label="${n} von 3 Sternen">${items}</span>`;
+}
+
 function shirtSVG(nr, gold) {
   const body = gold ? "#E8B23D" : "#6CABDD", num = gold ? "#14202B" : "#F2EFE6";
   return `<svg viewBox="0 0 84 84" width="84" height="84" aria-hidden="true">
@@ -2157,6 +2244,12 @@ function renderPitch() {
   fuzzyCorrected = new Set();
   wheelDrawn = new Map(); // abbr -> Set gezogener Scout-Rad-Segment-IDs
   prefilledAbbrs = getPrefillAbbrs(m);
+  // Wissens-Gate (Prompt 11): Positionen, die in fruaeheren Versuchen dieser Aufstellung
+  // schon einmal korrekt gefuellt wurden, geben live kein Positions-XP mehr (bleiben aber
+  // weiterhin gruen) - Wiederholen einer auswendig gelernten Aufstellung soll nicht die
+  // beste XP-Quelle sein.
+  const knownAbbrs = new Set((profile.best[m.id] && profile.best[m.id].solvedAbbrs) || []);
+  let combo = 0;
   const positions = PITCH_LAYOUTS[m.formation];
   const pitchView = document.getElementById("pitchView");
   pitchView.innerHTML = `
@@ -2167,6 +2260,7 @@ function renderPitch() {
       <div style="text-align:center; margin-bottom:10px">${renderDiffBadge(m.difficulty)}</div>
       <div class="bonus-text" style="margin-bottom:10px">Gesucht: <b>${m.side}</b><br>Namen eintippen - richtige Felder werden sofort grün, auch wenn du in die falsche Zeile tippst. Bei einer Position brauchst du Hilfe? Dreh im Positions-Panel das 🎡 Scout-Rad (du hast <b>${profile.hintTokens}</b> 🔍 Scout-Token).</div>
       ${prefilledAbbrs.size > 0 ? `<div class="prefill-note">🎁 ${prefilledAbbrs.size} von ${positions.length} Positionen bereits vorgegeben</div>` : ""}
+      <div class="combo-chip hidden" id="comboChip"></div>
       <div class="pitch-wrap">
         <div class="pitch">
           <div class="halfway"></div>
@@ -2209,6 +2303,20 @@ function renderPitch() {
     return wheelDrawn.get(abbr);
   }
 
+  // Kombo (Prompt 11): richtige Positionen ohne Hilfe in Folge. Zaehlt auch bei bereits
+  // bekannten (0-XP-)Positionen weiter (misst Tipp-Genauigkeit, nicht die Belohnung),
+  // wird aber durch jede Form von Hilfe zurueckgesetzt (Scout-Rad, Aufdecken, Korrigieren,
+  // eine nicht akzeptierte Eingabe beim Verlassen eines Feldes).
+  const comboChipEl = pitchView.querySelector("#comboChip");
+  function renderCombo() {
+    if (combo < 3) { comboChipEl.classList.add("hidden"); comboChipEl.textContent = ""; return; }
+    comboChipEl.classList.remove("hidden");
+    comboChipEl.textContent = "🔥 Kombo ×" + combo;
+    comboChipEl.classList.remove("combo-pop"); void comboChipEl.offsetWidth; comboChipEl.classList.add("combo-pop");
+  }
+  function bumpCombo() { combo += 1; renderCombo(); }
+  function resetCombo() { if (combo !== 0) { combo = 0; renderCombo(); } }
+
   function renderPositionPanel(abbr) {
     const panel = document.getElementById("positionPanel");
     if (!panel) return;
@@ -2247,11 +2355,15 @@ function renderPitch() {
           input.dataset.counted = "1";
           fuzzyCorrected.add(abbr);
           profile.stats.positionsCorrectFuzzy += 1;
+          resetCombo(); // Korrigieren zaehlt als Hilfe
           const usedHint = hintsUsed.has(abbr);
-          const r = awardXP(profile, usedHint ? 5 : FUZZY.correctedXP, usedHint ? "Position korrigiert (mit Hinweis)" : "Position korrigiert");
+          const amount = knownAbbrs.has(abbr) ? 0 : (usedHint ? XP_RULES.fuzzyCorrectedWithHint : XP_RULES.fuzzyCorrected);
+          if (amount > 0) {
+            const r = awardXP(profile, amount, usedHint ? "Position korrigiert (mit Hinweis)" : "Position korrigiert");
+            if (r.leveledUp) showLevelUpToast(r.newLevel, r.levelsGained);
+          }
           saveProfile(profile);
           renderProfileBar();
-          if (r.leveledUp) showLevelUpToast(r.newLevel, r.levelsGained);
           const newlyUnlocked = checkAchievements(profile);
           saveProfile(profile);
           newlyUnlocked.forEach(showAchievementToast);
@@ -2264,6 +2376,7 @@ function renderPitch() {
 
     panel.querySelector("#srRevealBtn").addEventListener("click", () => {
       if (profile.hintTokens < ECONOMY.revealCost || input.classList.contains("ok") || input.classList.contains("revealed")) return;
+      resetCombo(); // Aufdecken zaehlt als Hilfe
       profile.hintTokens -= ECONOMY.revealCost;
       saveProfile(profile);
       renderProfileBar();
@@ -2513,6 +2626,7 @@ function renderPitch() {
       disp = targetWeights();
       profile.hintTokens -= ECONOMY.spinCost;
       hintsUsed.add(abbr);
+      resetCombo(); // Scout-Rad-Dreh zaehlt als Hilfe
       saveProfile(profile);
       renderProfileBar();
       resultSlotEl.innerHTML = "";
@@ -2581,7 +2695,10 @@ function renderPitch() {
 
   pitchView.querySelectorAll(".pos-input").forEach(input => {
     input.addEventListener("focus", () => setActivePosition(input.dataset.abbr));
-    input.addEventListener("blur", () => runFuzzyCheck(input));
+    input.addEventListener("blur", () => {
+      if (input.value.trim().length > 0 && !input.classList.contains("ok")) resetCombo();
+      runFuzzyCheck(input);
+    });
     input.addEventListener("keydown", (e) => { if (e.key === "Enter") runFuzzyCheck(input); });
   });
 
@@ -2604,12 +2721,25 @@ function renderPitch() {
         applyNameFit(input);
         if (!input.dataset.counted) {
           input.dataset.counted = "1";
+          const abbr = input.dataset.abbr;
           profile.stats.positionsCorrectDirect += 1;
-          const usedHint = hintsUsed.has(input.dataset.abbr);
-          const r = awardXP(profile, usedHint ? 5 : 15, usedHint ? "Position richtig (mit Hinweis)" : "Position direkt richtig");
+          const usedHint = hintsUsed.has(abbr);
+          const already = knownAbbrs.has(abbr); // bereits frueher gelöst - bleibt gruen, aber kein Positions-XP mehr
+          let amount, reason;
+          if (usedHint) {
+            amount = already ? 0 : XP_RULES.positionWithHint;
+            reason = "Position richtig (mit Hinweis)";
+          } else {
+            bumpCombo(); // zaehlt als "richtig in Folge", auch wenn bereits bekannt (XP dann trotzdem 0)
+            amount = already ? 0 : Math.min(XP_RULES.positionBase + XP_RULES.positionComboStep * (combo - 1), XP_RULES.positionComboCap);
+            reason = "Position direkt richtig";
+          }
+          if (amount > 0) {
+            const r = awardXP(profile, amount, reason);
+            if (r.leveledUp) showLevelUpToast(r.newLevel, r.levelsGained);
+          }
           saveProfile(profile);
           renderProfileBar();
-          if (r.leveledUp) showLevelUpToast(r.newLevel, r.levelsGained);
           const newlyUnlocked = checkAchievements(profile);
           saveProfile(profile);
           newlyUnlocked.forEach(showAchievementToast);
@@ -2640,10 +2770,22 @@ function renderPitch() {
         input.value = "";
         profile.stats.positionsCorrectCrossMatch += 1;
         const usedHint = hintsUsed.has(abbr);
-        const r = awardXP(profile, usedHint ? 3 : 8, usedHint ? "Cross-Match (mit Hinweis)" : "Position per Cross-Match erkannt");
+        const already = knownAbbrs.has(abbr);
+        let amount, reason;
+        if (usedHint) {
+          amount = already ? 0 : XP_RULES.crossMatchWithHint;
+          reason = "Cross-Match (mit Hinweis)";
+        } else {
+          bumpCombo();
+          amount = already ? 0 : Math.min(XP_RULES.crossMatchBase + XP_RULES.positionComboStep * (combo - 1), XP_RULES.crossMatchComboCap);
+          reason = "Position per Cross-Match erkannt";
+        }
+        if (amount > 0) {
+          const r = awardXP(profile, amount, reason);
+          if (r.leveledUp) showLevelUpToast(r.newLevel, r.levelsGained);
+        }
         saveProfile(profile);
         renderProfileBar();
-        if (r.leveledUp) showLevelUpToast(r.newLevel, r.levelsGained);
         const newlyUnlocked = checkAchievements(profile);
         saveProfile(profile);
         newlyUnlocked.forEach(showAchievementToast);
@@ -2664,6 +2806,7 @@ function evaluatePitch() {
   const positions = PITCH_LAYOUTS[m.formation];
   const pitchView = document.getElementById("pitchView");
   let correct = 0;
+  const correctAbbrs = [];
   positions.forEach(p => {
     const input = pitchView.querySelector('input[data-abbr="' + p.abbr + '"]');
     const target = m.players[p.abbr];
@@ -2672,34 +2815,47 @@ function evaluatePitch() {
     input.classList.add(isCorrect ? "ok" : "bad");
     input.disabled = true;
     if (!isCorrect) input.value = target;
-    if (isCorrect) correct++;
+    if (isCorrect) { correct++; correctAbbrs.push(p.abbr); }
   });
   pitchView.querySelectorAll("#srSpinBtn, #srRevealBtn, .sr-hub").forEach(btn => btn.disabled = true);
   const total = positions.length;
   const noHintsUsed = hintsUsed.size === 0 && tokenRevealed.size === 0;
   const isPerfect = correct === total && noHintsUsed && fuzzyCorrected.size === 0;
+  // Sterne (Prompt 11): ⭐ bestanden, ⭐⭐ 9+, ⭐⭐⭐ 11/11 ganz ohne Hilfe. Vorgegebene
+  // (prefilled) Positionen blockieren ⭐⭐⭐ nicht, da sie nie in hintsUsed/tokenRevealed landen.
+  const stars = correct < PASS_THRESHOLD ? 0 : isPerfect ? 3 : correct >= 9 ? 2 : 1;
 
   stats.played += 1;
   stats.totalCorrect += correct;
   if (isPerfect) stats.perfect += 1;
   updateStatsBar();
 
-  // Level-System: Aufstellungs-Stats, Streak, Perfekt-Bonus und neue Aufstellung entdeckt
+  // Level-System: Aufstellungs-Stats, Streak, neue Aufstellung entdeckt
   profile.stats.lineupsPlayed += 1;
   const isFirstTimePlayed = !profile.stats.playedMatchIds.includes(m.id);
   if (isFirstTimePlayed) profile.stats.playedMatchIds.push(m.id);
 
+  // Sterne + Wissens-Stand (Prompt 11): immer das beste Ergebnis merken. Positions-XP fuer
+  // neu geloeste Positionen wurde bereits LIVE beim Eintippen vergeben (siehe renderPitch) -
+  // hier geht es nur noch um Sternen-Boni und den Trainings-XP-Fallback bei Wiederholung.
+  const prevBest = profile.best[m.id] || { stars: 0, correct: 0, solvedAbbrs: [] };
+  const solvedNowAbbrs = correctAbbrs.filter(a => !prefilledAbbrs.has(a));
+  const newlySolvedAbbrs = solvedNowAbbrs.filter(a => !prevBest.solvedAbbrs.includes(a));
+  profile.best[m.id] = {
+    stars: Math.max(prevBest.stars, stars),
+    correct: Math.max(prevBest.correct, correct),
+    solvedAbbrs: Array.from(new Set([...prevBest.solvedAbbrs, ...solvedNowAbbrs]))
+  };
+
   const receipt = []; // Token-Quittung: {label, amount}, wird nur angezeigt wenn Summe > 0
 
   let bonusXP = 0;
-  let bonusReason = "";
+  const bonusReasons = [];
   if (isPerfect) {
     profile.stats.lineupsPerfect += 1;
     profile.stats.perfectStreak += 1;
     profile.stats.bestPerfectStreak = Math.max(profile.stats.bestPerfectStreak, profile.stats.perfectStreak);
     if (!profile.stats.perfectMatchIds.includes(m.id)) profile.stats.perfectMatchIds.push(m.id);
-    bonusXP += 150;
-    bonusReason = "Perfekte Aufstellung";
     launchConfetti();
     if (!profile.perfectRewarded[m.id]) {
       profile.perfectRewarded[m.id] = true;
@@ -2708,10 +2864,25 @@ function evaluatePitch() {
     }
   } else {
     profile.stats.perfectStreak = 0;
-    if (correct >= total - 3) { bonusXP += 40; bonusReason = "Starkes Ergebnis"; }
   }
+
+  // Sternen-Boni: einmalig, beim ERSTEN Erreichen jeder Stufe - ein Sprung (z.B. 1->3
+  // Sterne in einem Versuch) gibt die Boni aller ueberschrittenen Stufen zusammen.
+  const STAR_LABELS = { 1: "⭐ Erster Stern", 2: "⭐⭐ Zweiter Stern", 3: "⭐⭐⭐ Dritter Stern" };
+  for (let s = prevBest.stars + 1; s <= stars; s++) {
+    bonusXP += XP_RULES.starBonus[s];
+    bonusReasons.push(STAR_LABELS[s]);
+  }
+  // Keine Verbesserung (weder neue Position noch neuer Stern) -> Trainings-XP, damit
+  // Wiederholen nicht wertlos ist, aber auch keine bessere XP-Quelle als echtes Lernen.
+  if (newlySolvedAbbrs.length === 0 && stars <= prevBest.stars) {
+    bonusXP += XP_RULES.trainingXP;
+    bonusReasons.push("Trainings-XP");
+  }
+
   if (isFirstTimePlayed) {
-    bonusXP += 20;
+    bonusXP += XP_RULES.firstPlayXP;
+    bonusReasons.push("Erstmals gespielt");
     profile.hintTokens += ECONOMY.earnFirstPass;
     receipt.push({ label: "Erstmals gespielt", amount: ECONOMY.earnFirstPass });
   }
@@ -2720,11 +2891,12 @@ function evaluatePitch() {
   if (profile.stats.lastPlayedDate !== today) {
     bonusXP += 25;
     profile.stats.lastPlayedDate = today;
-    bonusReason = bonusReason ? bonusReason + " + Tagesbonus" : "Tagesbonus";
+    bonusReasons.push("Tagesbonus");
     profile.hintTokens += ECONOMY.earnDaily;
     receipt.push({ label: "Tagesbonus", amount: ECONOMY.earnDaily });
   }
 
+  const bonusReason = bonusReasons.join(" + ");
   if (bonusXP > 0) {
     const r = awardXP(profile, bonusXP, bonusReason);
     if (r.leveledUp) {
@@ -2768,6 +2940,11 @@ function evaluatePitch() {
   scoreDiv.className = "score-badge";
   scoreDiv.textContent = correct + " / " + total + " richtig" + (!noHintsUsed ? " (mit Hinweisen)" : "") + (fuzzyCorrected.size > 0 ? " (" + fuzzyCorrected.size + " × korrigiert)" : "") + (prefilledAbbrs.size > 0 ? " · davon " + prefilledAbbrs.size + " vorgegeben" : "");
   panel.appendChild(scoreDiv);
+
+  const starsDiv = document.createElement("div");
+  starsDiv.className = "result-stars";
+  starsDiv.innerHTML = starsRowHTML(stars, prevBest.stars);
+  panel.appendChild(starsDiv);
 
   const receiptTotal = receipt.reduce((sum, r) => sum + r.amount, 0);
   if (receiptTotal > 0) {
