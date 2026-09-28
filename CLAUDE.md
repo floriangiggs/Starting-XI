@@ -48,8 +48,18 @@ Wettbewerbe verteilt (keine Kategorie soll stark dominieren).
 - Spielfeld-Elemente: Pitch-Grün
 - Akzentfarbe: Gold
 - Rot nur für Fehler-/Warnzustände
-- Schriften: `Anton` für große Überschriften, `Oswald` für Buttons/Fließtext,
-  `JetBrains Mono` nur für Statistiken/Zahlen (nicht für normale Buttons)
+- Schriften – die App darf nie "maschinell" wirken:
+  - `Anton`: große Überschriften und hervorgehobene Zahlen (Timer, Scores,
+    Serien-Zähler, Rang-/Weltnamen)
+  - `Oswald`: alles andere – Fließtext, Buttons, Labels, Kicker, kleine
+    Beschriftungen. Kleine Labels in Oswald 500/600, Großbuchstaben mit
+    höchstens leichtem Letter-Spacing (max. 0.12em); Nebentexte in Oswald 300.
+  - `JetBrains Mono`: nur sparsam für kleine tabellarische Zahlen, bei denen
+    Ziffern exakt untereinander stehen müssen. NIE für Texte, Labels, Kicker
+    oder Buttons.
+- Keine Blink-/Dauer-Animationen an Text oder Zahlen.
+- Optische Referenzen für neue Features liegen in `prototypes/` – Optik von
+  dort übernehmen statt neu zu erfinden.
 
 ## Workflow
 

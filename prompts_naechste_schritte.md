@@ -4,16 +4,31 @@ Diese Prompts sind fertig zum Einfügen in Claude Code. **Einen nach dem
 anderen**, in der angegebenen Reihenfolge – erst den nächsten, wenn der
 vorige umgesetzt, getestet und committet ist.
 
-| # | Thema | Voraussetzung |
+| # | Thema | Status / Voraussetzung |
 |---|---|---|
-| 1 | Zoom auf dem iPhone entfernen | – |
-| 2 | Überschneidungen der Namensfelder + Positions-Panel | – |
-| 3 | Namensvarianten, Aliase, Sonderzeichen | 2 |
-| 4 | Tippfehler-Toleranz „Fast richtig“ + Korrigieren | 2, 3 |
-| 5 | Datenrecherche Rückennummer + Nationalität | – (vor 6 sinnvoll) |
-| 6 | Scout-Rad + einheitliche Währung | 2, 5 (zumindest teilweise) |
-| 7 | *Später:* PWA-Nacharbeit (Fonts lokal, Update-Strategie) | – |
+| 1 | Zoom auf dem iPhone entfernen | ✅ erledigt |
+| 2 | Überschneidungen der Namensfelder + Positions-Panel | ✅ erledigt |
+| 3 | Namensvarianten, Aliase, Sonderzeichen | ✅ erledigt |
+| 4 | Tippfehler-Toleranz „Fast richtig“ + Korrigieren | ✅ erledigt |
+| 5 | Datenrecherche Rückennummer + Nationalität | ✅ erledigt |
+| 6 | Scout-Rad + einheitliche Währung | ✅ erledigt |
+| 7 | PWA-Nacharbeit (Fonts lokal, Update-Strategie) | – |
 | 8 | *Später:* Vorbereitung Capacitor | 7 |
+| 9 | Bugfix: feste Vorgaben pro Kampagnen-Level | – |
+| 10 | Typografie aufräumen (kein „maschineller“ Look) | – |
+| 11 | Sterne, XP nur für Verbesserung, Kombo, neue XP-Kurve | 9 |
+| 12 | Scout-Profil + Trophäenschrank | 10, 11 |
+| 13 | Tages-Challenge + Serie | 7, 11, 12 |
+| 14 | Recherche Tages-Pool (Gegenseiten + neue Spiele) | 13 |
+| 15 | Kampagne auf ca. 60 Aufstellungen ausbauen | – |
+
+**Empfohlene Reihenfolge ab jetzt:** 9 → 10 → 7 → 11 → 12 → 13 → 14 → 15 → 8
+
+Prompt 7 steht bewusst vor der Tages-Challenge: Nur mit der neuen
+Update-Strategie kommen neue Tages-Aufstellungen zuverlässig auf dem iPhone an.
+
+Optische Vorlagen: `prototypes/scout-rad.html` (Prompt 6) und
+`prototypes/scout-profil.html` (Prompts 11–13).
 
 **Wichtig nach jeder Änderung:** Der Service Worker liefert die App aus dem
 Cache. Jeder Prompt erhöht deshalb `CACHE_NAME` in `sw.js` – sonst sieht die
@@ -370,7 +385,7 @@ Position ohne details (2 Felder) und mit details (4 Felder), Nationalteam
 
 ---
 
-## Prompt 7 – *Später:* PWA-Nacharbeit
+## Prompt 7 – PWA-Nacharbeit
 
 ```
 Lies CLAUDE.md. Ich möchte die PWA-Umsetzung vor dem Capacitor-Schritt
@@ -405,12 +420,388 @@ einbauen (localStorage kann in iOS-Apps gelöscht werden). Plan zuerst zeigen.
 
 ---
 
+## Prompt 9 – Bugfix: feste Vorgaben pro Kampagnen-Level
+
+```
+Lies CLAUDE.md. Bugfix mit Spielbalance-Auswirkung → kurz Plan Mode, Plan
+zeigen, auf OK warten.
+
+Problem (Exploit): In der Kampagne ändern sich die vorgegebenen Positionen
+bei jedem Start eines Levels. Wer ein Level abbricht (zurück zur Weltkarte)
+und neu startet, bekommt andere Spieler geschenkt – durch mehrfaches
+Neustarten lässt sich so die komplette Aufstellung aufdecken.
+
+Ursache: renderPitch() ruft bei jedem Start getPrefillAbbrs() auf;
+selectPrefillAbbrs() mischt die Positionen per shuffled() mit Math.random()
+jedes Mal neu.
+
+Umsetzung:
+1. Pro Profil einen festen Zufalls-Seed einführen: profile.prefillSeed
+   (32-Bit-Integer), einmalig bei Profil-Erstellung bzw. beim Laden eines
+   bestehenden Profils ohne Seed erzeugen (Migration in loadProfile) und
+   speichern.
+2. Deterministischen Zufall einbauen, ohne Libraries:
+   - hashString(str) → 32-Bit-Hash (z. B. FNV-1a oder cyrb53)
+   - seededRandom(seed) → PRNG-Funktion (z. B. mulberry32)
+   - shuffled(arr, rng = Math.random) um optionalen RNG-Parameter
+     erweitern (Standardverhalten für andere Aufrufer unverändert).
+3. selectPrefillAbbrs(positions, count, rng) bekommt den RNG übergeben.
+   getPrefillAbbrs(m) erzeugt ihn aus
+   hashString(m.id) XOR profile.prefillSeed.
+   Wichtig: Die Auswahl muss immer die ERSTEN count Einträge derselben
+   deterministischen Reihenfolge sein – ändert sich count (z. B. weil neue
+   Aufstellungen hinzukommen), ist die neue Auswahl eine Teilmenge bzw.
+   Obermenge der alten, nie eine andere Kombination.
+4. PREFILL_PROTECTED (TW, ST, RST, LST) und PREFILL_MAX_BY_TIER bleiben
+   unverändert; Freispiel bleibt ohne Vorgaben.
+5. Den Kommentarblock "PROGRESSIVES VORGEBEN" anpassen: nicht mehr "bei
+   jedem Versuch neu gemischt", sondern "pro Spieler und Level fest,
+   zwischen Levels unterschiedlich".
+6. Prüfen, ob es weitere Stellen gibt, an denen ein Neustart des Levels
+   Vorteile verschafft (z. B. Scout-Rad-Zustand wheelDrawn, hintsUsed,
+   fuzzyCorrected) – nur auflisten und bewerten, nicht ungefragt ändern.
+7. sw.js CACHE_NAME um eins erhöhen.
+
+Test:
+- Kampagnen-Level starten, vorgegebene Positionen notieren, abbrechen,
+  5× neu starten → immer identisch.
+- Seite neu laden, gleiches Level → identisch.
+- Zwei verschiedene Level derselben Welt → unterschiedliche Muster.
+- Neues Profil (localStorage leeren) → anderes Muster als vorher.
+- Freispiel → keine Vorgaben.
+- Bestehendes Profil ohne prefillSeed lädt fehlerfrei, Fortschritt bleibt.
+```
+
+---
+
+## Prompt 10 – Typografie aufräumen
+
+```
+Lies CLAUDE.md – die Schrift-Regeln unter "Design / Corporate Identity"
+wurden aktualisiert: Die App darf nicht "maschinell" wirken.
+
+Problem: startelf_check.html nutzt JetBrains Mono an rund 28 Stellen,
+auch für Kicker, Labels, Badges und Buttons (z. B. .kicker mit
+letter-spacing 0.35em). Das wirkt technisch/kalt.
+
+Umsetzung:
+1. Alle Selektoren mit font-family JetBrains Mono auflisten und je Stelle
+   einordnen (Tabelle: Selektor, Inhalt, neue Schrift, Begründung):
+   - Texte, Labels, Kicker, Badges, Buttons, Hinweise → Oswald
+     (Labels 500/600, Großbuchstaben, letter-spacing max. 0.12em;
+     Nebentexte Oswald 300)
+   - hervorgehobene Zahlen (Score, Serien-/Token-Zähler, Level-Zahl im
+     Level-Punkt) → Anton, wo es passt
+   - nur kleine tabellarische Zahlen, deren Ziffern exakt untereinander
+     stehen müssen → JetBrains Mono darf bleiben
+2. Tabelle zeigen, auf mein OK warten, dann umsetzen.
+3. Keine Farben, Abstände oder Layouts ändern – nur Schrift, Gewicht,
+   Letter-Spacing. Optische Referenz: prototypes/scout-profil.html.
+4. Screenshots vorher/nachher bei 375px: Startseite, Weltpfad, Spielfeld,
+   Ergebnisbildschirm, Scout-Rad.
+5. sw.js CACHE_NAME um eins erhöhen.
+```
+
+---
+
+## Prompt 11 – Sterne, XP nur für Verbesserung, Kombo, neue XP-Kurve
+
+```
+Lies CLAUDE.md. Größere Änderung am Progressionssystem → Plan Mode, Plan
+zeigen, auf OK warten. Optische Referenz: prototypes/scout-profil.html
+(Sterne unter den Level-Punkten, Sterne-Summe pro Welt).
+
+Ausgangslage (bereits analysiert):
+- xpForLevel(n) = 100·n·(n+1)/2 → Level 30 (Weltklasse) = 46.500 XP.
+- Eine perfekte Aufstellung bringt ca. 360 XP (11×15 + 150 Perfekt + 20
+  Erstversuch + 25 Tagesbonus). Selbst alle 50 Aufstellungen perfekt
+  ergeben nur ca. Level 18 → Weltklasse ist mit dem Inhalt unerreichbar.
+- Wiederholen ist die beste XP-Quelle: eine auswendig gelernte Aufstellung
+  bringt jedes Mal wieder Positions-XP + 150 Perfekt-XP (nur die Token sind
+  einmalig). XP belohnt Wiederholen statt Wissen.
+
+1. Sterne pro Aufstellung
+   - ⭐ = bestanden (>= PASS_THRESHOLD, also 7), ⭐⭐ = 9+,
+     ⭐⭐⭐ = 11/11 ohne Scout-Rad, ohne Aufdecken, ohne Korrigieren.
+     Vorgegebene (prefilled) Positionen blockieren ⭐⭐⭐ nicht.
+   - Speichern pro Aufstellung: profile.best[match.id] =
+     { stars, correct, solvedAbbrs: [...] } – immer das beste Ergebnis.
+     Gilt für Kampagne und Freispiel gemeinsam.
+   - Migration: aus stats.perfectMatchIds → 3 Sterne; aus
+     campaign.levelPassed → mind. 1 Stern (solvedAbbrs dann leer lassen).
+   - Anzeige: kleine Stern-SVGs unter jedem Level-Punkt im Level-Pfad,
+     "⭐ x/y" pro Welt im Welt-Kopf und auf der Weltkarte, Sterne auf dem
+     Ergebnisbildschirm (neu errungene Sterne kurz animiert einblenden).
+
+2. XP nur für Verbesserung
+   - Positions-XP nur für Positionen, die in solvedAbbrs dieser Aufstellung
+     noch NICHT enthalten sind (bereits früher gelöste Positionen: 0 XP,
+     aber weiterhin grün).
+   - Stern-Boni einmalig beim ERSTEN Erreichen: ⭐ 50, ⭐⭐ +75, ⭐⭐⭐ +125.
+   - Ersetzt die bisherigen Boni "Perfekte Aufstellung" (150, bei jedem
+     Mal) und "Starkes Ergebnis" (40). "Erstmals gespielt" (20 XP + Token)
+     bleibt.
+   - Keine Verbesserung → 10 "Trainings-XP", damit Wiederholen nicht
+     wertlos ist.
+   - Den bisherigen "Tagesbonus" vorerst unverändert lassen (wird in
+     Prompt 13 durch die Tages-Challenge ersetzt).
+   - Alle Werte zentral in einem Objekt XP_RULES (keine Magic Numbers).
+
+3. Kombo
+   - Richtige Positionen in Folge ohne Hilfe: XP pro neuer Position
+     min(15 + 2·(kombo−1), 25).
+   - Zurücksetzen bei: Scout-Rad-Dreh, Aufdecken, Korrigieren sowie beim
+     Verlassen eines Feldes (blur) mit nicht-leerer, nicht akzeptierter
+     Eingabe.
+   - Cross-Match zählt in die Kombo (mit seinen eigenen, niedrigeren Basis-XP).
+   - Anzeige: kleiner Chip "Kombo ×n" in Anton ab n = 3, dezent oberhalb
+     des Spielfelds; keine Dauer-Animation.
+
+4. Neue XP-Kurve
+   - Skript tools/xp-sim.mjs: berechnet aus LINEUP_CHALLENGES die maximal
+     erreichbaren XP (alle Aufstellungen ⭐⭐⭐, realistische Kombo) und
+     zeigt eine Tabelle Level → benötigte XP für Kurven-Varianten.
+   - Ziel: alle Aufstellungen mit ⭐⭐⭐ ≈ Level 25; Level 30 zusätzlich
+     über ca. 2 Monate Tages-Challenges erreichbar (Annahme ca. 150 XP pro
+     Tages-Challenge – in Prompt 13 feinjustiert).
+   - Kurvenform frei wählbar (z. B. a·n·(n+1)/2 mit neuem a), zentrale
+     Konstante, Kurve im Plan mit Tabelle begründen.
+   - RANKS-Grenzen und Hardcore ab Level 15 bleiben.
+   - Migration: Level darf für bestehende Profile NICHT sinken –
+     totalXP = max(totalXP, xpForLevel_neu(altesLevel)).
+
+5. Anleitung (GUIDE_SECTIONS) anpassen, sw.js CACHE_NAME erhöhen.
+
+Test: frisches Profil – Aufstellung 8/11 (1 Stern + XP), Wiederholung 8/11
+(nur 10 Trainings-XP), Wiederholung 11/11 ohne Hilfe (nur neue Positionen +
+⭐⭐ + ⭐⭐⭐-Boni), vierte Wiederholung 11/11 (10 XP). Kombo: 5 Treffer in
+Folge, dann Scout-Rad → Reset. Migration eines Profils mit
+perfectMatchIds/levelPassed. Ausgabe von tools/xp-sim.mjs zeigen.
+```
+
+---
+
+## Prompt 12 – Scout-Profil + Trophäenschrank
+
+```
+Lies CLAUDE.md. Größere UI-Änderung → Plan Mode, Plan zeigen, auf OK
+warten. Optik und Aufbau 1:1 aus prototypes/scout-profil.html übernehmen
+(Bottom-Sheet, drei Reiter, Trophäen-SVGs, Balken). Voraussetzung:
+profile.best aus Prompt 11.
+
+1. Startseite entschlacken
+   - Die Statistik-Leiste (.scoreboard: Absolviert / Ø Treffer / Perfekt)
+     von der Startseite entfernen – die Werte wandern ins Profil.
+   - Tipp auf die Profilleiste öffnet statt openAchievementsModal() das
+     neue Bottom-Sheet "Mein Scout-Profil" (Schließen per Button, Tipp
+     daneben, Escape). Das alte Achievement-Modal entfällt.
+
+2. Reiter "Übersicht"
+   - Rang-Karte (Rang-Icon, Rangname, Level, "noch x Level bis <nächster
+     Rang>").
+   - 6 Kacheln: Absolviert, Ø Treffer, Perfekt, ⭐ gesamt / maximal,
+     🔥 Serie, Längste Serie (Serie-Werte zeigen "–", solange Prompt 13
+     noch nicht umgesetzt ist).
+   - Karriereleiter aus RANKS (vergangen gedimmt, aktuell hervorgehoben).
+   - Platz für "Letzte 7 Tage" vorsehen (wird in Prompt 13 befüllt).
+
+3. Reiter "Trophäen"
+   - Datenmodell const TROPHIES = [{ id, group, kind: "cup"|"plate"|
+     "flame"|"medal", name, req, desc, check(profile), progress(profile)
+     → [aktuell, ziel] }].
+   - Gruppen und Inhalte:
+     Kampagne: je Welt (Tier 1–5) "Pokal" (alle Level bestanden) und
+       "Meisterschale" (alle Level ⭐⭐⭐) – aus getMatchesByTier()
+       berechnet, also automatisch korrekt bei neuen Aufstellungen.
+     Serie & Tages-Challenge: Wochenpokal (7 Tage), Supercup (30),
+       Jahrhundert-Serie (100), Tagessieger (10× 11/11 in der
+       Tages-Challenge), Tageslegende (50×) – check() liefert false,
+       solange Prompt 13 fehlt.
+     Besondere Leistungen: die 8 bestehenden ACHIEVEMENTS als Medaillen –
+       gleiche ids, damit freigeschaltete Achievements und Titel
+       (unlockedTitle) erhalten bleiben.
+   - Vitrinen-Optik mit Regalbrett, nicht gewonnene Trophäen als dunkle
+     Silhouette mit Schloss; Tipp auf eine Trophäe zeigt Beschreibung +
+     Fortschrittsbalken.
+   - Neu gewonnene Trophäe: bestehender Toast + ECONOMY.earnAchievement
+     Token (wie bisher bei Achievements).
+
+4. Reiter "Wissen"
+   - Trefferquote je Wettbewerbsgruppe = Summe best.correct / (11 ×
+     Anzahl gespielter Aufstellungen) aus profile.best. Gruppierung der
+     league-Werte im Plan vorschlagen (z. B. ob "Bundesliga / DFB-Pokal"
+     und "2. Bundesliga" zu einer Gruppe "Deutschland" zusammengefasst
+     werden).
+   - Trefferquote je Jahrzehnt (Jahr aus comp-Datum parsen).
+   - Nicht gespielte Gruppen mit "–".
+   - Stärke/Schwäche-Karten: höchste bzw. niedrigste Quote mit mindestens
+     2 gespielten Aufstellungen.
+   - Button "🎯 <Schwäche> trainieren": startet im Freispiel eine
+     Aufstellung dieser Gruppe, bevorzugt eine ohne ⭐⭐⭐.
+
+5. Keine JetBrains Mono für Texte (siehe CLAUDE.md), keine Blink-
+   Animationen. sw.js CACHE_NAME erhöhen.
+
+Test: Screenshots aller drei Reiter bei 375px mit einem Test-Profil;
+bestehendes Profil mit Achievements → Medaillen gewonnen, Titel bleibt;
+Startseite ohne Statistik-Leiste.
+```
+
+---
+
+## Prompt 13 – Tages-Challenge + Serie
+
+```
+Lies CLAUDE.md. Neues Feature → Plan Mode, Plan zeigen, auf OK warten.
+Optik der Startseiten-Karte (offen/gelöst), des 🔥-Chips in der
+Profilleiste und der "Letzte 7 Tage"-Leiste 1:1 aus
+prototypes/scout-profil.html. Voraussetzungen: Prompts 7, 11, 12.
+
+1. Auswahl der Tages-Aufstellung (ohne Server, für alle gleich)
+   - Datum immer LOKAL bestimmen (dateKey "YYYY-MM-DD" aus
+     getFullYear/getMonth/getDate). Achtung: der bisherige Tagesbonus nutzt
+     new Date().toISOString() = UTC → in Deutschland zwischen 0 und 2 Uhr
+     falscher Tag. Gemeinsame Funktion localDateKey() für alles.
+   - DAILY_EPOCH = Starttag (Konstante); Tag-Nummer = Tage seit Epoch + 1.
+   - Schwierigkeit nach Wochentag: Mo 1, Di 2, Mi 2, Do 3, Fr 3, Sa 4, So 5.
+   - Neues Array DAILY_CHALLENGES (gleiches Schema wie LINEUP_CHALLENGES,
+     plus optional pairedWith: id der Kampagnen-Aufstellung). Pro
+     Schwierigkeit eine feste Warteschlange (nach id sortiert); der n-te
+     Montag seit Epoch nimmt den n-ten Stufe-1-Eintrag usw.
+   - Ist die Warteschlange leer (anfangs ist DAILY_CHALLENGES leer):
+     Fallback deterministisch per hashString(dateKey) aus allen
+     LINEUP_CHALLENGES der passenden Schwierigkeit (Funktionen aus
+     Prompt 9). Es fällt nie ein Tag aus.
+   - Archiv: DAILY_CHALLENGES-Einträge, deren Tag vorbei ist, erscheinen im
+     Freispiel unter einem Filter "📅 Archiv"; heutige/künftige nie.
+
+2. Regeln
+   - Ein Versuch pro Tag: gesperrt, sobald "Auswerten" gedrückt wurde;
+     Ergebnis in profile.daily[dateKey] = { id, correct, grid, stars }.
+   - Keine geschenkten Positionen; Scout-Rad, Aufdecken, Korrigieren
+     erlaubt (im Ergebnis-Raster sichtbar).
+   - Stern-/XP-Regeln aus Prompt 11 gelten normal.
+
+3. Serie
+   - profile.streak = { current, best, lastDayKey }. +1, wenn die
+     Tages-Challenge am Folgetag von lastDayKey abgeschlossen wird; ein
+     verpasster Tag setzt current beim nächsten Abschluss auf 1.
+     Beim Laden prüfen und Anzeige korrekt halten.
+   - NUR die Tages-Challenge zählt für die Serie. KEIN Serien-Schutz.
+   - XP-Bonus auf die XP der Tages-Challenge: +10 % pro Serientag,
+     max. +50 % (zentral in XP_RULES).
+   - Der alte "Tagesbonus" (erstes Spiel des Tages) entfällt; ECONOMY.
+     earnDaily wird stattdessen beim Abschluss der Tages-Challenge vergeben.
+
+4. Startseite
+   - Kompakte Karte zwischen Profilleiste und Kampagne/Frei-spielen-
+     Umschalter (so flach wie im Prototyp, nicht dominant):
+     offen: "Tages-Challenge · TT.MM.", "Tag n", Wochentag + Schwierigkeit
+       in DIFF_COLOR, Timer "Neue in HH:MM:SS" bis lokale Mitternacht
+       (Anton, groß, Doppelpunkte NICHT blinkend), 🔥-Zähler, Button
+       "Spielen".
+     gelöst: Mini-Raster in Aufstellungsform, "x/11", Timer "Nächste in",
+       🔥-Zähler, Button "Teilen".
+   - 🔥-Chip unter dem Token-Chip in der Profilleiste.
+   - Übersicht im Scout-Profil: "Letzte 7 Tage" (🔥 = gespielt, heute
+     gestrichelt), Serie + Längste Serie befüllen; Serien-/Tages-Trophäen
+     aus Prompt 12 aktiv schalten.
+
+5. Teilen
+   - Raster in Aufstellungsform: Positionen nach y aus PITCH_LAYOUTS in
+     Reihen gruppieren, von vorne (Sturm) nach hinten (TW).
+     🟩 direkt richtig · 🟨 mit Scout-Rad/Aufdecken/Korrigieren · ⬛ falsch.
+   - Text: "Starting XI · Tag n · x/11 🔥s" + Zeilen des Rasters.
+   - navigator.share({ text }) wenn verfügbar, sonst Zwischenablage +
+     Toast "Ergebnis kopiert".
+
+6. Anleitung ergänzen, sw.js CACHE_NAME erhöhen.
+
+Test: Systemdatum simulieren (Funktion für "heute" injizierbar machen):
+Mo→So liefert Schwierigkeiten 1,2,2,3,3,4,5; zwei Profile bekommen am selben
+Tag dieselbe Aufstellung; zweiter Versuch am selben Tag gesperrt; Serie
+1→2→3, Tag auslassen → 1; Uhrzeit 00:30 → richtiger lokaler Tag; Teilen-
+Text für 4-3-3 und 3-5-2 zeigen; Fallback bei leerem DAILY_CHALLENGES.
+```
+
+---
+
+## Prompt 14 – Recherche Tages-Pool
+
+```
+Lies CLAUDE.md – Datengenauigkeit hat oberste Priorität. Voraussetzung:
+Prompt 13 (DAILY_CHALLENGES existiert).
+
+Ziel: DAILY_CHALLENGES mit ca. 45 Aufstellungen füllen, die NICHT in der
+Kampagne vorkommen.
+
+Teil A – bekannte Gegenseiten (ca. 25–30)
+- Für die Spiele in LINEUP_CHALLENGES die jeweils ANDERE Mannschaft als
+  eigene Challenge anlegen (pairedWith = id des Originals). Die Quelle
+  (source) des Originals enthält beide Aufstellungen.
+- Nur bekannte Mannschaften. Meine Vorauswahl u. a.: Leverkusen (DFB-Pokal
+  2024), AC Mailand (CL 2005), Real Madrid (2:6 2009), Liverpool (vs.
+  Leicester 2016), Argentinien (WM 2014), Frankreich (WM 2022, WM 2006,
+  WM 2002), England (EM 2021, EM 2016, EM 2024), Atlético (CL 2014),
+  Deutschland (EM 2008, WM 2018, WM 2022), Barcelona (LaLiga 2014, EL
+  2022), Real Madrid (vs. Ajax 2019, vs. Wolfsburg 2016), Uruguay (WM
+  2014), Belgien (EM 2016), Spanien (WM 2010), Manchester United (vs. YB
+  2021, EL-Finale 2021), RB Leipzig (Pokal 2022), Inter (CL 2023),
+  Brasilien (Copa 2021), Bayern (CL 2012), Arsenal (CL 2026),
+  Argentinien (WM 2026), Tottenham (2025), Kolumbien (Copa 2024),
+  AS Rom (EL 2023).
+  Unbekanntere Gegner (z. B. Monaco 2017, Villarreal 2022, Südkorea 2018)
+  nur als Stufe 4–5 (Wochenende).
+- Zuerst Liste mit vorgeschlagener difficulty zeigen, auf OK warten.
+
+Teil B – neue große Spiele (ca. 15–20)
+- Vorschlagsliste berühmter Spiele, die noch nicht in der App sind
+  (Mischung aus Jahrzehnten inkl. vor 2000, verschiedenen Ligen/
+  Wettbewerben, ausgewogen über Stufe 1–5). Liste zeigen, auf OK warten.
+
+Regeln für beide Teile (wie Prompt 5):
+- Alle Pflichtfelder laut CLAUDE.md + details (nr, nat – nat nicht bei
+  Nationalteams) + aliases, wo nötig + source.
+- Nur mit verlässlicher Quelle, nichts aus dem Gedächtnis; unsichere Werte
+  weglassen; Abweichungen melden statt raten.
+- formation muss in PITCH_LAYOUTS existieren; fehlt eine Formation,
+  melden statt eigenmächtig anlegen.
+- Etappen zu je 5 Aufstellungen, nach jeder Etappe Hook-Ergebnis, Quellen
+  und offene Punkte zeigen, auf OK warten.
+```
+
+---
+
+## Prompt 15 – Kampagne auf ca. 60 Aufstellungen ausbauen
+
+```
+Lies CLAUDE.md. Ziel: LINEUP_CHALLENGES von 50 auf ca. 60 erweitern und
+die inhaltlichen Lücken schließen: Serie A (bisher 2), Ligue 1 (0),
+Eredivisie (0), Spiele vor 2000 (0). Weiterhin ausgewogen über die Stufen
+(möglichst gleich viele je Stufe).
+
+1. Vorschlagsliste (ca. 12 Spiele, etwas mehr als nötig) mit Wettbewerb,
+   Datum, abgefragter Mannschaft, Formation, vorgeschlagener Stufe und
+   kurzer Begründung – keine Überschneidung mit DAILY_CHALLENGES.
+   Auf mein OK warten.
+2. Für Spiele vor 2000 prüfen, ob die Formation in PITCH_LAYOUTS existiert
+   (z. B. 3-5-2 mit Libero). Fehlt ein Layout: Vorschlag für neue
+   Koordinaten zeigen, mit tools/check-overlap.mjs auf 0 Überlappungen
+   prüfen, erst nach OK anlegen.
+3. Recherche-Regeln wie Prompt 5/14 (Quelle, details, aliases, nichts aus
+   dem Gedächtnis), Etappen zu je 5, Hook-Ergebnis zeigen.
+4. Trophäen/Sterne-Summen passen sich automatisch an – kurz prüfen.
+```
+
+---
+
 ## Ideen-Speicher (noch nicht ausgearbeitet)
 
-- **Tages-Challenge** mit teilbarem Ergebnis (Wordle-Prinzip)
 - **Themen-Pakete**: Legendäre Finals, Underdogs, Dramen, Pfalz-Paket (FCK)
 - **Retro-Welt** 80er/90er mit neuem Layout 3-5-2 mit Libero
 - **Beide Seiten eines Spiels** als verknüpfte Challenges
 - Modi: „Wer fehlt?“, Umgekehrter Modus, Zeitmodus, Bonusfragen
-- Inhaltliche Lücken: Serie A (nur 2), Ligue 1/Eredivisie (0), vor 2000 (0)
 - Keine Vereinswappen/Original-Trikots verwenden (Markenrecht, Store)
+- *Später:* Belohnungsleiste („nächste Belohnung“: Rasenmuster, Rad-Designs, Titel)
+- *Später:* Scout-Aufträge (täglich/monatlich)
+- *Später (nach Capacitor):* Bestenlisten über Apple Game Center / Google Play Games
