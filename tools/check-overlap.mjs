@@ -27,9 +27,8 @@ for (const width of WIDTHS) {
     const result = await page.evaluate((formationName) => {
       const match = LINEUP_CHALLENGES.find((c) => c.formation === formationName);
       if (!match) return { error: "keine Aufstellung mit dieser Formation gefunden" };
-      document.getElementById("pickerView").classList.add("hidden");
-      const pitchView = document.getElementById("pitchView");
-      pitchView.classList.remove("hidden");
+      document.querySelectorAll(".screen").forEach((s) => { s.hidden = true; });
+      document.getElementById("screen-game").hidden = false;
       currentMatch = match;
       renderPitch();
       const slots = Array.from(document.querySelectorAll(".pos-slot"));

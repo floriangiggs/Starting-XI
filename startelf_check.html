@@ -31,14 +31,40 @@
   }
   * { box-sizing: border-box; }
   html { -webkit-text-size-adjust: 100%; }
-  html, body { margin: 0; padding: 0; background: var(--ink); color: var(--chalk); font-family: 'Oswald', sans-serif; min-height: 100vh; touch-action: manipulation; }
+  html, body { margin: 0; padding: 0; height: 100%; background: var(--ink); color: var(--chalk); font-family: 'Oswald', sans-serif; touch-action: manipulation; overflow: hidden; }
   button, input { touch-action: manipulation; }
-  body { background-image: repeating-linear-gradient(90deg, rgba(255,255,255,0.02) 0 2px, transparent 2px 40px); display: flex; justify-content: center; padding: max(28px, calc(env(safe-area-inset-top) + 14px)) 16px max(60px, calc(env(safe-area-inset-bottom) + 20px)); }
-  .app { width: 100%; max-width: 560px; }
 
-  header { position: relative; text-align: center; margin-bottom: 22px; padding-top: 6px; }
-  header::before { content: ""; position: absolute; top: -30px; left: 50%; transform: translateX(-50%); width: 300px; height: 220px; background: radial-gradient(ellipse, rgba(232,178,61,0.16), transparent 70%); pointer-events: none; z-index: -1; }
-  .brand-badge { width: 54px; height: 54px; margin: 0 auto 12px; border-radius: 50%; background: radial-gradient(circle at 35% 30%, #2c6b48, var(--pitch)); border: 2px solid var(--gold); display: flex; align-items: center; justify-content: center; font-size: 24px; box-shadow: 0 6px 18px rgba(0,0,0,0.4), inset 0 0 14px rgba(0,0,0,0.35); }
+  /* ---- Bildschirm-Architektur (Prompt 11b) ----
+     Jeder <section class="screen"> ist ein eigener, bildschirmfuellender Bereich;
+     Navigation zeigt/versteckt per hidden-Attribut + Slide-Transition, siehe
+     showScreen()/navigate()/goBack() im Skript. */
+  .stage { position: relative; height: 100vh; height: 100dvh; max-width: 560px; margin: 0 auto; overflow: hidden; }
+  .screen {
+    position: absolute; inset: 0; display: flex; flex-direction: column; overflow: hidden;
+    padding: max(14px, calc(env(safe-area-inset-top) + 10px)) 16px max(16px, calc(env(safe-area-inset-bottom) + 10px));
+    background-image: repeating-linear-gradient(90deg, rgba(255,255,255,0.02) 0 2px, transparent 2px 40px);
+    background-color: var(--ink);
+    transition: transform 0.32s cubic-bezier(.2,.8,.2,1), opacity 0.32s; will-change: transform;
+  }
+  .screen[hidden] { display: none; }
+  .screen.enter-right { transform: translateX(100%); }
+  .screen.enter-left { transform: translateX(-28%); opacity: 0.4; }
+  .screen.leave-left { transform: translateX(-28%); opacity: 0.4; }
+  .screen.leave-right { transform: translateX(100%); }
+  @media (prefers-reduced-motion: reduce) { .screen { transition: none; } }
+  .screen.scroll-y { overflow-y: auto; -webkit-overflow-scrolling: touch; overscroll-behavior: contain; }
+
+  .topbar { display: flex; align-items: center; gap: 10px; flex-shrink: 0; margin-bottom: 12px; }
+  .topbar .back-btn { margin-bottom: 0; flex-shrink: 0; }
+  .topbar-title { font-family: 'Anton', sans-serif; font-size: 19px; text-transform: uppercase; line-height: 1.1; }
+
+  #screen-start { justify-content: space-between; gap: clamp(8px, 1.6vh, 14px); }
+  #screen-freeplay { justify-content: center; gap: 12px; }
+  .freeplay-count { text-align: center; font-family: 'Oswald', sans-serif; font-weight: 300; font-size: 13px; color: var(--muted); margin-top: -4px; }
+
+  header { position: relative; text-align: center; padding-top: 4px; }
+  header::before { content: ""; position: absolute; top: -30px; left: 50%; transform: translateX(-50%); width: 260px; height: 170px; background: radial-gradient(ellipse, rgba(232,178,61,0.16), transparent 70%); pointer-events: none; z-index: -1; }
+  .brand-badge { width: clamp(34px, 5.5vh, 46px); height: clamp(34px, 5.5vh, 46px); margin: 0 auto 6px; border-radius: 50%; background: radial-gradient(circle at 35% 30%, #2c6b48, var(--pitch)); border: 2px solid var(--gold); display: flex; align-items: center; justify-content: center; font-size: clamp(16px, 2.6vh, 21px); box-shadow: 0 6px 18px rgba(0,0,0,0.4), inset 0 0 14px rgba(0,0,0,0.35); }
 
   .help-btn { position: absolute; top: 0; right: 0; display: inline-flex; align-items: center; gap: 6px; background: linear-gradient(135deg, var(--gold), #f4d58d); color: var(--ink); border: none; border-radius: 20px; padding: 8px 14px; font-family: 'Oswald', sans-serif; font-weight: 700; font-size: clamp(11px, 3vw, 13px); text-transform: uppercase; letter-spacing: 0.02em; cursor: pointer; box-shadow: 0 4px 14px rgba(232,178,61,0.45); animation: helpBtnPulse 2.6s ease-in-out infinite; }
   .help-btn .help-icon { font-size: 15px; line-height: 1; }
@@ -48,15 +74,9 @@
   .help-dot.hidden { display: none; }
   @keyframes helpPulse { 0%,100% { transform: scale(1); opacity: 1; } 50% { transform: scale(1.3); opacity: 0.6; } }
   .kicker { font-family: 'Oswald', sans-serif; font-weight: 600; font-size: 11px; letter-spacing: 0.12em; color: var(--gold); text-transform: uppercase; margin-bottom: 6px; }
-  h1 { font-family: 'Anton', sans-serif; font-weight: 400; font-size: clamp(34px, 9vw, 50px); margin: 0; line-height: 0.95; text-transform: uppercase; letter-spacing: 0.01em; }
+  h1 { font-family: 'Anton', sans-serif; font-weight: 400; font-size: clamp(28px, 5.4vh, 44px); margin: 2px 0 0; line-height: 0.95; text-transform: uppercase; letter-spacing: 0.01em; }
   h1 span { color: var(--gold); text-shadow: 0 0 24px rgba(232,178,61,0.35); }
-  .sub { color: rgba(242,239,230,0.6); font-size: 16px; margin-top: 10px; font-weight: 300; line-height: 1.4; max-width: 420px; margin-left: auto; margin-right: auto; }
-
-  .scoreboard { display: flex; background: var(--ink-2); border: 1px solid var(--line); border-radius: 4px; overflow: hidden; margin-bottom: 22px; }
-  .scoreboard div { flex: 1; text-align: center; padding: 13px 4px; border-right: 1px solid var(--line); }
-  .scoreboard div:last-child { border-right: none; }
-  .scoreboard .label { font-family: 'Oswald', sans-serif; font-size: 12.5px; font-weight: 700; letter-spacing: 0.12em; color: rgba(232,178,61,0.85); text-transform: uppercase; display: block; margin-bottom: 6px; }
-  .scoreboard .value { font-family: 'Anton', sans-serif; font-weight: 400; font-size: 25px; color: var(--gold); }
+  .sub { color: rgba(242,239,230,0.6); font-size: 13.5px; margin-top: 5px; font-weight: 300; line-height: 1.35; max-width: 42ch; margin-left: auto; margin-right: auto; text-wrap: balance; }
 
   /* ---- Match picker ---- */
   .diff-badge { display: inline-flex; align-items: center; gap: 5px; font-family: 'Oswald', sans-serif; font-size: 10.5px; font-weight: 700; letter-spacing: 0.05em; padding: 4px 10px; border-radius: 20px; text-transform: uppercase; }
@@ -64,11 +84,20 @@
   .diff-dot { width: 6px; height: 6px; border-radius: 50%; background: rgba(255,255,255,0.2); }
   .diff-dot.on { background: currentColor; }
 
-  .mode-row { display: flex; gap: 12px; margin-bottom: 20px; }
-  .mode-btn { flex: 1; padding: 22px 10px; border-radius: 14px; border: 2px solid var(--line); background: var(--ink-2); color: rgba(242,239,230,0.55); font-family: 'Anton', sans-serif; font-weight: 400; font-size: clamp(19px, 6vw, 24px); text-transform: uppercase; letter-spacing: 0.01em; line-height: 1.3; cursor: pointer; box-shadow: 0 5px 12px rgba(0,0,0,0.3); transition: transform 0.1s ease, box-shadow 0.15s ease; }
-  .mode-btn .mode-icon { display: block; font-size: clamp(30px, 9vw, 38px); margin-bottom: 4px; }
-  .mode-btn:active { transform: scale(0.96); }
-  .mode-btn.active { background: linear-gradient(160deg, #f6da9c, var(--gold)); color: var(--ink); border-color: var(--gold); box-shadow: 0 10px 22px rgba(232,178,61,0.45), inset 0 2px 0 rgba(255,255,255,0.35); }
+  /* ---- Start: Modus-Kacheln (ersetzen die alte mode-row, Prompt 11b) ---- */
+  #dailyCard:empty { display: none; }
+  .mode-tiles { display: flex; gap: 10px; flex: 1; min-height: 0; }
+  .mode-tile { flex: 1; border-radius: 14px; border: 2px solid var(--line); background: var(--ink-2); display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 4px; padding: 10px 8px; cursor: pointer; box-shadow: 0 5px 12px rgba(0,0,0,0.3); text-align: center; }
+  .mode-tile:active { transform: scale(0.97); }
+  .mode-tile .mt-icon { font-size: clamp(26px, 4.6vh, 38px); line-height: 1; }
+  .mode-tile .mt-name { font-family: 'Anton', sans-serif; font-weight: 400; font-size: clamp(18px, 3.2vh, 25px); text-transform: uppercase; line-height: 1.1; }
+  .mode-tile .mt-sub { font-family: 'Oswald', sans-serif; font-size: 12.5px; font-weight: 400; line-height: 1.3; }
+  .mode-tile .mt-sub b { font-weight: 700; }
+  .mode-tile .mt-bar { width: 78%; height: 6px; border-radius: 3px; background: rgba(20,32,43,0.25); overflow: hidden; margin-top: 4px; }
+  .mode-tile .mt-bar i { display: block; height: 100%; background: var(--ink); border-radius: 3px; }
+  .mode-tile.camp { background: linear-gradient(160deg, #f6da9c, var(--gold)); color: var(--ink); border-color: var(--gold); box-shadow: 0 10px 22px rgba(232,178,61,0.4), inset 0 2px 0 rgba(255,255,255,0.35); }
+  .mode-tile.free { color: rgba(242,239,230,0.9); }
+  .mode-tile.free .mt-sub { color: var(--muted); }
 
   /* ---- Kampagne: Stadion-Roadmap ---- */
   .roadmap-wrap { position: relative; width: 100%; padding-bottom: 148%; margin-bottom: 10px; }
@@ -129,6 +158,15 @@
   .level-node { position: absolute; transform: translate(-50%, -50%); z-index: 2; cursor: pointer; text-align: center; }
   .level-node.locked { cursor: not-allowed; }
   .level-node.goal { cursor: default; }
+  .path-deco, .path-deco-side { position: absolute; top: 0; pointer-events: none; z-index: 0; }
+  .path-deco { inset: 0; width: 100%; height: 100%; }
+  .path-deco-side { width: 48px; height: 100%; overflow: visible; }
+  .path-deco-side.l { left: 0; }
+  .path-deco-side.r { right: 0; }
+  .path-intro { position: relative; z-index: 2; text-align: center; padding: 16px 18px 0; }
+  .path-intro .pi-k { font-family: 'Oswald', sans-serif; font-weight: 600; font-size: 11px; letter-spacing: 0.1em; text-transform: uppercase; color: var(--gold-2); }
+  .path-intro .pi-h { font-family: 'Anton', sans-serif; font-size: 26px; text-transform: uppercase; line-height: 1.05; text-shadow: 0 2px 8px rgba(0,0,0,0.5); }
+  .path-intro .pi-p { font-family: 'Oswald', sans-serif; font-weight: 300; font-size: 12.5px; color: rgba(242,239,230,0.8); margin-top: 2px; }
 
   .level-dot { position: relative; width: 68px; height: 68px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-family: 'Anton', sans-serif; font-weight: 400; font-size: 22px; border: 3px solid var(--line); background: radial-gradient(circle at 35% 30%, #333, #1a1a1a 70%); box-shadow: 0 6px 14px rgba(0,0,0,0.45), inset 0 0 0 2px rgba(255,255,255,0.04); transition: transform 0.1s ease; overflow: hidden; }
   .level-node:active .level-dot { transform: scale(0.92); }
@@ -172,10 +210,10 @@
   .random-btn:active { transform: scale(0.98); }
 
   /* ---- Pitch ---- */
-  .bonus-panel { background: linear-gradient(180deg, rgba(193,57,43,0.10), var(--ink-2)); border: 1px solid rgba(193,57,43,0.35); border-radius: 10px; padding: 22px 20px; margin-bottom: 18px; box-shadow: 0 8px 24px rgba(0,0,0,0.28); }
-  .bonus-eyebrow { font-family: 'Oswald', sans-serif; font-weight: 600; font-size: 11px; letter-spacing: 0.12em; color: var(--red); text-transform: uppercase; text-align: center; margin-bottom: 8px; }
-  .bonus-title { font-family: 'Anton', sans-serif; font-size: clamp(20px, 5.5vw, 26px); text-align: center; margin: 0 0 6px; }
-  .bonus-text { font-size: 14px; color: rgba(242,239,230,0.75); line-height: 1.5; text-align: center; margin-bottom: 16px; }
+  .bonus-panel { background: linear-gradient(180deg, rgba(193,57,43,0.10), var(--ink-2)); border: 1px solid rgba(193,57,43,0.35); border-radius: 10px; padding: 14px 16px; margin-bottom: 12px; box-shadow: 0 8px 24px rgba(0,0,0,0.28); }
+  .bonus-eyebrow { font-family: 'Oswald', sans-serif; font-weight: 600; font-size: 10.5px; letter-spacing: 0.1em; color: var(--red); text-transform: uppercase; text-align: center; margin-bottom: 4px; }
+  .bonus-title { font-family: 'Anton', sans-serif; font-size: clamp(18px, 5vw, 23px); text-align: center; margin: 0 0 4px; }
+  .bonus-text { font-size: 13px; color: rgba(242,239,230,0.75); line-height: 1.4; text-align: center; margin-bottom: 10px; }
   .bonus-text b { color: var(--chalk); }
 
   .pitch-wrap { position: relative; width: 100%; padding-bottom: 138%; margin-bottom: 14px; container-type: inline-size; }
@@ -271,23 +309,23 @@
   .hidden { display: none !important; }
 
   /* ---- Profil / Level-System ---- */
-  .profile-bar { background: var(--ink-2); border: 1px solid var(--line); border-radius: 10px; padding: 14px 16px; margin-bottom: 16px; display: flex; align-items: center; gap: 12px; cursor: pointer; box-shadow: 0 4px 14px rgba(0,0,0,0.2); transition: transform 0.1s ease; }
+  .profile-bar { width: 100%; text-align: left; background: var(--ink-2); border: 1px solid var(--line); border-radius: 10px; padding: 9px 12px; display: flex; align-items: center; gap: 10px; cursor: pointer; box-shadow: 0 4px 14px rgba(0,0,0,0.2); transition: transform 0.1s ease; }
   .profile-bar:active { transform: scale(0.99); }
-  .rank-icon { position: relative; width: 46px; height: 46px; border-radius: 50%; flex-shrink: 0; display: flex; align-items: center; justify-content: center; font-size: 21px; line-height: 1; border: 2px solid var(--rank-c1, var(--gold)); background: radial-gradient(circle at 35% 30%, var(--rank-c1, #8a6a4a), var(--rank-c2, #5c4326) 75%); box-shadow: 0 4px 12px rgba(0,0,0,0.4), inset 0 0 10px rgba(0,0,0,0.35), 0 0 0 3px rgba(255,255,255,0.03); }
+  .rank-icon { position: relative; width: 38px; height: 38px; border-radius: 50%; flex-shrink: 0; display: flex; align-items: center; justify-content: center; font-size: 17px; line-height: 1; border: 2px solid var(--rank-c1, var(--gold)); background: radial-gradient(circle at 35% 30%, var(--rank-c1, #8a6a4a), var(--rank-c2, #5c4326) 75%); box-shadow: 0 4px 12px rgba(0,0,0,0.4), inset 0 0 10px rgba(0,0,0,0.35), 0 0 0 3px rgba(255,255,255,0.03); }
   .rank-icon.legendary { animation: rankGlow 2s ease-in-out infinite; }
   @keyframes rankGlow { 0%, 100% { box-shadow: 0 4px 12px rgba(0,0,0,0.4), inset 0 0 10px rgba(0,0,0,0.3), 0 0 10px 2px var(--rank-c1, var(--gold)); } 50% { box-shadow: 0 4px 18px rgba(0,0,0,0.4), inset 0 0 10px rgba(0,0,0,0.3), 0 0 18px 6px var(--rank-c1, var(--gold)); } }
   .profile-mid { flex: 1; min-width: 0; }
-  .profile-row1 { display: flex; justify-content: space-between; align-items: center; margin-bottom: 7px; gap: 8px; }
-  .rank-name { font-family: 'Oswald', sans-serif; font-weight: 700; font-size: 13.5px; color: var(--chalk); }
+  .profile-row1 { display: flex; justify-content: space-between; align-items: center; margin-bottom: 5px; gap: 8px; }
+  .rank-name { font-family: 'Oswald', sans-serif; font-weight: 700; font-size: 13px; color: var(--chalk); }
   .rank-title { font-family: 'Oswald', sans-serif; font-weight: 500; font-size: 10px; color: var(--gold); }
-  .level-chip { display: inline-flex; align-items: baseline; gap: 4px; flex-shrink: 0; background: linear-gradient(135deg, var(--gold), #f4d58d); color: var(--ink); padding: 3px 10px; border-radius: 20px; box-shadow: 0 2px 8px rgba(232,178,61,0.4); }
-  .level-chip .level-chip-num { font-family: 'Anton', sans-serif; font-weight: 400; font-size: 16px; line-height: 1; }
+  .level-chip { display: inline-flex; align-items: baseline; gap: 4px; flex-shrink: 0; background: linear-gradient(135deg, var(--gold), #f4d58d); color: var(--ink); padding: 2px 9px; border-radius: 20px; box-shadow: 0 2px 8px rgba(232,178,61,0.4); }
+  .level-chip .level-chip-num { font-family: 'Anton', sans-serif; font-weight: 400; font-size: 14px; line-height: 1; }
   .level-chip .level-chip-tag { font-family: 'Oswald', sans-serif; font-weight: 600; font-size: 9px; letter-spacing: 0.08em; }
-  .xp-bar-track { background: rgba(255,255,255,0.08); border-radius: 20px; height: 10px; overflow: hidden; position: relative; }
+  .xp-bar-track { background: rgba(255,255,255,0.08); border-radius: 20px; height: 7px; overflow: hidden; position: relative; }
   .xp-bar-fill { background: linear-gradient(90deg, var(--gold), #f4d58d); height: 100%; border-radius: 20px; transition: width 0.5s ease; position: relative; overflow: hidden; box-shadow: 0 0 10px rgba(232,178,61,0.55); }
   .xp-bar-fill::after { content: ""; position: absolute; inset: 0; width: 40%; background: linear-gradient(90deg, transparent, rgba(255,255,255,0.55), transparent); animation: xpShine 2.4s ease-in-out infinite; }
   @keyframes xpShine { 0% { transform: translateX(-120%); } 100% { transform: translateX(280%); } }
-  .xp-next { font-family: 'Oswald', sans-serif; font-weight: 300; font-size: 13px; color: rgba(242,239,230,0.7); margin-top: 7px; display: flex; align-items: center; gap: 7px; }
+  .xp-next { font-family: 'Oswald', sans-serif; font-weight: 300; font-size: 11.5px; color: rgba(242,239,230,0.7); margin-top: 5px; display: flex; align-items: center; gap: 6px; }
   .xp-next b { color: var(--gold); font-weight: 700; }
   .xp-ball { display: inline-block; font-size: 19px; line-height: 1; animation: xpBallDribble 2.6s ease-in-out infinite; }
   @keyframes xpBallDribble { 0% { transform: translateX(0) rotate(0deg); } 50% { transform: translateX(14px) rotate(220deg); } 100% { transform: translateX(0) rotate(0deg); } }
@@ -345,68 +383,81 @@
   .levelup-rank-name { font-family: 'Oswald', sans-serif; font-weight: 700; font-size: 20px; margin-bottom: 22px; }
   .levelup-close { background: var(--gold); color: var(--ink); border: none; border-radius: 8px; padding: 13px 30px; font-family: 'Oswald', sans-serif; font-weight: 700; text-transform: uppercase; letter-spacing: 0.03em; cursor: pointer; }
 
-  footer { margin-top: 26px; text-align: center; font-size: 11.5px; color: rgba(242,239,230,0.35); line-height: 1.6; font-weight: 300; }
 </style>
 </head>
 <body>
-<div class="app">
-
-  <header>
-    <button class="help-btn" id="helpBtn"><span class="help-icon">🎮</span>So geht's<span class="help-dot" id="helpDot"></span></button>
-    <div class="brand-badge">⚽</div>
-    <div class="kicker">Football Lineup Trivia</div>
-    <h1>Starting<span> XI</span></h1>
-    <div class="sub">Echte Spiele aus der Fußballgeschichte - stell die Startelf nach und zeig, wer sich wirklich auskennt.</div>
-  </header>
+<div class="stage" id="stage">
 
   <div class="toast-stack" id="toastStack"></div>
   <canvas id="srFx" aria-hidden="true"></canvas>
 
-  <div class="profile-bar" id="profileBar">
-    <div class="rank-icon" id="rankIcon">🟫</div>
-    <div class="profile-mid">
-      <div class="profile-row1">
-        <span><span class="rank-name" id="rankName">Kreisliga</span> <span class="rank-title" id="rankTitle"></span></span>
-        <span class="level-chip"><span class="level-chip-num" id="levelChipNum">1</span><span class="level-chip-tag">LVL</span></span>
+  <!-- START -->
+  <section class="screen" id="screen-start" aria-label="Start">
+    <header>
+      <button class="help-btn" id="helpBtn"><span class="help-icon">🎮</span>So geht's<span class="help-dot" id="helpDot"></span></button>
+      <div class="brand-badge">⚽</div>
+      <div class="kicker">Football Lineup Trivia</div>
+      <h1>Starting<span> XI</span></h1>
+      <div class="sub">Echte Spiele aus der Fußballgeschichte - stell die Startelf nach und zeig, wer sich wirklich auskennt.</div>
+    </header>
+
+    <button type="button" class="profile-bar" id="profileBar">
+      <div class="rank-icon" id="rankIcon">🟫</div>
+      <div class="profile-mid">
+        <div class="profile-row1">
+          <span><span class="rank-name" id="rankName">Kreisliga</span> <span class="rank-title" id="rankTitle"></span></span>
+          <span class="level-chip"><span class="level-chip-num" id="levelChipNum">1</span><span class="level-chip-tag">LVL</span></span>
+        </div>
+        <div class="xp-bar-track"><div class="xp-bar-fill" id="xpBarFill" style="width:0%"></div></div>
+        <div class="xp-next" id="xpNext">Noch <b>100</b> XP bis Lvl 2</div>
       </div>
-      <div class="xp-bar-track"><div class="xp-bar-fill" id="xpBarFill" style="width:0%"></div></div>
-      <div class="xp-next" id="xpNext">Noch <b>100</b> XP bis Lvl 2</div>
+      <div class="currency-stack">
+        <div class="token-count" id="tokenCount">🔍 0</div>
+      </div>
+    </button>
+
+    <!-- Befuellt ab Prompt 13 (Tages-Challenge); bis dahin leer und via :empty ausgeblendet. -->
+    <div id="dailyCard"></div>
+
+    <div class="mode-tiles" id="modeTiles"></div>
+  </section>
+
+  <!-- WELTKARTE -->
+  <section class="screen" id="screen-worldmap" aria-label="Weltkarte" hidden>
+    <div class="topbar">
+      <button class="back-btn" type="button" id="backFromWorldmap"><span class="back-arrow">←</span>Start</button>
+      <div class="topbar-title">Kampagne</div>
     </div>
-    <div class="currency-stack">
-      <div class="token-count" id="tokenCount">🔍 0</div>
-    </div>
-  </div>
-
-  <div class="scoreboard">
-    <div><span class="label">Absolviert</span><span class="value" id="playedCount">0</span></div>
-    <div><span class="label">Ø Treffer</span><span class="value" id="avgScore">0/11</span></div>
-    <div><span class="label">Perfekt</span><span class="value" id="perfectCount">0</span></div>
-  </div>
-
-  <div id="unlockRow" class="unlock-row hidden"></div>
-
-  <div id="pickerView">
-    <div class="mode-row">
-      <button class="mode-btn" id="modeCampaignBtn"><span class="mode-icon">🌍</span>Kampagne</button>
-      <button class="mode-btn" id="modeFreeplayBtn"><span class="mode-icon">🎲</span>Frei spielen</button>
-    </div>
-
     <div id="campaignView"></div>
+  </section>
 
-    <div id="freeplayView" class="hidden">
-      <div class="filter-row" id="filterRow"></div>
-      <div class="filter-row" id="diffFilterRow"></div>
-      <button class="random-btn" id="randomBtn">🎲 Zufällige Aufstellung</button>
-      <div class="bonus-text" style="margin-top:-6px">Die Partien bleiben geheim, bis du sie spielst - so bleibt's spannend.</div>
+  <!-- LEVEL-PFAD -->
+  <section class="screen scroll-y" id="screen-levelpath" aria-label="Level-Pfad" hidden>
+    <div class="topbar">
+      <button class="back-btn" type="button" id="backFromLevelpath"><span class="back-arrow">←</span>Welten</button>
+      <div class="topbar-title" id="pathTitle"></div>
     </div>
-  </div>
+    <div id="levelPathView"></div>
+  </section>
 
-  <div id="pitchView" class="hidden"></div>
+  <!-- FREISPIEL -->
+  <section class="screen" id="screen-freeplay" aria-label="Frei spielen" hidden>
+    <div class="topbar">
+      <button class="back-btn" type="button" id="backFromFreeplay"><span class="back-arrow">←</span>Start</button>
+      <div class="topbar-title">Frei spielen</div>
+    </div>
+    <div class="filter-row" id="filterRow"></div>
+    <div class="filter-row" id="diffFilterRow"></div>
+    <div id="unlockRow" class="unlock-row hidden"></div>
+    <div class="freeplay-count" id="freeplayCount"></div>
+    <button class="random-btn" id="randomBtn">🎲 Zufällige Aufstellung</button>
+    <div class="bonus-text" style="margin-top:-6px; margin-bottom:0">Die Partien bleiben geheim, bis du sie spielst - so bleibt's spannend.</div>
+  </section>
 
-  <footer>
-    Alle Aufstellungen sind recherchiert und stammen aus echten, konkreten Spielen -<br>
-    keine "typischen Stammelf"-Angaben, sondern reale Startelf einer bestimmten Partie.
-  </footer>
+  <!-- SPIELFELD -->
+  <section class="screen scroll-y" id="screen-game" aria-label="Spielfeld" hidden>
+    <div id="pitchView"></div>
+  </section>
 
 </div>
 
@@ -1126,12 +1177,122 @@ const LINEUP_CHALLENGES = [
 ];
 
 /* ================= STATE ================= */
-let stats = { played: 0, totalCorrect: 0, perfect: 0 };
 let selectedLeagues = new Set();     // leer = alle Ligen
 let selectedDifficulties = new Set(); // leer = alle Stufen
 let currentMatch = null;
 let matchQueue = [];
 let lastShownId = null;
+
+/* ================= NAVIGATION (Prompt 11b) =================
+   5 Bildschirme in eigenen <section class="screen">, gezeigt/versteckt per
+   showScreen(). navStack wird bei jedem pushState mitgespeichert, damit
+   history.go(-n) (goBackTo) und die Android-/iOS-Zurücktaste (popstate)
+   exakt denselben, zum jeweiligen Zeitpunkt gültigen Stack wiederherstellen -
+   ein einziger Code-Pfad für Buttons, Wischgeste und Hardware-Zurück. */
+const REDUCED_MOTION = matchMedia("(prefers-reduced-motion: reduce)").matches;
+let navStack = ["start"];
+
+// Baut den Inhalt des Ziel-Bildschirms IMMER frisch auf, bevor er sichtbar wird -
+// so bleibt z.B. der Level-Pfad/die Weltkarte nie mit dem Stand von vor einem
+// Spielversuch stehen, ganz gleich ob per Button, Wischgeste oder Hardware-Zurück
+// dorthin navigiert wird (ein einziger Code-Pfad statt Refresh an jeder Aufrufstelle).
+function refreshScreenContent(id) {
+  if (id === "start") renderModeTiles();
+  if (id === "worldmap") renderCampaignWorlds();
+  if (id === "levelpath") renderCampaignLevels();
+  if (id === "freeplay") { buildFilterBar(); buildDifficultyFilterBar(); renderFreeplayCount(); }
+}
+
+// Falls schon eine Übergangsanimation läuft (schnelles Wischen/Tippen kurz
+// hintereinander), sofort abschliessen statt sie zu überlappen - zwei parallele
+// showScreen()-Läufe würden sich sonst gegenseitig die hidden/Klassen-Zustände
+// kaputtschreiben (der jeweils ältere setTimeout griffe auf ein inzwischen
+// falsches "cur" zu) und einen Bildschirm dauerhaft sichtbar-aber-leer stehen lassen.
+let pendingTransition = null;
+
+function showScreen(id, dir) {
+  if (pendingTransition) {
+    clearTimeout(pendingTransition.timeoutId);
+    pendingTransition.finish();
+    pendingTransition = null;
+  }
+  const cur = document.querySelector(".screen:not([hidden])");
+  const next = document.getElementById("screen-" + id);
+  if (!next || cur === next) return;
+  refreshScreenContent(id);
+  next.hidden = false;
+  next.classList.add(dir === "fwd" ? "enter-right" : "enter-left");
+  void next.offsetWidth;
+  requestAnimationFrame(() => {
+    next.classList.remove("enter-right", "enter-left");
+    if (cur) cur.classList.add(dir === "fwd" ? "leave-left" : "leave-right");
+  });
+  const done = () => {
+    if (cur) { cur.hidden = true; cur.classList.remove("leave-left", "leave-right"); }
+    pendingTransition = null;
+  };
+  if (REDUCED_MOTION) { done(); } else { pendingTransition = { finish: done, timeoutId: setTimeout(done, 330) }; }
+}
+
+function navigate(id) {
+  if (historyNavPending) return;
+  navStack.push(id);
+  history.pushState({ stack: navStack.slice() }, "", "#" + id);
+  showScreen(id, "fwd");
+}
+
+// history.back()/.go() loesen popstate erst ASYNCHRON aus - ruft man vorher (waehrend
+// das noch aussteht) navigate()/goBack()/goBackTo() erneut auf, verschiebt sich der
+// echte Browser-Verlauf gegen unseren navStack und ein Bildschirm bleibt sichtbar-aber-
+// leer stehen. historyNavPending sperrt Navigation deshalb, bis popstate den vorigen
+// Schritt bestaetigt hat (mit Sicherheitsnetz, falls popstate ausnahmsweise ausbleibt).
+let historyNavPending = false;
+function markHistoryNavPending() {
+  historyNavPending = true;
+  setTimeout(() => { historyNavPending = false; }, 1000);
+}
+
+// Delegiert an window.history.back()/.go(), statt den Stack selbst zu manipulieren -
+// nur so loest auch die Android-/iOS-Zurücktaste (die immer ein echtes popstate
+// erzeugt) automatisch dieselbe Logik aus wie unsere eigenen Zurück-Buttons.
+function goBack() {
+  if (historyNavPending) return;
+  markHistoryNavPending();
+  window.history.back();
+}
+
+// Ueberspringt mehrere Ebenen auf einmal (z.B. "Stufe geschafft" von game direkt
+// zur Weltkarte, obwohl levelpath dazwischenliegt) - history.go(-n) stellt beim
+// Zurueckspulen exakt den damals gespeicherten (kuerzeren) Stack wieder her.
+function goBackTo(id) {
+  const idx = navStack.lastIndexOf(id);
+  if (idx === -1) { navigate(id); return; }
+  const delta = idx - (navStack.length - 1);
+  if (delta === 0) return;
+  if (historyNavPending) return;
+  markHistoryNavPending();
+  window.history.go(delta);
+}
+
+window.addEventListener("popstate", (e) => {
+  historyNavPending = false;
+  navStack = (e.state && e.state.stack) || ["start"];
+  showScreen(navStack[navStack.length - 1], "back");
+});
+history.replaceState({ stack: navStack.slice() }, "", "#start");
+
+// Wischgeste vom linken Rand = zurück (wie prototypes/navigation.html)
+let swipeStartX = null, swipeStartY = null;
+document.getElementById("stage").addEventListener("touchstart", (e) => {
+  const t = e.touches[0];
+  if (t.clientX < 28) { swipeStartX = t.clientX; swipeStartY = t.clientY; }
+}, { passive: true });
+document.getElementById("stage").addEventListener("touchend", (e) => {
+  if (swipeStartX === null) return;
+  const t = e.changedTouches[0];
+  if (t.clientX - swipeStartX > 70 && Math.abs(t.clientY - swipeStartY) < 60) goBack();
+  swipeStartX = null;
+});
 
 function shuffle(arr) {
   const a = [...arr];
@@ -1667,6 +1828,10 @@ function openGuideModal() {
             <div class="guide-desc">${s.desc}</div>
           </div>
         </div>`).join("")}
+      <div class="guide-desc" style="margin-top:14px; text-align:center;">
+        Alle Aufstellungen sind recherchiert und stammen aus echten, konkreten Spielen -
+        keine "typischen Stammelf"-Angaben, sondern reale Startelf einer bestimmten Partie.
+      </div>
     </div>`;
   document.body.appendChild(backdrop);
   document.getElementById("closeGuideModal").onclick = () => backdrop.remove();
@@ -1684,12 +1849,6 @@ document.getElementById("helpBtn").onclick = openGuideModal;
 let profile = loadProfile();
 document.getElementById("profileBar").onclick = openAchievementsModal;
 
-function updateStatsBar() {
-  document.getElementById("playedCount").textContent = stats.played;
-  document.getElementById("avgScore").textContent = stats.played === 0 ? "0/11" : (stats.totalCorrect / stats.played).toFixed(1) + "/11";
-  document.getElementById("perfectCount").textContent = stats.perfect;
-}
-
 function buildFilterBar() {
   const leagues = [...new Set(LINEUP_CHALLENGES.map(m => m.league))];
   const bar = document.getElementById("filterRow");
@@ -1698,7 +1857,7 @@ function buildFilterBar() {
   const allBtn = document.createElement("button");
   allBtn.className = "filter-btn" + (selectedLeagues.size === 0 ? " active" : "");
   allBtn.textContent = "Alle (" + LINEUP_CHALLENGES.length + ")";
-  allBtn.onclick = () => { selectedLeagues.clear(); matchQueue = []; renderPicker(); };
+  allBtn.onclick = () => { selectedLeagues.clear(); matchQueue = []; buildFilterBar(); buildDifficultyFilterBar(); renderFreeplayCount(); };
   bar.appendChild(allBtn);
 
   leagues.forEach(l => {
@@ -1712,7 +1871,7 @@ function buildFilterBar() {
       btn.onclick = () => {
         if (selectedLeagues.has(l)) selectedLeagues.delete(l); else selectedLeagues.add(l);
         matchQueue = [];
-        renderPicker();
+        buildFilterBar(); buildDifficultyFilterBar(); renderFreeplayCount();
       };
     }
     bar.appendChild(btn);
@@ -1726,7 +1885,7 @@ function buildDifficultyFilterBar() {
   const allBtn = document.createElement("button");
   allBtn.className = "filter-btn" + (selectedDifficulties.size === 0 ? " active" : "");
   allBtn.textContent = "Alle Stufen";
-  allBtn.onclick = () => { selectedDifficulties.clear(); matchQueue = []; renderPicker(); };
+  allBtn.onclick = () => { selectedDifficulties.clear(); matchQueue = []; buildFilterBar(); buildDifficultyFilterBar(); renderFreeplayCount(); };
   bar.appendChild(allBtn);
 
   [1, 2, 3, 4, 5].forEach(d => {
@@ -1742,15 +1901,17 @@ function buildDifficultyFilterBar() {
       btn.onclick = () => {
         if (selectedDifficulties.has(d)) selectedDifficulties.delete(d); else selectedDifficulties.add(d);
         matchQueue = [];
-        renderPicker();
+        buildFilterBar(); buildDifficultyFilterBar(); renderFreeplayCount();
       };
     }
     bar.appendChild(btn);
   });
 }
 
-let pickerMode = "campaign"; // "campaign" | "freeplay"
-let campaignView = "worlds";  // "worlds" | "levels"
+function renderFreeplayCount() {
+  document.getElementById("freeplayCount").textContent = poolForActiveLeague().length + " Aufstellungen passen";
+}
+
 let campaignTier = null;
 let currentLevelContext = null; // { tier, index, m } - gesetzt, wenn gerade ein Kampagnen-Level läuft
 
@@ -1860,7 +2021,7 @@ function renderCampaignWorlds() {
       ${!isEmpty ? `<div class="stadium-stars">⭐ ${starSummary.earned}/${starSummary.max}</div>` : ""}
     `;
     if (unlocked && !isEmpty) {
-      node.onclick = () => { campaignTier = tier; campaignView = "levels"; renderCampaignView(); };
+      node.onclick = () => { campaignTier = tier; navigate("levelpath"); };
     }
     wrap.appendChild(node);
   });
@@ -1868,45 +2029,101 @@ function renderCampaignWorlds() {
   container.appendChild(wrap);
 }
 
+// Rein dekorative Welt-Ausschmückung hinter dem Level-Pfad (nie über den Level-Punkten,
+// siehe z-index-Schema von .path-deco* vs. .level-node) - 1:1 Optik aus
+// prototypes/navigation.html, damit jede Welt einen eigenen Charakter bekommt.
+const TIER_THEME = { 1: "village", 2: "regional", 3: "bundesliga", 4: "night", 5: "gold" };
+const TIER_INTRO = {
+  1: "Bolzplatz-Flair: Zaun, Bäume, ein Flutlichtmast - hier beginnt jede Karriere.",
+  2: "Kleine Tribüne, Fantasie-Bandenwerbung - Vereinsfußball zum Anfassen.",
+  3: "Ausverkauftes Haus, Fahnen im Wind - Fußball am Wochenende.",
+  4: "Flutlicht und Sternenhimmel - große Nächte unter europäischen Flutlichtmasten.",
+  5: "Nur für Legenden. Goldenes Licht, Konfetti - am Ende wartet der Pokal."
+};
+const PATH_BG = {
+  village: "linear-gradient(180deg, #2f5d3a, #1f4a2f)",
+  regional: "repeating-linear-gradient(180deg, rgba(255,255,255,0.05) 0 44px, transparent 44px 88px), linear-gradient(180deg, #235a3c, #184330)",
+  bundesliga: "repeating-linear-gradient(180deg, rgba(255,255,255,0.06) 0 44px, transparent 44px 88px), linear-gradient(180deg, #1f6040, #164a31)",
+  night: "radial-gradient(ellipse at 50% 0%, rgba(255,246,200,0.18), transparent 45%), repeating-linear-gradient(180deg, rgba(255,255,255,0.035) 0 44px, transparent 44px 88px), linear-gradient(180deg, #0d1a24, #13382a 30%, #0f2e22)",
+  gold: "radial-gradient(ellipse at 50% 100%, rgba(232,178,61,0.35), transparent 55%), repeating-linear-gradient(180deg, rgba(255,255,255,0.05) 0 44px, transparent 44px 88px), linear-gradient(180deg, #2a4a2a, #3a4a22 60%, #4a3f1c)"
+};
+function pathDecoration(theme, H) {
+  const along = (fn, step, off = 0) => { let o = ""; for (let y = 170 + off; y < H - 80; y += step) o += fn(y); return o; };
+  if (theme === "village") {
+    const tree = (x, y, sc) => `<g transform="translate(${x} ${y}) scale(${sc})"><rect x="-2" y="0" width="4" height="14" fill="#4a3620"/><circle cx="0" cy="-4" r="10" fill="#2f6a3a"/><circle cx="-6" cy="2" r="7" fill="#357a42"/><circle cx="6" cy="1" r="7" fill="#2c6436"/></g>`;
+    const fence = x => `<rect x="${x}" y="130" width="10" height="${H - 200}" fill="url(#wood)"/>`;
+    return {
+      full: `<defs><linearGradient id="skyV" x1="0" x2="0" y1="0" y2="1"><stop offset="0" stop-color="#E8A65A" stop-opacity=".35"/><stop offset="1" stop-color="#E8A65A" stop-opacity="0"/></linearGradient></defs><rect width="100%" height="140" fill="url(#skyV)"/>`,
+      L: `<defs><pattern id="wood" width="10" height="26" patternUnits="userSpaceOnUse"><rect width="10" height="26" fill="#6b4a2a"/><rect y="22" width="10" height="4" fill="#4a321b"/><rect width="1.5" height="26" fill="#7d5a35"/></pattern></defs>${fence(4)}
+          <g transform="translate(22 40)"><rect x="0" y="0" width="4" height="96" fill="#8c8c8c"/><rect x="-10" y="-8" width="24" height="12" rx="2" fill="#bdbdbd"/><circle cx="-4" cy="-2" r="3" fill="#fff6c8"/><circle cx="2" cy="-2" r="3" fill="#fff6c8"/><circle cx="8" cy="-2" r="3" fill="#fff6c8"/></g>
+          ${along(y => tree(30, y, 0.85), 230)}`,
+      R: `${fence(34)}${along(y => tree(18, y, 0.8), 250, 110)}`
+    };
+  }
+  if (theme === "regional") {
+    const ads = ["SCOUT", "KICK", "ELF", "PFALZ", "11ER"], cols = ["#C9D6E3", "#E8B23D", "#F2EFE6", "#7fd99a", "#E0705F"];
+    const board = (x, y, i) => `<g transform="translate(${x} ${y}) rotate(-90)"><rect x="-34" y="-8" width="68" height="16" rx="2" fill="${cols[i % 5]}"/><text x="0" y="4.5" text-anchor="middle" font-family="Oswald, sans-serif" font-weight="700" font-size="11" fill="#14202B">${ads[i % 5]}</text></g>`;
+    let i = 0;
+    return {
+      full: `<rect width="100%" height="64" fill="#243A4D"/><rect y="12" width="100%" height="7" fill="#1C2B38"/><rect y="27" width="100%" height="7" fill="#1C2B38"/><rect y="42" width="100%" height="7" fill="#1C2B38"/>`,
+      L: along(y => board(12, y, i++), 150),
+      R: along(y => board(36, y, i++), 150, 70)
+    };
+  }
+  if (theme === "bundesliga") {
+    const flag = (x, c1, c2) => `<g transform="translate(${x} 70)"><rect width="2" height="34" fill="#ccc"/><path d="M2 2 h20 l-5 7 5 7 h-20z" fill="${c1}"/><path d="M2 9 h16" stroke="${c2}" stroke-width="3"/></g>`;
+    const crowd = `<defs><pattern id="crowd" width="8" height="8" patternUnits="userSpaceOnUse"><rect width="8" height="8" fill="#1a2733"/><circle cx="2" cy="2" r="1.6" fill="#e8b23d" opacity=".55"/><circle cx="6" cy="6" r="1.6" fill="#F2EFE6" opacity=".35"/><circle cx="6" cy="2" r="1.3" fill="#e0705f" opacity=".4"/></pattern></defs>`;
+    return {
+      full: `${crowd}<rect width="100%" height="62" fill="url(#crowd)"/><rect y="62" width="100%" height="4" fill="#E8B23D" opacity=".6"/>`,
+      L: `<rect width="22" height="${H}" fill="url(#crowd)"/>${flag(26, "#E8B23D", "#14202B")}`,
+      R: `<rect x="26" width="22" height="${H}" fill="url(#crowd)"/>${flag(4, "#7DB8FF", "#F2EFE6")}`
+    };
+  }
+  if (theme === "night") {
+    let st = ""; for (let k = 0; k < 80; k++) st += `<circle cx="${(k * 37) % 100}%" cy="${(k * 53) % H}" r="${(k % 3) * 0.5 + 0.6}" fill="#fff" opacity="${0.2 + (k % 4) * 0.15}"/>`;
+    const beam = `<defs><linearGradient id="beam" x1="0" x2="0" y1="0" y2="1"><stop offset="0" stop-color="#fff6c8" stop-opacity=".32"/><stop offset="1" stop-color="#fff6c8" stop-opacity="0"/></linearGradient></defs>`;
+    return {
+      full: st,
+      L: `${beam}<g transform="translate(16 18)"><path d="M3 4 L120 220 L20 230 Z" fill="url(#beam)"/><rect width="3" height="90" fill="#6b7785"/><rect x="-8" y="-6" width="20" height="10" rx="2" fill="#9aa6b3"/></g>`,
+      R: `<g transform="translate(30 18)"><path d="M0 4 L-120 220 L-20 230 Z" fill="url(#beam)"/><rect width="3" height="90" fill="#6b7785"/><rect x="-8" y="-6" width="20" height="10" rx="2" fill="#9aa6b3"/></g>`
+    };
+  }
+  let conf = ""; const cc = ["#E8B23D", "#F4D58D", "#F2EFE6", "#E0705F"];
+  for (let k = 0; k < 70; k++) conf += `<rect x="${(k * 29) % 100}%" y="${(k * 71) % H}" width="${3 + k % 3}" height="${6 + k % 4}" rx="1" fill="${cc[k % 4]}" opacity=".45"/>`;
+  return { full: conf, L: "", R: "" };
+}
+
 function renderCampaignLevels() {
-  const container = document.getElementById("campaignView");
+  const container = document.getElementById("levelPathView");
   container.innerHTML = "";
   const tier = campaignTier;
   const matches = getMatchesByTier(tier);
   const unlockedCount = unlockedLevelCount(tier);
   const color = DIFF_COLOR[tier];
-
-  const back = document.createElement("button");
-  back.className = "back-btn";
-  back.innerHTML = `<span class="back-arrow">←</span> Weltkarte`;
-  back.onclick = () => { campaignView = "worlds"; renderCampaignView(); };
-  container.appendChild(back);
+  const theme = TIER_THEME[tier];
+  document.getElementById("pathTitle").textContent = DIFF_LABEL[tier];
 
   const worldStars = starsSummaryForTier(matches);
-  const heading = document.createElement("div");
-  heading.style.marginBottom = "12px";
-  heading.style.display = "flex";
-  heading.style.alignItems = "center";
-  heading.style.justifyContent = "space-between";
-  heading.style.gap = "10px";
-  heading.innerHTML = `<span class="world-name" style="color:${color}">${DIFF_LABEL[tier]}</span><span class="world-star-total">⭐ ${worldStars.earned}/${worldStars.max}</span>`;
-  container.appendChild(heading);
 
   // Ein schlängelnder Pfad aus Level-Stationen, mündet in ein Ziel-Symbol Richtung nächste Welt.
+  // INTRO_H reserviert oben Platz für den Ausschmückungs-Kopf (Welt N/Sterne/Text), ohne die
+  // bestehende Kurvenform/den Abstand der Level-Stationen untereinander zu verändern.
+  const INTRO_H = 96;
   const Y_STEP = 98; // px pro Level - kompakter, damit das Feld nicht leer wirkt
   const totalNodes = matches.length + 1; // +1 für die Ziel-Station am Ende
-  const wrapHeight = totalNodes * Y_STEP + 20;
+  const contentH = totalNodes * Y_STEP + 20;
+  const wrapHeight = INTRO_H + contentH;
 
   const wrap = document.createElement("div");
   wrap.className = "level-path-wrap";
   wrap.style.height = wrapHeight + "px";
-  wrap.style.setProperty("--path-bg", color + "14");
+  wrap.style.background = PATH_BG[theme];
 
   const points = [];
   for (let i = 0; i < totalNodes; i++) {
     const x = 50 + 37 * Math.sin(i * 1.15);
-    const y = ((i + 0.6) / totalNodes) * 100;
-    points.push({ x, y });
+    const yPx = INTRO_H + ((i + 0.6) / totalNodes) * contentH;
+    points.push({ x, y: (yPx / wrapHeight) * 100 });
   }
 
   let pathD = "";
@@ -1946,21 +2163,13 @@ function renderCampaignLevels() {
       <div class="level-label">${tier === 5 ? "Weltklasse!" : (nextTierLabel ? "Weiter zu " + nextTierLabel : "")}</div>
     </div>`;
 
-  const confettiColors = ["#E8B23D", "#4aa3ff", "#2ecc71", "#F2EFE6", "#e8863d"];
-  let confettiHtml = "";
-  const confettiCount = Math.max(14, totalNodes * 3);
-  for (let i = 0; i < confettiCount; i++) {
-    const cx = 8 + Math.random() * 84;
-    const cy = 4 + Math.random() * 92;
-    const c = confettiColors[i % confettiColors.length];
-    const size = 3 + Math.random() * 4;
-    confettiHtml += `<div class="confetti-dot" style="left:${cx}%; top:${cy}%; background:${c}; width:${size}px; height:${size}px;"></div>`;
-  }
+  const dec = pathDecoration(theme, wrapHeight);
 
   wrap.innerHTML = `
-    ${confettiHtml}
-    <div class="field-marking field-halfway" style="top:50%;"></div>
-    <div class="field-marking field-circle" style="top:50%;"></div>
+    <div class="path-intro"><div class="pi-k">Welt ${tier} · ⭐ ${worldStars.earned}/${worldStars.max}</div><div class="pi-h" style="color:${color}">${DIFF_LABEL[tier]}</div><div class="pi-p">${TIER_INTRO[tier]}</div></div>
+    <svg class="path-deco" width="100%" height="${wrapHeight}">${dec.full}</svg>
+    <svg class="path-deco-side l" width="48" height="${wrapHeight}" overflow="visible">${dec.L}</svg>
+    <svg class="path-deco-side r" width="48" height="${wrapHeight}" overflow="visible">${dec.R}</svg>
     <svg class="level-path-svg" viewBox="0 0 100 100" preserveAspectRatio="none">
       <path class="roadmap-path${allPassed ? " lit" : ""}" d="${pathD}"></path>
     </svg>${nodesHtml}`;
@@ -1976,30 +2185,59 @@ function renderCampaignLevels() {
   });
 
   container.appendChild(wrap);
+
+  // Beim Öffnen automatisch zum aktuellen Level scrollen (wie prototypes/navigation.html).
+  requestAnimationFrame(() => {
+    const currentIdx = matches.findIndex(m => !profile.campaign.levelPassed[m.id]);
+    if (currentIdx === -1) { document.getElementById("screen-levelpath").scrollTop = 0; return; }
+    const targetNode = wrap.querySelector('.level-node[data-idx="' + currentIdx + '"]');
+    if (targetNode) targetNode.scrollIntoView({ block: "center", behavior: "auto" });
+  });
 }
 
-function renderCampaignView() {
-  if (campaignView === "worlds") renderCampaignWorlds();
-  else renderCampaignLevels();
+// Aktuelle Kampagnen-Welt fuer die Start-Kachel: erste noch nicht komplett
+// abgeschlossene Welt, sonst Welt 5 (gleiche isCurrent-Logik wie renderCampaignWorlds).
+function currentCampaignTier() {
+  for (const { tier } of ROADMAP_NODES) {
+    const matches = getMatchesByTier(tier);
+    if (matches.length === 0) continue;
+    const passedCount = matches.filter(m => profile.campaign.levelPassed[m.id]).length;
+    if (passedCount < matches.length) return tier;
+  }
+  return 5;
 }
 
-function setPickerMode(mode) {
-  pickerMode = mode;
-  document.getElementById("modeCampaignBtn").classList.toggle("active", mode === "campaign");
-  document.getElementById("modeFreeplayBtn").classList.toggle("active", mode === "freeplay");
-  document.getElementById("campaignView").classList.toggle("hidden", mode !== "campaign");
-  document.getElementById("freeplayView").classList.toggle("hidden", mode !== "freeplay");
-  if (mode === "campaign") renderCampaignView();
+// Sterne-Summe ueber alle 5 Welten (Start-Kachel), addiert starsSummaryForTier pro Tier.
+function starsSummaryTotal() {
+  return ROADMAP_NODES.reduce((acc, { tier }) => {
+    const s = starsSummaryForTier(getMatchesByTier(tier));
+    return { earned: acc.earned + s.earned, max: acc.max + s.max };
+  }, { earned: 0, max: 0 });
 }
-document.getElementById("modeCampaignBtn").onclick = () => setPickerMode("campaign");
-document.getElementById("modeFreeplayBtn").onclick = () => setPickerMode("freeplay");
 
-function renderPicker() {
-  document.getElementById("pickerView").classList.remove("hidden");
-  document.getElementById("pitchView").classList.add("hidden");
-  buildFilterBar();
-  buildDifficultyFilterBar();
-  setPickerMode(pickerMode);
+function renderModeTiles() {
+  const tiles = document.getElementById("modeTiles");
+  const tier = currentCampaignTier();
+  const matches = getMatchesByTier(tier);
+  const passedCount = matches.filter(m => profile.campaign.levelPassed[m.id]).length;
+  const pct = matches.length ? Math.round((passedCount / matches.length) * 100) : 0;
+  const stars = starsSummaryTotal();
+
+  tiles.innerHTML = `
+    <button type="button" class="mode-tile camp" id="modeTileCampaign">
+      <div class="mt-icon">⚽</div>
+      <div class="mt-name">${DIFF_LABEL[tier]}</div>
+      <div class="mt-sub">⭐ <b>${stars.earned}/${stars.max}</b> gesamt</div>
+      <div class="mt-bar"><i style="width:${pct}%"></i></div>
+    </button>
+    <button type="button" class="mode-tile free" id="modeTileFreeplay">
+      <div class="mt-icon">🎲</div>
+      <div class="mt-name">Frei spielen</div>
+      <div class="mt-sub"><b>${LINEUP_CHALLENGES.length}</b> Aufstellungen</div>
+    </button>`;
+
+  document.getElementById("modeTileCampaign").onclick = () => navigate("worldmap");
+  document.getElementById("modeTileFreeplay").onclick = () => navigate("freeplay");
 }
 
 function poolForActiveLeague() {
@@ -2033,18 +2271,13 @@ function renderDiffBadge(difficulty) {
 // Bricht die laufende Aufstellung ab (kein Fortschritt/keine Statistik wird gewertet) und
 // springt zurück zum Kampagnen-Pfad bzw. zur Auswahl, je nachdem wo man herkam.
 function exitMatch() {
-  if (currentLevelContext) {
-    campaignView = "levels";
-    pickerMode = "campaign";
-  }
-  renderPicker();
+  goBack();
 }
 
 function startMatch(m) {
   currentMatch = m;
-  document.getElementById("pickerView").classList.add("hidden");
+  if (navStack[navStack.length - 1] !== "game") navigate("game");
   const pitchView = document.getElementById("pitchView");
-  pitchView.classList.remove("hidden");
   pitchView.innerHTML = `
     <div class="bonus-panel">
       <button class="back-btn" id="exitMatchBtn"><span class="back-arrow">←</span>Abbrechen</button>
@@ -2825,11 +3058,6 @@ function evaluatePitch() {
   // (prefilled) Positionen blockieren ⭐⭐⭐ nicht, da sie nie in hintsUsed/tokenRevealed landen.
   const stars = correct < PASS_THRESHOLD ? 0 : isPerfect ? 3 : correct >= 9 ? 2 : 1;
 
-  stats.played += 1;
-  stats.totalCorrect += correct;
-  if (isPerfect) stats.perfect += 1;
-  updateStatsBar();
-
   // Level-System: Aufstellungs-Stats, Streak, neue Aufstellung entdeckt
   profile.stats.lineupsPlayed += 1;
   const isFirstTimePlayed = !profile.stats.playedMatchIds.includes(m.id);
@@ -2974,9 +3202,7 @@ function evaluatePitch() {
     }
     panel.appendChild(row);
     document.getElementById("backBtn").onclick = () => {
-      campaignView = (passed && !hasNext) ? "worlds" : "levels";
-      pickerMode = "campaign";
-      renderPicker();
+      goBackTo(passed && !hasNext ? "worldmap" : "levelpath");
     };
     const retryBtn = document.getElementById("retryBtn");
     if (retryBtn) retryBtn.onclick = () => { startMatch(m); };
@@ -2985,12 +3211,12 @@ function evaluatePitch() {
       <button class="action btn-outline" id="backBtn">Andere wählen</button>
       <button class="action btn-light" id="againBtn">Nochmal (zufällig)</button>`;
     panel.appendChild(row);
-    document.getElementById("backBtn").onclick = renderPicker;
+    document.getElementById("backBtn").onclick = () => goBackTo("freeplay");
     document.getElementById("againBtn").onclick = () => {
       const pool = poolForActiveLeague();
       if (pool.length === 0) {
         showToast("⚠️ Für diese Filterkombination gibt's noch keine Aufstellung - Filter anpassen.");
-        renderPicker();
+        goBackTo("freeplay");
         return;
       }
       startMatch(pickRandomMatch());
@@ -2999,10 +3225,27 @@ function evaluatePitch() {
 }
 
 /* ================= INIT ================= */
-updateStatsBar();
 renderProfileBar();
-renderPicker();
+renderModeTiles();
 if (profile.hasSeenGuide) document.getElementById("helpDot").classList.add("hidden");
+document.getElementById("backFromWorldmap").onclick = goBack;
+document.getElementById("backFromLevelpath").onclick = goBack;
+document.getElementById("backFromFreeplay").onclick = goBack;
+
+// iOS-Tastatur: haelt das fokussierte Eingabefeld ueber der einblendenden Tastatur sichtbar -
+// visualViewport schrumpft beim Einblenden, ein einfacher "resize" reicht als Signal.
+if (window.visualViewport) {
+  let focusedPosInput = null;
+  document.addEventListener("focusin", (e) => {
+    if (e.target.classList && e.target.classList.contains("pos-input")) focusedPosInput = e.target;
+  });
+  document.addEventListener("focusout", (e) => {
+    if (e.target === focusedPosInput) focusedPosInput = null;
+  });
+  window.visualViewport.addEventListener("resize", () => {
+    if (focusedPosInput) focusedPosInput.scrollIntoView({ block: "center", behavior: "smooth" });
+  });
+}
 
 if ("serviceWorker" in navigator) {
   window.addEventListener("load", () => navigator.serviceWorker.register("./sw.js"));
