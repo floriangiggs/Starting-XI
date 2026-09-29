@@ -1,0 +1,446 @@
+<!doctype html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, viewport-fit=cover">
+<!-- Referenz-Prototyp für Prompt 11b (Navigation / One-Pager). Nicht in die App einbinden. Alle Zahlen sind Beispieldaten. WICHTIG: Das Spielfeld im Prototyp ist nur schematisch und auf die Höhe gestaucht - in der App behält das Spielfeld seine heutige Größe (siehe Prompt 11b, Punkt 5). -->
+<title>Starting XI Navigation</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Anton&family=Oswald:wght@300;400;500;600;700&display=swap">
+<style>
+  :root {
+    --pitch: #1F4D36; --chalk: #F2EFE6; --gold: #E8B23D; --gold-2: #F4D58D;
+    --ink: #14202B; --ink-2: #1C2B38; --ink-3: #243A4D; --line: rgba(242,239,230,0.14);
+    --muted: rgba(242,239,230,0.66); --dim: rgba(242,239,230,0.42); --token: #7DB8FF; --ok: #2ECC71; --flame: #F0A93B;
+    color-scheme: dark;
+  }
+  * { box-sizing: border-box; }
+  html, body { height: 100%; background: var(--ink); }
+  body { margin: 0; color: var(--chalk); font-family: Oswald, "Arial Narrow", system-ui, sans-serif; overflow: hidden; -webkit-tap-highlight-color: transparent; }
+  button { font-family: inherit; color: inherit; touch-action: manipulation; }
+  button:focus-visible { outline: 2px solid var(--gold-2); outline-offset: 3px; }
+
+  /* Bühne: alle Bildschirme liegen übereinander, immer genau eine Bildschirmhöhe */
+  .stage { position: relative; height: 100%; max-width: 520px; margin: 0 auto; overflow: hidden; }
+  .screen { position: absolute; inset: 0; display: flex; flex-direction: column; padding: 14px 16px 16px; background:
+      repeating-linear-gradient(90deg, rgba(255,255,255,0.02) 0 2px, transparent 2px 40px), var(--ink);
+    transition: transform 0.32s cubic-bezier(.2,.8,.2,1), opacity 0.32s; will-change: transform; }
+  .screen[hidden] { display: none; }
+  .screen.enter-right { transform: translateX(100%); }
+  .screen.enter-left { transform: translateX(-28%); opacity: 0.4; }
+  .screen.leave-left { transform: translateX(-28%); opacity: 0.4; }
+  .screen.leave-right { transform: translateX(100%); }
+  @media (prefers-reduced-motion: reduce) { .screen { transition: none; } }
+
+  /* Kopfzeile Unterseiten */
+  .topbar { display: flex; align-items: center; gap: 10px; min-height: 40px; flex-shrink: 0; }
+  .back { display: inline-flex; align-items: center; gap: 6px; background: rgba(0,0,0,0.25); border: 1px solid var(--line); border-radius: 20px; padding: 7px 13px 7px 10px; font-weight: 500; font-size: 14px; cursor: pointer; }
+  .back:active { transform: scale(0.96); }
+  .topbar .t { font-family: Anton, Impact, sans-serif; font-size: 22px; text-transform: uppercase; flex: 1; text-align: center; margin-right: 76px; line-height: 1; }
+  .chip-star { font-weight: 700; font-size: 13px; color: var(--ink); background: var(--gold); border-radius: 20px; padding: 3px 10px; white-space: nowrap; }
+
+  /* ---------- START ---------- */
+  #start { justify-content: space-between; gap: clamp(8px, 1.6vh, 14px); }
+  header { position: relative; text-align: center; }
+  header::before { content: ""; position: absolute; top: -30px; left: 50%; transform: translateX(-50%); width: 260px; height: 170px; background: radial-gradient(ellipse, rgba(232,178,61,0.16), transparent 70%); pointer-events: none; }
+  .badge { width: clamp(36px, 5.5vh, 46px); aspect-ratio: 1; margin: 0 auto 6px; border-radius: 50%; background: radial-gradient(circle at 35% 30%, #2c6b48, var(--pitch)); border: 2px solid var(--gold); display: grid; place-items: center; font-size: clamp(17px, 2.6vh, 21px); box-shadow: 0 6px 18px rgba(0,0,0,0.4); }
+  .help { position: absolute; top: 0; right: 0; display: inline-flex; align-items: center; gap: 5px; background: linear-gradient(135deg, var(--gold), var(--gold-2)); color: var(--ink); border: none; border-radius: 20px; padding: 6px 11px; font-weight: 700; font-size: 12px; text-transform: uppercase; box-shadow: 0 4px 14px rgba(232,178,61,0.45); cursor: pointer; }
+  .kicker { font-weight: 500; font-size: 11.5px; letter-spacing: 0.26em; color: var(--gold); text-transform: uppercase; }
+  h1 { font-family: Anton, Impact, sans-serif; font-weight: 400; font-size: clamp(30px, 5.4vh, 44px); margin: 2px 0 0; line-height: 0.95; text-transform: uppercase; }
+  h1 span { color: var(--gold); text-shadow: 0 0 24px rgba(232,178,61,0.35); }
+  .sub { font-weight: 300; font-size: 13.5px; line-height: 1.35; color: var(--muted); margin: 5px auto 0; max-width: 44ch; text-wrap: balance; }
+
+  .profile-bar { background: var(--ink-2); border: 1px solid var(--line); border-radius: 10px; padding: 10px 12px; display: flex; align-items: center; gap: 11px; width: 100%; text-align: left; cursor: pointer; }
+  .rank-icon { width: 40px; height: 40px; border-radius: 50%; flex-shrink: 0; display: grid; place-items: center; font-size: 18px; border: 2px solid #f4d58d; background: radial-gradient(circle at 35% 30%, #f4d58d, #b8862a); box-shadow: 0 0 12px rgba(232,178,61,0.35); }
+  .pb-mid { flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 5px; }
+  .pb-row { display: flex; justify-content: space-between; align-items: baseline; }
+  .rank-name { font-weight: 700; font-size: 14px; }
+  .lvl { font-weight: 700; font-size: 12px; color: var(--gold); }
+  .xp-track { background: rgba(255,255,255,0.08); border-radius: 20px; height: 7px; overflow: hidden; }
+  .xp-fill { height: 100%; width: 62%; border-radius: 20px; background: linear-gradient(90deg, var(--gold), var(--gold-2)); box-shadow: 0 0 10px rgba(232,178,61,0.55); }
+  .xp-next { font-size: 12.5px; color: var(--muted); } .xp-next b { color: var(--gold); font-weight: 600; }
+  .pb-right { display: flex; flex-direction: column; gap: 5px; }
+  .chip { font-weight: 700; font-size: 12.5px; border-radius: 20px; padding: 3px 9px; text-align: center; white-space: nowrap; }
+  .chip.tk { color: var(--token); background: rgba(74,163,255,0.12); border: 1px solid rgba(74,163,255,0.3); }
+  .chip.fl { color: var(--flame); background: rgba(240,169,59,0.12); border: 1px solid rgba(240,169,59,0.35); }
+
+  .daily { border-radius: 12px; border: 1.5px solid rgba(232,178,61,0.7); padding: 11px 14px; background: radial-gradient(circle at 92% 0%, rgba(232,178,61,0.18), transparent 50%), linear-gradient(160deg, #22553b, #173f2b 75%); display: grid; grid-template-columns: 1fr auto; gap: 2px 12px; align-items: center; width: 100%; text-align: left; cursor: pointer; }
+  .d-k { font-weight: 600; font-size: 11.5px; letter-spacing: 0.12em; text-transform: uppercase; color: var(--gold-2); }
+  .d-t { font-family: Anton, Impact, sans-serif; font-size: 21px; line-height: 1.1; text-transform: uppercase; display: flex; align-items: baseline; gap: 8px; }
+  .d-t em { font-style: normal; font-family: Oswald, sans-serif; font-weight: 600; font-size: 12.5px; text-transform: none; color: #7fd99a; }
+  .timer { display: flex; align-items: baseline; gap: 8px; }
+  .timer .l { font-weight: 500; font-size: 11.5px; letter-spacing: 0.06em; text-transform: uppercase; color: var(--muted); }
+  .timer .v { font-family: Anton, Impact, sans-serif; font-size: 24px; line-height: 1; letter-spacing: 0.04em; color: var(--gold-2); text-shadow: 0 0 14px rgba(232,178,61,0.35); }
+  .d-r { grid-row: 1 / span 3; grid-column: 2; display: flex; flex-direction: column; align-items: flex-end; gap: 7px; }
+  .d-fl { font-weight: 700; font-size: 15px; color: var(--flame); }
+  .d-play { border-radius: 9px; padding: 8px 15px; font-weight: 700; font-size: 15px; background: linear-gradient(135deg, var(--gold), var(--gold-2)); color: var(--ink); box-shadow: 0 3px 0 #9C7422; }
+
+  .modes { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; flex: 1; min-height: 0; max-height: 230px; }
+  .mode { border-radius: 14px; border: 2px solid var(--line); background: var(--ink-2); display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 4px; padding: 10px 8px; cursor: pointer; box-shadow: 0 5px 12px rgba(0,0,0,0.3); text-align: center; }
+  .mode:active { transform: scale(0.97); }
+  .mode .ic { font-size: clamp(28px, 4.6vh, 38px); line-height: 1; }
+  .mode .n { font-family: Anton, Impact, sans-serif; font-size: clamp(20px, 3.2vh, 25px); text-transform: uppercase; line-height: 1.1; }
+  .mode .s { font-size: 13px; font-weight: 400; line-height: 1.3; }
+  .mode .bar { width: 78%; height: 6px; border-radius: 3px; background: rgba(20,32,43,0.25); overflow: hidden; margin-top: 4px; }
+  .mode .bar i { display: block; height: 100%; width: 38%; background: var(--ink); border-radius: 3px; }
+  .mode.camp { background: linear-gradient(160deg, #f6da9c, var(--gold)); color: var(--ink); border-color: var(--gold); box-shadow: 0 10px 22px rgba(232,178,61,0.4), inset 0 2px 0 rgba(255,255,255,0.35); }
+  .mode.camp .s b { font-weight: 700; }
+  .mode.free { color: rgba(242,239,230,0.9); }
+  .mode.free .s { color: var(--muted); }
+
+  /* ---------- WELTKARTE ---------- */
+  .map { position: relative; flex: 1; min-height: 0; margin-top: 8px; }
+  .map svg.route { position: absolute; inset: 0; width: 100%; height: 100%; }
+  .wnode { position: absolute; transform: translate(-50%, -50%); width: 26%; max-width: 128px; display: flex; flex-direction: column; align-items: center; gap: 4px; background: none; border: none; cursor: pointer; padding: 0; }
+  .bowl { position: relative; width: 100%; aspect-ratio: 1; }
+  .bowl .ring { position: absolute; inset: 0; transform: rotate(-90deg); }
+  .bowl .in { position: absolute; inset: 12%; border-radius: 50%; background: radial-gradient(circle at 35% 30%, #4a4a4a, #232323 65%, #161616); box-shadow: 0 8px 18px rgba(0,0,0,0.5), inset 0 0 0 3px rgba(255,255,255,0.06); display: grid; place-items: center; }
+  .bowl .grass { width: 62%; height: 62%; border-radius: 50%; background: radial-gradient(circle, #2d6b47, #1c4530); position: relative; overflow: hidden; box-shadow: inset 0 3px 8px rgba(0,0,0,0.45); }
+  .bowl .grass::before { content: ""; position: absolute; left: 0; right: 0; top: 50%; height: 5%; background: rgba(255,255,255,0.5); }
+  .bowl .grass::after { content: ""; position: absolute; width: 40%; height: 40%; border: 2px solid rgba(255,255,255,0.45); border-radius: 50%; top: 50%; left: 50%; transform: translate(-50%, -50%); }
+  .wnode.locked .in { filter: grayscale(1) brightness(0.55); }
+  .wnode .lock { position: absolute; inset: 0; display: grid; place-items: center; font-size: 20px; }
+  .wnode.current .glow { position: absolute; inset: -16%; border-radius: 50%; background: radial-gradient(circle, rgba(232,178,61,0.35), transparent 70%); }
+  .wnode .wn { font-family: Anton, Impact, sans-serif; font-size: clamp(13px, 2vh, 16px); text-transform: uppercase; line-height: 1.05; }
+  .wnode .ws { font-weight: 600; font-size: 12px; color: var(--chalk); background: rgba(0,0,0,0.35); border: 1px solid var(--line); border-radius: 20px; padding: 2px 9px; }
+  .wnode .ws.done { background: var(--gold); color: var(--ink); border-color: var(--gold); }
+  .map-foot { flex-shrink: 0; display: flex; justify-content: center; }
+  .ghost-link { background: none; border: none; color: var(--dim); font-size: 12.5px; text-decoration: underline; cursor: pointer; padding: 6px; }
+
+  /* ---------- LEVEL-PFAD (scrollt) ---------- */
+  #path { padding: 0; }
+  #path .topbar { padding: 12px 16px 10px; background: linear-gradient(180deg, var(--ink) 70%, rgba(20,32,43,0)); position: relative; z-index: 3; }
+  .scroller { flex: 1; min-height: 0; overflow-y: auto; -webkit-overflow-scrolling: touch; overscroll-behavior: contain; margin-top: -10px; }
+  .field { position: relative; margin: 0 12px 20px; border-radius: 16px; overflow: hidden; border: 2px solid rgba(255,255,255,0.14); }
+  .field .deco, .field svg.p { position: absolute; inset: 0; pointer-events: none; }
+  .field svg.side { position: absolute; top: 0; pointer-events: none; }
+  .field svg.p { width: 100%; height: 100%; }
+  .intro { position: relative; z-index: 2; text-align: center; padding: 18px 20px 0; }
+  .intro .k { font-weight: 600; font-size: 11.5px; letter-spacing: 0.12em; text-transform: uppercase; color: var(--gold-2); }
+  .intro .h { font-family: Anton, Impact, sans-serif; font-size: 30px; text-transform: uppercase; line-height: 1.05; text-shadow: 0 2px 8px rgba(0,0,0,0.5); }
+  .intro .p { font-weight: 300; font-size: 13.5px; color: rgba(242,239,230,0.8); margin-top: 3px; }
+  .lnode { position: absolute; transform: translate(-50%, -50%); display: flex; flex-direction: column; align-items: center; gap: 3px; background: none; border: none; cursor: pointer; z-index: 2; padding: 0; }
+  .ldot { width: 60px; height: 60px; border-radius: 50%; display: grid; place-items: center; font-family: Anton, Impact, sans-serif; font-size: 24px; border: 3px solid var(--wc); background: radial-gradient(circle at 35% 30%, color-mix(in srgb, var(--wc) 75%, white), color-mix(in srgb, var(--wc) 55%, black) 80%); box-shadow: 0 6px 14px rgba(0,0,0,0.5); color: var(--chalk); text-shadow: 0 2px 3px rgba(0,0,0,0.4); }
+  .lnode.cur .ldot { background: radial-gradient(circle at 35% 30%, #333, #1a1a1a 70%); animation: pulse 1.8s ease-in-out infinite; }
+  .lnode.lock .ldot { background: radial-gradient(circle at 35% 30%, #333, #1a1a1a 70%); border-color: rgba(255,255,255,0.18); opacity: 0.55; font-size: 18px; }
+  @keyframes pulse { 0%,100% { box-shadow: 0 0 0 0 color-mix(in srgb, var(--wc) 50%, transparent); } 50% { box-shadow: 0 0 0 9px color-mix(in srgb, var(--wc) 12%, transparent); } }
+  .lnode .ball { position: absolute; top: -26px; font-size: 20px; animation: bounce 1.1s ease-in-out infinite; }
+  @keyframes bounce { 50% { transform: translateY(-6px); } }
+  .lstars { display: flex; gap: 1px; min-height: 13px; } .lstars svg { width: 13px; height: 13px; }
+  .llabel { font-weight: 500; font-size: 12px; color: rgba(242,239,230,0.85); text-shadow: 0 1px 3px rgba(0,0,0,0.7); }
+  .goal .ldot { width: 70px; height: 70px; font-size: 32px; border-style: dashed; background: rgba(0,0,0,0.35); }
+
+  /* ---------- FREISPIEL ---------- */
+  .fp { flex: 1; min-height: 0; display: flex; flex-direction: column; justify-content: center; gap: 16px; }
+  .fp .lab { font-weight: 600; font-size: 12px; letter-spacing: 0.1em; text-transform: uppercase; color: var(--muted); }
+  .chips { display: flex; flex-wrap: wrap; gap: 7px; }
+  .fchip { border: 1px solid var(--line); background: var(--ink-2); border-radius: 20px; padding: 7px 13px; font-weight: 500; font-size: 14px; cursor: pointer; }
+  .fchip.on { background: rgba(232,178,61,0.16); border-color: rgba(232,178,61,0.55); color: var(--gold-2); }
+  .big-btn { border: none; border-radius: 12px; padding: 16px; font-family: Anton, Impact, sans-serif; font-size: 22px; text-transform: uppercase; background: linear-gradient(135deg, var(--gold), var(--gold-2)); color: var(--ink); box-shadow: 0 4px 0 #9C7422; cursor: pointer; }
+  .fp .count { text-align: center; font-weight: 300; font-size: 14px; color: var(--muted); }
+
+  /* ---------- SPIELFELD (passt in die Höhe) ---------- */
+  #game { gap: 8px; }
+  .g-info { flex-shrink: 0; text-align: center; }
+  .g-info .c { font-weight: 600; font-size: 11.5px; letter-spacing: 0.1em; text-transform: uppercase; color: var(--gold-2); }
+  .g-info .m { font-family: Anton, Impact, sans-serif; font-size: 19px; text-transform: uppercase; line-height: 1.1; }
+  .g-info .s { font-weight: 300; font-size: 13px; color: var(--muted); }
+  .pitch-box { flex: 1; min-height: 0; container-type: size; display: grid; place-items: center; }
+  .pitch { position: relative; width: min(100cqw, 100cqh * 100 / 138); aspect-ratio: 100 / 138; border-radius: 10px; border: 2px solid rgba(255,255,255,0.3); overflow: hidden; background: repeating-linear-gradient(180deg, rgba(255,255,255,0.035) 0 7%, transparent 7% 14%), linear-gradient(180deg, #1f5c3d, #163d29); }
+  .pitch .hw { position: absolute; left: 0; right: 0; top: 50%; height: 2px; background: rgba(255,255,255,0.28); }
+  .pitch .cc { position: absolute; width: 28%; aspect-ratio: 1; border: 2px solid rgba(255,255,255,0.28); border-radius: 50%; top: 50%; left: 50%; transform: translate(-50%, -50%); }
+  .pitch .bx { position: absolute; left: 28%; width: 44%; height: 12%; border: 2px solid rgba(255,255,255,0.24); }
+  .pitch .bx.t { top: 0; border-top: none; } .pitch .bx.b { bottom: 0; border-bottom: none; }
+  .slot { position: absolute; transform: translate(-50%, -50%); width: 19%; display: flex; flex-direction: column; align-items: center; gap: 3px; }
+  .slot .pl { font-weight: 700; font-size: 10.5px; color: var(--ink); background: linear-gradient(135deg, var(--gold), var(--gold-2)); padding: 1px 6px; border-radius: 4px; }
+  .slot .pi { width: 100%; text-align: center; font-weight: 500; font-size: 12px; padding: 5px 2px; border-radius: 6px; background: rgba(242,239,230,0.96); color: rgba(20,32,43,0.4); border: 1px solid rgba(255,255,255,0.4); }
+  .slot.sel .pi { border: 2px solid var(--gold); color: var(--ink); }
+  .slot.ok .pi { background: rgba(46,204,113,0.4); color: var(--chalk); border-color: var(--ok); font-weight: 700; }
+  .g-panel { flex-shrink: 0; display: grid; grid-template-columns: auto 1fr 1fr; gap: 8px; align-items: center; background: var(--ink-2); border: 1px solid var(--line); border-radius: 10px; padding: 8px 10px; }
+  .g-panel .pos { font-weight: 700; font-size: 12px; color: var(--ink); background: var(--gold); border-radius: 5px; padding: 3px 7px; }
+  .g-panel button { border-radius: 8px; padding: 8px 6px; font-weight: 600; font-size: 13.5px; background: rgba(0,0,0,0.25); border: 1px solid rgba(242,239,230,0.25); cursor: pointer; }
+  .eval { flex-shrink: 0; border: none; border-radius: 10px; padding: 12px; font-weight: 700; font-size: 17px; background: linear-gradient(135deg, var(--gold), var(--gold-2)); color: var(--ink); box-shadow: 0 3px 0 #9C7422; cursor: pointer; }
+
+  .toast { position: absolute; left: 50%; bottom: 22px; transform: translateX(-50%); background: var(--ink-3); border: 1px solid rgba(232,178,61,0.5); border-radius: 10px; padding: 9px 14px; font-size: 13.5px; z-index: 30; box-shadow: 0 8px 20px rgba(0,0,0,0.4); max-width: 88%; text-align: center; }
+  .toast[hidden] { display: none; }
+</style>
+</head>
+<body>
+
+<div class="stage" id="stage">
+
+  <!-- START -->
+  <section class="screen" id="start" aria-label="Start">
+    <header>
+      <button class="help" type="button" data-toast="Öffnet die Anleitung wie bisher">🎮 So geht's</button>
+      <div class="badge" aria-hidden="true">⚽</div>
+      <div class="kicker">Football Lineup Trivia</div>
+      <h1>Starting<span> XI</span></h1>
+      <p class="sub">Echte Spiele aus der Fußballgeschichte – stell die Startelf nach und zeig, wer sich wirklich auskennt.</p>
+    </header>
+
+    <button class="profile-bar" type="button" data-toast="Öffnet das Scout-Profil (siehe Prototyp Scout-Profil)">
+      <div class="rank-icon" aria-hidden="true">🥇</div>
+      <div class="pb-mid">
+        <div class="pb-row"><span class="rank-name">Bundesliga</span><span class="lvl">LVL 17</span></div>
+        <div class="xp-track"><div class="xp-fill"></div></div>
+        <div class="xp-next">Noch <b>640</b> XP bis Level 18</div>
+      </div>
+      <div class="pb-right"><span class="chip tk">🔍 14</span><span class="chip fl">🔥 12</span></div>
+    </button>
+
+    <button class="daily" type="button" data-go="game" data-from="start">
+      <div class="d-k">Tages-Challenge · <span id="dDate"></span></div>
+      <div class="d-t">Tag 23 <em id="dDiff"></em></div>
+      <div class="timer"><span class="l">Neue in</span><span class="v" id="cd">–</span></div>
+      <div class="d-r"><div class="d-fl">🔥 12</div><span class="d-play">Spielen</span></div>
+    </button>
+
+    <div class="modes">
+      <button class="mode camp" type="button" data-go="map">
+        <span class="ic">🌍</span>
+        <span class="n">Kampagne</span>
+        <span class="s">Welt 3 · <b>Bundesliga</b><br>⭐ 57 / 150</span>
+        <span class="bar"><i></i></span>
+      </button>
+      <button class="mode free" type="button" data-go="free">
+        <span class="ic">🎲</span>
+        <span class="n">Frei spielen</span>
+        <span class="s">50 Aufstellungen<br>nach Liga &amp; Stufe</span>
+      </button>
+    </div>
+  </section>
+
+  <!-- WELTKARTE -->
+  <section class="screen" id="map" aria-label="Weltkarte" hidden>
+    <div class="topbar"><button class="back" type="button" data-back>← Start</button><div class="t">Kampagne</div></div>
+    <div class="map" id="mapArea"></div>
+    <div class="map-foot"><button class="ghost-link" type="button" id="unlockAll">Demo: gesperrte Welten trotzdem ansehen</button></div>
+  </section>
+
+  <!-- LEVEL-PFAD -->
+  <section class="screen" id="path" aria-label="Level-Pfad" hidden>
+    <div class="topbar"><button class="back" type="button" data-back>← Welten</button><div class="t" id="pathTitle"></div></div>
+    <div class="scroller" id="scroller"></div>
+  </section>
+
+  <!-- FREISPIEL -->
+  <section class="screen" id="free" aria-label="Frei spielen" hidden>
+    <div class="topbar"><button class="back" type="button" data-back>← Start</button><div class="t">Frei spielen</div></div>
+    <div class="fp">
+      <div class="lab">Wettbewerb</div>
+      <div class="chips" id="fComp"></div>
+      <div class="lab">Schwierigkeit</div>
+      <div class="chips" id="fDiff"></div>
+      <div class="count" id="fCount">50 Aufstellungen passen</div>
+      <button class="big-btn" type="button" data-go="game" data-from="free">🎲 Zufällige Aufstellung</button>
+    </div>
+  </section>
+
+  <!-- SPIELFELD -->
+  <section class="screen" id="game" aria-label="Spielfeld" hidden>
+    <div class="topbar"><button class="back" type="button" data-back>← Abbrechen</button><div class="t" style="font-size:18px">Level 5</div></div>
+    <div class="g-info">
+      <div class="c">Champions-League-Finale · 10.06.2023</div>
+      <div class="m">Man City – Inter</div>
+      <div class="s">Gesucht: Manchester City</div>
+    </div>
+    <div class="pitch-box"><div class="pitch" id="pitch"><div class="hw"></div><div class="cc"></div><div class="bx t"></div><div class="bx b"></div></div></div>
+    <div class="g-panel"><span class="pos" id="selPos">ST</span><button type="button" data-toast="Öffnet das Scout-Rad">🎡 Scout-Rad</button><button type="button" data-toast="Deckt den Namen für 3 Token auf">👁️ Aufdecken</button></div>
+    <button class="eval" type="button" data-toast="Wertet aus – Ergebnis erscheint wie gewohnt">Auswerten</button>
+  </section>
+
+  <div class="toast" id="toast" hidden></div>
+</div>
+
+<script>
+(() => {
+  const $ = id => document.getElementById(id);
+  const RM = matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+  /* ---------- Navigation: ein Bildschirm, Verlauf als Stapel ---------- */
+  const history = ["start"];
+  function show(id, dir) {
+    const cur = document.querySelector(".screen:not([hidden])");
+    const next = $(id);
+    if (!next || cur === next) return;
+    next.hidden = false;
+    next.classList.add(dir === "fwd" ? "enter-right" : "enter-left");
+    void next.offsetWidth;
+    requestAnimationFrame(() => {
+      next.classList.remove("enter-right", "enter-left");
+      cur.classList.add(dir === "fwd" ? "leave-left" : "leave-right");
+    });
+    const done = () => { cur.hidden = true; cur.classList.remove("leave-left", "leave-right"); };
+    RM ? done() : setTimeout(done, 330);
+    if (id === "path") requestAnimationFrame(scrollToCurrent);
+  }
+  function go(id) { history.push(id); show(id, "fwd"); }
+  function back() { if (history.length < 2) return; history.pop(); show(history[history.length - 1], "back"); }
+  document.addEventListener("click", e => {
+    const g = e.target.closest("[data-go]"); if (g) { go(g.dataset.go); return; }
+    if (e.target.closest("[data-back]")) { back(); return; }
+    const t = e.target.closest("[data-toast]"); if (t) toast(t.dataset.toast);
+  });
+  // Wischgeste vom linken Rand = zurück
+  let sx = null, sy = null;
+  $("stage").addEventListener("touchstart", e => { const t = e.touches[0]; if (t.clientX < 28) { sx = t.clientX; sy = t.clientY; } }, { passive: true });
+  $("stage").addEventListener("touchend", e => { if (sx === null) return; const t = e.changedTouches[0]; if (t.clientX - sx > 70 && Math.abs(t.clientY - sy) < 60) back(); sx = null; });
+
+  let tt;
+  function toast(msg) { const el = $("toast"); el.textContent = msg; el.hidden = false; clearTimeout(tt); tt = setTimeout(() => el.hidden = true, 1800); }
+
+  /* ---------- Tages-Karte ---------- */
+  const WD = ["Mo", "Di", "Mi", "Do", "Fr", "Sa", "So"], WD_DIFF = [1, 2, 2, 3, 3, 4, 5];
+  const DIFF_NAME = { 1: "Kreisliga", 2: "Regionalliga", 3: "Bundesliga", 4: "Champions League", 5: "Weltklasse" };
+  const DIFF_COLOR = { 1: "#7fd99a", 2: "#a8d94a", 3: "#e8b23d", 4: "#e8863d", 5: "#e0705f" };
+  const now = new Date(), wi = (now.getDay() + 6) % 7;
+  $("dDate").textContent = now.toLocaleDateString("de-DE", { day: "2-digit", month: "2-digit" });
+  $("dDiff").textContent = WD[wi] + " · " + DIFF_NAME[WD_DIFF[wi]];
+  $("dDiff").style.color = DIFF_COLOR[WD_DIFF[wi]];
+  function tick() { const n = new Date(), m = new Date(n); m.setHours(24, 0, 0, 0); let s = Math.floor((m - n) / 1000); const h = String(Math.floor(s / 3600)).padStart(2, "0"); s %= 3600; $("cd").textContent = `${h}:${String(Math.floor(s / 60)).padStart(2, "0")}:${String(s % 60).padStart(2, "0")}`; }
+  tick(); setInterval(tick, 1000);
+
+  /* ---------- Welten (Beispieldaten) ---------- */
+  const WORLDS = [
+    { tier: 1, name: "Kreisliga", color: "#7fd99a", stars: [3,3,3,2,3,3,3,3,2,3], passed: 10, theme: "village", intro: "Dorfplatz, Holzbande, ein Flutlichtmast – hier fängt jede Karriere an." },
+    { tier: 2, name: "Regionalliga", color: "#a8d94a", stars: [3,2,2,3,1,2,3,2,2,3], passed: 10, theme: "regional", intro: "Kleine Tribüne, Bratwurstduft, Bandenwerbung vom Autohaus nebenan." },
+    { tier: 3, name: "Bundesliga", color: "#e8b23d", stars: [3,2,3,1], passed: 4, theme: "bundesliga", intro: "Ausverkauftes Haus am Samstagnachmittag." },
+    { tier: 4, name: "Champions League", color: "#e8863d", stars: [], passed: 0, theme: "night", intro: "Flutlicht, Hymne, große Nächte." },
+    { tier: 5, name: "Weltklasse", color: "#e0705f", stars: [], passed: 0, theme: "gold", intro: "Nur für Legenden. Am Ende wartet der Pokal." }
+  ];
+  let unlockAll = false;
+  const unlocked = w => unlockAll || w.tier <= 3;
+  const sum = w => w.stars.reduce((a, b) => a + b, 0);
+
+  function renderMap() {
+    const pos = [{ x: 26, y: 12 }, { x: 74, y: 30 }, { x: 28, y: 50 }, { x: 72, y: 69 }, { x: 50, y: 88 }];
+    let d = ""; for (let i = 0; i < pos.length - 1; i++) { const a = pos[i], b = pos[i + 1], my = (a.y + b.y) / 2; d += (i ? "" : `M ${a.x} ${a.y} `) + `C ${a.x} ${my}, ${b.x} ${my}, ${b.x} ${b.y} `; }
+    $("mapArea").innerHTML = `<svg class="route" viewBox="0 0 100 100" preserveAspectRatio="none"><path d="${d}" fill="none" stroke="rgba(232,178,61,0.45)" stroke-width="0.9" stroke-dasharray="2 2.4" stroke-linecap="round" vector-effect="non-scaling-stroke" style="stroke-width:3px"/></svg>` +
+      WORLDS.map((w, i) => {
+        const open = unlocked(w), s = sum(w), pct = s / 30, C = 2 * Math.PI * 46;
+        const cur = w.tier === 3;
+        return `<button class="wnode ${open ? "" : "locked"} ${cur ? "current" : ""}" type="button" data-world="${w.tier}" style="left:${pos[i].x}%;top:${pos[i].y}%">
+          <div class="bowl">${cur ? '<div class="glow"></div>' : ""}
+            <svg class="ring" viewBox="0 0 100 100"><circle cx="50" cy="50" r="46" fill="none" stroke="rgba(255,255,255,0.08)" stroke-width="6"/><circle cx="50" cy="50" r="46" fill="none" stroke="${w.color}" stroke-width="6" stroke-linecap="round" stroke-dasharray="${C}" stroke-dashoffset="${C * (1 - pct)}"/></svg>
+            <div class="in"><div class="grass"></div></div>${open ? "" : '<div class="lock">🔒</div>'}
+          </div>
+          <span class="wn" style="color:${w.color}">${w.name}</span>
+          <span class="ws ${s === 30 ? "done" : ""}">⭐ ${s}/30</span>
+        </button>`;
+      }).join("");
+    $("mapArea").querySelectorAll("[data-world]").forEach(b => b.onclick = () => {
+      const w = WORLDS[b.dataset.world - 1];
+      if (!unlocked(w)) { toast(`Gesperrt – erst ${WORLDS[w.tier - 2].name} abschließen`); return; }
+      renderPath(w); go("path");
+    });
+  }
+  $("unlockAll").onclick = () => { unlockAll = !unlockAll; $("unlockAll").textContent = unlockAll ? "Demo: nur freigeschaltete Welten" : "Demo: gesperrte Welten trotzdem ansehen"; renderMap(); };
+
+  /* ---------- Level-Pfad mit Ausschmückung je Welt ---------- */
+  const STAR = f => `<svg viewBox="0 0 24 24"><path d="M12 2.5l2.9 6.1 6.6.8-4.9 4.6 1.3 6.6L12 17.3l-5.9 3.3 1.3-6.6-4.9-4.6 6.6-.8z" fill="${f ? "#E8B23D" : "rgba(0,0,0,0.4)"}" stroke="${f ? "#9C7422" : "rgba(242,239,230,0.35)"}" stroke-width="1"/></svg>`;
+
+  function decoration(theme, H) {
+    // Liefert { full, L, R }: full = ganze Fläche (nur %-Koordinaten), L/R = 48px breite Randstreifen
+    const along = (fn, step, off = 0) => { let o = ""; for (let y = 170 + off; y < H - 80; y += step) o += fn(y); return o; };
+    if (theme === "village") {
+      const tree = (x, y, sc) => `<g transform="translate(${x} ${y}) scale(${sc})"><rect x="-2" y="0" width="4" height="14" fill="#4a3620"/><circle cx="0" cy="-4" r="10" fill="#2f6a3a"/><circle cx="-6" cy="2" r="7" fill="#357a42"/><circle cx="6" cy="1" r="7" fill="#2c6436"/></g>`;
+      const fence = x => `<rect x="${x}" y="130" width="10" height="${H - 200}" fill="url(#wood)"/>`;
+      return {
+        full: `<defs><linearGradient id="skyV" x1="0" x2="0" y1="0" y2="1"><stop offset="0" stop-color="#E8A65A" stop-opacity=".35"/><stop offset="1" stop-color="#E8A65A" stop-opacity="0"/></linearGradient></defs><rect width="100%" height="140" fill="url(#skyV)"/>`,
+        L: `<defs><pattern id="wood" width="10" height="26" patternUnits="userSpaceOnUse"><rect width="10" height="26" fill="#6b4a2a"/><rect y="22" width="10" height="4" fill="#4a321b"/><rect width="1.5" height="26" fill="#7d5a35"/></pattern></defs>${fence(4)}
+            <g transform="translate(22 40)"><rect x="0" y="0" width="4" height="96" fill="#8c8c8c"/><rect x="-10" y="-8" width="24" height="12" rx="2" fill="#bdbdbd"/><circle cx="-4" cy="-2" r="3" fill="#fff6c8"/><circle cx="2" cy="-2" r="3" fill="#fff6c8"/><circle cx="8" cy="-2" r="3" fill="#fff6c8"/></g>
+            ${along(y => tree(30, y, 0.85), 230)}`,
+        R: `${fence(34)}${along(y => tree(18, y, 0.8), 250, 110)}`
+      };
+    }
+    if (theme === "regional") {
+      const ads = ["SCOUT", "KICK", "ELF", "PFALZ", "11ER"], cols = ["#C9D6E3", "#E8B23D", "#F2EFE6", "#7fd99a", "#E0705F"];
+      const board = (x, y, i) => `<g transform="translate(${x} ${y}) rotate(-90)"><rect x="-34" y="-8" width="68" height="16" rx="2" fill="${cols[i % 5]}"/><text x="0" y="4.5" text-anchor="middle" font-family="Oswald, sans-serif" font-weight="700" font-size="11" fill="#14202B">${ads[i % 5]}</text></g>`;
+      let i = 0;
+      return {
+        full: `<rect width="100%" height="64" fill="#243A4D"/><rect y="12" width="100%" height="7" fill="#1C2B38"/><rect y="27" width="100%" height="7" fill="#1C2B38"/><rect y="42" width="100%" height="7" fill="#1C2B38"/>`,
+        L: along(y => board(12, y, i++), 150),
+        R: along(y => board(36, y, i++), 150, 70)
+      };
+    }
+    if (theme === "bundesliga") {
+      const flag = (x, c1, c2) => `<g transform="translate(${x} 70)"><rect width="2" height="34" fill="#ccc"/><path d="M2 2 h20 l-5 7 5 7 h-20z" fill="${c1}"/><path d="M2 9 h16" stroke="${c2}" stroke-width="3"/></g>`;
+      const crowd = `<defs><pattern id="crowd" width="8" height="8" patternUnits="userSpaceOnUse"><rect width="8" height="8" fill="#1a2733"/><circle cx="2" cy="2" r="1.6" fill="#e8b23d" opacity=".55"/><circle cx="6" cy="6" r="1.6" fill="#F2EFE6" opacity=".35"/><circle cx="6" cy="2" r="1.3" fill="#e0705f" opacity=".4"/></pattern></defs>`;
+      return {
+        full: `${crowd}<rect width="100%" height="62" fill="url(#crowd)"/><rect y="62" width="100%" height="4" fill="#E8B23D" opacity=".6"/>`,
+        L: `<rect width="22" height="${H}" fill="url(#crowd)"/>${flag(26, "#E8B23D", "#14202B")}`,
+        R: `<rect x="26" width="22" height="${H}" fill="url(#crowd)"/>${flag(4, "#7DB8FF", "#F2EFE6")}`
+      };
+    }
+    if (theme === "night") {
+      let st = ""; for (let k = 0; k < 80; k++) st += `<circle cx="${(k * 37) % 100}%" cy="${(k * 53) % H}" r="${(k % 3) * 0.5 + 0.6}" fill="#fff" opacity="${0.2 + (k % 4) * 0.15}"/>`;
+      const beam = `<defs><linearGradient id="beam" x1="0" x2="0" y1="0" y2="1"><stop offset="0" stop-color="#fff6c8" stop-opacity=".32"/><stop offset="1" stop-color="#fff6c8" stop-opacity="0"/></linearGradient></defs>`;
+      return {
+        full: st,
+        L: `${beam}<g transform="translate(16 18)"><path d="M3 4 L120 220 L20 230 Z" fill="url(#beam)"/><rect width="3" height="90" fill="#6b7785"/><rect x="-8" y="-6" width="20" height="10" rx="2" fill="#9aa6b3"/></g>`,
+        R: `<g transform="translate(30 18)"><path d="M0 4 L-120 220 L-20 230 Z" fill="url(#beam)"/><rect width="3" height="90" fill="#6b7785"/><rect x="-8" y="-6" width="20" height="10" rx="2" fill="#9aa6b3"/></g>`
+      };
+    }
+    let conf = ""; const cc = ["#E8B23D", "#F4D58D", "#F2EFE6", "#E0705F"];
+    for (let k = 0; k < 70; k++) conf += `<rect x="${(k * 29) % 100}%" y="${(k * 71) % H}" width="${3 + k % 3}" height="${6 + k % 4}" rx="1" fill="${cc[k % 4]}" opacity=".45"/>`;
+    return { full: conf, L: "", R: "" };
+  }
+  const BG = {
+    village: "linear-gradient(180deg, #2f5d3a, #1f4a2f)",
+    regional: "repeating-linear-gradient(180deg, rgba(255,255,255,0.05) 0 44px, transparent 44px 88px), linear-gradient(180deg, #235a3c, #184330)",
+    bundesliga: "repeating-linear-gradient(180deg, rgba(255,255,255,0.06) 0 44px, transparent 44px 88px), linear-gradient(180deg, #1f6040, #164a31)",
+    night: "radial-gradient(ellipse at 50% 0%, rgba(255,246,200,0.18), transparent 45%), repeating-linear-gradient(180deg, rgba(255,255,255,0.035) 0 44px, transparent 44px 88px), linear-gradient(180deg, #0d1a24, #13382a 30%, #0f2e22)",
+    gold: "radial-gradient(ellipse at 50% 100%, rgba(232,178,61,0.35), transparent 55%), repeating-linear-gradient(180deg, rgba(255,255,255,0.05) 0 44px, transparent 44px 88px), linear-gradient(180deg, #2a4a2a, #3a4a22 60%, #4a3f1c)"
+  };
+
+  function renderPath(w) {
+    $("pathTitle").textContent = w.name;
+    $("pathTitle").style.fontSize = w.name.length > 12 ? "18px" : "";
+    const n = 10, STEP = 104, TOP = 150, H = TOP + n * STEP + 120;
+    const pts = [...Array(n + 1)].map((_, i) => ({ x: 50 + 30 * Math.sin(i * 1.15), y: TOP + i * STEP }));
+    let d = ""; for (let i = 0; i < pts.length - 1; i++) { const a = pts[i], b = pts[i + 1], my = (a.y + b.y) / 2; d += (i ? "" : `M ${a.x} ${a.y} `) + `C ${a.x} ${my}, ${b.x} ${my}, ${b.x} ${b.y} `; }
+    const open = unlocked(w);
+    const nodes = pts.slice(0, n).map((p, i) => {
+      const passed = open && i < w.passed, cur = open && i === w.passed, locked = !passed && !cur;
+      const st = w.stars[i] || 0;
+      return `<button class="lnode ${cur ? "cur" : ""} ${locked ? "lock" : ""}" type="button" style="left:${p.x}%;top:${p.y}px;--wc:${w.color}" ${locked ? 'data-toast="Noch gesperrt"' : 'data-go="game"'}>
+        ${cur ? '<span class="ball">⚽</span>' : ""}
+        <span class="ldot">${locked ? "🔒" : i + 1}</span>
+        <span class="lstars">${passed ? [0,1,2].map(k => STAR(k < st)).join("") : ""}</span>
+        <span class="llabel">Level ${i + 1}</span>
+      </button>`;
+    }).join("");
+    const g = pts[n];
+    const goal = `<div class="lnode goal" style="left:${g.x}%;top:${g.y}px;--wc:${w.color}"><span class="ldot">🏆</span><span class="llabel">${w.tier < 5 ? "Weiter zu " + WORLDS[w.tier].name : "Weltklasse!"}</span></div>`;
+    const dec = decoration(w.theme, H);
+    $("scroller").innerHTML = `
+      <div class="field" style="height:${H}px;background:${BG[w.theme]}">
+        <svg class="deco" width="100%" height="${H}">${dec.full}</svg>
+        <svg class="side" style="left:0" width="48" height="${H}" overflow="visible">${dec.L}</svg>
+        <svg class="side" style="right:0" width="48" height="${H}" overflow="visible">${dec.R}</svg>
+        <svg class="p" viewBox="0 0 100 ${H}" preserveAspectRatio="none"><path d="${d}" fill="none" stroke="rgba(242,239,230,0.35)" stroke-dasharray="6 7" stroke-linecap="round" vector-effect="non-scaling-stroke" style="stroke-width:3px"/></svg>
+        <div class="intro"><div class="k">Welt ${w.tier} · ⭐ ${sum(w)}/30</div><div class="h" style="color:${w.color}">${w.name}</div><div class="p">${w.intro}</div></div>
+        ${nodes}${goal}
+      </div>`;
+    currentY = open && w.passed < n ? pts[w.passed].y : 0;
+  }
+  let currentY = 0;
+  function scrollToCurrent() { const sc = $("scroller"); sc.scrollTo({ top: Math.max(0, currentY - sc.clientHeight / 2), behavior: "auto" }); }
+
+  /* ---------- Freispiel ---------- */
+  const comps = ["Alle", "WM", "EM", "Champions League", "Bundesliga", "Premier League", "LaLiga", "Serie A", "📅 Archiv"];
+  $("fComp").innerHTML = comps.map((c, i) => `<button type="button" class="fchip ${i === 0 ? "on" : ""}">${c}</button>`).join("");
+  $("fDiff").innerHTML = ["Alle", "Kreisliga", "Regionalliga", "Bundesliga", "Champions League", "Weltklasse"].map((c, i) => `<button type="button" class="fchip ${i === 0 ? "on" : ""}">${c}</button>`).join("");
+  document.querySelectorAll(".chips").forEach(g => g.addEventListener("click", e => { const b = e.target.closest(".fchip"); if (!b) return; g.querySelectorAll(".fchip").forEach(x => x.classList.remove("on")); b.classList.add("on"); $("fCount").textContent = (b.textContent === "Alle" ? 50 : 4 + (b.textContent.length % 9)) + " Aufstellungen passen"; }));
+
+  /* ---------- Spielfeld (4-3-3) ---------- */
+  const L = [["TW", 50, 90], ["RV", 80, 72], ["RIV", 60, 76], ["LIV", 40, 76], ["LV", 20, 72], ["RZM", 72, 50], ["ZM", 50, 55], ["LZM", 28, 50], ["RA", 80, 20], ["ST", 50, 13], ["LA", 20, 20]];
+  const done = { TW: "Ederson", RIV: "Dias", ZM: "Rodri" };
+  $("pitch").insertAdjacentHTML("beforeend", L.map(([a, x, y]) => `<div class="slot ${done[a] ? "ok" : ""} ${a === "ST" ? "sel" : ""}" style="left:${x}%;top:${y}%" data-pos="${a}"><span class="pl">${a}</span><span class="pi">${done[a] || "Name"}</span></div>`).join(""));
+  $("pitch").addEventListener("click", e => { const s = e.target.closest(".slot"); if (!s) return; $("pitch").querySelectorAll(".slot").forEach(x => x.classList.remove("sel")); s.classList.add("sel"); $("selPos").textContent = s.dataset.pos; });
+
+  renderMap();
+})();
+</script>
+</body>
+</html>

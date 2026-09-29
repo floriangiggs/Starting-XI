@@ -14,21 +14,24 @@ vorige umgesetzt, getestet und committet ist.
 | 6 | Scout-Rad + einheitliche Währung | ✅ erledigt |
 | 7 | PWA-Nacharbeit (Fonts lokal, Update-Strategie) | – |
 | 8 | *Später:* Vorbereitung Capacitor | 7 |
-| 9 | Bugfix: feste Vorgaben pro Kampagnen-Level | – |
-| 10 | Typografie aufräumen (kein „maschineller“ Look) | – |
-| 11 | Sterne, XP nur für Verbesserung, Kombo, neue XP-Kurve | 9 |
-| 12 | Scout-Profil + Trophäenschrank | 10, 11 |
+| 9 | Bugfix: feste Vorgaben pro Kampagnen-Level | ✅ erledigt |
+| 10 | Typografie aufräumen (kein „maschineller“ Look) | ✅ erledigt |
+| 11 | Sterne, XP nur für Verbesserung, Kombo, neue XP-Kurve | ✅ erledigt |
+| 11b | Navigation / One-Pager: eigene Bildschirme, Welten-Ausschmückung | 11 |
+| 12 | Scout-Profil + Trophäenschrank | 11b |
 | 13 | Tages-Challenge + Serie | 7, 11, 12 |
 | 14 | Recherche Tages-Pool (Gegenseiten + neue Spiele) | 13 |
 | 15 | Kampagne auf ca. 60 Aufstellungen ausbauen | – |
 
-**Empfohlene Reihenfolge ab jetzt:** 9 → 10 → 7 → 11 → 12 → 13 → 14 → 15 → 8
+**Empfohlene Reihenfolge ab jetzt:** 11b → 7 → 12 → 13 → 14 → 15 → 8
 
 Prompt 7 steht bewusst vor der Tages-Challenge: Nur mit der neuen
 Update-Strategie kommen neue Tages-Aufstellungen zuverlässig auf dem iPhone an.
 
-Optische Vorlagen: `prototypes/scout-rad.html` (Prompt 6) und
-`prototypes/scout-profil.html` (Prompts 11–13).
+Optische Vorlagen: `prototypes/scout-rad.html` (Prompt 6),
+`prototypes/scout-profil.html` (Prompts 11–13) und
+`prototypes/navigation.html` (Prompt 11b – Bildschirme, Übergänge,
+Welten-Ausschmückung).
 
 **Wichtig nach jeder Änderung:** Der Service Worker liefert die App aus dem
 Cache. Jeder Prompt erhöht deshalb `CACHE_NAME` in `sw.js` – sonst sieht die
@@ -586,17 +589,115 @@ perfectMatchIds/levelPassed. Ausgabe von tools/xp-sim.mjs zeigen.
 
 ---
 
+## Prompt 11b – Navigation / One-Pager
+
+```
+Lies CLAUDE.md. Große strukturelle Änderung → Plan Mode, Plan zeigen, auf
+OK warten. Optische Vorlage: prototypes/navigation.html (Bildschirme,
+Übergänge, Modus-Kacheln, Weltkarte, Welten-Ausschmückung). Den Prototyp
+als Referenz lesen, nicht einbinden.
+
+Ziel: Die App soll sich wie eine echte App anfühlen – jeder Bereich ist ein
+eigener Bildschirm, der ohne Scrollen auf das iPhone passt. Einzige
+Ausnahmen: der Level-Pfad einer Welt (scrollt nach unten) und das
+Spielfeld (siehe Punkt 5).
+
+1. Bildschirm-Architektur
+   - Fünf Bildschirme: start, worldmap, levelpath, freeplay, game (+ der
+     bestehende Ergebnis-Zustand im game-Bildschirm).
+   - Zentrale Navigation: showScreen(id, direction) mit Verlaufs-Stapel;
+     navigate(id) vorwärts, goBack() zurück. Bestehende Views
+     (pickerView, campaignView, freeplayView, pitchView) darauf abbilden –
+     keine doppelte Logik, bestehende Render-Funktionen weiterverwenden.
+   - Übergänge wie im Prototyp: vorwärts von rechts hereinschieben, zurück
+     nach rechts heraus, ca. 300 ms; prefers-reduced-motion → ohne
+     Animation.
+   - Jeder Unterbildschirm hat oben links einen Zurück-Button
+     ("← Start", "← Welten", "← Abbrechen"). Zusätzlich Wischgeste vom
+     linken Rand = zurück. history.pushState/popstate einbinden, damit
+     auch die Android-Zurück-Taste funktioniert.
+   - Laufende Aufstellung: Zurück aus dem Spielfeld verhält sich wie der
+     bisherige "Abbrechen"-Button.
+
+2. Start-Bildschirm (kein Scrollen)
+   - Aufbau wie bisher und wie im Prototyp: Kopf (Logo, "So geht's",
+     Kicker, Titel, Schriftzug "Echte Spiele aus der Fußballgeschichte …"),
+     Profilleiste, darunter Platz für die Tages-Challenge-Karte (kommt in
+     Prompt 13 – bis dahin leer lassen, Layout muss ohne sie funktionieren),
+     darunter zwei große Modus-Kacheln nebeneinander:
+     Kampagne (Gold): Icon, "Kampagne", aktuelle Welt + Sterne gesamt,
+       Fortschrittsbalken.
+     Frei spielen (dunkel): Icon, "Frei spielen", Anzahl Aufstellungen,
+       "nach Liga & Stufe".
+   - Die Welten/der Weltpfad erscheinen NICHT mehr auf der Startseite.
+   - Die Statistik-Leiste (.scoreboard) entfällt (die Werte kommen in
+     Prompt 12 ins Scout-Profil), ebenso andere Elemente, die Scrollen
+     erzwingen würden – im Plan auflisten.
+   - Höhe: html/body/App-Container auf volle Bildschirmhöhe (100dvh bzw.
+     height: 100% mit Safe-Area-Abständen), Abstände per flex und
+     clamp()/vh so, dass alles auf iPhone SE (375×667) bis iPhone 16 Pro
+     Max ohne Scrollen passt.
+
+3. Weltkarte (kein Scrollen)
+   - Die bestehende Stadion-Weltkarte als eigener Bildschirm, auf die
+     verfügbare Höhe skaliert; pro Welt Fortschrittsring, Name und
+     "⭐ x/y". Gesperrte Welten: grau + Schloss, Tipp zeigt kurzen Hinweis.
+
+4. Level-Pfad (scrollt)
+   - Der bestehende geschlängelte Pfad (Level 1 oben → Ziel unten) als
+     eigener Bildschirm mit fester Kopfzeile; beim Öffnen automatisch zum
+     aktuellen Level scrollen.
+   - Ausschmückung je Welt wie im Prototyp, rein dekorativ an den Rändern
+     und oben (nie über Level-Punkten), als inline SVG/CSS:
+       Kreisliga: Holzzaun, Bäume, ein Flutlichtmast, warmer Abendhimmel
+       Regionalliga: kleine Tribüne, Bandenwerbung (nur eigene
+         Fantasie-Schriftzüge, keine echten Marken)
+       Bundesliga: Zuschauer-Muster an den Seiten, Fahnen
+       Champions League: Nacht, Sternenhimmel, Flutlichtkegel (KEIN
+         Champions-League-Sternenball oder anderes echtes Logo)
+       Weltklasse: goldenes Licht, Konfetti
+     Oben ein kurzer Intro-Text je Welt (siehe Prototyp).
+   - Sterne unter den Level-Punkten (aus Prompt 11) bleiben.
+
+5. Spielfeld – WICHTIG: nicht kleiner machen
+   - Das Spielfeld mit den Namensfeldern behält mindestens seine heutige
+     Größe (volle Breite, heutiges Seitenverhältnis). Es wird NICHT auf die
+     Bildschirmhöhe gestaucht.
+   - Platz gewinnen nur durch eine kompaktere Spielinfo oben (Wettbewerb,
+     Teams, gesuchte Mannschaft in 2–3 Zeilen) und eine schlanke
+     Kopfzeile.
+   - Passt es auf kleineren Geräten nicht ganz, darf dieser Bildschirm
+     vertikal scrollen. Beim Tippen muss das Eingabefeld über der
+     iOS-Tastatur sichtbar bleiben (visualViewport berücksichtigen).
+   - Mit tools/check-overlap.mjs erneut prüfen: 0 Überlappungen.
+
+6. Freispiel (kein Scrollen)
+   - Filter (Wettbewerb, Schwierigkeit, Hardcore-Chip ab Level 15) und
+     "Zufällige Aufstellung" als eigener Bildschirm.
+
+7. sw.js CACHE_NAME erhöhen.
+
+Test (Screenshots bei 375×667 und 402×874): Start ohne Scrollen, Weltkarte
+ohne Scrollen, Level-Pfad jeder Welt (Ausschmückung sichtbar, springt zum
+aktuellen Level), Freispiel ohne Scrollen, Spielfeld in heutiger Größe;
+Zurück-Button, Wischgeste und Browser-Zurück funktionieren; laufender
+Fortschritt, Sterne und Profil bleiben unverändert.
+```
+
+---
+
 ## Prompt 12 – Scout-Profil + Trophäenschrank
 
 ```
 Lies CLAUDE.md. Größere UI-Änderung → Plan Mode, Plan zeigen, auf OK
 warten. Optik und Aufbau 1:1 aus prototypes/scout-profil.html übernehmen
 (Bottom-Sheet, drei Reiter, Trophäen-SVGs, Balken). Voraussetzung:
-profile.best aus Prompt 11.
+profile.best aus Prompt 11, Bildschirm-Architektur aus Prompt 11b.
 
-1. Startseite entschlacken
-   - Die Statistik-Leiste (.scoreboard: Absolviert / Ø Treffer / Perfekt)
-     von der Startseite entfernen – die Werte wandern ins Profil.
+1. Startseite (Voraussetzung: Prompt 11b)
+   - Die Statistik-Leiste ist mit 11b von der Startseite verschwunden
+     (falls noch vorhanden: entfernen) – ihre Werte erscheinen jetzt im
+     Profil. Die Startseite muss weiterhin ohne Scrollen passen.
    - Tipp auf die Profilleiste öffnet statt openAchievementsModal() das
      neue Bottom-Sheet "Mein Scout-Profil" (Schließen per Button, Tipp
      daneben, Escape). Das alte Achievement-Modal entfällt.
@@ -660,7 +761,7 @@ Startseite ohne Statistik-Leiste.
 Lies CLAUDE.md. Neues Feature → Plan Mode, Plan zeigen, auf OK warten.
 Optik der Startseiten-Karte (offen/gelöst), des 🔥-Chips in der
 Profilleiste und der "Letzte 7 Tage"-Leiste 1:1 aus
-prototypes/scout-profil.html. Voraussetzungen: Prompts 7, 11, 12.
+prototypes/scout-profil.html. Voraussetzungen: Prompts 7, 11, 11b, 12.
 Die Kampagne (Weltkarte + Level-Pfad) bleibt unverändert; der Level-
 Streifen im Prototyp ist nur Platzhalter.
 
@@ -680,7 +781,10 @@ Streifen im Prototyp ist nur Platzhalter.
      LINEUP_CHALLENGES der passenden Schwierigkeit (Funktionen aus
      Prompt 9). Es fällt nie ein Tag aus.
    - Archiv: DAILY_CHALLENGES-Einträge, deren Tag vorbei ist, erscheinen im
-     Freispiel unter einem Filter "📅 Archiv"; heutige/künftige nie.
+     Freispiel-Bildschirm unter einem Filter "📅 Archiv"; heutige/künftige
+     nie.
+   - Tipp auf die Karte öffnet direkt den Spielfeld-Bildschirm (Navigation
+     aus Prompt 11b, Zurück führt zur Startseite).
 
 2. Regeln
    - Ein Versuch pro Tag: gesperrt, sobald "Auswerten" gedrückt wurde;
@@ -701,8 +805,11 @@ Streifen im Prototyp ist nur Platzhalter.
      earnDaily wird stattdessen beim Abschluss der Tages-Challenge vergeben.
 
 4. Startseite
-   - Kompakte Karte zwischen Profilleiste und Kampagne/Frei-spielen-
-     Umschalter (so flach wie im Prototyp, nicht dominant):
+   - Kompakte Karte auf dem Start-Bildschirm zwischen Profilleiste und
+     den Modus-Kacheln (Platz ist seit Prompt 11b reserviert; der
+     Start-Bildschirm muss auch mit Karte ohne Scrollen passen – bei Bedarf
+     die Modus-Kacheln etwas niedriger, siehe prototypes/navigation.html).
+     So flach wie im Prototyp, nicht dominant:
      offen: "Tages-Challenge · TT.MM.", "Tag n", Wochentag + Schwierigkeit
        in DIFF_COLOR, Timer "Neue in HH:MM:SS" bis lokale Mitternacht
        (Anton, groß, Doppelpunkte NICHT blinkend), 🔥-Zähler, Button
