@@ -4,8 +4,6 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, viewport-fit=cover">
 <title>Starting XI</title>
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=Anton&family=Oswald:wght@400;500;600;700&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet">
 <link rel="manifest" href="./manifest.json">
 <meta name="theme-color" content="#14202B">
 <link rel="icon" href="./icons/favicon-32.png">
@@ -14,6 +12,15 @@
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="apple-mobile-web-app-title" content="Starting XI">
 <style>
+  /* Lokal eingebundene Schriften statt Google-Fonts-CDN (DSGVO + Offline-Start).
+     oswald-variable.woff2 deckt die Gewichte 300-700 über eine wght-Achse ab -
+     eine Datei genuegt fuer alle im Projekt genutzten Oswald-Schnitte. */
+  @font-face { font-family: 'Anton'; font-style: normal; font-weight: 400; font-display: swap; src: url('./fonts/anton-400.woff2') format('woff2'); }
+  @font-face { font-family: 'Oswald'; font-style: normal; font-weight: 300; font-display: swap; src: url('./fonts/oswald-variable.woff2') format('woff2'); }
+  @font-face { font-family: 'Oswald'; font-style: normal; font-weight: 400; font-display: swap; src: url('./fonts/oswald-variable.woff2') format('woff2'); }
+  @font-face { font-family: 'Oswald'; font-style: normal; font-weight: 500; font-display: swap; src: url('./fonts/oswald-variable.woff2') format('woff2'); }
+  @font-face { font-family: 'Oswald'; font-style: normal; font-weight: 600; font-display: swap; src: url('./fonts/oswald-variable.woff2') format('woff2'); }
+  @font-face { font-family: 'Oswald'; font-style: normal; font-weight: 700; font-display: swap; src: url('./fonts/oswald-variable.woff2') format('woff2'); }
   :root {
     --pitch: #1F4D36;
     --chalk: #F2EFE6;
