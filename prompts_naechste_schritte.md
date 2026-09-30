@@ -12,18 +12,19 @@ vorige umgesetzt, getestet und committet ist.
 | 4 | Tippfehler-Toleranz „Fast richtig“ + Korrigieren | ✅ erledigt |
 | 5 | Datenrecherche Rückennummer + Nationalität | ✅ erledigt |
 | 6 | Scout-Rad + einheitliche Währung | ✅ erledigt |
-| 7 | PWA-Nacharbeit (Fonts lokal, Update-Strategie) | – |
+| 7 | PWA-Nacharbeit (Fonts lokal, Update-Strategie) | ✅ erledigt |
 | 8 | *Später:* Vorbereitung Capacitor | 7 |
 | 9 | Bugfix: feste Vorgaben pro Kampagnen-Level | ✅ erledigt |
 | 10 | Typografie aufräumen (kein „maschineller“ Look) | ✅ erledigt |
 | 11 | Sterne, XP nur für Verbesserung, Kombo, neue XP-Kurve | ✅ erledigt |
-| 11b | Navigation / One-Pager: eigene Bildschirme, Welten-Ausschmückung | 11 |
-| 12 | Scout-Profil + Trophäenschrank | 11b |
+| 11b | Navigation / One-Pager: eigene Bildschirme, Welten-Ausschmückung | ✅ erledigt |
+| 11c | Feinschliff nach iPhone-Test: Weltkarte, Ziel-Knoten, Ball, Regeln-Button | 11b |
+| 12 | Scout-Profil + Trophäenschrank | 11c |
 | 13 | Tages-Challenge + Serie | 7, 11, 12 |
 | 14 | Recherche Tages-Pool (Gegenseiten + neue Spiele) | 13 |
 | 15 | Kampagne auf ca. 60 Aufstellungen ausbauen | – |
 
-**Empfohlene Reihenfolge ab jetzt:** 11b → 7 → 12 → 13 → 14 → 15 → 8
+**Empfohlene Reihenfolge ab jetzt:** 11c → 12 → 13 → 14 → 15 → 8
 
 Prompt 7 steht bewusst vor der Tages-Challenge: Nur mit der neuen
 Update-Strategie kommen neue Tages-Aufstellungen zuverlässig auf dem iPhone an.
@@ -682,6 +683,89 @@ ohne Scrollen, Level-Pfad jeder Welt (Ausschmückung sichtbar, springt zum
 aktuellen Level), Freispiel ohne Scrollen, Spielfeld in heutiger Größe;
 Zurück-Button, Wischgeste und Browser-Zurück funktionieren; laufender
 Fortschritt, Sterne und Profil bleiben unverändert.
+```
+
+---
+
+## Prompt 11c – Feinschliff nach iPhone-Test
+
+```
+Lies CLAUDE.md. Feinschliff nach iPhone-Test (4 Punkte) → kurz Plan Mode,
+Plan zeigen, auf OK warten. Jeden Punkt einzeln umsetzen und prüfen.
+
+1. Weltkarte: erste Welt überlappt den Zurück-Button
+   Befund (gemessen bei 402×780): Der Kreisliga-Knoten beginnt bei y=40px,
+   der Button "← Start" reicht bis y=62px. #campaignView endet bei y=632,
+   darunter bleiben ca. 150px ungenutzt. Ursache: .roadmap-wrap nutzt
+   padding-bottom: 148% (breitenabhängig) und ROADMAP_NODES startet bei
+   y:10 %, Knoten sind per translate(-50%,-50%) zentriert und ragen nach
+   oben aus dem Container.
+   Umsetzung:
+   - Die Roadmap füllt die verfügbare Höhe des Weltkarten-Bildschirms unter
+     der Kopfzeile (flex: 1; min-height: 0) statt padding-bottom: 148 %.
+   - y-Werte in ROADMAP_NODES/ROADMAP_SEGMENTS so verteilen, dass der
+     oberste Knoten inklusive Ring vollständig unter der Kopfzeile liegt und
+     der unterste inklusive Name und Sterne-Chip vollständig sichtbar ist –
+     gleichmäßige Abstände, unten kein großer leerer Rest.
+   - Weiterhin ohne Scrollen, geprüft bei 375×667, 402×780 und 430×932.
+
+2. Level-Pfad: Ziel-Knoten am Ende abgeschnitten
+   Befund: In der Kreisliga endet .level-path-wrap bei y=1268, das Label
+   des Ziel-Knotens ("Weiter zu Regionalliga") bei y=1281 – Label und Teil
+   des 82px-Ziel-Buttons werden durch overflow: hidden abgeschnitten.
+   Ursache: Der letzte Punkt liegt bei (totalNodes − 0,4)/totalNodes der
+   Inhaltshöhe; unten ist nur 20px Reserve (contentH = totalNodes · Y_STEP
+   + 20).
+   Umsetzung: unten ausreichend Platz reservieren (analog INTRO_H oben,
+   z. B. OUTRO_H), sodass Ziel-Button + Label + etwas Luft immer komplett
+   sichtbar sind – in allen 5 Welten.
+
+3. Level-Pfad: Ball verdeckt Sterne/Namen
+   Befund: .level-ball (top: -30px) und .level-spotlight (44px hoch +
+   80px breiter Lichtkegel) ragen über den aktuellen Level-Knoten hinaus.
+   Level liegen nur Y_STEP = 98px auseinander, Sterne und Label des
+   vorherigen Levels liegen genau in diesem Bereich (je nach Zickzack-
+   Position darunter oder daneben).
+   Umsetzung:
+   - Ball und Spotlight dürfen nicht mehr über den Knoten hinausragen.
+     Vorschlag: Spotlight entfernen; der Ball wird zu einem kleinen Badge
+     an der unteren rechten Ecke des Level-Punkts (innerhalb der
+     Knoten-Box, ohne Hüpf-Animation). Alternativ weglassen, wenn es
+     unruhig wirkt – im Plan beide Varianten kurz zeigen.
+   - Das Pulsieren (floodlightPulse) des aktuellen Levels BLEIBT erhalten
+     (bewusste Ausnahme zur Regel "keine Dauer-Animationen", da es kein
+     Text ist).
+   - Absicherung: tools/check-overlap.mjs um eine Prüfung des Level-Pfads
+     erweitern – für jede Welt (auch mit aktuellem Level in der Mitte) dürfen
+     sich Level-Punkt, Sterne, Label und Badge VERSCHIEDENER Level nicht
+     überschneiden. Ziel: 0 Überlappungen bei 375, 402 und 430px Breite.
+
+4. Spielfeld: Infotext durch "Regeln"-Button ersetzen
+   Befund: Unter "Gesucht: <Mannschaft>" steht fest der Text "Namen
+   eintippen – richtige Felder werden sofort grün … Scout-Rad … Scout-
+   Token" (renderPitch, .bonus-text). Er kostet ca. 4 Zeilen Platz.
+   Umsetzung:
+   - Den Infotext entfernen, "Gesucht: <b>Mannschaft</b>" bleibt.
+   - In der Kopfzeile des Spielfelds rechts (gleiche Höhe wie
+     "← Abbrechen") einen Button "ℹ️ Regeln" im Stil der bestehenden
+     Buttons (Oswald, kein Mono).
+   - Tipp öffnet ein Bottom-Sheet/Modal im Stil des Scout-Rad-Modals mit
+     kurzen Abschnitten: Eingabe (falsche Zeile wird automatisch
+     einsortiert), Fast richtig/Korrigieren, Scout-Rad (Kosten, Felder),
+     Aufdecken, Sterne, Kombo, aktueller Token-Stand. Texte aus
+     GUIDE_SECTIONS wiederverwenden bzw. von dort ableiten, keine
+     doppelte Pflege.
+   - Beim allerersten gespielten Level den Regeln-Button einmalig dezent
+     hervorheben (z. B. goldener Punkt wie bei "So geht's"), danach nicht
+     mehr (Flag im Profil).
+   - Das Spielfeld bleibt in seiner Größe unverändert (Prompt 11b, Punkt 5).
+
+5. sw.js CACHE_NAME erhöhen.
+
+Test: Screenshots bei 402×780 von Weltkarte, Kreisliga-Pfad oben (aktuelles
+Level in der Mitte) und ganz unten (Ziel-Knoten vollständig), Spielfeld mit
+Regeln-Button und geöffnetem Regeln-Fenster; Ausgabe von
+tools/check-overlap.mjs zeigen.
 ```
 
 ---
