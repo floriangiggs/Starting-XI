@@ -35,6 +35,7 @@
     --faint: rgba(242,239,230,0.14);
     --token: #7DB8FF;
     --ok: #2ECC71;
+    --flame: #F0A93B;
   }
   * { box-sizing: border-box; }
   html { -webkit-text-size-adjust: 100%; }
@@ -347,6 +348,7 @@
   .profile-bar.gold-frame { border-color: var(--gold); box-shadow: 0 0 0 1px var(--gold), 0 0 14px rgba(232,178,61,0.25); }
   .currency-stack { display: flex; flex-direction: column; gap: 5px; flex-shrink: 0; }
   .token-count { flex-shrink: 0; font-family: 'Anton', sans-serif; font-size: 13px; font-weight: 400; color: #7db8ff; background: rgba(74,163,255,0.12); border: 1px solid rgba(74,163,255,0.3); border-radius: 20px; padding: 6px 10px; text-align: center; }
+  .streak-count { flex-shrink: 0; font-family: 'Anton', sans-serif; font-size: 13px; font-weight: 400; color: var(--flame); background: rgba(240,169,59,0.12); border: 1px solid rgba(240,169,59,0.35); border-radius: 20px; padding: 6px 10px; text-align: center; }
 
   .toast-stack { position: fixed; top: 16px; left: 50%; transform: translateX(-50%); z-index: 50; display: flex; flex-direction: column; gap: 8px; width: 92%; max-width: 500px; pointer-events: none; }
   #srFx { position: fixed; inset: 0; width: 100%; height: 100%; pointer-events: none; z-index: 55; }
@@ -417,6 +419,41 @@
   .bar-row .pc { font-weight: 600; font-size: 12.5px; text-align: right; }
   .bar-row.none { color: rgba(242,239,230,0.42); }
   .sheet-note { font-family: 'Oswald', sans-serif; font-size: 12.5px; font-weight: 300; color: var(--muted); line-height: 1.5; }
+
+  /* ---- "Letzte 7 Tage" im Scout-Profil (Prompt 13, Optik 1:1 aus Prototyp) ---- */
+  .week { display: grid; grid-template-columns: repeat(7, 1fr); gap: 5px; }
+  .wd { text-align: center; font-family: 'Oswald', sans-serif; font-size: 11.5px; font-weight: 400; color: var(--muted); display: flex; flex-direction: column; gap: 5px; align-items: center; }
+  .wd .pip { width: 100%; height: 26px; border-radius: 6px; background: rgba(255,255,255,0.06); border: 1px solid var(--line); display: grid; place-items: center; font-size: 13px; }
+  .wd.done .pip { background: rgba(240,169,59,0.18); border-color: rgba(240,169,59,0.45); }
+  .wd.today { color: var(--chalk); font-weight: 600; }
+  .wd.today .pip { border-style: dashed; border-color: var(--gold-2); }
+
+  /* ---- Tages-Challenge-Karte auf der Startseite (Prompt 13, Optik 1:1 aus Prototyp) ---- */
+  .daily { position: relative; overflow: hidden; border-radius: 12px; border: 1.5px solid rgba(232,178,61,0.7); padding: 12px 14px; background:
+      radial-gradient(circle at 92% 0%, rgba(232,178,61,0.18), transparent 50%),
+      linear-gradient(160deg, #22553b, #173f2b 75%);
+    box-shadow: 0 6px 16px rgba(0,0,0,0.3); display: grid; grid-template-columns: 1fr auto; gap: 4px 12px; align-items: center; flex-shrink: 0; }
+  .d-kicker { font-family: 'Oswald', sans-serif; font-weight: 600; font-size: 11px; letter-spacing: 0.1em; text-transform: uppercase; color: var(--gold-2); }
+  .d-title { font-family: 'Anton', sans-serif; font-size: 20px; line-height: 1.1; text-transform: uppercase; display: flex; align-items: baseline; gap: 8px; flex-wrap: wrap; }
+  .d-title .diff { font-family: 'Oswald', sans-serif; font-weight: 600; font-size: 12px; letter-spacing: 0.02em; text-transform: none; }
+  .d-sub { font-family: 'Oswald', sans-serif; font-size: 12.5px; font-weight: 300; color: var(--muted); }
+  .timer { display: flex; align-items: baseline; gap: 8px; margin-top: 2px; }
+  .timer-lbl { font-family: 'Oswald', sans-serif; font-weight: 500; font-size: 11.5px; letter-spacing: 0.06em; text-transform: uppercase; color: var(--muted); }
+  .timer-val { font-family: 'Anton', sans-serif; font-size: 24px; line-height: 1; letter-spacing: 0.04em; color: var(--gold-2); text-shadow: 0 0 14px rgba(232,178,61,0.35); font-variant-numeric: tabular-nums; }
+  .timer-val .sep { opacity: 0.6; margin: 0 1px; }
+  .d-right { grid-row: 1 / span 3; grid-column: 2; display: flex; flex-direction: column; align-items: flex-end; gap: 7px; }
+  .d-flame { font-family: 'Oswald', sans-serif; font-weight: 700; font-size: 14px; color: var(--flame); display: flex; align-items: center; gap: 3px; }
+  .d-play { border: none; border-radius: 9px; padding: 9px 16px; font-family: 'Oswald', sans-serif; font-weight: 700; font-size: 14px; background: linear-gradient(135deg, var(--gold), var(--gold-2)); color: var(--ink); box-shadow: 0 3px 0 #9C7422; cursor: pointer; }
+  .d-play:active { transform: translateY(2px); box-shadow: 0 1px 0 #9C7422; }
+  .d-play.ghost { background: rgba(0,0,0,0.25); color: var(--chalk); border: 1px solid rgba(242,239,230,0.3); box-shadow: none; }
+  .d-result { display: flex; align-items: center; gap: 10px; }
+  .mini-form { display: flex; flex-direction: column; gap: 2px; align-items: center; }
+  .mini-form .r { display: flex; gap: 2px; }
+  .sq { width: 7px; height: 7px; border-radius: 2px; flex-shrink: 0; }
+  .sq.g { background: var(--ok); } .sq.y { background: var(--gold); } .sq.x { background: #3A4652; }
+  .d-score { font-family: 'Anton', sans-serif; font-size: 20px; line-height: 1; }
+  .d-score small { font-size: 13px; color: var(--muted); }
+  .copied { grid-column: 1 / -1; font-family: 'Oswald', sans-serif; font-size: 11.5px; color: var(--ok); min-height: 0; }
 
   .guide-title { font-family: 'Anton', sans-serif; font-size: 22px; text-transform: uppercase; text-align: center; margin-bottom: 14px; color: var(--gold); }
   .guide-row { display: flex; align-items: flex-start; gap: 12px; padding: 11px 0; border-bottom: 1px solid var(--line); }
@@ -550,10 +587,10 @@
       </div>
       <div class="currency-stack">
         <div class="token-count" id="tokenCount">🔍 0</div>
+        <div class="streak-count" id="streakCount">🔥 0</div>
       </div>
     </button>
 
-    <!-- Befuellt ab Prompt 13 (Tages-Challenge); bis dahin leer und via :empty ausgeblendet. -->
     <div id="dailyCard"></div>
 
     <div class="mode-tiles" id="modeTiles"></div>
@@ -1381,7 +1418,7 @@ let navStack = ["start"];
 // Spielversuch stehen, ganz gleich ob per Button, Wischgeste oder Hardware-Zurück
 // dorthin navigiert wird (ein einziger Code-Pfad statt Refresh an jeder Aufrufstelle).
 function refreshScreenContent(id) {
-  if (id === "start") renderModeTiles();
+  if (id === "start") { renderDailyCard(); renderModeTiles(); }
   if (id === "worldmap") renderCampaignWorlds();
   if (id === "levelpath") renderCampaignLevels();
   if (id === "freeplay") { buildFilterBar(); buildDifficultyFilterBar(); renderFreeplayCount(); }
@@ -1617,6 +1654,8 @@ const defaultProfile = {
   hasSeenGuide: false,
   hasSeenPitchRules: false,
   trophiesWon: [], // Kampagne-Trophaeen-IDs (Achievements laufen weiter ueber profile.achievements)
+  streak: { current: 0, best: 0, lastDayKey: null }, // NUR Tages-Challenge zaehlt, kein Serien-Schutz (Prompt 13)
+  daily: {}, // dateKey ("YYYY-MM-DD") -> { id, correct, grid, stars }
   stats: {
     lineupsPlayed: 0,
     lineupsPerfect: 0,
@@ -1662,7 +1701,8 @@ const XP_RULES = {
   fuzzyCorrected: 10, fuzzyCorrectedWithHint: 5,
   trainingXP: 10,   // Wiederholung ohne jede Verbesserung (weder neue Position noch neuer Stern)
   firstPlayXP: 20,  // "Erstmals gespielt" - unabhaengig von Sternen/Verbesserung
-  starBonus: { 1: 50, 2: 75, 3: 125 } // einmalig, beim ERSTEN Erreichen der jeweiligen Stufe
+  starBonus: { 1: 50, 2: 75, 3: 125 }, // einmalig, beim ERSTEN Erreichen der jeweiligen Stufe
+  dailyStreakBonusPerDay: 0.10, dailyStreakBonusMax: 0.50 // Prompt 13: +10%/Serientag, Deckel 50%
 };
 
 const NATIONAL_TEAM_LEAGUES = new Set(["Weltmeisterschaft", "Europameisterschaft", "Copa America"]);
@@ -1724,6 +1764,8 @@ function loadProfile() {
     if (typeof profile.hasSeenGuide !== "boolean") profile.hasSeenGuide = false;
     if (typeof profile.hasSeenPitchRules !== "boolean") profile.hasSeenPitchRules = false;
     if (!Array.isArray(profile.trophiesWon)) profile.trophiesWon = [];
+    if (!profile.streak || typeof profile.streak !== "object") profile.streak = { current: 0, best: 0, lastDayKey: null };
+    if (!profile.daily || typeof profile.daily !== "object") profile.daily = {};
     if (typeof profile.stats.positionsCorrectFuzzy !== "number") profile.stats.positionsCorrectFuzzy = 0;
     // Fester Zufalls-Seed pro Profil (Prompt 9): macht die pro Kampagnen-Level geschenkten
     // Positionen deterministisch statt bei jedem Neustart neu auszuwuerfeln. Sofort
@@ -1845,7 +1887,18 @@ function checkAchievements(profile) {
 
 function isFeatureUnlocked(profile, level) { return profile.level >= level; }
 
+// currentDailyChallenge wird weiter unten (Prompt 13) deklariert, ist hier aber schon
+// nutzbar: awardXP() wird nie beim Skript-Parsen aufgerufen, nur spaeter zur Laufzeit,
+// wenn alle State-Variablen laengst deklariert sind.
 function awardXP(profile, amount, reason) {
+  if (currentDailyChallenge) {
+    // Streak-Bonus (Prompt 13): erfasst zentral ALLE waehrend eines Tages-Challenge-
+    // Versuchs vergebenen XP (Live-Positions-XP beim Tippen + finale Sterne-/Erstspiel-
+    // Boni), ohne jede awardXP()-Aufrufstelle einzeln zu patchen. Nutzt bewusst den
+    // Streak-Stand VOR dem heutigen Abschluss (die Erhoehung passiert erst danach).
+    const bonusPct = Math.min(profile.streak.current * XP_RULES.dailyStreakBonusPerDay, XP_RULES.dailyStreakBonusMax);
+    amount = Math.round(amount * (1 + bonusPct));
+  }
   profile.totalXP += amount;
   const newLevel = levelFromXP(profile.totalXP);
   const levelsGained = newLevel - profile.level;
@@ -1929,6 +1982,7 @@ function renderProfileBar() {
   document.getElementById("xpBarFill").style.width = (progress * 100).toFixed(0) + "%";
   document.getElementById("xpNext").innerHTML = "<span class=\"xp-ball\">⚽</span> Noch <b>" + remainingXP + " XP</b> bis Lvl " + (profile.level + 1);
   document.getElementById("tokenCount").textContent = "🔍 " + profile.hintTokens;
+  document.getElementById("streakCount").textContent = "🔥 " + profile.streak.current;
   document.getElementById("profileBar").classList.toggle("gold-frame", profile.level >= 30);
 
   applyUnlockedFeatures();
@@ -1975,12 +2029,13 @@ const GUIDE_SECTIONS = [
   { icon: "✏️", title: "Fast richtig", desc: "Kleiner Tippfehler? Das Feld färbt sich gold - mit \"Korrigieren\" trägst du die richtige Schreibweise ein, für etwas weniger XP als beim ersten Versuch." },
   { icon: "🎡", title: "Scout-Rad", desc: "Tipp im Positions-Panel auf \"Scout-Rad öffnen\" und dreh für 1 🔍 Scout-Token: 1. Buchstabe, Rückennummer, Nationalität oder als Jackpot der ganze Name. Jeder Dreh zählt als Hinweis (etwas weniger XP, kein ⭐⭐⭐ mehr für diese Aufstellung). Rückennummer/Nationalität gibt's nur, wo die Daten vorliegen; Nationalität entfällt bei Nationalmannschaftsspielen." },
   { icon: "👁️", title: "Aufdecken", desc: "Direkt neben dem Scout-Rad: zeigt für 3 🔍 Scout-Token sofort den kompletten Namen, ohne XP-Abzug." },
-  { icon: "🔍", title: "Scout-Token verdienen", desc: "Du bekommst Scout-Token fürs erste Spielen einer Aufstellung, für eine perfekte Aufstellung (einmalig je Aufstellung), täglich fürs erste Spiel des Tages, bei jedem Level-Up und für neu freigeschaltete Achievements." },
+  { icon: "🔍", title: "Scout-Token verdienen", desc: "Du bekommst Scout-Token fürs erste Spielen einer Aufstellung, für eine perfekte Aufstellung (einmalig je Aufstellung), für den Abschluss der Tages-Challenge, bei jedem Level-Up und für neu freigeschaltete Achievements." },
   { icon: "⭐", title: "Sterne", desc: "Jede Aufstellung bringt dir bis zu 3 Sterne: ⭐ ab 7/11, ⭐⭐ ab 9/11, ⭐⭐⭐ nur für 11/11 ganz ohne Scout-Rad, Aufdecken oder Korrigieren. Nur die erste Verbesserung zählt für XP - Wiederholen ohne Fortschritt bringt nur noch kleine Trainings-XP." },
   { icon: "🔥", title: "Kombo", desc: "Richtige Positionen ohne Hilfe in Folge erhöhen die Kombo und damit dein Positions-XP. Ein Scout-Rad-Dreh, Aufdecken, Korrigieren oder ein falsch verlassenes Feld setzt die Kombo zurück." },
   { icon: "🏟️", title: "Kampagne", desc: "Fünf Welten von Kreisliga bis Weltklasse. Mindestens 7 von 11 richtig, um ein Level zu bestehen und das nächste freizuschalten." },
   { icon: "🎲", title: "Frei spielen", desc: "Liga und Schwierigkeit frei wählbar, ganz ohne Fortschrittsdruck - für schnelle Runden zwischendurch." },
-  { icon: "📈", title: "Level & Rang", desc: "Neue Positionen, neue Sterne und der Tagesbonus bringen XP. Dein Rang steigt automatisch mit." },
+  { icon: "📅", title: "Tages-Challenge", desc: "Jeden Tag eine feste Aufstellung, für alle gleich - nur ein Versuch, danach gesperrt bis zum nächsten Tag. Schwierigkeit steigt zur Wochenmitte hin. Löst du sie am Folgetag deiner letzten Serie, wächst dein 🔥-Streak weiter - er gibt bis zu 50% mehr XP auf die Tages-Challenge. Das Ergebnis lässt sich als Raster teilen." },
+  { icon: "📈", title: "Level & Rang", desc: "Neue Positionen, neue Sterne und die Tages-Challenge bringen XP. Dein Rang steigt automatisch mit." },
   { icon: "🏅", title: "Achievements", desc: "Sammelbare Abzeichen für besondere Leistungen - manche schalten sogar einen eigenen Titel frei." },
   { icon: "🔓", title: "Freischaltungen", desc: "Ab Level 15 gibt's den Hardcore-Modus mit den schwersten Aufstellungen." }
 ];
@@ -2057,15 +2112,34 @@ function openRulesModal() {
 let profile = loadProfile();
 document.getElementById("profileBar").onclick = openProfileSheet;
 
+// Tages-Challenge-Eintraege, deren Tag vorbei ist (Prompt 13) - ermittelt ueber ALLE
+// vergangenen Kalendertage, welche DAILY_CHALLENGES-ids je gezogen wurden. Aktuell immer
+// leer (DAILY_CHALLENGES ist leer), das Befuellen ist Prompt 14.
+function archivedDailyChallenges() {
+  if (DAILY_CHALLENGES.length === 0) return [];
+  const todayNum = dayNumber(localDateKey());
+  const ids = new Set();
+  for (let d = 1; d < todayNum; d++) {
+    const dt = new Date(DAILY_EPOCH + "T00:00:00");
+    dt.setDate(dt.getDate() + (d - 1));
+    const { difficulty, index } = dailyQueueIndex(localDateKey(dt));
+    const queue = dailyQueueForDifficulty(difficulty);
+    if (queue.length > 0) ids.add(queue[index % queue.length].id);
+  }
+  return DAILY_CHALLENGES.filter(c => ids.has(c.id));
+}
+
+let showDailyArchive = false; // "📅 Archiv"-Chip - eigenes Flag statt Liga-Auswahl, da eine andere Datenquelle
+
 function buildFilterBar() {
   const leagues = [...new Set(LINEUP_CHALLENGES.map(m => m.league))];
   const bar = document.getElementById("filterRow");
   bar.innerHTML = "";
 
   const allBtn = document.createElement("button");
-  allBtn.className = "filter-btn" + (selectedLeagues.size === 0 ? " active" : "");
+  allBtn.className = "filter-btn" + (selectedLeagues.size === 0 && !showDailyArchive ? " active" : "");
   allBtn.textContent = "Alle (" + LINEUP_CHALLENGES.length + ")";
-  allBtn.onclick = () => { selectedLeagues.clear(); matchQueue = []; buildFilterBar(); buildDifficultyFilterBar(); renderFreeplayCount(); };
+  allBtn.onclick = () => { selectedLeagues.clear(); showDailyArchive = false; matchQueue = []; buildFilterBar(); buildDifficultyFilterBar(); renderFreeplayCount(); };
   bar.appendChild(allBtn);
 
   leagues.forEach(l => {
@@ -2078,12 +2152,28 @@ function buildFilterBar() {
     } else {
       btn.onclick = () => {
         if (selectedLeagues.has(l)) selectedLeagues.delete(l); else selectedLeagues.add(l);
+        showDailyArchive = false;
         matchQueue = [];
         buildFilterBar(); buildDifficultyFilterBar(); renderFreeplayCount();
       };
     }
     bar.appendChild(btn);
   });
+
+  const archiveCount = archivedDailyChallenges().length;
+  const archiveBtn = document.createElement("button");
+  archiveBtn.className = "filter-btn" + (showDailyArchive ? " active" : "") + (archiveCount === 0 ? " empty-filter" : "");
+  archiveBtn.textContent = "📅 Archiv (" + archiveCount + ")";
+  if (archiveCount === 0) {
+    archiveBtn.disabled = true;
+  } else {
+    archiveBtn.onclick = () => {
+      showDailyArchive = !showDailyArchive;
+      matchQueue = [];
+      buildFilterBar(); buildDifficultyFilterBar(); renderFreeplayCount();
+    };
+  }
+  bar.appendChild(archiveBtn);
 }
 
 function buildDifficultyFilterBar() {
@@ -2473,6 +2563,60 @@ function starsSummaryTotal() {
   }, { earned: 0, max: 0 });
 }
 
+// Kompakte Tages-Challenge-Karte auf der Startseite (Prompt 13, Optik 1:1 aus Prototyp) -
+// zwei Zustaende: offen (Spielen-Button) und geloest (Mini-Raster + Teilen-Button).
+function renderDailyCard() {
+  const card = document.getElementById("dailyCard");
+  const dateKey = localDateKey();
+  const dayNum = dayNumber(dateKey);
+  const now = new Date();
+  const wd = ["So", "Mo", "Di", "Mi", "Do", "Fr", "Sa"][now.getDay()];
+  const diff = WEEKDAY_DIFFICULTY[now.getDay()];
+  const dateStr = String(now.getDate()).padStart(2, "0") + "." + String(now.getMonth() + 1).padStart(2, "0") + ".";
+  const result = profile.daily[dateKey];
+
+  const left = `
+    <div class="d-kicker">Tages-Challenge · ${dateStr}</div>
+    <div class="d-title">Tag <span>${dayNum}</span><span class="diff" style="color:${DIFF_COLOR[diff]}">${wd} · ${DIFF_LABEL[diff]}</span></div>`;
+
+  if (!result) {
+    card.innerHTML = left + `
+      <div class="timer"><span class="timer-lbl">Neue in</span><span class="timer-val" id="dailyTimer">–</span></div>
+      <div class="d-right">
+        <div class="d-flame" aria-label="Serie ${profile.streak.current} Tage">🔥 ${profile.streak.current}</div>
+        <button class="d-play" type="button" id="dailyPlayBtn">Spielen</button>
+      </div>`;
+    document.getElementById("dailyPlayBtn").onclick = startDailyChallenge;
+  } else {
+    const gridHtml = result.grid.map(row => `<div class="r">${row.map(c => {
+      const cls = c === "🟩" ? "g" : c === "🟨" ? "y" : "x";
+      return `<span class="sq ${cls}"></span>`;
+    }).join("")}</div>`).join("");
+    card.innerHTML = left + `
+      <div class="d-result">
+        <div class="mini-form" aria-label="Ergebnis in Aufstellungsform">${gridHtml}</div>
+        <div class="d-score">${result.correct}<small>/11</small></div>
+        <div class="timer" style="flex-direction:column;gap:2px"><span class="timer-lbl">Nächste in</span><span class="timer-val" id="dailyTimer" style="font-size:20px">–</span></div>
+      </div>
+      <div class="d-right">
+        <div class="d-flame" aria-label="Serie ${profile.streak.current} Tage">🔥 ${profile.streak.current}</div>
+        <button class="d-play ghost" type="button" id="dailyShareBtn">Teilen</button>
+      </div>`;
+    document.getElementById("dailyShareBtn").onclick = () => shareDailyResult(dayNum, result.correct, result.grid, profile.streak.current);
+  }
+  tickDailyTimer();
+}
+
+function tickDailyTimer() {
+  const el = document.getElementById("dailyTimer");
+  if (!el) return;
+  const n = new Date(), midnight = new Date(n);
+  midnight.setHours(24, 0, 0, 0);
+  let s = Math.max(0, Math.floor((midnight - n) / 1000));
+  const h = String(Math.floor(s / 3600)).padStart(2, "0"); s %= 3600;
+  el.innerHTML = h + '<span class="sep">:</span>' + String(Math.floor(s / 60)).padStart(2, "0") + '<span class="sep">:</span>' + String(s % 60).padStart(2, "0");
+}
+
 function renderModeTiles() {
   const tiles = document.getElementById("modeTiles");
   const tier = currentCampaignTier();
@@ -2499,6 +2643,7 @@ function renderModeTiles() {
 }
 
 function poolForActiveLeague() {
+  if (showDailyArchive) return archivedDailyChallenges();
   let pool = selectedLeagues.size === 0 ? LINEUP_CHALLENGES : LINEUP_CHALLENGES.filter(m => selectedLeagues.has(m.league));
   if (selectedDifficulties.size > 0) pool = pool.filter(m => selectedDifficulties.has(m.difficulty));
   if (profile.level >= 15 && profile.hardcoreMode) {
@@ -2567,14 +2712,15 @@ const CAMPAIGN_TROPHIES = ROADMAP_NODES.flatMap(({ tier }) => {
   ];
 });
 
-// Serie & Tages-Challenge: Voraussetzung (Streak-/Tages-Challenge-Zaehler) kommt erst mit
-// Prompt 13 - check() liefert bis dahin bewusst immer false.
+// Serie & Tages-Challenge (Prompt 13): "best" statt "current", damit eine Trophaee auch
+// nach einem spaeter verpassten Tag gewonnen bleibt (wie bei Achievements - kein Rueckschritt).
+function perfectDailyCount(p) { return Object.values(p.daily).filter((d) => d.stars === 3).length; }
 const SERIES_TROPHIES = [
-  { id: "serie_wochenpokal", group: "Serie & Tages-Challenge", kind: "flame", name: "Wochenpokal", req: "7 Tage Serie", desc: "7 Tage in Folge die Tages-Challenge gespielt.", check: () => false, progress: () => [0, 7] },
-  { id: "serie_supercup", group: "Serie & Tages-Challenge", kind: "flame", name: "Supercup", req: "30 Tage Serie", desc: "30 Tage in Folge die Tages-Challenge gespielt.", check: () => false, progress: () => [0, 30] },
-  { id: "serie_jahrhundert", group: "Serie & Tages-Challenge", kind: "flame", name: "Jahrhundert-Serie", req: "100 Tage Serie", desc: "100 Tage in Folge die Tages-Challenge gespielt.", check: () => false, progress: () => [0, 100] },
-  { id: "serie_tagessieger", group: "Serie & Tages-Challenge", kind: "medal", name: "Tagessieger", req: "10 × perfekt am Tag", desc: "Zehnmal die Tages-Challenge mit 11/11 gelöst.", check: () => false, progress: () => [0, 10] },
-  { id: "serie_tageslegende", group: "Serie & Tages-Challenge", kind: "medal", name: "Tageslegende", req: "50 × perfekt am Tag", desc: "Fünfzigmal die Tages-Challenge mit 11/11 gelöst.", check: () => false, progress: () => [0, 50] }
+  { id: "serie_wochenpokal", group: "Serie & Tages-Challenge", kind: "flame", name: "Wochenpokal", req: "7 Tage Serie", desc: "7 Tage in Folge die Tages-Challenge gespielt.", check: (p) => p.streak.best >= 7, progress: (p) => [Math.min(p.streak.best, 7), 7] },
+  { id: "serie_supercup", group: "Serie & Tages-Challenge", kind: "flame", name: "Supercup", req: "30 Tage Serie", desc: "30 Tage in Folge die Tages-Challenge gespielt.", check: (p) => p.streak.best >= 30, progress: (p) => [Math.min(p.streak.best, 30), 30] },
+  { id: "serie_jahrhundert", group: "Serie & Tages-Challenge", kind: "flame", name: "Jahrhundert-Serie", req: "100 Tage Serie", desc: "100 Tage in Folge die Tages-Challenge gespielt.", check: (p) => p.streak.best >= 100, progress: (p) => [Math.min(p.streak.best, 100), 100] },
+  { id: "serie_tagessieger", group: "Serie & Tages-Challenge", kind: "medal", name: "Tagessieger", req: "10 × perfekt am Tag", desc: "Zehnmal die Tages-Challenge mit 11/11 gelöst.", check: (p) => perfectDailyCount(p) >= 10, progress: (p) => [Math.min(perfectDailyCount(p), 10), 10] },
+  { id: "serie_tageslegende", group: "Serie & Tages-Challenge", kind: "medal", name: "Tageslegende", req: "50 × perfekt am Tag", desc: "Fünfzigmal die Tages-Challenge mit 11/11 gelöst.", check: (p) => perfectDailyCount(p) >= 50, progress: (p) => [Math.min(perfectDailyCount(p), 50), 50] }
 ];
 
 // Bestehende ACHIEVEMENTS als Medaillen - gleiche ids, damit profile.achievements/
@@ -2599,11 +2745,13 @@ const ACHIEVEMENT_TROPHIES = ACHIEVEMENTS.map((a) => ({
 
 const TROPHIES = [...CAMPAIGN_TROPHIES, ...SERIES_TROPHIES, ...ACHIEVEMENT_TROPHIES];
 
-// Analog checkAchievements(): merkt neu gewonnene Kampagne-Trophaeen in profile.trophiesWon,
-// damit ein neuer Pokal/eine neue Schale genau einmal Toast+Token ausloest.
+// Analog checkAchievements(): merkt neu gewonnene Kampagne-/Serien-Trophaeen in
+// profile.trophiesWon, damit jede genau einmal Toast+Token ausloest. Achievement-Trophaeen
+// laufen weiter separat ueber profile.achievements/checkAchievements() (keine doppelte
+// Buchfuehrung).
 function checkTrophies(profile) {
   const newlyWon = [];
-  CAMPAIGN_TROPHIES.forEach((t) => {
+  [...CAMPAIGN_TROPHIES, ...SERIES_TROPHIES].forEach((t) => {
     if (!profile.trophiesWon.includes(t.id) && t.check(profile)) {
       profile.trophiesWon.push(t.id);
       newlyWon.push(t);
@@ -2631,6 +2779,14 @@ function profileOverviewHTML() {
     const range = r.max === Infinity ? (r.min + "+") : (r.min + "–" + r.max);
     return `<div class="rung ${status}"><span>${r.icon}</span><span>${r.name}</span><span class="lv-r">Level ${range}</span></div>`;
   }).join("");
+  const WD_LABELS = ["Mo", "Di", "Mi", "Do", "Fr", "Sa", "So"];
+  const weekHtml = Array.from({ length: 7 }, (_, i) => 6 - i).map((back) => {
+    const d = new Date();
+    d.setDate(d.getDate() - back);
+    const done = !!profile.daily[localDateKey(d)];
+    const isToday = back === 0;
+    return `<div class="wd ${done ? "done" : ""} ${isToday ? "today" : ""}"><span class="pip">${done ? "🔥" : ""}</span>${isToday ? "Heute" : WD_LABELS[(d.getDay() + 6) % 7]}</div>`;
+  }).join("");
 
   return `
     <div class="hero">
@@ -2645,12 +2801,11 @@ function profileOverviewHTML() {
       <div class="stat-tile"><div class="v">${avgCorrect}</div><div class="l">Ø Treffer</div></div>
       <div class="stat-tile"><div class="v">${profile.stats.lineupsPerfect}</div><div class="l">Perfekt</div></div>
       <div class="stat-tile"><div class="v">${stars.earned}/${stars.max}</div><div class="l">⭐ gesamt</div></div>
-      <div class="stat-tile"><div class="v">–</div><div class="l">🔥 Serie</div></div>
-      <div class="stat-tile"><div class="v">–</div><div class="l">Längste Serie</div></div>
+      <div class="stat-tile"><div class="v">${profile.streak.current}</div><div class="l">🔥 Serie</div></div>
+      <div class="stat-tile"><div class="v">${profile.streak.best}</div><div class="l">Längste Serie</div></div>
     </div>
     <div class="sheet-label">Letzte 7 Tage</div>
-    <!-- Wird erst mit Prompt 13 (Tages-Challenge/Streak) befuellt. -->
-    <div id="profileWeekStrip"></div>
+    <div class="week">${weekHtml}</div>
     <div class="sheet-label">Karriereleiter</div>
     <div class="ladder">${ladderRows}</div>`;
 }
@@ -2914,6 +3069,104 @@ function getPrefillAbbrs(m) {
   const levelCount = getMatchesByTier(tier).length;
   const rng = mulberry32((hashString(m.id) ^ profile.prefillSeed) >>> 0);
   return selectPrefillAbbrs(PITCH_LAYOUTS[m.formation], prefillCountForLevel(tier, index, levelCount), rng);
+}
+
+/* ================= TAGES-CHALLENGE + SERIE (Prompt 13) =================
+   Eine feste Tages-Aufstellung, fuer alle Spieler an einem Kalendertag gleich,
+   ohne Server rein deterministisch aus dem Datum berechnet. */
+
+// IMMER lokales Datum, nie toISOString() (=UTC) - sonst bekaeme ein Spieler in
+// Deutschland zwischen 0 und 2 Uhr (Winterzeit) bzw. 0-1 Uhr (Sommerzeit) den
+// falschen Kalendertag zugewiesen.
+function localDateKey(d = new Date()) {
+  return d.getFullYear() + "-" + String(d.getMonth() + 1).padStart(2, "0") + "-" + String(d.getDate()).padStart(2, "0");
+}
+
+const DAILY_EPOCH = "2026-09-28"; // Montag - Tag 1
+// JS Date.getDay(): 0=So..6=Sa. Schwierigkeit nach Wochentag (Mo 1, Di 2, Mi 2, Do 3, Fr 3, Sa 4, So 5).
+const WEEKDAY_DIFFICULTY = { 0: 5, 1: 1, 2: 2, 3: 2, 4: 3, 5: 3, 6: 4 };
+
+function dayNumber(dateKey) {
+  const epoch = new Date(DAILY_EPOCH + "T00:00:00");
+  const d = new Date(dateKey + "T00:00:00");
+  return Math.round((d - epoch) / 86400000) + 1;
+}
+
+// Zaehlt, der wievielte Tag mit dieser Schwierigkeit dateKey seit Epoch ist (Di UND Mi
+// sind beide Stufe 2, zaehlen also gemeinsam) - einfache Schleife, laeuft nur 1x/Tag.
+function dailyQueueIndex(dateKey) {
+  const targetDiff = WEEKDAY_DIFFICULTY[new Date(dateKey + "T00:00:00").getDay()];
+  const total = dayNumber(dateKey);
+  let count = 0;
+  for (let d = 1; d <= total; d++) {
+    const dt = new Date(DAILY_EPOCH + "T00:00:00");
+    dt.setDate(dt.getDate() + (d - 1));
+    if (WEEKDAY_DIFFICULTY[dt.getDay()] === targetDiff) count++;
+  }
+  return { difficulty: targetDiff, index: count - 1 }; // 0-basiert
+}
+
+// Neues Array, gleiches Schema wie LINEUP_CHALLENGES plus optionales pairedWith (id
+// einer Kampagnen-Aufstellung) - bewusst leer, das Befuellen mit recherchierten
+// Aufstellungen ist Prompt 14 (Datengenauigkeit siehe CLAUDE.md: nie raten).
+const DAILY_CHALLENGES = [];
+
+function dailyQueueForDifficulty(difficulty) {
+  return DAILY_CHALLENGES.filter(c => c.difficulty === difficulty).sort((a, b) => a.id.localeCompare(b.id));
+}
+
+// Liefert fuer jeden Kalendertag deterministisch dieselbe Aufstellung - faellt nie aus:
+// feste Warteschlange pro Schwierigkeit, bei leerer/erschoepfter Queue Fallback ueber
+// den deterministischen RNG aus Prompt 9 (hashString/mulberry32, oben wiederverwendet).
+function getDailyChallenge(dateKey) {
+  const { difficulty, index } = dailyQueueIndex(dateKey);
+  const queue = dailyQueueForDifficulty(difficulty);
+  if (queue.length > 0) return queue[index % queue.length];
+  const pool = LINEUP_CHALLENGES.filter(m => m.difficulty === difficulty);
+  const rng = mulberry32(hashString(dateKey));
+  return pool[Math.floor(rng() * pool.length)];
+}
+
+let currentDailyChallenge = null; // { dateKey, id } - analog currentLevelContext, vor jedem startMatch() gesetzt/genullt
+
+function startDailyChallenge() {
+  const dateKey = localDateKey();
+  if (profile.daily[dateKey]) return; // schon geloest - die Karte selbst zeigt dann nur noch das Ergebnis
+  const m = getDailyChallenge(dateKey);
+  currentDailyChallenge = { dateKey, id: m.id };
+  currentLevelContext = null;
+  startMatch(m);
+}
+
+// Raster in Aufstellungsform fuers Teilen: Positionen nach y in Zeilen gruppiert
+// (kleine Toleranz, da eine Linie nicht exakt gleiches y hat), von vorne (kleines y,
+// Sturm) nach hinten (grosses y, TW). 🟩 direkt richtig, 🟨 mit Hilfe, ⬛ falsch.
+function shareGridForMatch(m, correctAbbrs, hintedAbbrs) {
+  const positions = [...PITCH_LAYOUTS[m.formation]].sort((a, b) => a.y - b.y);
+  const rows = [];
+  const TOL = 8;
+  positions.forEach(p => {
+    let row = rows.find(r => Math.abs(r.y - p.y) <= TOL);
+    if (!row) { row = { y: p.y, items: [] }; rows.push(row); }
+    row.items.push(p);
+  });
+  return rows.map(r => r.items.map(p => {
+    if (!correctAbbrs.includes(p.abbr)) return "⬛";
+    return hintedAbbrs.has(p.abbr) ? "🟨" : "🟩";
+  }));
+}
+
+async function shareDailyResult(dayNum, correct, grid, streak) {
+  const text = "Starting XI · Tag " + dayNum + " · " + correct + "/11 🔥" + streak + "\n" + grid.map(row => row.join("")).join("\n");
+  if (navigator.share) {
+    try { await navigator.share({ text }); return; } catch (e) { return; } // Nutzer hat abgebrochen - kein zusaetzlicher Fallback noetig
+  }
+  try {
+    await navigator.clipboard.writeText(text);
+    showToast("Ergebnis kopiert");
+  } catch (e) {
+    showToast("Konnte nicht kopiert werden");
+  }
 }
 
 /* ================= SCOUT-RAD (Prompt 6) =================
@@ -3666,15 +3919,6 @@ function evaluatePitch() {
     receipt.push({ label: "Erstmals gespielt", amount: ECONOMY.earnFirstPass });
   }
 
-  const today = new Date().toISOString().slice(0, 10);
-  if (profile.stats.lastPlayedDate !== today) {
-    bonusXP += 25;
-    profile.stats.lastPlayedDate = today;
-    bonusReasons.push("Tagesbonus");
-    profile.hintTokens += ECONOMY.earnDaily;
-    receipt.push({ label: "Tagesbonus", amount: ECONOMY.earnDaily });
-  }
-
   const bonusReason = bonusReasons.join(" + ");
   if (bonusXP > 0) {
     const r = awardXP(profile, bonusXP, bonusReason);
@@ -3687,13 +3931,34 @@ function evaluatePitch() {
   // Kampagnen-Logik: bestanden ab PASS_THRESHOLD. Freischaltungen ergeben sich automatisch
   // aus levelPassed (siehe isTierUnlocked/unlockedLevelCount) - hier wird nur das Ergebnis
   // vermerkt. Die Scout-Token-Vergabe laeuft komplett ueber ECONOMY (Erstversuch/Perfekt/
-  // Tagesbonus/Level-Up/Achievement) statt einer eigenen Kampagnen-Waehrungslogik.
+  // Level-Up/Achievement) statt einer eigenen Kampagnen-Waehrungslogik.
   let campaignResult = null;
   if (currentLevelContext) {
     const { tier, index } = currentLevelContext;
     const passed = correct >= PASS_THRESHOLD;
     profile.campaign.levelPassed[m.id] = passed || !!profile.campaign.levelPassed[m.id];
     campaignResult = { passed, tier, index };
+  }
+
+  // Tages-Challenge (Prompt 13): ein Versuch pro Tag, danach gesperrt (die Startkarte
+  // zeigt nur noch das Ergebnis). Serie wird HIER erst aktualisiert - der Streak-Bonus in
+  // awardXP() oben hat bewusst noch mit dem alten Stand gerechnet (gilt fuer HEUTE, nicht
+  // fuer den durch den heutigen Abschluss neu erreichten Wert).
+  let dailyResult = null;
+  if (currentDailyChallenge) {
+    const { dateKey } = currentDailyChallenge;
+    const hintedAbbrs = new Set([...hintsUsed, ...tokenRevealed, ...fuzzyCorrected]);
+    const grid = shareGridForMatch(m, correctAbbrs, hintedAbbrs);
+    profile.daily[dateKey] = { id: m.id, correct, grid, stars };
+
+    const yesterday = localDateKey(new Date(new Date(dateKey + "T00:00:00").getTime() - 86400000));
+    profile.streak.current = profile.streak.lastDayKey === yesterday ? profile.streak.current + 1 : 1;
+    profile.streak.best = Math.max(profile.streak.best, profile.streak.current);
+    profile.streak.lastDayKey = dateKey;
+
+    profile.hintTokens += ECONOMY.earnDaily;
+    receipt.push({ label: "Tages-Challenge", amount: ECONOMY.earnDaily });
+    dailyResult = { dateKey, dayNum: dayNumber(dateKey), grid };
   }
 
   const newlyUnlocked = checkAchievements(profile);
@@ -3760,6 +4025,13 @@ function evaluatePitch() {
     };
     const retryBtn = document.getElementById("retryBtn");
     if (retryBtn) retryBtn.onclick = () => { startMatch(m); };
+  } else if (dailyResult) {
+    row.innerHTML = `
+      <button class="action btn-outline" id="backBtn">Zurück zur Startseite</button>
+      <button class="action btn-gold" id="shareBtn">Teilen</button>`;
+    panel.appendChild(row);
+    document.getElementById("backBtn").onclick = () => goBack();
+    document.getElementById("shareBtn").onclick = () => shareDailyResult(dailyResult.dayNum, correct, dailyResult.grid, profile.streak.current);
   } else {
     row.innerHTML = `
       <button class="action btn-outline" id="backBtn">Andere wählen</button>
@@ -3790,14 +4062,15 @@ const SPLASH_STATUS = [
   [0, "Rasen wird gemäht …"], [14, "Linien werden gekreidet …"], [28, "Trikots werden verteilt …"],
   [45, "Taktiktafel wird vorbereitet …"], [62, "Startelf wird aufgestellt …"], [84, "Kapitänsbinde wird angelegt …"], [97, "Gleich geht's los!"]
 ];
-// Nur Tipps zu Funktionen, die es bereits gibt - Tages-Challenge kommt erst mit Prompt 13.
+// Nur Tipps zu Funktionen, die es bereits gibt.
 const SPLASH_TIPS = [
   "Tippst du einen Namen in die falsche Zeile, landet er automatisch auf seiner richtigen Position.",
   "Kleiner Tippfehler? Das Feld wird gold - mit \"Korrigieren\" trägst du die richtige Schreibweise ein.",
   "Drei Sterne gibt's nur für 11 von 11 - ganz ohne Scout-Rad, Aufdecken oder Korrigieren.",
   "Beim Scout-Rad ist der ganze Name der Jackpot - selten, aber möglich.",
   "Richtige Positionen ohne Hilfe in Folge erhöhen deine Kombo und damit dein Positions-XP.",
-  "Ab Level 15 schaltest du den Hardcore-Modus mit den schwersten Aufstellungen frei."
+  "Ab Level 15 schaltest du den Hardcore-Modus mit den schwersten Aufstellungen frei.",
+  "Jeden Tag wartet eine neue Tages-Challenge - dein 🔥-Streak gibt bis zu 50% mehr XP."
 ];
 
 function buildSplashDots() {
@@ -3880,7 +4153,9 @@ function finishSplash() {
 
 /* ================= INIT ================= */
 renderProfileBar();
+renderDailyCard();
 renderModeTiles();
+setInterval(tickDailyTimer, 1000);
 if (profile.hasSeenGuide) document.getElementById("helpDot").classList.add("hidden");
 document.getElementById("backFromWorldmap").onclick = goBack;
 document.getElementById("backFromLevelpath").onclick = goBack;
