@@ -358,13 +358,65 @@
   .modal-backdrop { position: fixed; inset: 0; background: rgba(0,0,0,0.65); z-index: 40; display: flex; align-items: flex-end; justify-content: center; }
   .modal-sheet { background: var(--ink-2); border: 1px solid var(--line); border-radius: 14px 14px 0 0; padding: 22px 20px 28px; width: 100%; max-width: 560px; max-height: 82vh; overflow-y: auto; }
   .modal-close { display: block; margin: 0 auto 16px; background: transparent; border: 1px solid var(--line); color: var(--chalk); border-radius: 20px; padding: 8px 18px; font-family: 'Oswald', sans-serif; font-weight: 600; font-size: 11px; text-transform: uppercase; cursor: pointer; }
-  .ach-row { display: flex; align-items: center; gap: 12px; padding: 10px 0; border-bottom: 1px solid var(--line); }
-  .ach-row:last-child { border-bottom: none; }
-  .ach-icon { font-size: 20px; width: 28px; text-align: center; flex-shrink: 0; }
-  .ach-row.locked .ach-icon { opacity: 0.25; }
-  .ach-row.locked .ach-name { opacity: 0.4; }
-  .ach-name { font-family: 'Oswald', sans-serif; font-weight: 600; font-size: 14px; }
-  .ach-desc { font-family: 'Oswald', sans-serif; font-weight: 300; font-size: 10.5px; color: rgba(242,239,230,0.45); margin-top: 2px; }
+
+  /* ---- Scout-Profil Bottom-Sheet (Prompt 12, Optik 1:1 aus prototypes/scout-profil.html) ---- */
+  .profile-sheet { max-height: 88vh; display: flex; flex-direction: column; gap: 14px; padding-bottom: max(20px, env(safe-area-inset-bottom)); }
+  .sheet-head { display: flex; justify-content: space-between; align-items: center; }
+  .sheet-title { font-family: 'Anton', sans-serif; font-size: 22px; text-transform: uppercase; color: var(--gold); }
+  .sheet-head .modal-close { margin: 0; }
+  .tabs { display: grid; grid-template-columns: repeat(3, 1fr); gap: 4px; padding: 4px; border-radius: 12px; background: var(--ink-3); border: 1px solid var(--line); flex-shrink: 0; }
+  .tab { background: transparent; border: none; color: var(--muted); font-family: 'Oswald', sans-serif; font-weight: 600; font-size: 14px; padding: 8px 4px; border-radius: 9px; cursor: pointer; }
+  .tab[aria-selected="true"] { background: linear-gradient(160deg, #f6da9c, var(--gold)); color: var(--ink); font-weight: 700; }
+  .sheet-panel { display: flex; flex-direction: column; gap: 14px; overflow-y: auto; padding-right: 4px; scrollbar-gutter: stable; }
+
+  .hero { display: flex; gap: 14px; align-items: center; padding: 12px 14px; border-radius: 12px; background: var(--ink-3); border: 1px solid var(--line); }
+  .hero .rank-icon { width: 56px; height: 56px; font-size: 26px; flex-shrink: 0; }
+  .hero-rank { font-family: 'Anton', sans-serif; font-size: 22px; text-transform: uppercase; line-height: 1; }
+  .hero-sub { font-family: 'Oswald', sans-serif; font-size: 14px; font-weight: 300; color: var(--muted); margin-top: 4px; }
+  .hero-sub b { color: var(--gold); font-weight: 600; }
+  .stat-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; }
+  .stat-tile { background: var(--ink-3); border: 1px solid var(--line); border-radius: 10px; padding: 9px 6px; text-align: center; }
+  .stat-tile .v { font-family: 'Anton', sans-serif; font-weight: 400; font-size: 21px; color: var(--gold); }
+  .stat-tile .l { font-family: 'Oswald', sans-serif; font-size: 11.5px; font-weight: 400; color: var(--muted); margin-top: 1px; }
+  .sheet-label { font-family: 'Oswald', sans-serif; font-weight: 600; font-size: 12px; letter-spacing: 0.1em; text-transform: uppercase; color: var(--gold-2); }
+  .ladder { display: flex; flex-direction: column; gap: 4px; }
+  .rung { display: grid; grid-template-columns: 24px 1fr auto; gap: 10px; align-items: center; font-family: 'Oswald', sans-serif; font-size: 14px; padding: 6px 10px; border-radius: 8px; }
+  .rung.now { background: rgba(232,178,61,0.12); border: 1px solid rgba(232,178,61,0.35); font-weight: 600; }
+  .rung.past { color: var(--muted); }
+  .rung.future { color: rgba(242,239,230,0.42); }
+  .rung .lv-r { font-size: 12px; font-weight: 300; }
+
+  .shelf { display: flex; flex-direction: column; gap: 6px; }
+  .shelf-row { display: grid; grid-template-columns: repeat(3, 1fr); gap: 6px; padding: 10px 6px 0; border-radius: 10px 10px 0 0; background: linear-gradient(180deg, rgba(232,178,61,0.06), transparent 70%); position: relative; margin-bottom: 8px; }
+  .shelf-row::after { content: ""; position: absolute; left: 0; right: 0; bottom: -2px; height: 7px; border-radius: 3px; background: linear-gradient(180deg, #5B4424, #3A2B16); box-shadow: 0 4px 10px rgba(0,0,0,0.5); }
+  .trophy { display: flex; flex-direction: column; align-items: center; gap: 3px; padding-bottom: 12px; text-align: center; cursor: pointer; background: none; border: none; color: inherit; }
+  .trophy svg { width: 52px; height: 58px; filter: drop-shadow(0 4px 6px rgba(0,0,0,0.5)); }
+  .trophy.won svg { animation: trophyShine 3.5s ease-in-out infinite; }
+  @keyframes trophyShine { 0%, 100% { filter: drop-shadow(0 4px 6px rgba(0,0,0,0.5)); } 50% { filter: drop-shadow(0 4px 6px rgba(0,0,0,0.5)) drop-shadow(0 0 10px rgba(244,213,141,0.45)); } }
+  .trophy .t-name { font-family: 'Oswald', sans-serif; font-size: 12.5px; font-weight: 600; line-height: 1.15; }
+  .trophy .t-req { font-family: 'Oswald', sans-serif; font-size: 11px; font-weight: 300; color: rgba(242,239,230,0.42); line-height: 1.25; }
+  .trophy.locked .t-name { color: var(--muted); }
+  .t-detail { background: var(--ink-3); border: 1px solid rgba(232,178,61,0.35); border-radius: 10px; padding: 11px 14px; font-family: 'Oswald', sans-serif; font-size: 13.5px; font-weight: 300; line-height: 1.45; }
+  .t-detail b { color: var(--gold-2); font-weight: 600; }
+  .progress-mini { height: 5px; border-radius: 3px; background: rgba(255,255,255,0.1); overflow: hidden; margin-top: 8px; }
+  .progress-mini i { display: block; height: 100%; background: var(--gold); }
+  .progress-mini-label { font-size: 11px; color: var(--muted); margin-top: 3px; display: block; }
+
+  .insight { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+  .ins { border-radius: 10px; padding: 11px 12px; border: 1px solid var(--line); background: var(--ink-3); }
+  .ins .n { font-family: 'Anton', sans-serif; font-size: 20px; text-transform: uppercase; margin-top: 3px; line-height: 1.05; }
+  .ins .p { font-family: 'Oswald', sans-serif; font-size: 12.5px; font-weight: 300; color: var(--muted); margin-top: 2px; }
+  .ins.strong { border-color: rgba(46,204,113,0.4); }
+  .ins.strong .sheet-label { color: #2ecc71; }
+  .ins.weak { border-color: rgba(232,178,61,0.45); }
+  .bars { display: flex; flex-direction: column; gap: 8px; }
+  .bar-row { display: grid; grid-template-columns: 108px 1fr 42px; gap: 10px; align-items: center; font-family: 'Oswald', sans-serif; font-size: 13.5px; }
+  .bar-row .lbl { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  .bar-row .trk { height: 9px; border-radius: 5px; background: rgba(255,255,255,0.08); overflow: hidden; }
+  .bar-row .trk i { display: block; height: 100%; border-radius: 5px; }
+  .bar-row .pc { font-weight: 600; font-size: 12.5px; text-align: right; }
+  .bar-row.none { color: rgba(242,239,230,0.42); }
+  .sheet-note { font-family: 'Oswald', sans-serif; font-size: 12.5px; font-weight: 300; color: var(--muted); line-height: 1.5; }
 
   .guide-title { font-family: 'Anton', sans-serif; font-size: 22px; text-transform: uppercase; text-align: center; margin-bottom: 14px; color: var(--gold); }
   .guide-row { display: flex; align-items: flex-start; gap: 12px; padding: 11px 0; border-bottom: 1px solid var(--line); }
@@ -1564,6 +1616,7 @@ const defaultProfile = {
   best: {}, // match.id -> { stars: 0-3, correct, solvedAbbrs: string[] }; immer das beste Ergebnis (Prompt 11)
   hasSeenGuide: false,
   hasSeenPitchRules: false,
+  trophiesWon: [], // Kampagne-Trophaeen-IDs (Achievements laufen weiter ueber profile.achievements)
   stats: {
     lineupsPlayed: 0,
     lineupsPerfect: 0,
@@ -1670,6 +1723,7 @@ function loadProfile() {
     if (!profile.perfectRewarded || typeof profile.perfectRewarded !== "object") profile.perfectRewarded = {};
     if (typeof profile.hasSeenGuide !== "boolean") profile.hasSeenGuide = false;
     if (typeof profile.hasSeenPitchRules !== "boolean") profile.hasSeenPitchRules = false;
+    if (!Array.isArray(profile.trophiesWon)) profile.trophiesWon = [];
     if (typeof profile.stats.positionsCorrectFuzzy !== "number") profile.stats.positionsCorrectFuzzy = 0;
     // Fester Zufalls-Seed pro Profil (Prompt 9): macht die pro Kampagnen-Level geschenkten
     // Positionen deterministisch statt bei jedem Neustart neu auszuwuerfeln. Sofort
@@ -1851,6 +1905,11 @@ function showAchievementToast(a) {
   showToast(a.icon + " Achievement freigeschaltet: <b>" + a.name + "</b>" + (a.title ? " (Titel: \"" + a.title + "\")" : "") + " · 🔍 +" + ECONOMY.earnAchievement);
 }
 
+const TROPHY_KIND_ICON = { cup: "🏆", plate: "🥈", flame: "🔥", medal: "🎖️" };
+function showTrophyToast(t) {
+  showToast(TROPHY_KIND_ICON[t.kind] + " Trophäe gewonnen: <b>" + t.name + "</b> · 🔍 +" + ECONOMY.earnAchievement);
+}
+
 function renderProfileBar() {
   const rank = rankForLevel(profile.level);
   const baseXP = xpForLevel(profile.level - 1);
@@ -1907,28 +1966,6 @@ function renderUnlockRow() {
     };
     chipRow.appendChild(btn);
   });
-}
-
-function openAchievementsModal() {
-  const backdrop = document.createElement("div");
-  backdrop.className = "modal-backdrop";
-  backdrop.innerHTML = `
-    <div class="modal-sheet">
-      <button class="modal-close" id="closeAchModal">Schließen</button>
-      ${ACHIEVEMENTS.map(a => {
-        const unlocked = profile.achievements.includes(a.id);
-        return `<div class="ach-row ${unlocked ? "" : "locked"}">
-          <div class="ach-icon">${a.icon}</div>
-          <div>
-            <div class="ach-name">${a.name}</div>
-            <div class="ach-desc">${a.desc}</div>
-          </div>
-        </div>`;
-      }).join("")}
-    </div>`;
-  document.body.appendChild(backdrop);
-  document.getElementById("closeAchModal").onclick = () => backdrop.remove();
-  backdrop.onclick = (e) => { if (e.target === backdrop) backdrop.remove(); };
 }
 
 /* ================= SPIELANLEITUNG ================= */
@@ -2018,7 +2055,7 @@ function openRulesModal() {
 }
 
 let profile = loadProfile();
-document.getElementById("profileBar").onclick = openAchievementsModal;
+document.getElementById("profileBar").onclick = openProfileSheet;
 
 function buildFilterBar() {
   const leagues = [...new Set(LINEUP_CHALLENGES.map(m => m.league))];
@@ -2487,6 +2524,294 @@ function renderDiffBadge(difficulty) {
   return `<span class="diff-badge" style="background:${color}22; color:${color}; border:1px solid ${color}66">
     ${DIFF_LABEL[difficulty]} <span class="diff-dots">${dots}</span>
   </span>`;
+}
+
+/* ================= SCOUT-PROFIL + TROPHÄEN (Prompt 12) =================
+   Bottom-Sheet mit 3 Reitern, ersetzt das bisherige einfache Achievement-
+   Modal. Optik/Aufbau 1:1 aus prototypes/scout-profil.html. */
+function trophySVG(kind, won) {
+  const id = "trg" + Math.random().toString(36).slice(2, 7);
+  const fill = won ? `url(#${id})` : "#26323D";
+  const stroke = won ? "#8A6420" : "#3A4855";
+  const defs = `<defs><linearGradient id="${id}" x1="0" x2="1" y1="0" y2="1"><stop offset="0" stop-color="#FFF1C4"/><stop offset=".35" stop-color="#F4D58D"/><stop offset=".7" stop-color="#E8B23D"/><stop offset="1" stop-color="#A97A22"/></linearGradient></defs>`;
+  const base = `<rect x="20" y="60" width="24" height="8" rx="2" fill="${won ? "#3A2B16" : "#1E2831"}" stroke="${stroke}" stroke-width="1.2"/>`;
+  const lock = won ? "" : `<g transform="translate(25 26)"><rect x="0" y="6" width="14" height="11" rx="2" fill="#3A4855"/><path d="M3 6V4a4 4 0 0 1 8 0v2" fill="none" stroke="#3A4855" stroke-width="2.2"/></g>`;
+  const cup = `<path d="M18 8h28v12c0 11-6 18-14 18S18 31 18 20z" fill="${fill}" stroke="${stroke}" stroke-width="1.5"/><path d="M29 38h6v10h5v6H24v-6h5z" fill="${fill}" stroke="${stroke}" stroke-width="1.2"/>`;
+  let body = "";
+  if (kind === "cup") body = cup + `<path d="M18 12h-6c0 8 4 12 9 13M46 12h6c0 8-4 12-9 13" fill="none" stroke="${won ? "#E8B23D" : "#3A4855"}" stroke-width="3" stroke-linecap="round"/>`;
+  else if (kind === "plate") body = `<circle cx="32" cy="32" r="26" fill="${fill}" stroke="${stroke}" stroke-width="1.5"/><circle cx="32" cy="32" r="18" fill="none" stroke="${won ? "rgba(138,100,32,0.6)" : "#3A4855"}" stroke-width="1.5"/><circle cx="32" cy="32" r="9" fill="${won ? "rgba(255,241,196,0.5)" : "#1E2831"}" stroke="${stroke}" stroke-width="1"/>${[0,1,2,3,4,5,6,7].map(i => { const a = i / 8 * Math.PI * 2; return `<circle cx="${32 + Math.cos(a) * 22}" cy="${32 + Math.sin(a) * 22}" r="1.6" fill="${won ? "#8A6420" : "#3A4855"}"/>`; }).join("")}`;
+  else if (kind === "flame") body = cup + `<path d="M32 12c4 5 6 8 4 13 0 0 2-1 2-4 3 4 1 10-6 10s-9-6-5-11c0 3 2 4 2 4-1-5 1-8 3-12z" fill="${won ? "#F0A93B" : "#1E2831"}" stroke="${won ? "#A0621A" : "#3A4855"}" stroke-width="1"/>`;
+  else body = `<path d="M22 4h8l4 18h-8zM42 4h-8l-4 18h8z" fill="${won ? "#1F4D36" : "#1E2831"}" stroke="${stroke}" stroke-width="1"/><circle cx="32" cy="38" r="17" fill="${fill}" stroke="${stroke}" stroke-width="1.5"/><path d="M32 27l3.2 6.6 7.2.9-5.3 5 1.4 7.2L32 43.1l-6.5 3.6 1.4-7.2-5.3-5 7.2-.9z" fill="${won ? "#FFF1C4" : "#26323D"}" stroke="${stroke}" stroke-width="1"/>`;
+  return `<svg viewBox="0 0 64 70" aria-hidden="true">${defs}${body}${kind === "cup" || kind === "flame" ? base : ""}${lock}</svg>`;
+}
+
+// Kampagne-Trophaeen automatisch aus den 5 Welten erzeugt (ROADMAP_NODES/DIFF_LABEL/
+// getMatchesByTier) - bleiben bei neuen/entfernten Aufstellungen automatisch korrekt.
+const CAMPAIGN_TROPHIES = ROADMAP_NODES.flatMap(({ tier }) => {
+  const worldName = DIFF_LABEL[tier];
+  return [
+    {
+      id: "cup_tier" + tier, group: "Kampagne", kind: "cup",
+      name: worldName + "-Pokal", req: "Alle Level bestanden",
+      desc: "Alle Level der Welt \"" + worldName + "\" bestanden.",
+      check: (p) => { const m = getMatchesByTier(tier); return m.length > 0 && m.every((x) => p.campaign.levelPassed[x.id]); },
+      progress: (p) => { const m = getMatchesByTier(tier); return [m.filter((x) => p.campaign.levelPassed[x.id]).length, m.length]; }
+    },
+    {
+      id: "plate_tier" + tier, group: "Kampagne", kind: "plate",
+      name: worldName + "-Schale", req: "Alle Level mit ⭐⭐⭐",
+      desc: "Alle Level der Welt \"" + worldName + "\" mit drei Sternen gelöst.",
+      check: (p) => { const m = getMatchesByTier(tier); return m.length > 0 && m.every((x) => (p.best[x.id] && p.best[x.id].stars) === 3); },
+      progress: (p) => { const m = getMatchesByTier(tier); return [m.filter((x) => (p.best[x.id] && p.best[x.id].stars) === 3).length, m.length]; }
+    }
+  ];
+});
+
+// Serie & Tages-Challenge: Voraussetzung (Streak-/Tages-Challenge-Zaehler) kommt erst mit
+// Prompt 13 - check() liefert bis dahin bewusst immer false.
+const SERIES_TROPHIES = [
+  { id: "serie_wochenpokal", group: "Serie & Tages-Challenge", kind: "flame", name: "Wochenpokal", req: "7 Tage Serie", desc: "7 Tage in Folge die Tages-Challenge gespielt.", check: () => false, progress: () => [0, 7] },
+  { id: "serie_supercup", group: "Serie & Tages-Challenge", kind: "flame", name: "Supercup", req: "30 Tage Serie", desc: "30 Tage in Folge die Tages-Challenge gespielt.", check: () => false, progress: () => [0, 30] },
+  { id: "serie_jahrhundert", group: "Serie & Tages-Challenge", kind: "flame", name: "Jahrhundert-Serie", req: "100 Tage Serie", desc: "100 Tage in Folge die Tages-Challenge gespielt.", check: () => false, progress: () => [0, 100] },
+  { id: "serie_tagessieger", group: "Serie & Tages-Challenge", kind: "medal", name: "Tagessieger", req: "10 × perfekt am Tag", desc: "Zehnmal die Tages-Challenge mit 11/11 gelöst.", check: () => false, progress: () => [0, 10] },
+  { id: "serie_tageslegende", group: "Serie & Tages-Challenge", kind: "medal", name: "Tageslegende", req: "50 × perfekt am Tag", desc: "Fünfzigmal die Tages-Challenge mit 11/11 gelöst.", check: () => false, progress: () => [0, 50] }
+];
+
+// Bestehende ACHIEVEMENTS als Medaillen - gleiche ids, damit profile.achievements/
+// unlockedTitle unveraendert weiter greifen (keine doppelte Buchfuehrung, keine zweite
+// Freischalt-Logik).
+const ACHIEVEMENT_PROGRESS = {
+  erstkontakt: (p) => [Math.min(p.stats.lineupsPlayed, 1), 1],
+  chefscout: (p) => [Math.min(p.stats.lineupsPerfect, 1), 1],
+  serien_scout: (p) => [Math.min(p.stats.bestPerfectStreak, 3), 3],
+  historiker: (p) => [Math.min(p.stats.lineupsPlayed, 50), 50],
+  taktik_fuchs: (p) => [Math.min(new Set(LINEUP_CHALLENGES.filter((m) => p.stats.playedMatchIds.includes(m.id)).map((m) => m.formation)).size, 5), 5],
+  turnier_experte: (p) => { const req = LINEUP_CHALLENGES.filter((m) => m.league === "Weltmeisterschaft" || m.league === "Europameisterschaft"); return [req.filter((m) => p.stats.perfectMatchIds.includes(m.id)).length, req.length]; },
+  kompletter_kader: (p) => [p.stats.playedMatchIds.length, LINEUP_CHALLENGES.length],
+  cross_talent: (p) => [Math.min(p.stats.positionsCorrectCrossMatch, 10), 10]
+};
+const ACHIEVEMENT_TROPHIES = ACHIEVEMENTS.map((a) => ({
+  id: a.id, group: "Besondere Leistungen", kind: "medal",
+  name: a.name, req: a.desc, desc: a.desc,
+  check: (p) => p.achievements.includes(a.id),
+  progress: ACHIEVEMENT_PROGRESS[a.id] || ((p) => [p.achievements.includes(a.id) ? 1 : 0, 1])
+}));
+
+const TROPHIES = [...CAMPAIGN_TROPHIES, ...SERIES_TROPHIES, ...ACHIEVEMENT_TROPHIES];
+
+// Analog checkAchievements(): merkt neu gewonnene Kampagne-Trophaeen in profile.trophiesWon,
+// damit ein neuer Pokal/eine neue Schale genau einmal Toast+Token ausloest.
+function checkTrophies(profile) {
+  const newlyWon = [];
+  CAMPAIGN_TROPHIES.forEach((t) => {
+    if (!profile.trophiesWon.includes(t.id) && t.check(profile)) {
+      profile.trophiesWon.push(t.id);
+      newlyWon.push(t);
+      profile.hintTokens += ECONOMY.earnAchievement;
+    }
+  });
+  return newlyWon;
+}
+
+function nextRankInfo(level) {
+  const next = RANKS.find((r) => r.min > level);
+  return next ? { name: next.name, levelsLeft: next.min - level } : null;
+}
+
+function profileOverviewHTML() {
+  const rank = rankForLevel(profile.level);
+  const next = nextRankInfo(profile.level);
+  const playedIds = profile.stats.playedMatchIds;
+  const avgCorrect = playedIds.length
+    ? (playedIds.reduce((sum, id) => sum + ((profile.best[id] && profile.best[id].correct) || 0), 0) / playedIds.length).toFixed(1).replace(".", ",")
+    : "0,0";
+  const stars = starsSummaryTotal();
+  const ladderRows = RANKS.map((r) => {
+    const status = r.max < profile.level ? "past" : r.min > profile.level ? "future" : "now";
+    const range = r.max === Infinity ? (r.min + "+") : (r.min + "–" + r.max);
+    return `<div class="rung ${status}"><span>${r.icon}</span><span>${r.name}</span><span class="lv-r">Level ${range}</span></div>`;
+  }).join("");
+
+  return `
+    <div class="hero">
+      <div class="rank-icon" style="--rank-c1:${rank.c1}; --rank-c2:${rank.c2}">${rank.icon}</div>
+      <div>
+        <div class="hero-rank">${rank.name}</div>
+        <div class="hero-sub">Level <b>${profile.level}</b>${next ? " · noch <b>" + next.levelsLeft + " Level</b> bis " + next.name : " · höchster Rang erreicht"}</div>
+      </div>
+    </div>
+    <div class="stat-grid">
+      <div class="stat-tile"><div class="v">${profile.stats.lineupsPlayed}</div><div class="l">Absolviert</div></div>
+      <div class="stat-tile"><div class="v">${avgCorrect}</div><div class="l">Ø Treffer</div></div>
+      <div class="stat-tile"><div class="v">${profile.stats.lineupsPerfect}</div><div class="l">Perfekt</div></div>
+      <div class="stat-tile"><div class="v">${stars.earned}/${stars.max}</div><div class="l">⭐ gesamt</div></div>
+      <div class="stat-tile"><div class="v">–</div><div class="l">🔥 Serie</div></div>
+      <div class="stat-tile"><div class="v">–</div><div class="l">Längste Serie</div></div>
+    </div>
+    <div class="sheet-label">Letzte 7 Tage</div>
+    <!-- Wird erst mit Prompt 13 (Tages-Challenge/Streak) befuellt. -->
+    <div id="profileWeekStrip"></div>
+    <div class="sheet-label">Karriereleiter</div>
+    <div class="ladder">${ladderRows}</div>`;
+}
+
+function profileTrophiesHTML() {
+  const groups = ["Kampagne", "Serie & Tages-Challenge", "Besondere Leistungen"];
+  const wonCount = TROPHIES.filter((t) => t.check(profile)).length;
+  const sel = selectedTrophyId && TROPHIES.find((t) => t.id === selectedTrophyId);
+  let detailHtml = `<div class="sheet-note">Tippe auf eine Trophäe für Details.</div>`;
+  if (sel) {
+    const won = sel.check(profile);
+    const [cur, goal] = sel.progress(profile);
+    detailHtml = `<div class="t-detail"><b>${sel.name}</b> · ${won ? "gewonnen" : "noch offen"}<br>${sel.desc}
+      ${!won ? `<div class="progress-mini"><i style="width:${Math.round(cur / goal * 100)}%"></i></div><span class="progress-mini-label">${cur} / ${goal}</span>` : ""}
+    </div>`;
+  }
+  const shelvesHtml = groups.map((g) => {
+    const items = TROPHIES.filter((t) => t.group === g);
+    return `<div class="sheet-label" style="margin-top:4px">${g}</div>
+      <div class="shelf-row">${items.map((t) => {
+        const won = t.check(profile);
+        return `<button type="button" class="trophy ${won ? "won" : "locked"}" data-id="${t.id}">
+          ${trophySVG(t.kind, won)}
+          <span class="t-name">${t.name}</span>
+          <span class="t-req">${t.req}</span>
+        </button>`;
+      }).join("")}</div>`;
+  }).join("");
+  return `
+    <div class="sheet-label">${wonCount} von ${TROPHIES.length} Trophäen im Schrank</div>
+    ${detailHtml}
+    <div class="shelf">${shelvesHtml}</div>`;
+}
+
+// Gruppierung der 11 league-Werte aus LINEUP_CHALLENGES fuer den Wissens-Reiter.
+const LEAGUE_GROUPS = {
+  "Deutschland": ["Bundesliga", "2. Bundesliga", "Bundesliga / DFB-Pokal"],
+  "England": ["Premier League"],
+  "Spanien": ["LaLiga"],
+  "Italien": ["Serie A"],
+  "Europapokal": ["Champions League", "Europa League"],
+  "Nationalmannschaften": ["Weltmeisterschaft", "Europameisterschaft", "Copa América"]
+};
+
+function matchYear(m) {
+  const found = m.comp.match(/(\d{2})\.(\d{2})\.(\d{4})/);
+  return found ? parseInt(found[3], 10) : null;
+}
+
+// Trefferquote (0-100) ueber eine Menge von Aufstellungen, Basis: bestes Ergebnis je
+// Aufstellung aus profile.best (nicht die Lebenszeit-Zaehler positionsCorrect*) - konsistent
+// mit "Ø Treffer" im Uebersicht-Reiter. null = noch nichts aus der Menge gespielt.
+function hitRateForMatches(matches) {
+  const played = matches.filter((m) => profile.stats.playedMatchIds.includes(m.id));
+  if (played.length === 0) return null;
+  const correctSum = played.reduce((sum, m) => sum + ((profile.best[m.id] && profile.best[m.id].correct) || 0), 0);
+  return { played: played.length, rate: Math.round((correctSum / (played.length * 11)) * 100) };
+}
+
+function rateColor(v) { return v >= 80 ? "#2ecc71" : v >= 60 ? "var(--gold)" : "#C98A3A"; }
+
+function renderRateBars(rows) {
+  return rows.map(([label, r]) => r === null
+    ? `<div class="bar-row none"><span class="lbl">${label}</span><span class="trk"></span><span class="pc">–</span></div>`
+    : `<div class="bar-row"><span class="lbl">${label}</span><span class="trk"><i style="width:${r.rate}%; background:${rateColor(r.rate)}"></i></span><span class="pc">${r.rate}%</span></div>`
+  ).join("");
+}
+
+function profileKnowledgeHTML() {
+  const groupNames = Object.keys(LEAGUE_GROUPS);
+  const groupRates = groupNames.map((g) => [g, hitRateForMatches(LINEUP_CHALLENGES.filter((m) => LEAGUE_GROUPS[g].includes(m.league)))]);
+
+  const decades = [...new Set(LINEUP_CHALLENGES.map(matchYear).filter((y) => y !== null).map((y) => Math.floor(y / 10) * 10))].sort((a, b) => a - b);
+  const decadeRates = decades.map((d) => [d + "er", hitRateForMatches(LINEUP_CHALLENGES.filter((m) => Math.floor(matchYear(m) / 10) * 10 === d))]);
+
+  const playedGroups = groupRates.filter(([, r]) => r && r.played >= 2);
+  const strongest = playedGroups.length ? playedGroups.reduce((a, b) => (b[1].rate > a[1].rate ? b : a)) : null;
+  const weakest = playedGroups.length ? playedGroups.reduce((a, b) => (b[1].rate < a[1].rate ? b : a)) : null;
+
+  return `
+    <div class="insight">
+      <div class="ins strong"><div class="sheet-label">Stärke</div><div class="n">${strongest ? strongest[0] : "–"}</div><div class="p">${strongest ? strongest[1].rate + "% Treffer" : "Noch zu wenig gespielt"}</div></div>
+      <div class="ins weak"><div class="sheet-label">Ausbaufähig</div><div class="n">${weakest ? weakest[0] : "–"}</div><div class="p">${weakest ? weakest[1].rate + "% Treffer" : "Noch zu wenig gespielt"}</div></div>
+    </div>
+    ${weakest ? `<button class="action btn-gold" id="trainWeaknessBtn" data-group="${weakest[0]}" style="width:100%">🎯 ${weakest[0]} trainieren</button>` : ""}
+    <div class="sheet-label">Trefferquote nach Wettbewerb</div>
+    <div class="bars">${renderRateBars(groupRates)}</div>
+    <div class="sheet-label">Nach Jahrzehnt</div>
+    <div class="bars">${renderRateBars(decadeRates)}</div>
+    <div class="sheet-note">Grundlage ist dein bestes Ergebnis je Aufstellung. "–" heißt: noch nichts gespielt.</div>`;
+}
+
+// Setzt die Freispiel-Filter auf die Schwaeche-Liga-Gruppe, bevorzugt eine Aufstellung ohne
+// ⭐⭐⭐ (Fallback: ganzer Gruppen-Pool) und startet sie direkt.
+function trainWeakness(groupName) {
+  const leagues = LEAGUE_GROUPS[groupName];
+  if (!leagues) return;
+  selectedLeagues = new Set(leagues);
+  selectedDifficulties.clear();
+  matchQueue = [];
+  const pool = poolForActiveLeague();
+  if (pool.length === 0) return;
+  const withoutThreeStars = pool.filter((m) => !(profile.best[m.id] && profile.best[m.id].stars === 3));
+  const chosenPool = withoutThreeStars.length > 0 ? withoutThreeStars : pool;
+  const m = chosenPool[Math.floor(Math.random() * chosenPool.length)];
+  const bg = document.getElementById("profileSheetBg");
+  if (bg) bg.remove();
+  currentLevelContext = null;
+  startMatch(m);
+}
+
+function renderProfileSheetPanel() {
+  const panel = document.getElementById("profileSheetPanel");
+  panel.innerHTML = profileSheetTab === "ov" ? profileOverviewHTML() : profileSheetTab === "tr" ? profileTrophiesHTML() : profileKnowledgeHTML();
+  document.getElementById("profileTabOv").setAttribute("aria-selected", String(profileSheetTab === "ov"));
+  document.getElementById("profileTabTr").setAttribute("aria-selected", String(profileSheetTab === "tr"));
+  document.getElementById("profileTabKn").setAttribute("aria-selected", String(profileSheetTab === "kn"));
+  if (profileSheetTab === "tr") {
+    panel.querySelectorAll(".trophy").forEach((btn) => {
+      btn.onclick = () => { selectedTrophyId = btn.dataset.id; renderProfileSheetPanel(); };
+    });
+  }
+  if (profileSheetTab === "kn") {
+    const btn = document.getElementById("trainWeaknessBtn");
+    if (btn) btn.onclick = () => trainWeakness(btn.dataset.group);
+  }
+}
+
+let profileSheetTab = "ov";
+let selectedTrophyId = null;
+
+function openProfileSheet() {
+  profileSheetTab = "ov";
+  selectedTrophyId = null;
+  const backdrop = document.createElement("div");
+  backdrop.className = "modal-backdrop";
+  backdrop.id = "profileSheetBg";
+  backdrop.innerHTML = `
+    <div class="modal-sheet profile-sheet">
+      <div class="sheet-head">
+        <div class="sheet-title">Mein Scout-Profil</div>
+        <button class="modal-close" id="closeProfileSheet">Schließen</button>
+      </div>
+      <div class="tabs" role="tablist">
+        <button class="tab" id="profileTabOv" role="tab" type="button">Übersicht</button>
+        <button class="tab" id="profileTabTr" role="tab" type="button">Trophäen</button>
+        <button class="tab" id="profileTabKn" role="tab" type="button">Wissen</button>
+      </div>
+      <div class="sheet-panel" id="profileSheetPanel"></div>
+    </div>`;
+  document.body.appendChild(backdrop);
+  document.getElementById("closeProfileSheet").onclick = () => backdrop.remove();
+  backdrop.onclick = (e) => { if (e.target === backdrop) backdrop.remove(); };
+  const escHandler = (e) => {
+    if (e.key === "Escape") { backdrop.remove(); document.removeEventListener("keydown", escHandler); }
+  };
+  document.addEventListener("keydown", escHandler);
+  document.getElementById("profileTabOv").onclick = () => { profileSheetTab = "ov"; renderProfileSheetPanel(); };
+  document.getElementById("profileTabTr").onclick = () => { profileSheetTab = "tr"; renderProfileSheetPanel(); };
+  document.getElementById("profileTabKn").onclick = () => { profileSheetTab = "kn"; renderProfileSheetPanel(); };
+  renderProfileSheetPanel();
 }
 
 // Bricht die laufende Aufstellung ab (kein Fortschritt/keine Statistik wird gewertet) und
@@ -3373,9 +3698,12 @@ function evaluatePitch() {
 
   const newlyUnlocked = checkAchievements(profile);
   newlyUnlocked.forEach(a => receipt.push({ label: "Achievement: " + a.name, amount: ECONOMY.earnAchievement }));
+  const newlyWonTrophies = checkTrophies(profile);
+  newlyWonTrophies.forEach(t => receipt.push({ label: "Trophäe: " + t.name, amount: ECONOMY.earnAchievement }));
   saveProfile(profile);
   renderProfileBar();
   newlyUnlocked.forEach(showAchievementToast);
+  newlyWonTrophies.forEach(showTrophyToast);
   if (bonusXP > 0) showToast("+" + bonusXP + " XP — " + bonusReason);
 
   const panel = pitchView.querySelector(".bonus-panel");
