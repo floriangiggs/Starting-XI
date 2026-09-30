@@ -398,6 +398,76 @@
   .levelup-rank-name { font-family: 'Oswald', sans-serif; font-weight: 700; font-size: 20px; margin-bottom: 22px; }
   .levelup-close { background: var(--gold); color: var(--ink); border: none; border-radius: 8px; padding: 13px 30px; font-family: 'Oswald', sans-serif; font-weight: 700; text-transform: uppercase; letter-spacing: 0.03em; cursor: pointer; }
 
+  /* ---- Ladescreen (Prompt 11d, Optik 1:1 aus prototypes/ladescreen.html) ----
+     Alle Regeln unter #splash genamespaced: der Prototyp nutzt Klassennamen wie
+     .pitch/.dot/.kicker, die in dieser App bereits fuer das Eingabe-Spielfeld
+     belegt sind - ohne Scope wuerde der Ladescreen das echte Spielfeld verstellen. */
+  #splash { position: absolute; inset: 0; z-index: 100; display: flex; flex-direction: column; align-items: center; justify-content: space-between; padding: max(18px, env(safe-area-inset-top)) 20px max(16px, env(safe-area-inset-bottom)); overflow: hidden; cursor: pointer;
+    background:
+      radial-gradient(ellipse 70% 40% at 50% 0%, rgba(232,178,61,0.16), transparent 70%),
+      radial-gradient(ellipse 60% 30% at 50% 100%, rgba(31,77,54,0.55), transparent 75%),
+      repeating-linear-gradient(90deg, rgba(255,255,255,0.02) 0 2px, transparent 2px 40px),
+      var(--ink);
+    transition: opacity 0.5s ease, transform 0.5s ease; }
+  #splash.out { opacity: 0; transform: scale(1.04); pointer-events: none; }
+
+  #splash .beam { position: absolute; top: -40px; width: 60%; height: 80%; pointer-events: none; opacity: 0; transition: opacity 1.2s ease; -webkit-mask-image: linear-gradient(180deg, #000 30%, transparent 100%); mask-image: linear-gradient(180deg, #000 30%, transparent 100%); }
+  #splash .beam.l { left: -18%; background: conic-gradient(from 160deg at 0% 0%, transparent 0deg, rgba(255,246,200,0.10) 12deg, transparent 30deg); }
+  #splash .beam.r { right: -18%; background: conic-gradient(from 170deg at 100% 0%, transparent 0deg, rgba(255,246,200,0.10) 18deg, transparent 36deg); }
+  #splash.on .beam { opacity: 1; }
+
+  #splash .brand { text-align: center; position: relative; z-index: 2; opacity: 0; transform: translateY(-10px); transition: opacity 0.6s ease, transform 0.6s ease; }
+  #splash.on .brand { opacity: 1; transform: none; }
+  #splash .badge { width: clamp(44px, 7vh, 58px); aspect-ratio: 1; margin: 0 auto 8px; border-radius: 50%; background: radial-gradient(circle at 35% 30%, #2c6b48, var(--pitch)); border: 2px solid var(--gold); display: grid; place-items: center; font-size: clamp(20px, 3.3vh, 27px); box-shadow: 0 0 0 6px rgba(232,178,61,0.08), 0 8px 22px rgba(0,0,0,0.45); }
+  #splash .kicker { font-family: 'Oswald', sans-serif; font-weight: 500; font-size: 11.5px; letter-spacing: 0.26em; text-transform: uppercase; color: var(--gold); margin-bottom: 0; }
+  #splash .claim { font-family: 'Oswald', sans-serif; font-weight: 300; font-size: 14px; color: var(--muted); margin-top: 6px; }
+
+  #splash .pitch-holder { position: relative; z-index: 1; flex: 1; min-height: 0; width: 100%; display: grid; place-items: center; margin-block: clamp(10px, 2vh, 18px); container-type: size; }
+  #splash .pitch { position: relative; height: min(100cqh, 100cqw * 1.3); aspect-ratio: 200 / 260; }
+  #splash .pitch svg { position: absolute; inset: 0; width: 100%; height: 100%; overflow: visible; }
+  #splash .grass { opacity: 0; transition: opacity 0.8s ease; }
+  #splash.on .grass { opacity: 1; }
+  #splash .chalkline { fill: none; stroke: rgba(242,239,230,0.55); stroke-width: 1.3; stroke-dasharray: 1; stroke-dashoffset: 1; }
+  #splash.on .chalkline { animation: splashDraw 1s ease forwards; }
+  #splash.on .chalkline.d2 { animation-delay: 0.15s; } #splash.on .chalkline.d3 { animation-delay: 0.3s; } #splash.on .chalkline.d4 { animation-delay: 0.45s; }
+  @keyframes splashDraw { to { stroke-dashoffset: 0; } }
+  #splash .dot { transition: transform 0.55s cubic-bezier(.2,1.3,.4,1), opacity 0.3s ease; opacity: 0; }
+  #splash .dot.in { opacity: 1; }
+  #splash .dot circle.o { fill: var(--gold); stroke: #9C7422; stroke-width: 1; }
+  #splash .dot circle.h { fill: none; stroke: rgba(232,178,61,0.35); stroke-width: 2; transform-box: fill-box; transform-origin: center; }
+  #splash .dot.in circle.h { animation: splashHalo 0.7s ease-out 1; }
+  @keyframes splashHalo { from { transform: scale(0.6); opacity: 1; } to { transform: scale(2.2); opacity: 0; } }
+  #splash .dot text { font-family: 'Oswald', sans-serif; font-weight: 700; font-size: 6.4px; fill: var(--ink); text-anchor: middle; dominant-baseline: central; }
+  #splash .formation-tag { position: absolute; right: 7%; top: 5%; font-family: 'Oswald', sans-serif; font-weight: 600; font-size: 11px; letter-spacing: 0.1em; color: rgba(242,239,230,0.55); background: rgba(0,0,0,0.25); border-radius: 10px; padding: 1px 7px; white-space: nowrap; }
+
+  #splash .meter { width: 100%; max-width: 360px; position: relative; z-index: 2; display: flex; flex-direction: column; align-items: center; gap: 8px; }
+  #splash .pct { font-family: 'Anton', sans-serif; font-size: clamp(44px, 7.5vh, 64px); line-height: 0.9; color: var(--gold-2); text-shadow: 0 0 22px rgba(232,178,61,0.35); font-variant-numeric: tabular-nums; }
+  #splash .pct small { font-size: 0.45em; color: var(--gold); margin-left: 2px; }
+  #splash .bar { width: 100%; height: 8px; border-radius: 6px; background: rgba(255,255,255,0.08); overflow: hidden; position: relative; }
+  #splash .bar i { position: absolute; inset: 0 auto 0 0; width: 0%; border-radius: 6px; background: linear-gradient(90deg, var(--pitch), #3fae63 40%, var(--gold) 100%); box-shadow: 0 0 12px rgba(232,178,61,0.45); }
+  #splash .ticks { width: 100%; display: flex; justify-content: space-between; margin-top: -2px; }
+  #splash .ticks span { width: 1px; height: 5px; background: rgba(242,239,230,0.2); }
+  #splash .status { font-family: 'Oswald', sans-serif; font-weight: 500; font-size: 15px; letter-spacing: 0.02em; min-height: 22px; transition: opacity 0.25s ease; }
+  #splash .status.fade { opacity: 0; }
+
+  #splash .tip { position: relative; z-index: 2; width: 100%; max-width: 380px; margin-top: clamp(12px, 2vh, 18px); border: 1px solid var(--line); background: rgba(28,43,56,0.8); border-radius: 12px; padding: 10px 14px; display: flex; gap: 11px; align-items: center; opacity: 0; transition: opacity 0.6s ease 0.6s; }
+  #splash.on .tip { opacity: 1; }
+  #splash .tip .ic { font-size: 20px; }
+  #splash .tip .k { font-family: 'Oswald', sans-serif; font-weight: 600; font-size: 11.5px; letter-spacing: 0.1em; text-transform: uppercase; color: var(--gold-2); }
+  #splash .tip .t { font-family: 'Oswald', sans-serif; font-weight: 300; font-size: 13.5px; line-height: 1.35; color: rgba(242,239,230,0.85); }
+  #splash .foot { font-family: 'Oswald', sans-serif; font-weight: 300; font-size: 11.5px; color: rgba(242,239,230,0.42); margin-top: 8px; text-align: center; }
+
+  #splash .kickoff { position: absolute; inset: 0; display: grid; place-items: center; pointer-events: none; z-index: 5; }
+  #splash .kickoff span { font-family: 'Anton', sans-serif; font-size: clamp(54px, 13vw, 84px); text-transform: uppercase; color: var(--gold-2); text-shadow: 0 0 40px rgba(232,178,61,0.6); opacity: 0; transform: scale(0.7); }
+  #splash .kickoff.go span { animation: splashKo 0.9s cubic-bezier(.2,1.2,.3,1) forwards; }
+  @keyframes splashKo { 0% { opacity: 0; transform: scale(0.7); } 35% { opacity: 1; transform: scale(1.05); } 70% { opacity: 1; transform: scale(1); } 100% { opacity: 0; transform: scale(1.15); } }
+
+  @media (prefers-reduced-motion: reduce) {
+    #splash .chalkline { stroke-dashoffset: 0; animation: none !important; }
+    #splash .dot { transition: opacity 0.2s; }
+    #splash .kickoff { display: none; }
+  }
+
 </style>
 </head>
 <body>
@@ -474,9 +544,56 @@
     <div id="pitchView"></div>
   </section>
 
+  <!-- LADESCREEN (Prompt 11d) - eigenes Overlay ueber allen Screens, kein Nav-Eintrag -->
+  <div class="splash" id="splash" role="status" aria-live="polite" aria-label="Starting XI wird geladen">
+    <div class="beam l"></div><div class="beam r"></div>
+    <div class="brand">
+      <div class="badge" aria-hidden="true">⚽</div>
+      <div class="kicker">Football Lineup Trivia</div>
+      <h1>Starting<span> XI</span></h1>
+      <div class="claim">Elf Namen. Ein Spiel. Dein Fußballwissen.</div>
+    </div>
+    <div class="pitch-holder">
+      <div class="pitch">
+        <svg viewBox="0 0 200 260" aria-hidden="true">
+          <defs>
+            <linearGradient id="splashGrass" x1="0" x2="0" y1="0" y2="1"><stop offset="0" stop-color="#1f5c3d"/><stop offset="1" stop-color="#163d29"/></linearGradient>
+            <pattern id="splashStripes" width="200" height="40" patternUnits="userSpaceOnUse"><rect width="200" height="20" fill="rgba(255,255,255,0.035)"/></pattern>
+          </defs>
+          <g class="grass"><rect x="0" y="0" width="200" height="260" rx="8" fill="url(#splashGrass)"/><rect x="0" y="0" width="200" height="260" rx="8" fill="url(#splashStripes)"/></g>
+          <rect class="chalkline" pathLength="1" x="8" y="8" width="184" height="244" rx="2"/>
+          <path class="chalkline d2" pathLength="1" d="M8 130 H192"/>
+          <circle class="chalkline d2" pathLength="1" cx="100" cy="130" r="24"/>
+          <path class="chalkline d3" pathLength="1" d="M52 8 V42 H148 V8 M78 8 V20 H122 V8"/>
+          <path class="chalkline d3" pathLength="1" d="M52 252 V218 H148 V252 M78 252 V240 H122 V252"/>
+          <path class="chalkline d4" pathLength="1" d="M84 42 A18 18 0 0 0 116 42 M84 218 A18 18 0 0 1 116 218"/>
+          <g id="splashDots"></g>
+        </svg>
+        <div class="formation-tag" id="splashFormationTag">4-3-3</div>
+      </div>
+    </div>
+    <div class="meter">
+      <div class="pct" id="splashPct">0<small>%</small></div>
+      <div class="bar" aria-hidden="true"><i id="splashBar"></i></div>
+      <div class="ticks" id="splashTicks" aria-hidden="true"></div>
+      <div class="status" id="splashStatus">Rasen wird gemäht …</div>
+    </div>
+    <div class="tip">
+      <span class="ic" aria-hidden="true">💡</span>
+      <div>
+        <div class="k">Wusstest du?</div>
+        <div class="t" id="splashTip"></div>
+      </div>
+    </div>
+    <div class="foot" id="splashVersion"></div>
+    <div class="kickoff" id="splashKickoff"><span>Anpfiff!</span></div>
+  </div>
+
 </div>
 
 <script>
+const APP_VERSION = "1.0";
+
 /* ================= FORMATIONEN ================= */
 const PITCH_LAYOUTS = {
   "4-4-2": [
@@ -3333,6 +3450,106 @@ function evaluatePitch() {
   }
 }
 
+/* ================= LADESCREEN (Prompt 11d) =================
+   Eigenes Overlay ueber allen Screens, kein Eintrag im Navigations-Stack aus
+   Prompt 11b - laeuft nur einmal beim initialen Skript-Start, nie bei
+   Bildschirmwechseln. Optik/Ablauf/Texte aus prototypes/ladescreen.html;
+   die Formation kommt aus PITCH_LAYOUTS["4-3-3"] (keine zweite Koordinaten-
+   liste) - TW steht dort bereits zuerst, LA zuletzt, passt exakt zur
+   gewuenschten Einlauf-Reihenfolge. */
+const SPLASH_REDUCED_MOTION = matchMedia("(prefers-reduced-motion: reduce)").matches;
+const SPLASH_STATUS = [
+  [0, "Rasen wird gemäht …"], [14, "Linien werden gekreidet …"], [28, "Trikots werden verteilt …"],
+  [45, "Taktiktafel wird vorbereitet …"], [62, "Startelf wird aufgestellt …"], [84, "Kapitänsbinde wird angelegt …"], [97, "Gleich geht's los!"]
+];
+// Nur Tipps zu Funktionen, die es bereits gibt - Tages-Challenge kommt erst mit Prompt 13.
+const SPLASH_TIPS = [
+  "Tippst du einen Namen in die falsche Zeile, landet er automatisch auf seiner richtigen Position.",
+  "Kleiner Tippfehler? Das Feld wird gold - mit \"Korrigieren\" trägst du die richtige Schreibweise ein.",
+  "Drei Sterne gibt's nur für 11 von 11 - ganz ohne Scout-Rad, Aufdecken oder Korrigieren.",
+  "Beim Scout-Rad ist der ganze Name der Jackpot - selten, aber möglich.",
+  "Richtige Positionen ohne Hilfe in Folge erhöhen deine Kombo und damit dein Positions-XP.",
+  "Ab Level 15 schaltest du den Hardcore-Modus mit den schwersten Aufstellungen frei."
+];
+
+function buildSplashDots() {
+  const xi = PITCH_LAYOUTS["4-3-3"];
+  document.getElementById("splashDots").innerHTML = xi.map(({ abbr }, i) => `
+    <g class="dot" id="splashDot${i}" style="transform: translate(100px, 290px)">
+      <circle class="h" cx="0" cy="0" r="8"></circle>
+      <circle class="o" cx="0" cy="0" r="8"></circle>
+      <text x="0" y="0.3">${abbr}</text>
+    </g>`).join("");
+}
+
+let splashRaf, splashPlaced;
+function runSplash() {
+  const splash = document.getElementById("splash");
+  document.getElementById("splashVersion").textContent = "Version " + APP_VERSION;
+  document.getElementById("splashTip").textContent = SPLASH_TIPS[Math.floor(Math.random() * SPLASH_TIPS.length)];
+  buildSplashDots();
+  splashPlaced = 0;
+  void splash.offsetWidth;
+  splash.classList.add("on");
+  splash.addEventListener("click", skipSplash, { once: true });
+
+  const xi = PITCH_LAYOUTS["4-3-3"];
+  const DUR = SPLASH_REDUCED_MOTION ? 800 : 1800; // Zaehler-Dauer; + ~0.6s Anpfiff = ~2.4s gesamt
+  const curve = t => { const e = t < 0.5 ? 2 * t * t : 1 - Math.pow(-2 * t + 2, 2.4) / 2; return Math.min(1, e + 0.03 * Math.sin(t * 14) * (1 - t)); };
+  const t0 = performance.now();
+  let lastStatus = -1;
+  const minDurationDone = new Promise((resolve) => {
+    const step = (now) => {
+      const t = Math.min(1, (now - t0) / DUR);
+      const p = Math.max(0, Math.min(100, Math.round(curve(t) * 100)));
+      document.getElementById("splashPct").innerHTML = p + "<small>%</small>";
+      document.getElementById("splashBar").style.width = p + "%";
+      if (!SPLASH_REDUCED_MOTION) {
+        const shouldBe = Math.min(xi.length, Math.floor((p - 8) / 8) + 1);
+        while (splashPlaced < shouldBe) {
+          const { x, y } = xi[splashPlaced];
+          const g = document.getElementById("splashDot" + splashPlaced);
+          g.classList.add("in");
+          g.style.transform = `translate(${(x / 100 * 200).toFixed(1)}px, ${(y / 100 * 260).toFixed(1)}px)`;
+          splashPlaced++;
+        }
+      }
+      let si = 0;
+      SPLASH_STATUS.forEach(([th], i) => { if (p >= th) si = i; });
+      if (si !== lastStatus) {
+        lastStatus = si;
+        const s = document.getElementById("splashStatus");
+        s.classList.add("fade");
+        setTimeout(() => { s.textContent = SPLASH_STATUS[si][1]; s.classList.remove("fade"); }, 180);
+      }
+      if (t < 1) { splashRaf = requestAnimationFrame(step); } else { resolve(); }
+    };
+    splashRaf = requestAnimationFrame(step);
+  });
+
+  // 100% erst wenn Mindestanimation UND Schriften wirklich fertig geladen sind - profile
+  // ist zu diesem Zeitpunkt (loadProfile() lief synchron weiter oben) bereits vollstaendig da.
+  Promise.all([minDurationDone, document.fonts ? document.fonts.ready : Promise.resolve()]).then(finishSplash);
+}
+
+function skipSplash() {
+  cancelAnimationFrame(splashRaf);
+  finishSplash();
+}
+
+function finishSplash() {
+  const splash = document.getElementById("splash");
+  if (!splash || splash.classList.contains("out")) return;
+  document.getElementById("splashPct").innerHTML = "100<small>%</small>";
+  document.getElementById("splashBar").style.width = "100%";
+  document.getElementById("splashStatus").textContent = "Aufstellung steht.";
+  if (!SPLASH_REDUCED_MOTION) document.getElementById("splashKickoff").classList.add("go");
+  setTimeout(() => {
+    splash.classList.add("out");
+    setTimeout(() => splash.remove(), 520);
+  }, SPLASH_REDUCED_MOTION ? 100 : 600);
+}
+
 /* ================= INIT ================= */
 renderProfileBar();
 renderModeTiles();
@@ -3359,6 +3576,8 @@ if (window.visualViewport) {
 if ("serviceWorker" in navigator) {
   window.addEventListener("load", () => navigator.serviceWorker.register("./sw.js"));
 }
+
+runSplash();
 </script>
 </body>
 </html>
