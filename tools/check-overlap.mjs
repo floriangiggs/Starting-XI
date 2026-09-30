@@ -7,7 +7,7 @@ import path from "node:path";
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const htmlPath = path.join(__dirname, "..", "startelf_check.html");
-const WIDTHS = [360, 375, 430];
+const WIDTHS = [360, 375, 402, 430];
 
 function overlap(a, b) {
   return a.left < b.left + b.width && b.left < a.left + a.width && a.top < b.top + b.height && b.top < a.top + a.height;
@@ -55,6 +55,54 @@ for (const width of WIDTHS) {
     if (issues.length > 0) {
       totalIssues += issues.length;
       console.log(`[${width}px] ${formation}: ${issues.length} Ueberlappung(en): ${issues.join(", ")}`);
+    }
+  }
+}
+
+// Level-Pfad (Prompt 11c): fuer jede der 5 Welten je einmal mit Level 1 aktuell
+// und einmal mit einem mittleren Level aktuell (dort haben Ball-Badge/Sterne/Label
+// auf BEIDEN Seiten Nachbarn) pruefen, dass sich Punkt/Sterne/Label/Badge
+// VERSCHIEDENER Level nicht ueberschneiden.
+const tiers = await page.evaluate(() => ROADMAP_NODES.map((n) => n.tier));
+
+for (const width of WIDTHS) {
+  await page.setViewportSize({ width, height: 900 });
+  for (const tier of tiers) {
+    for (const currentInMiddle of [false, true]) {
+      const result = await page.evaluate(({ tier, currentInMiddle }) => {
+        const matches = getMatchesByTier(tier);
+        if (matches.length === 0) return { skip: true };
+        profile.campaign.levelPassed = {};
+        if (currentInMiddle) {
+          const passUntil = Math.floor(matches.length / 2);
+          for (let i = 0; i < passUntil; i++) profile.campaign.levelPassed[matches[i].id] = true;
+        }
+        document.querySelectorAll(".screen").forEach((s) => { s.hidden = true; });
+        document.getElementById("screen-levelpath").hidden = false;
+        campaignTier = tier;
+        renderCampaignLevels();
+        const nodes = Array.from(document.querySelectorAll(".level-node"));
+        return {
+          boxes: nodes.map((el, i) => {
+            const r = el.getBoundingClientRect();
+            return { idx: i, left: r.left, top: r.top, width: r.width, height: r.height };
+          })
+        };
+      }, { tier, currentInMiddle });
+
+      if (result.skip) continue;
+
+      const boxes = result.boxes;
+      const issues = [];
+      for (let i = 0; i < boxes.length; i++) {
+        for (let j = i + 1; j < boxes.length; j++) {
+          if (overlap(boxes[i], boxes[j])) issues.push(`Level ${boxes[i].idx + 1} <-> Level ${boxes[j].idx + 1}`);
+        }
+      }
+      if (issues.length > 0) {
+        totalIssues += issues.length;
+        console.log(`[${width}px] Level-Pfad Welt ${tier} (${currentInMiddle ? "mittleres" : "erstes"} Level aktuell): ${issues.length} Ueberlappung(en): ${issues.join(", ")}`);
+      }
     }
   }
 }

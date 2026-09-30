@@ -107,7 +107,8 @@
   .mode-tile.free .mt-sub { color: var(--muted); }
 
   /* ---- Kampagne: Stadion-Roadmap ---- */
-  .roadmap-wrap { position: relative; width: 100%; padding-bottom: 148%; margin-bottom: 10px; }
+  #campaignView { flex: 1; min-height: 0; display: flex; flex-direction: column; }
+  .roadmap-wrap { position: relative; width: 100%; flex: 1; min-height: 0; margin-bottom: 10px; }
   .roadmap-svg { position: absolute; inset: 0; width: 100%; height: 100%; }
   .roadmap-path { fill: none; stroke: rgba(242,239,230,0.16); stroke-width: 0.9; stroke-dasharray: 2.2 2.6; stroke-linecap: round; }
   .roadmap-path.lit { stroke: rgba(232,178,61,0.5); }
@@ -183,9 +184,9 @@
   .level-node.passed .level-dot::after { content: ""; position: absolute; width: 46%; height: 46%; border: 8% solid rgba(255,255,255,0.35); border-radius: 50%; top: 50%; left: 50%; transform: translate(-50%,-50%); box-sizing: border-box; }
   .level-node.passed .level-dot span { position: relative; z-index: 2; }
   .level-node.current .level-dot { border-color: var(--node-color, var(--gold)); animation: floodlightPulse 1.8s ease-in-out infinite; }
-  .level-node.current .level-spotlight { position: absolute; bottom: 100%; left: 50%; transform: translateX(-50%); width: 4px; height: 44px; background: linear-gradient(180deg, transparent, var(--node-color, var(--gold))55); }
-  .level-node.current .level-spotlight::before { content: ""; position: absolute; bottom: -8px; left: 50%; transform: translateX(-50%); width: 80px; height: 54px; background: radial-gradient(ellipse at 50% 100%, var(--node-color, var(--gold))40, transparent 70%); }
-  .level-node .level-ball { position: absolute; top: -30px; left: 50%; transform: translateX(-50%); font-size: 20px; animation: ballBounce 1.1s ease-in-out infinite; filter: drop-shadow(0 2px 3px rgba(0,0,0,0.5)); z-index: 3; }
+  .level-dot .level-badge { position: absolute; bottom: -3px; right: -3px; width: 22px; height: 22px; border-radius: 50%; background: var(--ink); border: 2px solid var(--node-color, var(--gold)); display: flex; align-items: center; justify-content: center; z-index: 3; box-shadow: 0 2px 5px rgba(0,0,0,0.5); }
+  .level-dot .level-badge .mascot-ball { font-size: 11px; }
+  .level-dot .level-badge .mascot::before, .level-dot .level-badge .mascot-accessory, .level-dot .level-badge .mascot.sparkle::after { display: none; }
   .level-node .level-label { margin-top: 6px; font-family: 'Oswald', sans-serif; font-weight: 700; font-size: 14px; letter-spacing: 0.02em; color: rgba(242,239,230,0.85); text-shadow: 0 2px 4px rgba(0,0,0,0.6); }
   .level-node.passed .level-label { color: var(--chalk); }
   .level-node.locked .level-label { opacity: 0.4; }
@@ -194,6 +195,13 @@
   .back-btn { display: inline-flex; align-items: center; gap: 8px; background: var(--ink-2); border: 1px solid var(--line); color: var(--chalk); font-family: 'Anton', sans-serif; font-weight: 400; font-size: 17px; text-transform: uppercase; letter-spacing: 0.01em; cursor: pointer; margin-bottom: 18px; padding: 10px 18px 10px 14px; border-radius: 24px; box-shadow: 0 4px 12px rgba(0,0,0,0.3); transition: transform 0.1s ease, border-color 0.15s ease; }
   .back-btn:active { transform: scale(0.96); }
   .back-btn .back-arrow { color: var(--gold); font-size: 20px; line-height: 1; }
+
+  /* ---- Spielfeld-Kopfzeile: Abbrechen links, Regeln rechts (Prompt 11c) ---- */
+  .pitch-header-row { display: flex; align-items: center; justify-content: space-between; gap: 10px; margin-bottom: 18px; }
+  .pitch-header-row .back-btn { margin-bottom: 0; }
+  .rules-btn { position: relative; display: inline-flex; align-items: center; gap: 6px; background: var(--ink-2); border: 1px solid var(--line); color: var(--chalk); font-family: 'Oswald', sans-serif; font-weight: 600; font-size: 12.5px; text-transform: uppercase; letter-spacing: 0.03em; cursor: pointer; padding: 9px 14px; border-radius: 24px; box-shadow: 0 4px 12px rgba(0,0,0,0.3); transition: transform 0.1s ease; }
+  .rules-btn:active { transform: scale(0.96); }
+  .rules-dot { position: absolute; top: -3px; right: -3px; width: 9px; height: 9px; border-radius: 50%; background: var(--gold); border: 2px solid var(--ink); }
 
   .pass-banner { text-align: center; font-family: 'Oswald', sans-serif; font-weight: 700; font-size: 15px; padding: 10px; border-radius: 8px; margin-bottom: 10px; }
   .pass-banner.pass { background: rgba(46,204,113,0.15); color: #2ecc71; border: 1px solid rgba(46,204,113,0.4); }
@@ -1228,6 +1236,7 @@ function showScreen(id, dir) {
   if (!next || cur === next) return;
   refreshScreenContent(id);
   next.hidden = false;
+  if (id === "worldmap") layoutRoadmapNodes();
   next.classList.add(dir === "fwd" ? "enter-right" : "enter-left");
   void next.offsetWidth;
   requestAnimationFrame(() => {
@@ -1437,6 +1446,7 @@ const defaultProfile = {
   perfectRewarded: {}, // match.id -> true; einmaliger Perfekt-Token-Bonus pro Aufstellung
   best: {}, // match.id -> { stars: 0-3, correct, solvedAbbrs: string[] }; immer das beste Ergebnis (Prompt 11)
   hasSeenGuide: false,
+  hasSeenPitchRules: false,
   stats: {
     lineupsPlayed: 0,
     lineupsPerfect: 0,
@@ -1542,6 +1552,7 @@ function loadProfile() {
     if (typeof profile.hintTokens !== "number") profile.hintTokens = 0;
     if (!profile.perfectRewarded || typeof profile.perfectRewarded !== "object") profile.perfectRewarded = {};
     if (typeof profile.hasSeenGuide !== "boolean") profile.hasSeenGuide = false;
+    if (typeof profile.hasSeenPitchRules !== "boolean") profile.hasSeenPitchRules = false;
     if (typeof profile.stats.positionsCorrectFuzzy !== "number") profile.stats.positionsCorrectFuzzy = 0;
     // Fester Zufalls-Seed pro Profil (Prompt 9): macht die pro Kampagnen-Level geschenkten
     // Positionen deterministisch statt bei jedem Neustart neu auszuwuerfeln. Sofort
@@ -1853,6 +1864,42 @@ function openGuideModal() {
 
 document.getElementById("helpBtn").onclick = openGuideModal;
 
+// Regeln-Modal im Spielfeld (Prompt 11c): nutzt dieselben GUIDE_SECTIONS wie die
+// Anleitung (per Titel-Whitelist gefiltert) statt die Texte doppelt zu pflegen.
+const RULES_SECTION_TITLES = ["Eingabe", "Fast richtig", "Scout-Rad", "Aufdecken", "Sterne", "Kombo"];
+
+function markPitchRulesSeen() {
+  if (profile.hasSeenPitchRules) return;
+  profile.hasSeenPitchRules = true;
+  saveProfile(profile);
+  const dot = document.getElementById("rulesDot");
+  if (dot) dot.remove();
+}
+
+function openRulesModal() {
+  const sections = GUIDE_SECTIONS.filter(s => RULES_SECTION_TITLES.includes(s.title));
+  const backdrop = document.createElement("div");
+  backdrop.className = "modal-backdrop";
+  backdrop.innerHTML = `
+    <div class="modal-sheet">
+      <button class="modal-close" id="closeRulesModal">Schließen</button>
+      <div class="guide-title">Regeln</div>
+      ${sections.map(s => `
+        <div class="guide-row">
+          <div class="guide-icon">${s.icon}</div>
+          <div>
+            <div class="guide-heading">${s.title}</div>
+            <div class="guide-desc">${s.desc}</div>
+          </div>
+        </div>`).join("")}
+      <div class="guide-desc" style="margin-top:14px; text-align:center;">🔍 Aktueller Stand: <b>${profile.hintTokens}</b> Scout-Token</div>
+    </div>`;
+  document.body.appendChild(backdrop);
+  document.getElementById("closeRulesModal").onclick = () => backdrop.remove();
+  backdrop.onclick = (e) => { if (e.target === backdrop) backdrop.remove(); };
+  markPitchRulesSeen();
+}
+
 let profile = loadProfile();
 document.getElementById("profileBar").onclick = openAchievementsModal;
 
@@ -1964,18 +2011,63 @@ function unlockedLevelCount(tier) {
 }
 
 const ROADMAP_NODES = [
-  { tier: 1, x: 22, y: 10 },
-  { tier: 2, x: 76, y: 27 },
-  { tier: 3, x: 24, y: 46 },
-  { tier: 4, x: 76, y: 65 },
-  { tier: 5, x: 50, y: 86 }
+  { tier: 1, x: 22, y: 16 },
+  { tier: 2, x: 76, y: 32 },
+  { tier: 3, x: 24, y: 50 },
+  { tier: 4, x: 76, y: 68 },
+  { tier: 5, x: 50, y: 84 }
 ];
-const ROADMAP_SEGMENTS = [
-  "M 22 10 C 55 15, 55 22, 76 27",
-  "M 76 27 C 45 33, 45 40, 24 46",
-  "M 24 46 C 55 52, 55 59, 76 65",
-  "M 76 65 C 60 74, 60 80, 50 86"
-];
+
+// Baut die 4 Kurvensegmente zwischen den Welt-Knoten aus deren aktuellen (x,y) -
+// wird sowohl beim ersten Rendern als auch nach layoutRoadmapNodes() (siehe dort)
+// mit den dann tatsaechlich verwendeten y-Werten neu aufgerufen, damit die Linie
+// immer exakt zu den (per Messung nachjustierten) Knotenpositionen passt.
+function roadmapSegmentsD(nodes) {
+  const segs = [];
+  for (let i = 0; i < nodes.length - 1; i++) {
+    const a = nodes[i], b = nodes[i + 1];
+    const midY = (a.y + b.y) / 2;
+    segs.push(`M ${a.x} ${a.y} C ${a.x} ${midY}, ${b.x} ${midY}, ${b.x} ${b.y}`);
+  }
+  return segs;
+}
+
+// Die Roadmap fuellt seit Prompt 11c die verfuegbare Bildschirmhoehe (flex:1) statt
+// einer breitenabhaengigen Fixhoehe - deshalb koennen die y-Werte der 5 Welt-Knoten
+// nicht mehr fix in ROADMAP_NODES stehen (mal wuerde der oberste Knoten die Topbar
+// ueberlappen, mal bliebe unten viel Platz frei). Stattdessen werden die Knoten mit
+// den ROADMAP_NODES-Werten als Ausgangsbasis gerendert und, sobald der Screen
+// tatsaechlich sichtbar ist (siehe showScreen()), per echter Pixel-Messung so
+// nachjustiert, dass der oberste/unterste Knoten inkl. allem Zubehoer (Ball-Puffer,
+// Label, Meta, Sterne) komplett innerhalb des Wraps liegt.
+function layoutRoadmapNodes() {
+  const wrap = document.querySelector("#campaignView .roadmap-wrap");
+  if (!wrap) return;
+  const wrapRect = wrap.getBoundingClientRect();
+  if (!wrapRect.height) return; // noch nicht sichtbar/layoutet - Ausgangswerte bleiben stehen
+
+  const nodeEls = Array.from(wrap.querySelectorAll(".stadium-node"));
+  let maxTopOverhang = 0, maxBottomOverhang = 0;
+  nodeEls.forEach((el, i) => {
+    const r = el.getBoundingClientRect();
+    const centerY = wrapRect.top + (ROADMAP_NODES[i].y / 100) * wrapRect.height;
+    maxTopOverhang = Math.max(maxTopOverhang, centerY - r.top);
+    maxBottomOverhang = Math.max(maxBottomOverhang, r.bottom - centerY);
+  });
+
+  const safeTop = (maxTopOverhang / wrapRect.height) * 100;
+  const safeBottom = 100 - (maxBottomOverhang / wrapRect.height) * 100;
+  const n = ROADMAP_NODES.length;
+  const adjusted = ROADMAP_NODES.map((node, i) => ({
+    ...node,
+    y: safeTop + (i / (n - 1)) * (safeBottom - safeTop)
+  }));
+
+  nodeEls.forEach((el, i) => { el.style.top = adjusted[i].y + "%"; });
+  wrap.querySelectorAll(".roadmap-path").forEach((path, i) => {
+    path.setAttribute("d", roadmapSegmentsD(adjusted)[i]);
+  });
+}
 
 function renderCampaignWorlds() {
   const container = document.getElementById("campaignView");
@@ -1984,7 +2076,7 @@ function renderCampaignWorlds() {
   const wrap = document.createElement("div");
   wrap.className = "roadmap-wrap";
 
-  const segsSvg = ROADMAP_SEGMENTS.map((d, i) => {
+  const segsSvg = roadmapSegmentsD(ROADMAP_NODES).map((d, i) => {
     const destTier = ROADMAP_NODES[i + 1].tier;
     const lit = isTierUnlocked(destTier);
     return `<path class="roadmap-path${lit ? " lit" : ""}" d="${d}"></path>`;
@@ -2113,13 +2205,18 @@ function renderCampaignLevels() {
   const worldStars = starsSummaryForTier(matches);
 
   // Ein schlängelnder Pfad aus Level-Stationen, mündet in ein Ziel-Symbol Richtung nächste Welt.
-  // INTRO_H reserviert oben Platz für den Ausschmückungs-Kopf (Welt N/Sterne/Text), ohne die
-  // bestehende Kurvenform/den Abstand der Level-Stationen untereinander zu verändern.
+  // INTRO_H reserviert oben Platz für den Ausschmückungs-Kopf (Welt N/Sterne/Text), OUTRO_H
+  // unten Platz für den groesseren Ziel-Button + Label (Prompt 11c: 20px Reserve reichten
+  // nicht) - beides ohne die bestehende Kurvenform/den Abstand der Stationen zu veraendern.
   const INTRO_H = 96;
-  const Y_STEP = 98; // px pro Level - kompakter, damit das Feld nicht leer wirkt
+  const OUTRO_H = 100;
+  // Y_STEP muss die tatsaechliche Knotenhoehe (Dot + Sterne + Label, ~110px) sicher
+  // uebersteigen, sonst ueberlappen sich bei ungünstiger Zickzack-Phase (aehnliches x)
+  // Level-Punkt und -Label VERSCHIEDENER Stationen (Prompt 11c, siehe check-overlap.mjs).
+  const Y_STEP = 125;
   const totalNodes = matches.length + 1; // +1 für die Ziel-Station am Ende
   const contentH = totalNodes * Y_STEP + 20;
-  const wrapHeight = INTRO_H + contentH;
+  const wrapHeight = INTRO_H + contentH + OUTRO_H;
 
   const wrap = document.createElement("div");
   wrap.className = "level-path-wrap";
@@ -2150,9 +2247,9 @@ function renderCampaignLevels() {
     const nodeStyle = "--node-color:" + color + "; --node-color-light:" + color + "cc;" + (isCurrent ? " border-color:" + color + ";" : "");
     nodesHtml += `
       <div class="level-node ${isPassed ? "passed" : isUnlocked ? "current" : "locked"}" style="left:${p.x}%; top:${p.y}%;" data-idx="${idx}">
-        ${isCurrent ? '<div class="level-spotlight"></div><div class="level-ball">' + renderMascotHTML("small") + '</div>' : ""}
         <div class="level-dot" style="${nodeStyle}">
           <span>${isUnlocked ? (idx + 1) : "🔒"}</span>
+          ${isCurrent ? '<div class="level-badge">' + renderMascotHTML("small") + '</div>' : ""}
         </div>
         <div class="level-stars">${isUnlocked ? starsRowHTML(levelStars) : ""}</div>
         <div class="level-label">Level ${idx + 1}</div>
@@ -2494,11 +2591,14 @@ function renderPitch() {
   const pitchView = document.getElementById("pitchView");
   pitchView.innerHTML = `
     <div class="bonus-panel">
-      <button class="back-btn" id="exitMatchBtn"><span class="back-arrow">←</span>Abbrechen</button>
+      <div class="pitch-header-row">
+        <button class="back-btn" id="exitMatchBtn"><span class="back-arrow">←</span>Abbrechen</button>
+        <button class="rules-btn" id="rulesBtn">ℹ️ Regeln${!profile.hasSeenPitchRules ? '<span class="rules-dot" id="rulesDot"></span>' : ""}</button>
+      </div>
       <div class="bonus-eyebrow">${m.formation} · ${m.comp}</div>
       <div class="bonus-title" style="font-size:19px">${m.teams}</div>
       <div style="text-align:center; margin-bottom:10px">${renderDiffBadge(m.difficulty)}</div>
-      <div class="bonus-text" style="margin-bottom:10px">Gesucht: <b>${m.side}</b><br>Namen eintippen - richtige Felder werden sofort grün, auch wenn du in die falsche Zeile tippst. Bei einer Position brauchst du Hilfe? Dreh im Positions-Panel das 🎡 Scout-Rad (du hast <b>${profile.hintTokens}</b> 🔍 Scout-Token).</div>
+      <div class="bonus-text" style="margin-bottom:10px">Gesucht: <b>${m.side}</b></div>
       ${prefilledAbbrs.size > 0 ? `<div class="prefill-note">🎁 ${prefilledAbbrs.size} von ${positions.length} Positionen bereits vorgegeben</div>` : ""}
       <div class="combo-chip hidden" id="comboChip"></div>
       <div class="pitch-wrap">
@@ -3039,10 +3139,12 @@ function renderPitch() {
 
   document.getElementById("checkBtn").onclick = evaluatePitch;
   document.getElementById("exitMatchBtn").onclick = exitMatch;
+  document.getElementById("rulesBtn").onclick = openRulesModal;
 }
 
 function evaluatePitch() {
   const m = currentMatch;
+  markPitchRulesSeen();
   const positions = PITCH_LAYOUTS[m.formation];
   const pitchView = document.getElementById("pitchView");
   let correct = 0;
