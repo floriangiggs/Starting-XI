@@ -1,0 +1,236 @@
+<!doctype html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, viewport-fit=cover">
+<!-- Referenz-Prototyp für Prompt 11d (Ladescreen). Nicht in die App einbinden, nur Vorlage für Optik, Ablauf und Texte. -->
+<title>Starting XI Ladescreen</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Anton&family=Oswald:wght@300;400;500;600;700&display=swap">
+<style>
+  :root {
+    --pitch: #1F4D36; --chalk: #F2EFE6; --gold: #E8B23D; --gold-2: #F4D58D;
+    --ink: #14202B; --ink-2: #1C2B38; --line: rgba(242,239,230,0.14);
+    --muted: rgba(242,239,230,0.66); --dim: rgba(242,239,230,0.42);
+    color-scheme: dark;
+  }
+  * { box-sizing: border-box; }
+  html, body { height: 100%; background: var(--ink); }
+  body { margin: 0; color: var(--chalk); font-family: Oswald, "Arial Narrow", system-ui, sans-serif; overflow: hidden; -webkit-tap-highlight-color: transparent; }
+
+  .splash { position: relative; height: 100%; max-width: 520px; margin: 0 auto; display: flex; flex-direction: column; align-items: center; justify-content: space-between; padding: clamp(18px, 4vh, 36px) 20px clamp(16px, 3vh, 28px); overflow: hidden;
+    background:
+      radial-gradient(ellipse 70% 40% at 50% 0%, rgba(232,178,61,0.16), transparent 70%),
+      radial-gradient(ellipse 60% 30% at 50% 100%, rgba(31,77,54,0.55), transparent 75%),
+      repeating-linear-gradient(90deg, rgba(255,255,255,0.02) 0 2px, transparent 2px 40px),
+      var(--ink);
+    transition: opacity 0.5s ease, transform 0.5s ease; }
+  .splash.out { opacity: 0; transform: scale(1.04); }
+
+  /* Flutlicht-Kegel in den Ecken */
+  .beam { position: absolute; top: -40px; width: 60%; height: 80%; pointer-events: none; opacity: 0; transition: opacity 1.2s ease; -webkit-mask-image: linear-gradient(180deg, #000 30%, transparent 100%); mask-image: linear-gradient(180deg, #000 30%, transparent 100%); }
+  .beam.l { left: -18%; background: conic-gradient(from 160deg at 0% 0%, transparent 0deg, rgba(255,246,200,0.10) 12deg, transparent 30deg); }
+  .beam.r { right: -18%; background: conic-gradient(from 170deg at 100% 0%, transparent 0deg, rgba(255,246,200,0.10) 18deg, transparent 36deg); }
+  .on .beam { opacity: 1; }
+
+  /* Logo */
+  .brand { text-align: center; position: relative; z-index: 2; opacity: 0; transform: translateY(-10px); transition: opacity 0.6s ease, transform 0.6s ease; }
+  .on .brand { opacity: 1; transform: none; }
+  .badge { width: clamp(44px, 7vh, 58px); aspect-ratio: 1; margin: 0 auto 8px; border-radius: 50%; background: radial-gradient(circle at 35% 30%, #2c6b48, var(--pitch)); border: 2px solid var(--gold); display: grid; place-items: center; font-size: clamp(20px, 3.3vh, 27px); box-shadow: 0 0 0 6px rgba(232,178,61,0.08), 0 8px 22px rgba(0,0,0,0.45); }
+  .kicker { font-weight: 500; font-size: 11.5px; letter-spacing: 0.26em; text-transform: uppercase; color: var(--gold); }
+  h1 { font-family: Anton, Impact, sans-serif; font-weight: 400; font-size: clamp(36px, 6.4vh, 54px); line-height: 0.95; margin: 3px 0 0; text-transform: uppercase; }
+  h1 span { color: var(--gold); text-shadow: 0 0 26px rgba(232,178,61,0.4); }
+  .claim { font-weight: 300; font-size: 14px; color: var(--muted); margin-top: 6px; }
+
+  /* Spielfeld, auf dem sich die Startelf aufstellt */
+  .pitch-holder { position: relative; z-index: 1; flex: 1; min-height: 0; width: 100%; display: grid; place-items: center; margin-block: clamp(10px, 2vh, 18px); container-type: size; }
+  .pitch { position: relative; height: min(100cqh, 100cqw * 1.3); aspect-ratio: 200 / 260; }
+  .pitch svg { position: absolute; inset: 0; width: 100%; height: 100%; overflow: visible; }
+  .grass { opacity: 0; transition: opacity 0.8s ease; }
+  .on .grass { opacity: 1; }
+  .chalkline { fill: none; stroke: rgba(242,239,230,0.55); stroke-width: 1.3; stroke-dasharray: 1; stroke-dashoffset: 1; }
+  .on .chalkline { animation: draw 1s ease forwards; }
+  .on .chalkline.d2 { animation-delay: 0.15s; } .on .chalkline.d3 { animation-delay: 0.3s; } .on .chalkline.d4 { animation-delay: 0.45s; }
+  @keyframes draw { to { stroke-dashoffset: 0; } }
+  .dot { transition: transform 0.55s cubic-bezier(.2,1.3,.4,1), opacity 0.3s ease; opacity: 0; }
+  .dot.in { opacity: 1; }
+  .dot circle.o { fill: var(--gold); stroke: #9C7422; stroke-width: 1; }
+  .dot circle.h { fill: none; stroke: rgba(232,178,61,0.35); stroke-width: 2; transform-box: fill-box; transform-origin: center; }
+  .dot.in circle.h { animation: halo 0.7s ease-out 1; }
+  @keyframes halo { from { transform: scale(0.6); opacity: 1; } to { transform: scale(2.2); opacity: 0; } }
+  .dot text { font-family: Oswald, sans-serif; font-weight: 700; font-size: 6.4px; fill: var(--ink); text-anchor: middle; dominant-baseline: central; }
+  .formation-tag { position: absolute; right: 7%; top: 5%; font-weight: 600; font-size: 11px; letter-spacing: 0.1em; color: rgba(242,239,230,0.55); background: rgba(0,0,0,0.25); border-radius: 10px; padding: 1px 7px; white-space: nowrap; }
+
+  /* Zähler + Balken */
+  .meter { width: 100%; max-width: 360px; position: relative; z-index: 2; display: flex; flex-direction: column; align-items: center; gap: 8px; }
+  .pct { font-family: Anton, Impact, sans-serif; font-size: clamp(44px, 7.5vh, 64px); line-height: 0.9; color: var(--gold-2); text-shadow: 0 0 22px rgba(232,178,61,0.35); font-variant-numeric: tabular-nums; }
+  .pct small { font-size: 0.45em; color: var(--gold); margin-left: 2px; }
+  .bar { width: 100%; height: 8px; border-radius: 6px; background: rgba(255,255,255,0.08); overflow: hidden; position: relative; }
+  .bar i { position: absolute; inset: 0 auto 0 0; width: 0%; border-radius: 6px; background: linear-gradient(90deg, var(--pitch), #3fae63 40%, var(--gold) 100%); box-shadow: 0 0 12px rgba(232,178,61,0.45); }
+  .ticks { width: 100%; display: flex; justify-content: space-between; margin-top: -2px; }
+  .ticks span { width: 1px; height: 5px; background: rgba(242,239,230,0.2); }
+  .status { font-weight: 500; font-size: 15px; letter-spacing: 0.02em; min-height: 22px; transition: opacity 0.25s ease; }
+  .status.fade { opacity: 0; }
+
+  /* Tipp-Karte unten */
+  .tip { position: relative; z-index: 2; width: 100%; max-width: 380px; margin-top: clamp(12px, 2vh, 18px); border: 1px solid var(--line); background: rgba(28,43,56,0.8); border-radius: 12px; padding: 10px 14px; display: flex; gap: 11px; align-items: center; opacity: 0; transition: opacity 0.6s ease 0.6s; }
+  .on .tip { opacity: 1; }
+  .tip .ic { font-size: 20px; }
+  .tip .k { font-weight: 600; font-size: 11.5px; letter-spacing: 0.1em; text-transform: uppercase; color: var(--gold-2); }
+  .tip .t { font-weight: 300; font-size: 13.5px; line-height: 1.35; color: rgba(242,239,230,0.85); }
+  .foot { font-weight: 300; font-size: 11.5px; color: var(--dim); margin-top: 8px; text-align: center; }
+
+  /* Anpfiff-Moment */
+  .kickoff { position: absolute; inset: 0; display: grid; place-items: center; pointer-events: none; z-index: 5; }
+  .kickoff span { font-family: Anton, Impact, sans-serif; font-size: clamp(54px, 13vw, 84px); text-transform: uppercase; color: var(--gold-2); text-shadow: 0 0 40px rgba(232,178,61,0.6); opacity: 0; transform: scale(0.7); }
+  .kickoff.go span { animation: ko 0.9s cubic-bezier(.2,1.2,.3,1) forwards; }
+  @keyframes ko { 0% { opacity: 0; transform: scale(0.7); } 35% { opacity: 1; transform: scale(1.05); } 70% { opacity: 1; transform: scale(1); } 100% { opacity: 0; transform: scale(1.15); } }
+
+  /* Demo-Ende */
+  .after { position: absolute; inset: 0; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 12px; text-align: center; padding: 24px; }
+  .after[hidden] { display: none; }
+  .after p { margin: 0; font-weight: 300; color: var(--muted); max-width: 30ch; }
+  .replay { border: none; border-radius: 10px; padding: 12px 22px; font-family: Oswald, sans-serif; font-weight: 700; font-size: 16px; background: linear-gradient(135deg, var(--gold), var(--gold-2)); color: var(--ink); box-shadow: 0 3px 0 #9C7422; cursor: pointer; }
+
+  @media (prefers-reduced-motion: reduce) {
+    .chalkline { stroke-dashoffset: 0; animation: none !important; }
+    .dot { transition: opacity 0.2s; }
+    .kickoff { display: none; }
+  }
+</style>
+</head>
+<body>
+
+<div class="splash" id="splash" role="status" aria-live="polite" aria-label="Starting XI wird geladen">
+  <div class="beam l"></div><div class="beam r"></div>
+
+  <div class="brand">
+    <div class="badge" aria-hidden="true">⚽</div>
+    <div class="kicker">Football Lineup Trivia</div>
+    <h1>Starting<span> XI</span></h1>
+    <div class="claim">Elf Namen. Ein Spiel. Dein Fußballwissen.</div>
+  </div>
+
+  <div class="pitch-holder">
+    <div class="pitch">
+      <svg viewBox="0 0 200 260" aria-hidden="true">
+        <defs>
+          <linearGradient id="gr" x1="0" x2="0" y1="0" y2="1"><stop offset="0" stop-color="#1f5c3d"/><stop offset="1" stop-color="#163d29"/></linearGradient>
+          <pattern id="stripes" width="200" height="40" patternUnits="userSpaceOnUse"><rect width="200" height="20" fill="rgba(255,255,255,0.035)"/></pattern>
+        </defs>
+        <g class="grass"><rect x="0" y="0" width="200" height="260" rx="8" fill="url(#gr)"/><rect x="0" y="0" width="200" height="260" rx="8" fill="url(#stripes)"/></g>
+        <rect class="chalkline" pathLength="1" x="8" y="8" width="184" height="244" rx="2"/>
+        <path class="chalkline d2" pathLength="1" d="M8 130 H192"/>
+        <circle class="chalkline d2" pathLength="1" cx="100" cy="130" r="24"/>
+        <path class="chalkline d3" pathLength="1" d="M52 8 V42 H148 V8 M78 8 V20 H122 V8"/>
+        <path class="chalkline d3" pathLength="1" d="M52 252 V218 H148 V252 M78 252 V240 H122 V252"/>
+        <path class="chalkline d4" pathLength="1" d="M84 42 A18 18 0 0 0 116 42 M84 218 A18 18 0 0 1 116 218"/>
+        <g id="dots"></g>
+      </svg>
+      <div class="formation-tag" id="ftag">4-3-3</div>
+    </div>
+  </div>
+
+  <div class="meter">
+    <div class="pct" id="pct">0<small>%</small></div>
+    <div class="bar" aria-hidden="true"><i id="bar"></i></div>
+    <div class="ticks" aria-hidden="true">${""}</div>
+    <div class="status" id="status">Rasen wird gemäht …</div>
+  </div>
+
+  <div class="tip">
+    <span class="ic" aria-hidden="true">💡</span>
+    <div>
+      <div class="k">Wusstest du?</div>
+      <div class="t" id="tip"></div>
+    </div>
+  </div>
+  <div class="foot">Version 1.0</div>
+
+  <div class="kickoff" id="ko"><span>Anpfiff!</span></div>
+</div>
+
+<div class="after" id="after" hidden>
+  <p>Hier würde jetzt die Startseite erscheinen.</p>
+  <button class="replay" id="replay" type="button">Ladescreen nochmal ansehen</button>
+</div>
+
+<script>
+(() => {
+  const $ = id => document.getElementById(id);
+  const RM = matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+  // 11 Ticks unter dem Balken – einer pro Spieler
+  document.querySelector(".ticks").innerHTML = Array.from({ length: 12 }, () => "<span></span>").join("");
+
+  // 4-3-3 in SVG-Koordinaten (Tor unten)
+  const XI = [["TW", 100, 236], ["RV", 164, 196], ["RIV", 122, 206], ["LIV", 78, 206], ["LV", 36, 196],
+              ["RZM", 144, 150], ["ZM", 100, 160], ["LZM", 56, 150], ["RA", 160, 70], ["ST", 100, 56], ["LA", 40, 70]];
+  const STATUS = [
+    [0, "Rasen wird gemäht …"], [14, "Linien werden gekreidet …"], [28, "Trikots werden verteilt …"],
+    [45, "Taktiktafel wird vorbereitet …"], [62, "Startelf wird aufgestellt …"], [84, "Kapitänsbinde wird angelegt …"], [97, "Gleich geht's los!"]
+  ];
+  const TIPS = [
+    "Tippst du einen Namen in die falsche Zeile, landet er automatisch auf seiner richtigen Position.",
+    "Kleiner Tippfehler? Das Feld wird gold – mit „Korrigieren“ trägst du die richtige Schreibweise ein.",
+    "Drei Sterne gibt's nur für 11 von 11 – ganz ohne Scout-Rad.",
+    "Jeden Tag wartet eine neue Tages-Challenge. Spiel sie täglich und bau deine Serie aus.",
+    "Beim Scout-Rad ist der ganze Name der Jackpot – selten, aber möglich."
+  ];
+
+  function buildDots() {
+    $("dots").innerHTML = XI.map(([a, x, y], i) => `
+      <g class="dot" id="d${i}" style="transform: translate(100px, 290px)">
+        <circle class="h" cx="0" cy="0" r="8"/>
+        <circle class="o" cx="0" cy="0" r="8"/>
+        <text x="0" y="0.3">${a}</text>
+      </g>`).join("");
+  }
+
+  let raf, placed;
+  function run() {
+    cancelAnimationFrame(raf);
+    const splash = $("splash");
+    splash.classList.remove("on", "out"); splash.style.display = "";
+    $("after").hidden = true; $("ko").classList.remove("go");
+    buildDots(); placed = 0;
+    $("tip").textContent = TIPS[Math.floor(Math.random() * TIPS.length)];
+    void splash.offsetWidth; splash.classList.add("on");
+
+    // Nicht-lineare Ladekurve: kurze Pausen wirken echter
+    const DUR = RM ? 900 : 3200;
+    const curve = t => { const e = t < 0.5 ? 2 * t * t : 1 - Math.pow(-2 * t + 2, 2.4) / 2; return Math.min(1, e + 0.03 * Math.sin(t * 14) * (1 - t)); };
+    const t0 = performance.now(); let lastStatus = -1;
+    const step = now => {
+      const t = Math.min(1, (now - t0) / DUR);
+      const p = Math.max(0, Math.min(100, Math.round(curve(t) * 100)));
+      $("pct").innerHTML = p + "<small>%</small>";
+      $("bar").style.width = p + "%";
+      // Spieler nacheinander einlaufen lassen (ab 8 %, alle bis 96 %)
+      const shouldBe = Math.min(11, Math.floor((p - 8) / 8) + 1);
+      while (placed < shouldBe) {
+        const [, x, y] = XI[placed]; const g = $("d" + placed);
+        g.classList.add("in"); g.style.transform = `translate(${x}px, ${y}px)`; placed++;
+      }
+      let si = 0; STATUS.forEach(([th], i) => { if (p >= th) si = i; });
+      if (si !== lastStatus) {
+        lastStatus = si; const s = $("status");
+        s.classList.add("fade"); setTimeout(() => { s.textContent = STATUS[si][1]; s.classList.remove("fade"); }, 180);
+      }
+      if (t < 1) raf = requestAnimationFrame(step); else finish();
+    };
+    raf = requestAnimationFrame(step);
+  }
+  function finish() {
+    $("status").textContent = "Aufstellung steht.";
+    if (!RM) $("ko").classList.add("go");
+    setTimeout(() => {
+      $("splash").classList.add("out");
+      setTimeout(() => { $("splash").style.display = "none"; $("after").hidden = false; }, 500);
+    }, RM ? 200 : 850);
+  }
+  $("replay").onclick = run;
+  run();
+})();
+</script>
+</body>
+</html>

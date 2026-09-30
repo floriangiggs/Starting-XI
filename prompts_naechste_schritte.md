@@ -19,12 +19,13 @@ vorige umgesetzt, getestet und committet ist.
 | 11 | Sterne, XP nur für Verbesserung, Kombo, neue XP-Kurve | ✅ erledigt |
 | 11b | Navigation / One-Pager: eigene Bildschirme, Welten-Ausschmückung | ✅ erledigt |
 | 11c | Feinschliff nach iPhone-Test: Weltkarte, Ziel-Knoten, Ball, Regeln-Button | 11b |
+| 11d | Ladescreen beim App-Start (Startelf stellt sich auf, Zähler bis 100 %) | 11c |
 | 12 | Scout-Profil + Trophäenschrank | 11c |
 | 13 | Tages-Challenge + Serie | 7, 11, 12 |
 | 14 | Recherche Tages-Pool (Gegenseiten + neue Spiele) | 13 |
 | 15 | Kampagne auf ca. 60 Aufstellungen ausbauen | – |
 
-**Empfohlene Reihenfolge ab jetzt:** 11c → 12 → 13 → 14 → 15 → 8
+**Empfohlene Reihenfolge ab jetzt:** 11c → 11d → 12 → 13 → 14 → 15 → 8
 
 Prompt 7 steht bewusst vor der Tages-Challenge: Nur mit der neuen
 Update-Strategie kommen neue Tages-Aufstellungen zuverlässig auf dem iPhone an.
@@ -32,7 +33,7 @@ Update-Strategie kommen neue Tages-Aufstellungen zuverlässig auf dem iPhone an.
 Optische Vorlagen: `prototypes/scout-rad.html` (Prompt 6),
 `prototypes/scout-profil.html` (Prompts 11–13) und
 `prototypes/navigation.html` (Prompt 11b – Bildschirme, Übergänge,
-Welten-Ausschmückung).
+Welten-Ausschmückung) und `prototypes/ladescreen.html` (Prompt 11d).
 
 **Wichtig nach jeder Änderung:** Der Service Worker liefert die App aus dem
 Cache. Jeder Prompt erhöht deshalb `CACHE_NAME` in `sw.js` – sonst sieht die
@@ -766,6 +767,82 @@ Test: Screenshots bei 402×780 von Weltkarte, Kreisliga-Pfad oben (aktuelles
 Level in der Mitte) und ganz unten (Ziel-Knoten vollständig), Spielfeld mit
 Regeln-Button und geöffnetem Regeln-Fenster; Ausgabe von
 tools/check-overlap.mjs zeigen.
+```
+
+---
+
+## Prompt 11d – Ladescreen beim App-Start
+
+```
+Lies CLAUDE.md. Neues Feature → kurz Plan Mode, Plan zeigen, auf OK warten.
+Optik, Ablauf und Texte 1:1 aus prototypes/ladescreen.html übernehmen
+(Prototyp als Referenz lesen, nicht einbinden).
+
+Ziel: Beim Start der App erscheint ein professioneller Ladescreen: Logo,
+"STARTING XI", Claim "Elf Namen. Ein Spiel. Dein Fußballwissen.", ein
+Spielfeld, dessen Kreidelinien sich zeichnen und auf dem die Startelf
+(4-3-3) Spieler für Spieler einläuft, ein Zähler bis 100 %, wechselnde
+Ladetexte, eine "Wusstest du?"-Karte und zum Schluss "Anpfiff!" mit
+Überblendung zur Startseite. Kein Scrollen (One-Pager).
+
+1. Aufbau
+   - Eigenes Overlay #splash als oberstes Element über allen Bildschirmen
+     (kein eigener Eintrag im Navigations-Verlauf aus Prompt 11b).
+   - Die Startseite wird darunter normal aufgebaut; der Splash blendet sich
+     am Ende aus (opacity + leichtes scale, ca. 0,5 s) und wird danach aus
+     dem DOM entfernt.
+   - Inhalte wie im Prototyp: Flutlicht-Kegel in den Ecken (mit Maske
+     ausgeblendet, keine harte Kante), Logo-Badge, Kicker, Titel, Claim,
+     SVG-Spielfeld (Linien per stroke-dashoffset gezeichnet), 11 goldene
+     Positions-Punkte mit Kürzel, Formations-Chip "4-3-3" oben rechts im
+     Feld, Zähler in Anton, Verlaufsbalken (Pitch-Grün → Gold) mit 12
+     Ticks, Status-Text, Tipp-Karte, "Version x.y" klein unten.
+   - Die Versionsnummer aus einer zentralen Konstante APP_VERSION lesen.
+
+2. Ablauf und Dauer
+   - Zähler 0 → 100 % mit nicht-linearer Kurve (kleine Pausen wie im
+     Prototyp); pro ca. 8 % läuft ein Spieler vom unteren Rand auf seine
+     Position (TW zuerst, LA zuletzt), mit kurzem Halo-Effekt.
+   - Status-Texte je Schwelle: Rasen wird gemäht … / Linien werden
+     gekreidet … / Trikots werden verteilt … / Taktiktafel wird vorbereitet
+     … / Startelf wird aufgestellt … / Kapitänsbinde wird angelegt … /
+     Gleich geht's los! – Wechsel per kurzem Fade, KEIN Blinken.
+   - Gesamtdauer in der App kürzer als im Prototyp: Zähler ca. 1,8 s,
+     danach "Anpfiff!" ca. 0,6 s, dann Überblendung – insgesamt höchstens
+     ca. 2,5 s. Die 100 % werden erst erreicht, wenn die App wirklich
+     bereit ist (Profil geladen, document.fonts.ready); ist sie schneller,
+     läuft trotzdem die Mindest-Animation.
+   - Tipp auf den Bildschirm überspringt den Rest (direkt zur Überblendung).
+   - prefers-reduced-motion: statische Version ohne Einlaufen/Anpfiff,
+     ca. 0,8 s, dann Startseite.
+   - Nur beim Start der App bzw. Neuladen der Seite – nie bei Wechseln
+     zwischen Bildschirmen oder nach einer Aufstellung.
+
+3. "Wusstest du?"-Tipps
+   - Zentrale Liste SPLASH_TIPS, pro Start ein zufälliger Tipp.
+   - Nur Tipps zu Funktionen, die es in der App schon gibt (z. B. falsche
+     Zeile wird automatisch einsortiert, Fast richtig/Korrigieren, drei
+     Sterne nur für 11/11 ohne Hilfe, Scout-Rad-Jackpot, Kombo). Tipps zur
+     Tages-Challenge erst mit Prompt 13 ergänzen.
+
+4. Kein weißer Blitz beim Öffnen auf dem iPhone
+   - Kritisches Inline-CSS ganz oben im <head>: html/body background
+     #14202B, damit vor dem Laden der Styles nichts Weißes aufblitzt.
+   - manifest.json background_color/theme_color prüfen (#14202B).
+   - Im Plan bewerten: apple-touch-startup-image (Startbild, das iOS vor
+     dem Laden der App zeigt) für die gängigen iPhone-Größen per Skript aus
+     einer SVG-Vorlage erzeugen (dunkler Hintergrund + Logo-Badge +
+     "STARTING XI"), sodass der Übergang Startbild → Ladescreen nahtlos
+     wirkt. Nur umsetzen, wenn der Aufwand vertretbar ist – sonst Punkt
+     begründet weglassen.
+
+5. Schriften/Regeln laut CLAUDE.md (Anton für Titel/Zähler, Oswald sonst,
+   keine Mono, keine Blink-Animationen). Neue Dateien (z. B. Startbilder)
+   in den Service-Worker-Cache aufnehmen, sw.js CACHE_NAME erhöhen.
+
+Test: Screenshots bei 375×667 und 402×874 bei ca. 50 % und kurz vor
+100 %; Gesamtdauer messen (≤ 2,5 s); Tipp zum Überspringen; Neuladen zeigt
+den Splash erneut, Bildschirmwechsel nicht; reduced-motion-Variante.
 ```
 
 ---
