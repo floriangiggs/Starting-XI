@@ -22,13 +22,13 @@ vorige umgesetzt, getestet und committet ist.
 | 11d | Ladescreen beim App-Start (Startelf stellt sich auf, Zähler bis 100 %) | ✅ erledigt |
 | 12 | Scout-Profil + Trophäenschrank | ✅ erledigt |
 | 13 | Tages-Challenge + Serie | ✅ erledigt |
-| 13b | Sterne nur in Kampagne und Tages-Challenge (Freispiel ohne Sterne) | 13 |
-| 13c | Startseite: Tages-Karte sichtbar machen, Modus-Kacheln verkleinern | 13 |
-| 13d | Neues App-Icon „Taktiktafel – Flutlicht“ | – |
-| 14 | Recherche Tages-Pool (Gegenseiten + neue Spiele) | 13 |
-| 15 | Kampagne auf ca. 60 Aufstellungen ausbauen | – |
+| 13b | Sterne nur in Kampagne und Tages-Challenge (Freispiel ohne Sterne) | ✅ erledigt |
+| 13c | Startseite: Tages-Karte sichtbar machen, Modus-Kacheln verkleinern | ✅ erledigt |
+| 13d | Neues App-Icon „Taktiktafel – Flutlicht“ | ✅ erledigt |
+| 14 | Recherche Tages-Pool (Gegenseiten + neue Spiele) | ✅ erledigt (41 Aufstellungen) |
+| 15 | Kampagne auf ca. 60 Aufstellungen ausbauen | ✅ erledigt (60 Aufstellungen) |
 
-**Empfohlene Reihenfolge ab jetzt:** 13c → 13d → 13b → 14 → 15 → 8
+**Empfohlene Reihenfolge ab jetzt:** 8
 
 Prompt 7 steht bewusst vor der Tages-Challenge: Nur mit der neuen
 Update-Strategie kommen neue Tages-Aufstellungen zuverlässig auf dem iPhone an.
