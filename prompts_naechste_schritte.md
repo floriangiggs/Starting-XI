@@ -23,10 +23,11 @@ vorige umgesetzt, getestet und committet ist.
 | 12 | Scout-Profil + Trophäenschrank | ✅ erledigt |
 | 13 | Tages-Challenge + Serie | ✅ erledigt |
 | 13b | Sterne nur in Kampagne und Tages-Challenge (Freispiel ohne Sterne) | 13 |
+| 13c | Startseite: Tages-Karte sichtbar machen, Modus-Kacheln verkleinern | 13 |
 | 14 | Recherche Tages-Pool (Gegenseiten + neue Spiele) | 13 |
 | 15 | Kampagne auf ca. 60 Aufstellungen ausbauen | – |
 
-**Empfohlene Reihenfolge ab jetzt:** 13b → 14 → 15 → 8
+**Empfohlene Reihenfolge ab jetzt:** 13c → 13b → 14 → 15 → 8
 
 Prompt 7 steht bewusst vor der Tages-Challenge: Nur mit der neuen
 Update-Strategie kommen neue Tages-Aufstellungen zuverlässig auf dem iPhone an.
@@ -998,6 +999,54 @@ Mo→So liefert Schwierigkeiten 1,2,2,3,3,4,5; zwei Profile bekommen am selben
 Tag dieselbe Aufstellung; zweiter Versuch am selben Tag gesperrt; Serie
 1→2→3, Tag auslassen → 1; Uhrzeit 00:30 → richtiger lokaler Tag; Teilen-
 Text für 4-3-3 und 3-5-2 zeigen; Fallback bei leerem DAILY_CHALLENGES.
+```
+
+---
+
+## Prompt 13c – Startseite: Tages-Karte sichtbar, Kacheln verkleinern
+
+```
+Lies CLAUDE.md. Kleiner Layout-Bugfix auf dem Start-Bildschirm → kurz
+Plan zeigen, dann umsetzen. Optische Referenz: prototypes/navigation.html
+(Startseite) und prototypes/scout-profil.html (Tages-Karte offen/gelöst).
+
+Befund (gemessen bei 402×780):
+1. Die Tages-Challenge-Karte hat keine Optik: <div id="dailyCard"> fehlt
+   die Klasse "daily". Die CSS-Regel .daily (grüner Verlauf, goldener
+   Rahmen, Grid-Layout) existiert, greift aber nicht. Folge: Kicker,
+   "Tag n", Timer, 🔥 und "Spielen" stehen lose ohne Kasten, "Spielen"
+   hängt rechts unten frei.
+2. Die Modus-Kacheln (.mode-tiles mit flex: 1) füllen den gesamten
+   Restplatz – bei 402×780 ca. 333px hoch. Das wirkt übergroß.
+3. Die Kampagnen-Kachel zeigt als Titel den Weltnamen ("Kreisliga" mit ⚽)
+   statt "Kampagne" mit 🌍 wie im Prototyp.
+4. Im Profilbalken überdeckt das dribbelnde ⚽ (.xp-ball) das Wort "Noch"
+   in #xpNext.
+
+Umsetzung:
+1. #dailyCard bekommt die Klasse "daily" (bzw. renderDailyCard() setzt
+   sie), sodass die Karte in BEIDEN Zuständen (offen / gelöst) exakt wie
+   im Prototyp aussieht: grüner Kasten mit goldenem Rahmen, links Kicker,
+   "Tag n" + Wochentag/Schwierigkeit, Timer; rechts 🔥-Zähler und Button
+   "Spielen" bzw. Mini-Raster + "x/11" + "Teilen".
+2. Modus-Kacheln auf eine angemessene Höhe begrenzen (z. B.
+   max-height: clamp(150px, 24vh, 210px)) und den Start-Bildschirm
+   vertikal ausgewogen verteilen (Kopf, Profilleiste, Tages-Karte,
+   Kacheln), sodass es wie im Prototyp stimmig und ohne Scrollen auf
+   375×667 bis 430×932 passt – keine großen Leerflächen, nichts gequetscht.
+3. Kampagnen-Kachel wie im Prototyp: Icon 🌍, Titel "Kampagne",
+   darunter "Welt n · <Weltname>", "⭐ x / y" und Fortschrittsbalken.
+   Frei-spielen-Kachel: 🎲, "Frei spielen", Anzahl Aufstellungen,
+   "nach Liga & Stufe".
+4. .xp-ball darf keinen Text überdecken: festen Platz neben dem Text
+   (inline mit Abstand) statt Überlagerung; wenn die Dribbel-Animation
+   dabei stört, Animation entfernen (CLAUDE.md: keine Dauer-Animationen
+   an Text).
+5. sw.js CACHE_NAME erhöhen.
+
+Test: Screenshots der Startseite bei 375×667, 402×874 und 430×932, jeweils
+mit offener und gelöster Tages-Challenge (Test-Profil); Vergleich mit
+dem Prototyp kurz kommentieren; kein Scrollen auf dem Start-Bildschirm.
 ```
 
 ---
