@@ -18,14 +18,15 @@ vorige umgesetzt, getestet und committet ist.
 | 10 | Typografie aufräumen (kein „maschineller“ Look) | ✅ erledigt |
 | 11 | Sterne, XP nur für Verbesserung, Kombo, neue XP-Kurve | ✅ erledigt |
 | 11b | Navigation / One-Pager: eigene Bildschirme, Welten-Ausschmückung | ✅ erledigt |
-| 11c | Feinschliff nach iPhone-Test: Weltkarte, Ziel-Knoten, Ball, Regeln-Button | 11b |
-| 11d | Ladescreen beim App-Start (Startelf stellt sich auf, Zähler bis 100 %) | 11c |
-| 12 | Scout-Profil + Trophäenschrank | 11c |
-| 13 | Tages-Challenge + Serie | 7, 11, 12 |
+| 11c | Feinschliff nach iPhone-Test: Weltkarte, Ziel-Knoten, Ball, Regeln-Button | ✅ erledigt |
+| 11d | Ladescreen beim App-Start (Startelf stellt sich auf, Zähler bis 100 %) | ✅ erledigt |
+| 12 | Scout-Profil + Trophäenschrank | ✅ erledigt |
+| 13 | Tages-Challenge + Serie | ✅ erledigt |
+| 13b | Sterne nur in Kampagne und Tages-Challenge (Freispiel ohne Sterne) | 13 |
 | 14 | Recherche Tages-Pool (Gegenseiten + neue Spiele) | 13 |
 | 15 | Kampagne auf ca. 60 Aufstellungen ausbauen | – |
 
-**Empfohlene Reihenfolge ab jetzt:** 11c → 11d → 12 → 13 → 14 → 15 → 8
+**Empfohlene Reihenfolge ab jetzt:** 13b → 14 → 15 → 8
 
 Prompt 7 steht bewusst vor der Tages-Challenge: Nur mit der neuen
 Update-Strategie kommen neue Tages-Aufstellungen zuverlässig auf dem iPhone an.
@@ -997,6 +998,98 @@ Mo→So liefert Schwierigkeiten 1,2,2,3,3,4,5; zwei Profile bekommen am selben
 Tag dieselbe Aufstellung; zweiter Versuch am selben Tag gesperrt; Serie
 1→2→3, Tag auslassen → 1; Uhrzeit 00:30 → richtiger lokaler Tag; Teilen-
 Text für 4-3-3 und 3-5-2 zeigen; Fallback bei leerem DAILY_CHALLENGES.
+```
+
+---
+
+## Prompt 13b – Sterne nur in Kampagne und Tages-Challenge
+
+```
+Lies CLAUDE.md. Bugfix mit Datenmodell-Änderung → Plan Mode, Plan zeigen,
+auf OK warten.
+
+Problem: Aufstellungen, die im Freispiel (oder in der Tages-Challenge)
+gespielt werden, zeigen ihre Sterne bereits in der Kampagne an – auch in
+noch gesperrten Welten.
+
+Befund (bereits geprüft):
+- Es gibt nur EINEN Sterne-Speicher: profile.best[match.id] =
+  { stars, correct, solvedAbbrs }. evaluatePitch() schreibt ihn bei JEDER
+  Aufstellung, unabhängig vom Modus.
+- Kampagnen-Anzeigen lesen diesen gemeinsamen Speicher:
+  starsSummaryForTier() (Weltkarte), Level-Pfad (levelStars),
+  Kampagnen-Kachel auf der Startseite, Trophäen "Meisterschale",
+  Sterne-Kachel im Scout-Profil.
+- Die Tages-Challenge nutzt im Fallback Aufstellungen aus
+  LINEUP_CHALLENGES und schreibt dabei ebenfalls in profile.best.
+- profile.campaign.levelPassed wird korrekt NUR mit currentLevelContext
+  gesetzt – die Freischaltung ist nicht betroffen.
+- Die Sterne-Migration in loadProfile (Prompt 11) hat aus
+  stats.perfectMatchIds (alle Modi!) 3 Sterne erzeugt.
+
+Neue Regel: Sterne gibt es NUR in der Kampagne und in der
+Tages-Challenge – getrennt voneinander. Das Freispiel ist Training und
+vergibt keine Sterne. Tages-Sterne erscheinen NIE in den Welten, auch
+nicht, wenn die Tages-Aufstellung aus der Kampagne stammt.
+
+1. Kampagnen-Sterne
+   - Neuer Speicher profile.campaign.stars[match.id] (0–3), geschrieben
+     AUSSCHLIESSLICH in evaluatePitch() bei gesetztem currentLevelContext
+     (immer das Maximum).
+   - ALLE Kampagnen-Anzeigen lesen nur noch daraus: Weltkarte, Level-Pfad,
+     Startseiten-Kachel, Meisterschale-Trophäen, Sterne-Kachel im
+     Scout-Profil ("Kampagnen-⭐ x / max").
+   - Stern-XP-Boni (⭐ 50, ⭐⭐ +75, ⭐⭐⭐ +125) gibt es nur für neue
+     Kampagnen-Sterne (Vergleich mit profile.campaign.stars, nicht mit
+     profile.best).
+
+2. Tages-Sterne
+   - Bleiben in profile.daily[dateKey].stars (pro Tag, unabhängig von
+     Kampagne und Freispiel). Jede Tages-Challenge vergibt Tages-Sterne
+     und die Stern-XP-Boni für diesen Tag – einheitlich an jedem Tag, egal
+     woher die Aufstellung stammt.
+   - Sie schreiben NIE in profile.campaign.stars – auch dann nicht, wenn
+     die Tages-Aufstellung aus LINEUP_CHALLENGES stammt.
+   - Optional im Scout-Profil eine Kachel "Tages-⭐ gesamt" – im Plan
+     vorschlagen.
+
+3. Freispiel (inkl. Archiv)
+   - Keine Sterne: weder speichern noch auf dem Ergebnisbildschirm
+     anzeigen. Stattdessen dort z. B. "9/11 · 3 Positionen neu gelernt".
+   - Positions-XP für neu gelöste Positionen, Kombo und Trainings-XP
+     bleiben.
+
+4. profile.best wird zum reinen "Wissensstand"
+   - Felder correct + solvedAbbrs, das Feld stars entfällt (bei Migration
+     entfernen). Genutzt für: XP nur für neu gelöste Positionen (über alle
+     Modi – kein doppeltes XP), Ø Treffer, Reiter "Wissen".
+   - "Schwäche trainieren" bevorzugt Aufstellungen mit best.correct < 11
+     statt "ohne ⭐⭐⭐".
+   - Alle Lesestellen von profile.best per Suche finden und im Plan
+     tabellarisch auflisten (Stelle, liest heute, liest künftig).
+
+5. Migration (einmalig, Flag z. B. profile.starsVersion = 2)
+   - campaign.stars[id] = alter best.stars, aber nur für Level mit
+     levelPassed = true (mindestens 1); sonst 0.
+   - Damit verschwinden Sterne aus gesperrten Welten und aus noch nicht in
+     der Kampagne bestandenen Leveln.
+   - Meisterschalen neu berechnen; bereits gewonnene Trophäen bleiben
+     gewonnen (im Plan melden, falls das eine betrifft).
+   - Level, XP, Token, levelPassed und Tages-Ergebnisse bleiben
+     unverändert.
+
+6. Anleitung (GUIDE_SECTIONS, Regeln-Fenster, SPLASH_TIPS) an die neue
+   Regel anpassen. sw.js CACHE_NAME erhöhen.
+
+Test (Test-Profile):
+- Neues Profil: Aufstellung aus Welt 4 im Freispiel 11/11 → keine Sterne
+  im Ergebnis, Weltkarte Welt 4 bleibt ⭐ 0.
+- Dieselbe Aufstellung später in der Kampagne 11/11 → 3 Sterne + Stern-
+  Boni, aber 0 Positions-XP (schon gelernt).
+- Tages-Challenge mit Kampagnen-Aufstellung → Tages-Sterne ja,
+  Kampagnen-Sterne nein, Weltkarte unverändert.
+- Bestehendes Profil → nach Migration Sterne nur bei bestandenen
+  Kampagnen-Leveln; Level/XP/Token unverändert.
 ```
 
 ---
