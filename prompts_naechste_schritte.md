@@ -24,10 +24,11 @@ vorige umgesetzt, getestet und committet ist.
 | 13 | Tages-Challenge + Serie | ✅ erledigt |
 | 13b | Sterne nur in Kampagne und Tages-Challenge (Freispiel ohne Sterne) | 13 |
 | 13c | Startseite: Tages-Karte sichtbar machen, Modus-Kacheln verkleinern | 13 |
+| 13d | Neues App-Icon „Taktiktafel – Flutlicht“ | – |
 | 14 | Recherche Tages-Pool (Gegenseiten + neue Spiele) | 13 |
 | 15 | Kampagne auf ca. 60 Aufstellungen ausbauen | – |
 
-**Empfohlene Reihenfolge ab jetzt:** 13c → 13b → 14 → 15 → 8
+**Empfohlene Reihenfolge ab jetzt:** 13c → 13d → 13b → 14 → 15 → 8
 
 Prompt 7 steht bewusst vor der Tages-Challenge: Nur mit der neuen
 Update-Strategie kommen neue Tages-Aufstellungen zuverlässig auf dem iPhone an.
@@ -1047,6 +1048,51 @@ Umsetzung:
 Test: Screenshots der Startseite bei 375×667, 402×874 und 430×932, jeweils
 mit offener und gelöster Tages-Challenge (Test-Profil); Vergleich mit
 dem Prototyp kurz kommentieren; kein Scrollen auf dem Start-Bildschirm.
+```
+
+---
+
+## Prompt 13d – Neues App-Icon „Taktiktafel – Flutlicht“
+
+```
+Lies CLAUDE.md. Neues App-Icon einbauen → kurz Plan zeigen, dann umsetzen.
+
+Vorlagen (fertig gestaltet, NICHT neu zeichnen oder verändern):
+- icons/source/app-icon.svg – Haupt-Icon 1024×1024: Spielfeld in
+  Perspektive, Startelf als 11 goldene Punkte, leuchtender Stürmer,
+  Flutlicht, goldener Rahmen. Vollflächig, ohne Transparenz.
+- icons/source/app-icon-maskable.svg – Variante für Android
+  ("maskable"): ohne Goldrahmen, Inhalt innerhalb der Safe Zone
+  (Kreis mit 80 % Durchmesser).
+- icons/source/*-preview.png – nur zur Kontrolle, wie es aussehen muss.
+
+Umsetzung:
+1. Skript tools/build-icons.mjs (Playwright oder sharp – im Plan
+   begründen), das aus den SVGs alle PNGs erzeugt und die bestehenden
+   Dateien in icons/ ersetzt:
+   - icon-512.png, icon-192.png (purpose "any", aus app-icon.svg)
+   - icon-512-maskable.png, icon-192-maskable.png (aus
+     app-icon-maskable.svg)
+   - apple-touch-icon.png 180×180 (aus app-icon.svg, ohne Transparenz)
+   - favicon-32.png, favicon-16.png – prüfen, ob das Icon in 16/32px noch
+     erkennbar ist; falls nicht, für die Favicons eine vereinfachte
+     Variante vorschlagen (z. B. nur Feld + leuchtender Punkt).
+   - zusätzlich icon-1024.png als Vorlage für den späteren App-Store-
+     Eintrag (Capacitor, Prompt 8).
+   Gerendert wird mit den SVG-Farbverläufen exakt wie in den Previews.
+2. manifest.json: Icon-Einträge prüfen (any + maskable getrennt, korrekte
+   Größen). index/HTML: apple-touch-icon und Favicon-Links prüfen.
+3. Falls in Prompt 11d iOS-Startbilder (apple-touch-startup-image)
+   erzeugt wurden: prüfen, ob sie das alte Icon enthalten, und ggf. mit
+   neu erzeugen. Das ⚽-Logo-Badge in der App (Kopf, Ladescreen) bleibt
+   unverändert.
+4. icons/source/ NICHT in den Service-Worker-Cache aufnehmen (nur die
+   erzeugten PNGs). sw.js CACHE_NAME erhöhen.
+
+Test: alle erzeugten PNGs nebeneinander als Übersicht zeigen (inkl. 16px
+und 32px vergrößert), Vergleich mit den Preview-PNGs; Hinweis an mich,
+dass ich das Icon auf dem iPhone nur sehe, wenn ich die App vom
+Homescreen lösche und neu über "Zum Home-Bildschirm" hinzufüge.
 ```
 
 ---
