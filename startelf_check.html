@@ -94,7 +94,7 @@
 
   /* ---- Start: Modus-Kacheln (ersetzen die alte mode-row, Prompt 11b) ---- */
   #dailyCard:empty { display: none; }
-  .mode-tiles { display: flex; gap: 10px; flex: 1; min-height: 0; }
+  .mode-tiles { display: flex; gap: 10px; flex: 1; min-height: 0; max-height: clamp(150px, 24vh, 210px); }
   .mode-tile { flex: 1; border-radius: 14px; border: 2px solid var(--line); background: var(--ink-2); display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 4px; padding: 10px 8px; cursor: pointer; box-shadow: 0 5px 12px rgba(0,0,0,0.3); text-align: center; }
   .mode-tile:active { transform: scale(0.97); }
   .mode-tile .mt-icon { font-size: clamp(26px, 4.6vh, 38px); line-height: 1; }
@@ -306,6 +306,7 @@
   @keyframes starPop { from { transform: scale(0.3); opacity: 0; } to { transform: scale(1); opacity: 1; } }
   .result-stars { display: flex; justify-content: center; margin: -2px 0 10px; }
   .result-stars .stars-row svg { width: 22px; height: 22px; }
+  .result-stars.freeplay-note { font-family: 'Oswald', sans-serif; font-weight: 300; font-size: 13px; color: var(--muted); text-align: center; padding: 0 10px; }
   .level-stars { display: flex; justify-content: center; gap: 2px; margin-top: 4px; min-height: 12px; }
   .level-stars svg { width: 11px; height: 11px; }
   .world-star-total { font-family: 'Oswald', sans-serif; font-weight: 600; font-size: 11px; color: var(--gold); background: rgba(232,178,61,0.12); border: 1px solid rgba(232,178,61,0.3); border-radius: 20px; padding: 3px 10px; }
@@ -343,8 +344,7 @@
   @keyframes xpShine { 0% { transform: translateX(-120%); } 100% { transform: translateX(280%); } }
   .xp-next { font-family: 'Oswald', sans-serif; font-weight: 300; font-size: 11.5px; color: rgba(242,239,230,0.7); margin-top: 5px; display: flex; align-items: center; gap: 6px; }
   .xp-next b { color: var(--gold); font-weight: 700; }
-  .xp-ball { display: inline-block; font-size: 19px; line-height: 1; animation: xpBallDribble 2.6s ease-in-out infinite; }
-  @keyframes xpBallDribble { 0% { transform: translateX(0) rotate(0deg); } 50% { transform: translateX(14px) rotate(220deg); } 100% { transform: translateX(0) rotate(0deg); } }
+  .xp-ball { display: inline-block; font-size: 19px; line-height: 1; }
   .profile-bar.gold-frame { border-color: var(--gold); box-shadow: 0 0 0 1px var(--gold), 0 0 14px rgba(232,178,61,0.25); }
   .currency-stack { display: flex; flex-direction: column; gap: 5px; flex-shrink: 0; }
   .token-count { flex-shrink: 0; font-family: 'Anton', sans-serif; font-size: 13px; font-weight: 400; color: #7db8ff; background: rgba(74,163,255,0.12); border: 1px solid rgba(74,163,255,0.3); border-radius: 20px; padding: 6px 10px; text-align: center; }
@@ -591,7 +591,7 @@
       </div>
     </button>
 
-    <div id="dailyCard"></div>
+    <div id="dailyCard" class="daily"></div>
 
     <div class="mode-tiles" id="modeTiles"></div>
   </section>
@@ -1672,7 +1672,8 @@ const defaultProfile = {
   unlockedTitle: null,
   unlockedFeatures: [],
   campaign: {
-    levelPassed: {} // match.id -> true; alles andere (freigeschaltete Level/Welten) wird daraus abgeleitet
+    levelPassed: {}, // match.id -> true; alles andere (freigeschaltete Level/Welten) wird daraus abgeleitet
+    stars: {} // match.id -> 0-3, NUR Kampagnen-Sterne (Prompt 13b, getrennt von Tages-/Freispiel-Ergebnissen)
   }
 };
 
@@ -1751,6 +1752,7 @@ function loadProfile() {
     // wird daraus live berechnet - so kann kein veralteter Freischalt-Zustand entstehen.
     if (!profile.campaign || typeof profile.campaign !== "object") profile.campaign = { levelPassed: {} };
     if (!profile.campaign.levelPassed || typeof profile.campaign.levelPassed !== "object") profile.campaign.levelPassed = {};
+    if (!profile.campaign.stars || typeof profile.campaign.stars !== "object") profile.campaign.stars = {};
     // Einmalige Wirtschafts-Migration (Prompt 6): zwei Waehrungen (Scout-Token +
     // Hinweis-Punkte) werden zu einer zusammengefuehrt - altes 3:1-Wertverhaeltnis
     // (ein Scout-Token kostete/gab etwa 3x soviel wie ein Hinweis-Punkt).
@@ -1788,6 +1790,25 @@ function loadProfile() {
       if (!profile.campaign.levelPassed[id]) return;
       if (!profile.best[id]) profile.best[id] = { stars: 1, correct: PASS_THRESHOLD, solvedAbbrs: [] };
     });
+    // Sterne-Trennung (Prompt 13b): vorher gab es nur EINEN Sterne-Speicher
+    // (profile.best[id].stars), der in jedem Modus geschrieben wurde - dadurch tauchten
+    // Freispiel-Sterne faelschlich auch in noch gesperrten Kampagnen-Welten auf. Einmalig
+    // (Flag starsVersion) nur die tatsaechlich BESTANDENEN Kampagnen-Level in den neuen,
+    // getrennten profile.campaign.stars uebertragen - alle anderen (Freispiel/gesperrte
+    // Welten) verschwinden damit automatisch aus der Kampagnen-Anzeige. Danach verliert
+    // profile.best das Feld stars komplett und wird zum reinen Wissensstand (correct/
+    // solvedAbbrs). Bereits gewonnene Trophaeen (profile.trophiesWon) bleiben unangetastet,
+    // auch wenn eine Schale-Trophaee rechnerisch nicht mehr zutrifft (kein Rueckschritt,
+    // wie bei Achievements in diesem Projekt ueblich).
+    if (profile.starsVersion !== 2) {
+      Object.keys(profile.campaign.levelPassed).forEach(id => {
+        if (!profile.campaign.levelPassed[id]) return;
+        const stars = (profile.best[id] && profile.best[id].stars) || 0;
+        profile.campaign.stars[id] = Math.max(profile.campaign.stars[id] || 0, stars);
+      });
+      Object.values(profile.best).forEach(entry => { delete entry.stars; });
+      profile.starsVersion = 2;
+    }
     // XP-Kurven-Migration (Prompt 11): die Kurvenkonstante sank von 100 auf 75, das
     // bestehende Level darf dadurch fuer niemanden sinken. Unconditional bei jedem
     // Load - mathematisch idempotent, da levelFromXP garantiert xpForLevel(level) <= totalXP.
@@ -2030,7 +2051,7 @@ const GUIDE_SECTIONS = [
   { icon: "🎡", title: "Scout-Rad", desc: "Tipp im Positions-Panel auf \"Scout-Rad öffnen\" und dreh für 1 🔍 Scout-Token: 1. Buchstabe, Rückennummer, Nationalität oder als Jackpot der ganze Name. Jeder Dreh zählt als Hinweis (etwas weniger XP, kein ⭐⭐⭐ mehr für diese Aufstellung). Rückennummer/Nationalität gibt's nur, wo die Daten vorliegen; Nationalität entfällt bei Nationalmannschaftsspielen." },
   { icon: "👁️", title: "Aufdecken", desc: "Direkt neben dem Scout-Rad: zeigt für 3 🔍 Scout-Token sofort den kompletten Namen, ohne XP-Abzug." },
   { icon: "🔍", title: "Scout-Token verdienen", desc: "Du bekommst Scout-Token fürs erste Spielen einer Aufstellung, für eine perfekte Aufstellung (einmalig je Aufstellung), für den Abschluss der Tages-Challenge, bei jedem Level-Up und für neu freigeschaltete Achievements." },
-  { icon: "⭐", title: "Sterne", desc: "Jede Aufstellung bringt dir bis zu 3 Sterne: ⭐ ab 7/11, ⭐⭐ ab 9/11, ⭐⭐⭐ nur für 11/11 ganz ohne Scout-Rad, Aufdecken oder Korrigieren. Nur die erste Verbesserung zählt für XP - Wiederholen ohne Fortschritt bringt nur noch kleine Trainings-XP." },
+  { icon: "⭐", title: "Sterne", desc: "Sterne gibt's nur in der Kampagne und in der Tages-Challenge, bis zu 3 pro Aufstellung: ⭐ ab 7/11, ⭐⭐ ab 9/11, ⭐⭐⭐ nur für 11/11 ganz ohne Scout-Rad, Aufdecken oder Korrigieren. Das Freispiel ist reines Training ohne Sterne. Nur die erste Verbesserung zählt für XP - Wiederholen ohne Fortschritt bringt nur noch kleine Trainings-XP." },
   { icon: "🔥", title: "Kombo", desc: "Richtige Positionen ohne Hilfe in Folge erhöhen die Kombo und damit dein Positions-XP. Ein Scout-Rad-Dreh, Aufdecken, Korrigieren oder ein falsch verlassenes Feld setzt die Kombo zurück." },
   { icon: "🏟️", title: "Kampagne", desc: "Fünf Welten von Kreisliga bis Weltklasse. Mindestens 7 von 11 richtig, um ein Level zu bestehen und das nächste freizuschalten." },
   { icon: "🎲", title: "Frei spielen", desc: "Liga und Schwierigkeit frei wählbar, ganz ohne Fortschrittsdruck - für schnelle Runden zwischendurch." },
@@ -2217,10 +2238,11 @@ function getMatchesByTier(tier) {
   return LINEUP_CHALLENGES.filter(m => m.difficulty === tier);
 }
 
-// Sterne-Summe einer Stufe (Prompt 11): x = tatsaechlich erreichte Sterne ueber alle
-// Level dieser Welt, y = maximal moegliche (3 je Level).
+// Sterne-Summe einer Stufe (Prompt 11, ab 13b aus profile.campaign.stars statt profile.best):
+// x = tatsaechlich erreichte KAMPAGNEN-Sterne ueber alle Level dieser Welt, y = maximal
+// moegliche (3 je Level).
 function starsSummaryForTier(matches) {
-  const earned = matches.reduce((sum, m) => sum + ((profile.best[m.id] && profile.best[m.id].stars) || 0), 0);
+  const earned = matches.reduce((sum, m) => sum + (profile.campaign.stars[m.id] || 0), 0);
   return { earned, max: matches.length * 3 };
 }
 
@@ -2486,7 +2508,7 @@ function renderCampaignLevels() {
     const isPassed = !!profile.campaign.levelPassed[m.id];
     const isUnlocked = idx < unlockedCount;
     const isCurrent = isUnlocked && !isPassed;
-    const levelStars = (profile.best[m.id] && profile.best[m.id].stars) || 0;
+    const levelStars = profile.campaign.stars[m.id] || 0;
     const p = points[idx];
     const nodeStyle = "--node-color:" + color + "; --node-color-light:" + color + "cc;" + (isCurrent ? " border-color:" + color + ";" : "");
     nodesHtml += `
@@ -2563,6 +2585,12 @@ function starsSummaryTotal() {
   }, { earned: 0, max: 0 });
 }
 
+// Tages-Sterne-Summe (Prompt 13b): eigener, von den Kampagnen-Sternen komplett
+// unabhaengiger Zaehler - Summe aller je erspielten Tages-Challenge-Sterne.
+function dailyStarsTotal() {
+  return Object.values(profile.daily).reduce((sum, d) => sum + (d.stars || 0), 0);
+}
+
 // Kompakte Tages-Challenge-Karte auf der Startseite (Prompt 13, Optik 1:1 aus Prototyp) -
 // zwei Zustaende: offen (Spielen-Button) und geloest (Mini-Raster + Teilen-Button).
 function renderDailyCard() {
@@ -2627,9 +2655,9 @@ function renderModeTiles() {
 
   tiles.innerHTML = `
     <button type="button" class="mode-tile camp" id="modeTileCampaign">
-      <div class="mt-icon">⚽</div>
-      <div class="mt-name">${DIFF_LABEL[tier]}</div>
-      <div class="mt-sub">⭐ <b>${stars.earned}/${stars.max}</b> gesamt</div>
+      <div class="mt-icon">🌍</div>
+      <div class="mt-name">Kampagne</div>
+      <div class="mt-sub">Welt ${tier} · <b>${DIFF_LABEL[tier]}</b><br>⭐ <b>${stars.earned}/${stars.max}</b></div>
       <div class="mt-bar"><i style="width:${pct}%"></i></div>
     </button>
     <button type="button" class="mode-tile free" id="modeTileFreeplay">
@@ -2706,8 +2734,8 @@ const CAMPAIGN_TROPHIES = ROADMAP_NODES.flatMap(({ tier }) => {
       id: "plate_tier" + tier, group: "Kampagne", kind: "plate",
       name: worldName + "-Schale", req: "Alle Level mit ⭐⭐⭐",
       desc: "Alle Level der Welt \"" + worldName + "\" mit drei Sternen gelöst.",
-      check: (p) => { const m = getMatchesByTier(tier); return m.length > 0 && m.every((x) => (p.best[x.id] && p.best[x.id].stars) === 3); },
-      progress: (p) => { const m = getMatchesByTier(tier); return [m.filter((x) => (p.best[x.id] && p.best[x.id].stars) === 3).length, m.length]; }
+      check: (p) => { const m = getMatchesByTier(tier); return m.length > 0 && m.every((x) => p.campaign.stars[x.id] === 3); },
+      progress: (p) => { const m = getMatchesByTier(tier); return [m.filter((x) => p.campaign.stars[x.id] === 3).length, m.length]; }
     }
   ];
 });
@@ -2800,7 +2828,8 @@ function profileOverviewHTML() {
       <div class="stat-tile"><div class="v">${profile.stats.lineupsPlayed}</div><div class="l">Absolviert</div></div>
       <div class="stat-tile"><div class="v">${avgCorrect}</div><div class="l">Ø Treffer</div></div>
       <div class="stat-tile"><div class="v">${profile.stats.lineupsPerfect}</div><div class="l">Perfekt</div></div>
-      <div class="stat-tile"><div class="v">${stars.earned}/${stars.max}</div><div class="l">⭐ gesamt</div></div>
+      <div class="stat-tile"><div class="v">${stars.earned}/${stars.max}</div><div class="l">Kampagnen-⭐</div></div>
+      <div class="stat-tile"><div class="v">${dailyStarsTotal()}</div><div class="l">Tages-⭐ gesamt</div></div>
       <div class="stat-tile"><div class="v">${profile.streak.current}</div><div class="l">🔥 Serie</div></div>
       <div class="stat-tile"><div class="v">${profile.streak.best}</div><div class="l">Längste Serie</div></div>
     </div>
@@ -2898,8 +2927,9 @@ function profileKnowledgeHTML() {
     <div class="sheet-note">Grundlage ist dein bestes Ergebnis je Aufstellung. "–" heißt: noch nichts gespielt.</div>`;
 }
 
-// Setzt die Freispiel-Filter auf die Schwaeche-Liga-Gruppe, bevorzugt eine Aufstellung ohne
-// ⭐⭐⭐ (Fallback: ganzer Gruppen-Pool) und startet sie direkt.
+// Setzt die Freispiel-Filter auf die Schwaeche-Liga-Gruppe, bevorzugt eine noch nicht
+// vollstaendig (11/11) geloeste Aufstellung (Fallback: ganzer Gruppen-Pool) und startet
+// sie direkt. Seit Prompt 13b ohne Sterne-Bezug, da profile.best keine Sterne mehr fuehrt.
 function trainWeakness(groupName) {
   const leagues = LEAGUE_GROUPS[groupName];
   if (!leagues) return;
@@ -2908,8 +2938,8 @@ function trainWeakness(groupName) {
   matchQueue = [];
   const pool = poolForActiveLeague();
   if (pool.length === 0) return;
-  const withoutThreeStars = pool.filter((m) => !(profile.best[m.id] && profile.best[m.id].stars === 3));
-  const chosenPool = withoutThreeStars.length > 0 ? withoutThreeStars : pool;
+  const notYetMastered = pool.filter((m) => !(profile.best[m.id] && profile.best[m.id].correct === 11));
+  const chosenPool = notYetMastered.length > 0 ? notYetMastered : pool;
   const m = chosenPool[Math.floor(Math.random() * chosenPool.length)];
   const bg = document.getElementById("profileSheetBg");
   if (bg) bg.remove();
@@ -3867,14 +3897,14 @@ function evaluatePitch() {
   const isFirstTimePlayed = !profile.stats.playedMatchIds.includes(m.id);
   if (isFirstTimePlayed) profile.stats.playedMatchIds.push(m.id);
 
-  // Sterne + Wissens-Stand (Prompt 11): immer das beste Ergebnis merken. Positions-XP fuer
-  // neu geloeste Positionen wurde bereits LIVE beim Eintippen vergeben (siehe renderPitch) -
-  // hier geht es nur noch um Sternen-Boni und den Trainings-XP-Fallback bei Wiederholung.
-  const prevBest = profile.best[m.id] || { stars: 0, correct: 0, solvedAbbrs: [] };
+  // Wissens-Stand (Prompt 11, ab 13b OHNE Sterne): immer das beste Ergebnis merken, modus-
+  // uebergreifend. Positions-XP fuer neu geloeste Positionen wurde bereits LIVE beim
+  // Eintippen vergeben (siehe renderPitch) - hier geht es nur noch um den Trainings-XP-
+  // Fallback bei Wiederholung und (modusabhaengig) die Sternen-Boni weiter unten.
+  const prevBest = profile.best[m.id] || { correct: 0, solvedAbbrs: [] };
   const solvedNowAbbrs = correctAbbrs.filter(a => !prefilledAbbrs.has(a));
   const newlySolvedAbbrs = solvedNowAbbrs.filter(a => !prevBest.solvedAbbrs.includes(a));
   profile.best[m.id] = {
-    stars: Math.max(prevBest.stars, stars),
     correct: Math.max(prevBest.correct, correct),
     solvedAbbrs: Array.from(new Set([...prevBest.solvedAbbrs, ...solvedNowAbbrs]))
   };
@@ -3898,16 +3928,33 @@ function evaluatePitch() {
     profile.stats.perfectStreak = 0;
   }
 
-  // Sternen-Boni: einmalig, beim ERSTEN Erreichen jeder Stufe - ein Sprung (z.B. 1->3
-  // Sterne in einem Versuch) gibt die Boni aller ueberschrittenen Stufen zusammen.
+  // Sterne (Prompt 13b): NUR in Kampagne und Tages-Challenge, strikt getrennte Speicher
+  // (profile.campaign.stars vs. profile.daily[dateKey].stars) - Freispiel bekommt weder
+  // Sterne noch Sternen-XP. In der Kampagne zaehlt wie bisher nur das ERSTE Erreichen jeder
+  // Stufe (Vergleich mit dem bisherigen Kampagnen-Stand); in der Tages-Challenge gibt es pro
+  // Tag nur einen Versuch, es gibt also keinen "vorherigen Stand" - hier zaehlen die Boni
+  // aller an diesem Tag erreichten Stufen.
   const STAR_LABELS = { 1: "⭐ Erster Stern", 2: "⭐⭐ Zweiter Stern", 3: "⭐⭐⭐ Dritter Stern" };
-  for (let s = prevBest.stars + 1; s <= stars; s++) {
-    bonusXP += XP_RULES.starBonus[s];
-    bonusReasons.push(STAR_LABELS[s]);
+  let improved = newlySolvedAbbrs.length > 0;
+  let prevCampStars = 0; // nur fuer die Sterne-Anzeige im Ergebnis-Panel unten relevant
+  if (currentLevelContext) {
+    prevCampStars = profile.campaign.stars[m.id] || 0;
+    profile.campaign.stars[m.id] = Math.max(prevCampStars, stars);
+    for (let s = prevCampStars + 1; s <= stars; s++) {
+      bonusXP += XP_RULES.starBonus[s];
+      bonusReasons.push(STAR_LABELS[s]);
+      improved = true;
+    }
+  } else if (currentDailyChallenge) {
+    for (let s = 1; s <= stars; s++) {
+      bonusXP += XP_RULES.starBonus[s];
+      bonusReasons.push(STAR_LABELS[s]);
+      improved = true;
+    }
   }
   // Keine Verbesserung (weder neue Position noch neuer Stern) -> Trainings-XP, damit
   // Wiederholen nicht wertlos ist, aber auch keine bessere XP-Quelle als echtes Lernen.
-  if (newlySolvedAbbrs.length === 0 && stars <= prevBest.stars) {
+  if (!improved) {
     bonusXP += XP_RULES.trainingXP;
     bonusReasons.push("Trainings-XP");
   }
@@ -3988,9 +4035,20 @@ function evaluatePitch() {
   scoreDiv.textContent = correct + " / " + total + " richtig" + (!noHintsUsed ? " (mit Hinweisen)" : "") + (fuzzyCorrected.size > 0 ? " (" + fuzzyCorrected.size + " × korrigiert)" : "") + (prefilledAbbrs.size > 0 ? " · davon " + prefilledAbbrs.size + " vorgegeben" : "");
   panel.appendChild(scoreDiv);
 
+  // Sterne nur in Kampagne/Tages-Challenge anzeigen (Prompt 13b) - im Freispiel stattdessen
+  // ein Lernfortschritts-Text, da es dort keine Sterne gibt.
   const starsDiv = document.createElement("div");
   starsDiv.className = "result-stars";
-  starsDiv.innerHTML = starsRowHTML(stars, prevBest.stars);
+  if (campaignResult) {
+    starsDiv.innerHTML = starsRowHTML(stars, prevCampStars);
+  } else if (dailyResult) {
+    starsDiv.innerHTML = starsRowHTML(stars);
+  } else {
+    starsDiv.className = "result-stars freeplay-note";
+    starsDiv.textContent = newlySolvedAbbrs.length > 0
+      ? newlySolvedAbbrs.length + " Position" + (newlySolvedAbbrs.length === 1 ? "" : "en") + " neu gelernt"
+      : "Keine neue Position gelernt - Freispiel ist Training, hier gibt's keine Sterne.";
+  }
   panel.appendChild(starsDiv);
 
   const receiptTotal = receipt.reduce((sum, r) => sum + r.amount, 0);
@@ -4066,7 +4124,7 @@ const SPLASH_STATUS = [
 const SPLASH_TIPS = [
   "Tippst du einen Namen in die falsche Zeile, landet er automatisch auf seiner richtigen Position.",
   "Kleiner Tippfehler? Das Feld wird gold - mit \"Korrigieren\" trägst du die richtige Schreibweise ein.",
-  "Drei Sterne gibt's nur für 11 von 11 - ganz ohne Scout-Rad, Aufdecken oder Korrigieren.",
+  "Drei Sterne gibt's nur in Kampagne und Tages-Challenge, für 11 von 11 - ganz ohne Scout-Rad, Aufdecken oder Korrigieren.",
   "Beim Scout-Rad ist der ganze Name der Jackpot - selten, aber möglich.",
   "Richtige Positionen ohne Hilfe in Folge erhöhen deine Kombo und damit dein Positions-XP.",
   "Ab Level 15 schaltest du den Hardcore-Modus mit den schwersten Aufstellungen frei.",
