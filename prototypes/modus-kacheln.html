@@ -1,0 +1,522 @@
+<!doctype html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, viewport-fit=cover">
+<!-- Referenz-Prototyp für Prompt 18 (Modus-Kacheln). Maßgeblich ist NUR "A · neu" (Funktion mA2, CSS .mt/.a2/.wp/.form/.ln/.ft). "Heute" und "A · vorher" nur zum Vergleich. Alle Werte sind Beispieldaten. Nicht einbinden. -->
+<title>Modus-Kacheln Varianten</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Anton&family=Oswald:wght@300;400;500;600;700&display=swap">
+<style>
+  :root {
+    --pitch: #1F4D36; --chalk: #F2EFE6; --gold: #E8B23D; --gold-2: #F4D58D;
+    --ink: #14202B; --ink-2: #1C2B38; --ink-3: #243A4D; --line: rgba(242,239,230,0.14);
+    --muted: rgba(242,239,230,0.66); --dim: rgba(242,239,230,0.42); --token: #7DB8FF; --ok: #2ECC71; --flame: #F0A93B;
+    color-scheme: dark;
+  }
+  * { box-sizing: border-box; }
+  html, body { background: var(--ink); }
+  body { margin: 0; color: var(--chalk); font-family: Oswald, "Arial Narrow", system-ui, sans-serif; -webkit-tap-highlight-color: transparent; }
+  button { font-family: inherit; color: inherit; cursor: pointer; touch-action: manipulation; }
+  button:focus-visible { outline: 2px solid var(--gold-2); outline-offset: 3px; }
+
+  .controls { position: sticky; top: 0; z-index: 10; background: rgba(20,32,43,0.95); backdrop-filter: blur(6px); border-bottom: 1px solid var(--line); padding: 10px 16px; display: flex; flex-wrap: wrap; gap: 8px; justify-content: center; }
+  .seg { display: inline-flex; border: 1px solid var(--line); border-radius: 20px; padding: 3px; gap: 3px; }
+  .seg button { font-weight: 600; font-size: 13px; background: transparent; color: var(--muted); border: none; border-radius: 16px; padding: 6px 12px; }
+  .seg button[aria-pressed="true"] { background: linear-gradient(160deg, #f6da9c, var(--gold)); color: var(--ink); }
+
+  /* Handy-Rahmen mit der echten Startseite */
+  .phone { width: min(402px, 100%); height: 780px; margin: 16px auto 32px; position: relative; overflow: hidden; border-radius: 28px; border: 1px solid var(--line);
+    background: repeating-linear-gradient(90deg, rgba(255,255,255,0.02) 0 2px, transparent 2px 40px), var(--ink);
+    display: flex; flex-direction: column; justify-content: space-between; padding: 14px 16px 16px; }
+  header { position: relative; text-align: center; }
+  header::before { content: ""; position: absolute; top: -30px; left: 50%; transform: translateX(-50%); width: 260px; height: 170px; background: radial-gradient(ellipse, rgba(232,178,61,0.16), transparent 70%); pointer-events: none; }
+  .badge { width: 42px; height: 42px; margin: 0 auto 6px; border-radius: 50%; background: radial-gradient(circle at 35% 30%, #2c6b48, var(--pitch)); border: 2px solid var(--gold); display: grid; place-items: center; font-size: 19px; }
+  .help { position: absolute; top: 0; right: 0; background: linear-gradient(135deg, var(--gold), var(--gold-2)); color: var(--ink); border: none; border-radius: 20px; padding: 6px 11px; font-weight: 700; font-size: 12px; text-transform: uppercase; }
+  .kicker { font-weight: 600; font-size: 11.5px; letter-spacing: 0.12em; color: var(--gold); text-transform: uppercase; }
+  h1 { font-family: Anton, Impact, sans-serif; font-weight: 400; font-size: 40px; margin: 2px 0 0; line-height: 0.95; text-transform: uppercase; }
+  h1 span { color: var(--gold); }
+  .sub { font-weight: 300; font-size: 13.5px; line-height: 1.35; color: var(--muted); margin: 5px auto 0; max-width: 40ch; }
+  .profile { background: var(--ink-2); border: 1px solid var(--line); border-radius: 10px; height: 91px; display: flex; align-items: center; gap: 11px; padding: 0 12px; }
+  .profile .ri { width: 38px; height: 38px; border-radius: 50%; background: radial-gradient(circle at 35% 30%, #c79a5e, #7a5228); border: 2px solid #c79a5e; display: grid; place-items: center; }
+  .profile .mid { flex: 1; display: flex; flex-direction: column; gap: 6px; }
+  .profile .bar { height: 7px; border-radius: 4px; background: rgba(255,255,255,0.08); }
+  .profile .t { font-weight: 700; font-size: 14px; } .profile .s { font-size: 12.5px; color: var(--muted); }
+  .profile .chips { display: flex; flex-direction: column; gap: 5px; } .profile .chips span { font-weight: 700; font-size: 12.5px; border-radius: 20px; padding: 3px 10px; }
+  .reserve { position: relative; }
+  .reserve::after { content: "Reserve für die neue Level-Kachel"; position: absolute; left: 0; right: 0; top: 100%; margin-top: 4px; text-align: center; font-size: 10.5px; color: rgba(125,184,255,0.5); letter-spacing: 0.05em; }
+  .tiles { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; height: 180px; }
+  .tile { border-radius: 14px; border: 2px solid var(--line); background: var(--ink-2); display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 3px; text-align: center; }
+  .tile .i { font-size: 30px; } .tile .n { font-family: Anton, Impact, sans-serif; font-size: 22px; text-transform: uppercase; } .tile .x { font-size: 12.5px; }
+  .tile.camp { background: linear-gradient(160deg, #f6da9c, var(--gold)); color: var(--ink); border-color: var(--gold); }
+  .tile.free { color: rgba(242,239,230,0.9); } .tile.free .x { color: var(--muted); }
+
+  /* ---------- gemeinsame Bausteine ---------- */
+  .flip { display: inline-flex; gap: 3px; align-items: center; }
+  .flip b { font-family: Anton, Impact, sans-serif; font-weight: 400; font-size: 22px; line-height: 1; min-width: 20px; padding: 4px 3px 3px; text-align: center; border-radius: 4px; color: var(--gold-2);
+    background: linear-gradient(180deg, #0d171f 0 49%, #0a1218 51% 100%); box-shadow: inset 0 0 0 1px rgba(255,255,255,0.06), 0 2px 0 rgba(0,0,0,0.35); position: relative; }
+  .flip b::after { content: ""; position: absolute; left: 0; right: 0; top: 50%; height: 1px; background: rgba(0,0,0,0.6); }
+  .flip i { font-style: normal; font-family: Anton, Impact, sans-serif; font-size: 18px; color: rgba(244,213,141,0.55); margin: 0 1px; }
+  .meter { display: inline-flex; gap: 3px; } .meter i { width: 14px; height: 5px; border-radius: 3px; background: rgba(255,255,255,0.18); } .meter i.on { background: currentColor; box-shadow: 0 0 6px currentColor; }
+  .mini { display: flex; flex-direction: column; gap: 2px; align-items: center; } .mini .r { display: flex; gap: 2px; }
+  .sq { width: 9px; height: 9px; border-radius: 2px; } .sq.g { background: var(--ok); } .sq.y { background: var(--gold); } .sq.x { background: #3A4652; }
+
+  /* ---------- Variante 1: Spieltag-Ticket ---------- */
+  .v1 { position: relative; height: 148px; display: grid; grid-template-columns: 1fr 96px; border-radius: 14px; overflow: hidden; filter: drop-shadow(0 8px 16px rgba(0,0,0,0.35)); }
+  .v1 .main { position: relative; padding: 12px 14px 12px 16px; display: flex; flex-direction: column; justify-content: space-between;
+    background: radial-gradient(circle at 0% 0%, rgba(232,178,61,0.22), transparent 45%), repeating-linear-gradient(90deg, rgba(255,255,255,0.035) 0 18px, transparent 18px 36px), linear-gradient(150deg, #27603F, #173F2B 80%);
+    border: 1.5px solid rgba(232,178,61,0.75); border-right: none; border-radius: 14px 0 0 14px; }
+  .v1 .stub { position: relative; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 8px; background: linear-gradient(160deg, #f6da9c, var(--gold)); color: var(--ink); border-radius: 0 14px 14px 0; }
+  .v1 .stub::before { content: ""; position: absolute; left: -1px; top: 8px; bottom: 8px; border-left: 3px dotted rgba(20,32,43,0.55); }
+  .v1 .notch { position: absolute; left: calc(100% - 96px - 10px); width: 20px; height: 20px; border-radius: 50%; background: var(--ink); z-index: 2; }
+  .v1 .notch.t { top: -10px; } .v1 .notch.b { bottom: -10px; }
+  .v1 .k { font-weight: 600; font-size: 11px; letter-spacing: 0.14em; text-transform: uppercase; color: var(--gold-2); display: flex; align-items: center; gap: 6px; }
+  .v1 .k .dot { width: 6px; height: 6px; border-radius: 50%; background: var(--ok); box-shadow: 0 0 6px var(--ok); }
+  .v1 .big { font-family: Anton, Impact, sans-serif; font-size: 34px; line-height: 0.95; text-transform: uppercase; letter-spacing: 0.01em; }
+  .v1 .big span { color: var(--gold); }
+  .v1 .row { display: flex; align-items: center; gap: 10px; font-weight: 600; font-size: 13px; }
+  .v1 .tl { display: flex; align-items: center; gap: 8px; }
+  .v1 .tl .l { font-weight: 500; font-size: 10.5px; letter-spacing: 0.1em; text-transform: uppercase; color: var(--muted); line-height: 1.1; }
+  .v1 .fl { font-family: Anton, Impact, sans-serif; font-size: 30px; line-height: 1; display: flex; align-items: center; gap: 2px; }
+  .v1 .fl small { font-family: Oswald, sans-serif; font-weight: 600; font-size: 10px; letter-spacing: 0.1em; text-transform: uppercase; display: block; text-align: center; margin-top: -2px; }
+  .v1 .go { border: none; background: var(--ink); color: var(--gold-2); border-radius: 20px; padding: 7px 14px; font-family: Anton, Impact, sans-serif; font-size: 16px; letter-spacing: 0.04em; text-transform: uppercase; box-shadow: 0 3px 0 rgba(0,0,0,0.35); }
+
+  /* ---------- Variante 2: Anzeigetafel ---------- */
+  .v2 { height: 148px; border-radius: 14px; overflow: hidden; border: 1.5px solid rgba(232,178,61,0.75); display: grid; grid-template-rows: 30px 1fr;
+    background: linear-gradient(160deg, #22553b, #163d29 80%); box-shadow: 0 8px 18px rgba(0,0,0,0.35); }
+  .v2 .bar { display: flex; align-items: center; justify-content: space-between; padding: 0 12px; background: linear-gradient(90deg, #0d171f, #13202a); border-bottom: 1px solid rgba(232,178,61,0.35); }
+  .v2 .bar .t { font-family: Anton, Impact, sans-serif; font-size: 15px; letter-spacing: 0.08em; text-transform: uppercase; color: var(--gold); }
+  .v2 .bar .d { font-weight: 500; font-size: 12px; color: var(--muted); }
+  .v2 .body { display: grid; grid-template-columns: 1fr auto; align-items: center; gap: 4px 12px; padding: 10px 12px 12px 14px; }
+  .v2 .big { font-family: Anton, Impact, sans-serif; font-size: 30px; line-height: 1; text-transform: uppercase; }
+  .v2 .big small { font-size: 16px; color: var(--muted); margin-left: 4px; }
+  .v2 .diff { display: flex; align-items: center; gap: 8px; font-weight: 600; font-size: 13px; white-space: nowrap; }
+  .v2 .flip b, .v3 .flip b { font-size: 19px; min-width: 17px; }
+  .v2 .body { min-width: 0; } .v2 .body > * { min-width: 0; }
+  .v2 .tl { display: flex; align-items: center; gap: 8px; margin-top: 2px; }
+  .v2 .tl .l { font-weight: 500; font-size: 11px; letter-spacing: 0.08em; text-transform: uppercase; color: var(--muted); }
+  .v2 .right { grid-row: 1 / span 3; grid-column: 2; display: flex; flex-direction: column; align-items: center; gap: 8px; }
+  .v2 .flame { width: 58px; height: 58px; border-radius: 50%; display: grid; place-items: center; text-align: center; background: radial-gradient(circle at 50% 35%, rgba(240,169,59,0.35), rgba(240,169,59,0.08)); border: 2px solid rgba(240,169,59,0.6); }
+  .v2 .flame b { font-family: Anton, Impact, sans-serif; font-weight: 400; font-size: 22px; line-height: 1; color: var(--flame); display: block; }
+  .v2 .flame span { font-size: 9px; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase; color: var(--muted); }
+  .v2 .go { border: none; border-radius: 10px; padding: 8px 14px; font-family: Anton, Impact, sans-serif; font-size: 16px; letter-spacing: 0.05em; text-transform: uppercase; background: linear-gradient(135deg, var(--gold), var(--gold-2)); color: var(--ink); box-shadow: 0 3px 0 #9C7422; }
+  .v2 .go.ghost { background: rgba(0,0,0,0.3); color: var(--chalk); border: 1px solid rgba(242,239,230,0.3); box-shadow: none; }
+
+  /* ---------- Variante 3: Flutlicht-Banner ---------- */
+  .v3 { position: relative; height: 148px; border-radius: 14px; overflow: hidden; border: 1.5px solid rgba(232,178,61,0.75); padding: 12px 14px;
+    background: linear-gradient(160deg, #24593d, #163d29 80%); box-shadow: 0 8px 18px rgba(0,0,0,0.35); display: flex; flex-direction: column; justify-content: space-between; }
+  .v3::before { content: ""; position: absolute; inset: 0; background:
+      conic-gradient(from 160deg at 0% 0%, transparent 0deg, rgba(255,246,200,0.16) 14deg, transparent 32deg),
+      conic-gradient(from 170deg at 100% 0%, transparent 0deg, rgba(255,246,200,0.12) 16deg, transparent 34deg); pointer-events: none; }
+  .v3 > * { position: relative; }
+  .v3 .top { display: flex; justify-content: space-between; align-items: flex-start; gap: 10px; }
+  .v3 .h { font-family: Anton, Impact, sans-serif; font-size: clamp(22px, 6.6vw, 28px); min-width: 0; overflow: hidden; line-height: 1; text-transform: uppercase; white-space: nowrap; }
+  .v3 .h span { color: var(--gold); }
+  .v3 .flame { display: flex; flex-direction: column; align-items: center; flex-shrink: 0; white-space: nowrap; }
+  .v3 .flame b { font-family: Anton, Impact, sans-serif; font-weight: 400; font-size: 28px; line-height: 0.9; color: var(--flame); text-shadow: 0 0 16px rgba(240,169,59,0.5); }
+  .v3 .flame span { font-size: 9.5px; font-weight: 600; letter-spacing: 0.1em; text-transform: uppercase; color: var(--muted); }
+  .v3 .bot { display: flex; align-items: flex-end; justify-content: space-between; gap: 10px; }
+  .v3 .meta { display: flex; flex-direction: column; gap: 6px; }
+  .v3 .chip { white-space: nowrap; display: inline-flex; align-items: center; gap: 7px; font-weight: 600; font-size: 12.5px; padding: 3px 10px 3px 8px; border-radius: 20px; background: rgba(0,0,0,0.3); border: 1px solid var(--line); width: fit-content; }
+  .v3 .tl { display: flex; align-items: center; gap: 8px; } .v3 .tl .l { font-weight: 500; font-size: 10.5px; letter-spacing: 0.1em; text-transform: uppercase; color: var(--muted); }
+  .v3 .go { flex-shrink: 0; width: 60px; height: 60px; border-radius: 50%; border: none; background: radial-gradient(circle at 35% 30%, #fff1c4, var(--gold) 60%, #b07e20); color: var(--ink); box-shadow: 0 0 0 4px rgba(232,178,61,0.25), 0 6px 14px rgba(0,0,0,0.4); display: grid; place-items: center; font-family: Anton, Impact, sans-serif; font-size: 12px; text-transform: uppercase; letter-spacing: 0.05em; line-height: 1.05; }
+  .v3 .go svg { width: 20px; height: 20px; margin-bottom: 1px; }
+
+
+  /* ---------- Variante 1b: Spieltag-Ticket, überarbeitet ---------- */
+  .t1 { position: relative; height: 148px; display: grid; grid-template-columns: minmax(0, 1fr) 100px; filter: drop-shadow(0 8px 16px rgba(0,0,0,0.35)); }
+  .t1 .main, .t1 .stub { border: 1.5px solid rgba(232,178,61,0.75); }
+  .t1 .main { min-width: 0; position: relative; padding: 11px 12px 11px 16px; display: flex; flex-direction: column; justify-content: space-between; border-right: none; border-radius: 14px 0 0 14px;
+    background: radial-gradient(circle at 0% 0%, rgba(232,178,61,0.22), transparent 45%), repeating-linear-gradient(90deg, rgba(255,255,255,0.035) 0 18px, transparent 18px 36px), linear-gradient(150deg, #27603F, #173F2B 80%); }
+  .t1 .stub { position: relative; border-left: none; border-radius: 0 14px 14px 0; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 9px;
+    background: radial-gradient(circle at 30% 0%, #FFF1C4, transparent 60%), linear-gradient(160deg, #f6da9c, var(--gold) 55%, #C8921F); color: var(--ink); }
+  .t1 .stub::before { content: ""; position: absolute; left: -1px; top: 12px; bottom: 12px; border-left: 3px dotted rgba(20,32,43,0.5); }
+  .t1 .notch { position: absolute; right: 100px; width: 20px; height: 20px; margin-right: -10px; border-radius: 50%; background: var(--ink); border: 1.5px solid rgba(232,178,61,0.75); z-index: 2; }
+  .t1 .notch.t { top: -11px; clip-path: inset(50% 0 0 0); } .t1 .notch.b { bottom: -11px; clip-path: inset(0 0 50% 0); }
+  .t1 .date { display: flex; align-items: center; gap: 7px; font-weight: 400; font-size: 13.5px; color: rgba(242,239,230,0.82); }
+  .t1 .date .live { width: 7px; height: 7px; border-radius: 50%; background: var(--ok); box-shadow: 0 0 0 3px rgba(46,204,113,0.18); }
+  .t1 .title { font-family: Anton, Impact, sans-serif; font-size: clamp(24px, 7.4vw, 31px); overflow: hidden; line-height: 0.95; text-transform: uppercase; letter-spacing: 0.005em; white-space: nowrap; }
+  .t1 .title span { color: var(--gold); text-shadow: 0 0 18px rgba(232,178,61,0.35); }
+  .t1 .meta { display: flex; align-items: center; gap: 9px; font-weight: 500; font-size: 13.5px; white-space: nowrap; }
+  .t1 .meta .md { font-family: Anton, Impact, sans-serif; font-size: 15px; letter-spacing: 0.02em; color: var(--chalk); }
+  .t1 .meta .sep { width: 4px; height: 4px; border-radius: 50%; background: rgba(242,239,230,0.35); }
+  .t1 .tl { display: flex; align-items: center; gap: 8px; }
+  .t1 .tl .l { font-weight: 400; font-size: 12px; color: var(--muted); line-height: 1.15; }
+  .t1 .flip b { font-size: 19px; min-width: 17px; }
+  .t1 .fl { display: flex; flex-direction: column; align-items: center; line-height: 1; }
+  .t1 .fl b { font-family: Anton, Impact, sans-serif; font-weight: 400; font-size: 30px; color: var(--ink); }
+  .t1 .fl span { font-weight: 600; font-size: 11.5px; color: rgba(20,32,43,0.75); margin-top: 3px; }
+  .t1 .go { border: 1.5px solid rgba(20,32,43,0.35); border-radius: 10px; padding: 8px 12px; font-family: Anton, Impact, sans-serif; font-size: 17px; letter-spacing: 0.04em; text-transform: uppercase; color: var(--gold-2);
+    background: repeating-linear-gradient(90deg, rgba(255,255,255,0.04) 0 9px, transparent 9px 18px), linear-gradient(150deg, #2B6A46, #173F2B); box-shadow: 0 3px 0 #0E2A1C, inset 0 1px 0 rgba(255,255,255,0.12); }
+  .t1 .go:active { transform: translateY(2px); box-shadow: 0 1px 0 #0E2A1C; }
+  .t1 .go.ghost { background: rgba(20,32,43,0.12); color: var(--ink); border: 1.5px solid rgba(20,32,43,0.45); box-shadow: none; }
+  .t1 .res { display: flex; align-items: center; gap: 10px; }
+  .t1 .res .sc { font-family: Anton, Impact, sans-serif; font-size: 26px; line-height: 1; } .t1 .res .sc small { font-size: 15px; color: var(--muted); }
+
+
+  /* ---------- Scout-Ausweis (Level-Kachel) ---------- */
+  .pc-btn { all: unset; display: block; cursor: pointer; border-radius: 14px; }
+  .pc-btn:focus-visible { outline: 2px solid var(--gold-2); outline-offset: 3px; }
+  .pc-btn:active .sp { transform: scale(0.99); }
+  .sp { position: relative; border-radius: 14px; overflow: hidden; border: 1.5px solid rgba(232,178,61,0.55); color: var(--chalk);
+    background: radial-gradient(circle at 0% 0%, rgba(232,178,61,0.16), transparent 45%), linear-gradient(160deg, #22313F, #18242F 70%); box-shadow: 0 8px 18px rgba(0,0,0,0.3); }
+  .sp .body { display: flex; align-items: center; gap: 12px; padding: 11px 12px 9px; }
+  .ring { position: relative; width: 66px; height: 66px; flex-shrink: 0; }
+  .ring svg { position: absolute; inset: 0; transform: rotate(-90deg); }
+  .ring .emb { position: absolute; inset: 7px; border-radius: 50%; display: grid; place-items: center; font-size: 25px; background: radial-gradient(circle at 35% 30%, #f9e3a8, #b8862a 75%); box-shadow: inset 0 -3px 6px rgba(0,0,0,0.3), 0 0 14px rgba(232,178,61,0.35); }
+  .ring .lv { position: absolute; left: 50%; bottom: -7px; transform: translateX(-50%); font-family: Anton, Impact, sans-serif; font-size: 13px; line-height: 1; padding: 3px 7px 2px; border-radius: 10px; background: var(--ink); color: var(--gold-2); border: 1.5px solid var(--gold); white-space: nowrap; }
+  .sp .info { flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 4px; }
+  .sp .rk { font-family: Anton, Impact, sans-serif; font-size: 23px; line-height: 1; text-transform: uppercase; display: flex; align-items: baseline; gap: 8px; white-space: nowrap; }
+  .sp .rk small { font-family: Oswald, sans-serif; font-weight: 500; font-size: 12.5px; text-transform: none; color: var(--gold-2); }
+  .sp .xp { height: 8px; border-radius: 5px; background: rgba(255,255,255,0.08); overflow: hidden; position: relative; }
+  .sp .xp i { position: absolute; inset: 0 auto 0 0; width: 62%; border-radius: 5px; background: linear-gradient(90deg, var(--gold), var(--gold-2)); box-shadow: 0 0 10px rgba(232,178,61,0.55); }
+  .sp .nx { font-size: 12.5px; color: var(--muted); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .sp .nx b { color: var(--gold-2); font-weight: 600; }
+  .sp .tok { flex-shrink: 0; align-self: flex-start; font-weight: 700; font-size: 13px; color: var(--token); background: rgba(74,163,255,0.12); border: 1px solid rgba(74,163,255,0.3); border-radius: 20px; padding: 3px 9px; }
+  .sp .foot { display: flex; align-items: center; gap: 12px; padding: 7px 12px; border-top: 1px solid rgba(232,178,61,0.25); background: rgba(0,0,0,0.18); font-size: 13px; }
+  .sp .foot .st { display: inline-flex; align-items: center; gap: 4px; color: rgba(242,239,230,0.85); white-space: nowrap; }
+  .sp .foot .st b { font-family: Anton, Impact, sans-serif; font-weight: 400; font-size: 14px; color: var(--chalk); }
+  .sp .foot .cta { margin-left: auto; display: inline-flex; align-items: center; gap: 4px; font-family: Anton, Impact, sans-serif; font-size: 14px; letter-spacing: 0.03em; text-transform: uppercase; color: var(--gold); white-space: nowrap; }
+  .sp .foot .cta svg { width: 14px; height: 14px; }
+  .sp .new { display: inline-block; width: 8px; height: 8px; border-radius: 50%; background: var(--gold); box-shadow: 0 0 0 3px rgba(232,178,61,0.25); margin-right: 3px; }
+  .sp .goal { font-size: 12px; color: rgba(242,239,230,0.8); white-space: nowrap; } .sp .goal b { color: var(--gold-2); font-weight: 600; }
+  /* B: Karriereleiter */
+  .ladder { display: flex; align-items: center; gap: 0; margin-top: 2px; }
+  .ladder .r { width: 22px; height: 22px; border-radius: 50%; display: grid; place-items: center; font-size: 12px; background: rgba(255,255,255,0.06); border: 1.5px solid rgba(255,255,255,0.15); flex-shrink: 0; }
+  .ladder .r.done { background: rgba(232,178,61,0.2); border-color: rgba(232,178,61,0.6); }
+  .ladder .r.now { width: 28px; height: 28px; font-size: 15px; background: radial-gradient(circle at 35% 30%, #f9e3a8, #b8862a 75%); border-color: var(--gold-2); box-shadow: 0 0 10px rgba(232,178,61,0.5); }
+  .ladder .r.next { border-style: dashed; border-color: var(--gold-2); }
+  .ladder .seg { flex: 1; height: 3px; background: rgba(255,255,255,0.12); position: relative; min-width: 8px; }
+  .ladder .seg.done { background: var(--gold); }
+  .ladder .seg.part::after { content: ""; position: absolute; inset: 0 auto 0 0; width: var(--p); background: linear-gradient(90deg, var(--gold), var(--gold-2)); }
+  /* C: Kompakt */
+  .sp.c .body { padding: 9px 12px; }
+  .sp.c .ring { width: 54px; height: 54px; } .sp.c .ring .emb { inset: 6px; font-size: 20px; }
+
+
+  /* ---------- Modus-Kacheln ---------- */
+  .tiles { height: auto; }
+  .mt { position: relative; overflow: hidden; border-radius: 14px; border: 2px solid var(--line); display: grid; grid-template-rows: 34px 28px 46px auto; justify-items: center; align-items: center; row-gap: 4px; padding: 12px 10px 0; text-align: center; color: var(--chalk); background: var(--ink-2); box-shadow: 0 6px 14px rgba(0,0,0,0.3); cursor: pointer; }
+  .mt:active { transform: scale(0.98); }
+  .mt.camp { background: linear-gradient(160deg, #f6da9c, var(--gold) 60%, #D49B26); color: var(--ink); border-color: var(--gold); box-shadow: 0 10px 22px rgba(232,178,61,0.35), inset 0 2px 0 rgba(255,255,255,0.35); }
+  .mt .ic { font-size: 30px; line-height: 1; }
+  .mt .nm { font-family: Anton, Impact, sans-serif; font-size: 22px; line-height: 1; text-transform: uppercase; letter-spacing: 0.01em; }
+  .mt .ft { justify-self: stretch; align-self: end; margin: 6px -10px 0; padding: 7px 10px; display: flex; justify-content: center; align-items: center; gap: 4px; font-family: Anton, Impact, sans-serif; font-size: 13px; letter-spacing: 0.04em; text-transform: uppercase; }
+  .mt.camp .ft { background: rgba(20,32,43,0.12); border-top: 1px solid rgba(20,32,43,0.18); color: var(--ink); }
+  .mt.free .ft { background: rgba(0,0,0,0.2); border-top: 1px solid var(--line); color: var(--gold); }
+  .mt .ft svg { width: 12px; height: 12px; }
+  /* A: Spielstand */
+  .worlds { display: flex; align-items: center; gap: 3px; }
+  .worlds i { width: 15px; height: 15px; border-radius: 50%; border: 2px solid rgba(20,32,43,0.35); background: rgba(20,32,43,0.12); }
+  .worlds i.done { background: var(--ink); border-color: var(--ink); }
+  .worlds i.now { width: 20px; height: 20px; background: radial-gradient(circle at 35% 30%, #fff, #f6da9c); border-color: var(--ink); box-shadow: 0 0 0 3px rgba(20,32,43,0.15); }
+  .worlds b { width: 6px; height: 2px; background: rgba(20,32,43,0.3); }
+  .wl { font-weight: 600; font-size: 13px; line-height: 1.15; }
+  .wl em { font-style: normal; font-weight: 400; opacity: 0.75; }
+  .big { font-family: Anton, Impact, sans-serif; font-size: 26px; line-height: 1; }
+  .big small { font-family: Oswald, sans-serif; font-weight: 500; font-size: 12px; opacity: 0.75; margin-left: 3px; }
+  .chipsrow { display: flex; gap: 4px; justify-content: center; flex-wrap: wrap; }
+  .chipsrow span { font-weight: 600; font-size: 10.5px; padding: 1px 6px; border-radius: 8px; background: rgba(255,255,255,0.08); border: 1px solid var(--line); color: rgba(242,239,230,0.8); }
+  /* B: Stadion */
+  .mt.st { grid-template-rows: 34px 28px 56px auto; }
+  .mt.st::before { content: ""; position: absolute; left: -10%; right: -10%; top: 0; height: 56px; pointer-events: none; }
+  .mt.camp.st::before { background: radial-gradient(ellipse at 50% 120%, rgba(255,255,255,0.45), transparent 60%); }
+  .mt.free.st::before { background: radial-gradient(ellipse at 50% 120%, rgba(46,204,113,0.18), transparent 60%); }
+  .ringbox { display: flex; align-items: center; gap: 8px; }
+  .ringbox svg { width: 44px; height: 44px; transform: rotate(-90deg); flex-shrink: 0; }
+  .ringbox .t { text-align: left; line-height: 1.1; }
+  .ringbox .t b { font-family: Anton, Impact, sans-serif; font-weight: 400; font-size: 18px; display: block; }
+  .ringbox .t span { font-size: 11.5px; font-weight: 500; opacity: 0.8; }
+  /* C: Anzeigetafel */
+  .mt.sb { grid-template-rows: 26px 26px 52px auto; padding-top: 10px; }
+  .board { display: grid; grid-template-columns: 1fr 1fr; gap: 4px; width: 100%; }
+  .board div { border-radius: 6px; padding: 4px 2px 3px; display: flex; flex-direction: column; align-items: center; gap: 1px; }
+  .mt.camp .board div { background: rgba(20,32,43,0.85); color: var(--gold-2); }
+  .mt.free .board div { background: #0d171f; color: var(--gold-2); border: 1px solid rgba(255,255,255,0.06); }
+  .board b { font-family: Anton, Impact, sans-serif; font-weight: 400; font-size: 19px; line-height: 1; }
+  .board span { font-size: 9.5px; font-weight: 600; letter-spacing: 0.06em; text-transform: uppercase; color: rgba(242,239,230,0.65); }
+
+  /* A2: Spielstand überarbeitet */
+  .mt.a2 { grid-template-rows: 34px 28px 22px 20px auto; row-gap: 5px; }
+  .mt.a2::after { content: ""; position: absolute; inset: 0; pointer-events: none; opacity: 0.5; }
+  .mt.camp.a2::after { background: radial-gradient(circle at 50% 18%, rgba(255,255,255,0.45), transparent 38%); }
+  .mt.free.a2::after { background:
+      radial-gradient(circle at 50% 50%, transparent 0 34px, rgba(242,239,230,0.07) 35px 36px, transparent 37px),
+      linear-gradient(rgba(242,239,230,0.07), rgba(242,239,230,0.07)) 0 50% / 100% 1px no-repeat; }
+  .mt.a2 > * { position: relative; z-index: 1; }
+  .wp { display: flex; align-items: center; }
+  .wp i { width: 14px; height: 14px; border-radius: 50%; display: grid; place-items: center; font-style: normal; font-family: Anton, Impact, sans-serif; font-size: 9px; border: 2px solid rgba(20,32,43,0.3); background: rgba(20,32,43,0.08); color: transparent; }
+  .wp i.done { background: var(--ink); border-color: var(--ink); color: var(--gold-2); font-size: 8px; }
+  .wp i.now { width: 22px; height: 22px; font-size: 13px; background: var(--ink); border-color: var(--ink); color: var(--gold-2); box-shadow: 0 0 0 3px rgba(20,32,43,0.18); }
+  .wp b { width: 9px; height: 2px; background: rgba(20,32,43,0.28); }
+  .wp b.done { background: var(--ink); }
+  .xi { display: flex; gap: 3px; align-items: center; }
+  .xi i { width: 10px; height: 10px; border-radius: 50%; background: rgba(255,255,255,0.12); border: 1px solid rgba(255,255,255,0.15); }
+  .xi i.on { background: radial-gradient(circle at 35% 30%, #fff1c4, var(--gold)); border-color: #9C7422; box-shadow: 0 0 5px rgba(232,178,61,0.5); }
+  .ln { font-weight: 600; font-size: 13.5px; line-height: 1; white-space: nowrap; }
+  .ln em { font-style: normal; font-weight: 400; opacity: 0.72; }
+  .mt.free .ln { color: rgba(242,239,230,0.9); }
+  .mt.free .ln em { color: var(--muted); opacity: 1; }
+  .mt.free .ln b { color: var(--gold-2); font-weight: 600; }
+
+
+  .form { display: flex; gap: 4px; align-items: center; }
+  .form i { width: 22px; height: 18px; border-radius: 4px; display: grid; place-items: center; font-style: normal; font-family: Anton, Impact, sans-serif; font-size: 11.5px; line-height: 1; color: var(--ink); }
+  .form i.w { background: var(--ok); } .form i.m { background: var(--gold); } .form i.l { background: #4A5866; color: var(--chalk); }
+  .form i.last { box-shadow: 0 0 0 2px var(--ink-2), 0 0 0 3.5px rgba(244,213,141,0.7); }
+  .form i.e { background: rgba(255,255,255,0.08); border: 1px dashed rgba(255,255,255,0.25); }
+
+  /* Heute */
+  .old { border-radius: 14px; border: 2px solid var(--line); background: var(--ink-2); display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 3px; text-align: center; height: 180px; }
+  .old.camp { background: linear-gradient(160deg, #f6da9c, var(--gold)); color: var(--ink); border-color: var(--gold); }
+
+  .note { max-width: 402px; margin: -16px auto 0; padding: 0 16px 24px; font-weight: 300; font-size: 14px; line-height: 1.5; color: var(--muted); text-align: center; }
+  .note b { color: var(--chalk); font-weight: 600; }
+</style>
+</head>
+<body>
+
+<div class="controls">
+  <div class="seg" role="group" aria-label="Variante">
+    <button type="button" data-m="0" aria-pressed="false">Heute</button>
+    <button type="button" data-m="A2" aria-pressed="true">A · neu</button>
+    <button type="button" data-m="A" aria-pressed="false">A · vorher</button>
+  </div>
+</div>
+
+<div class="phone">
+  <header>
+    <button class="help" type="button">🎮 So geht's</button>
+    <div class="badge" aria-hidden="true">⚽</div>
+    <div class="kicker">Football Lineup Trivia</div>
+    <h1>Starting<span> XI</span></h1>
+    <p class="sub">Echte Spiele aus der Fußballgeschichte – stell die Startelf nach und zeig, wer sich wirklich auskennt.</p>
+  </header>
+  <button type="button" id="pcard" class="pc-btn" aria-label="Mein Scout-Profil öffnen"></button>
+  <div id="card"></div>
+  <div class="tiles" id="tiles"></div>
+</div>
+<p class="note" id="note"></p>
+
+<script>
+(() => {
+  const $ = id => document.getElementById(id);
+  const WD = ["So", "Mo", "Di", "Mi", "Do", "Fr", "Sa"], WDL = ["Sonntag", "Montag", "Dienstag", "Mittwoch", "Donnerstag", "Freitag", "Samstag"];
+  const WD_DIFF = [5, 1, 2, 2, 3, 3, 4];
+  const DIFF = { 1: ["Kreisliga", "#7fd99a"], 2: ["Regionalliga", "#a8d94a"], 3: ["Bundesliga", "#e8b23d"], 4: ["Champions League", "#e8863d"], 5: ["Weltklasse", "#e0705f"] };
+  const now = new Date(), wd = now.getDay(), d = WD_DIFF[wd];
+  const date = now.toLocaleDateString("de-DE", { day: "2-digit", month: "2-digit" });
+  const DAY = 5, STREAK = 12;
+  const GRID = [["g", "g", "y"], ["g", "x", "g"], ["g", "g", "x", "g"], ["g"]];
+  let v = "1b", s = "open";
+
+  const meter = () => `<span class="meter" style="color:${DIFF[d][1]}">${[1,2,3,4,5].map(i => `<i class="${i <= d ? "on" : ""}"></i>`).join("")}</span>`;
+  const flip = () => `<span class="flip" id="flip"></span>`;
+  const mini = () => `<div class="mini">${GRID.map(r => `<div class="r">${r.map(c => `<span class="sq ${c}"></span>`).join("")}</div>`).join("")}</div>`;
+  const play = `<svg viewBox="0 0 24 24"><path d="M7 4.5v15l13-7.5z" fill="currentColor"/></svg>`;
+
+  function v1() {
+    const right = s === "open"
+      ? `<div class="fl">🔥${STREAK}</div><small style="font-size:10px;font-weight:600;letter-spacing:.1em;text-transform:uppercase;margin-top:-6px">Tage Serie</small><button class="go" type="button">Anpfiff</button>`
+      : `<div class="fl">🔥${STREAK + 1}</div><small style="font-size:10px;font-weight:600;letter-spacing:.1em;text-transform:uppercase;margin-top:-6px">Tage Serie</small><button class="go" type="button">Teilen</button>`;
+    const mid = s === "open"
+      ? `<div class="row" style="color:${DIFF[d][1]}">${meter()} ${WDL[wd]} · ${DIFF[d][0]}</div>
+         <div class="tl"><span class="l">Nächster<br>Anpfiff in</span>${flip()}</div>`
+      : `<div class="row">${mini()}<span style="font-family:Anton,Impact,sans-serif;font-size:30px;line-height:1">9<span style="font-size:16px;color:var(--muted)">/11</span></span><span style="color:var(--gold-2);font-size:12.5px;line-height:1.2">⭐⭐<br><span style="color:var(--muted);font-weight:400">Tages-Sterne</span></span></div>
+         <div class="tl"><span class="l">Nächster<br>Anpfiff in</span>${flip()}</div>`;
+    return `<div class="v1"><span class="notch t"></span><span class="notch b"></span>
+      <div class="main">
+        <div class="k"><span class="dot"></span>Tages-Challenge · ${date}</div>
+        <div class="big">Spieltag <span>${DAY}</span></div>
+        ${mid}
+      </div>
+      <div class="stub">${right}</div></div>`;
+  }
+
+  function v1b() {
+    const long = now.toLocaleDateString("de-DE", { weekday: "long", day: "numeric", month: "long" });
+    const left = s === "open"
+      ? `<div class="meta" style="color:${DIFF[d][1]}"><span class="md">Spieltag ${DAY}</span><span class="sep"></span>${meter()}<span>${DIFF[d][0]}</span></div>
+         <div class="tl"><span class="l">Neue Challenge in</span>${flip()}</div>`
+      : `<div class="res">${mini()}<span class="sc">9<small>/11</small></span><span style="color:var(--gold-2);font-size:13px;line-height:1.2">⭐⭐<br><span style="color:var(--muted)">Spieltag ${DAY}</span></span></div>
+         <div class="tl"><span class="l">Nächste in</span>${flip()}</div>`;
+    return `<div class="t1"><span class="notch t"></span><span class="notch b"></span>
+      <div class="main">
+        <div class="date"><span class="live"></span>${long}</div>
+        <div class="title">Tages-<span>Challenge</span></div>
+        ${left}
+      </div>
+      <div class="stub">
+        <div class="fl"><b>🔥${s === "open" ? STREAK : STREAK + 1}</b><span>Tage Serie</span></div>
+        <button class="go ${s === "open" ? "" : "ghost"}" type="button">${s === "open" ? "Starten" : "Teilen"}</button>
+      </div></div>`;
+  }
+
+  function v2() {
+    const body = s === "open"
+      ? `<div class="big">Spieltag ${DAY}</div>
+         <div class="diff" style="color:${DIFF[d][1]}">${meter()} ${WD[wd]} · ${DIFF[d][0]}</div>
+         <div class="tl"><span class="l">Anpfiff in</span>${flip()}</div>
+         <div class="right"><div class="flame"><div><b>${STREAK}</b><span>🔥 Serie</span></div></div><button class="go" type="button">Anpfiff ▶</button></div>`
+      : `<div class="big" style="display:flex;align-items:center;gap:10px">${mini()}<span>9<small>/11</small></span></div>
+         <div class="diff" style="color:var(--gold-2)">⭐⭐ <span style="color:var(--muted);font-weight:400">Tages-Sterne · Spieltag ${DAY}</span></div>
+         <div class="tl"><span class="l">Nächster in</span>${flip()}</div>
+         <div class="right"><div class="flame"><div><b>${STREAK + 1}</b><span>🔥 Serie</span></div></div><button class="go ghost" type="button">Teilen</button></div>`;
+    return `<div class="v2"><div class="bar"><span class="t">Tages-Challenge</span><span class="d">${WD[wd]}, ${date}</span></div><div class="body">${body}</div></div>`;
+  }
+  function v3() {
+    const top = `<div class="top"><div class="h">Tages-<span>Challenge</span></div><div class="flame"><b>🔥${s === "open" ? STREAK : STREAK + 1}</b><span>Tage Serie</span></div></div>`;
+    const bot = s === "open"
+      ? `<div class="bot"><div class="meta"><span class="chip" style="color:${DIFF[d][1]}">${meter()} Spieltag ${DAY} · ${DIFF[d][0]}</span><div class="tl"><span class="l">Anpfiff in</span>${flip()}</div></div><button class="go" type="button">${play}Los</button></div>`
+      : `<div class="bot"><div class="meta"><span class="chip">${mini()} <b style="font-family:Anton,Impact,sans-serif;font-weight:400;font-size:17px">9/11</b> ⭐⭐</span><div class="tl"><span class="l">Nächster in</span>${flip()}</div></div><button class="go" type="button" style="font-size:11px">Teilen</button></div>`;
+    return `<div class="v3">${top}${bot}</div>`;
+  }
+  const NOTES = {
+    "1b": "<b>Überarbeitet:</b> „Tages-Challenge“ ist jetzt der große Titel, „Spieltag 5“ kleiner in der Zeile darunter. Datum ausgeschrieben statt gesperrter Großbuchstaben, ein grüner Live-Punkt davor. Der Abriss-Abschnitt bleibt gold wie im ersten Entwurf, darauf die Serie und der grüne „Starten“-Button im Stil der linken Seite.",
+    "1": "<b>Spieltag-Ticket:</b> Die Karte ist eine Eintrittskarte mit Abriss-Kante. Links groß „Spieltag 5“, Schwierigkeit als Leuchtbalken, der Timer als Klappziffern wie auf einer alten Stadionuhr. Rechts der goldene Abschnitt mit Serie und „Anpfiff“.",
+    "2": "<b>Anzeigetafel:</b> Oben eine dunkle Leiste wie auf der Stadion-Anzeige, darunter „Spieltag 5“ groß, Schwierigkeit als Leuchtbalken und die Klappziffern. Rechts die Serie als runder Flammen-Button über „Anpfiff ▶“.",
+    "3": "<b>Flutlicht-Banner:</b> Großer zweifarbiger Titel „Tages-Challenge“ unter zwei Flutlichtkegeln, große Serien-Zahl oben rechts. Unten Spieltag + Schwierigkeit als Chip, Klappziffern und ein runder goldener Start-Knopf."
+  };
+
+  function render() {
+    $("card").innerHTML = v === "1b" ? v1b() : v === "1" ? v1() : v === "2" ? v2() : v3();
+    tick();
+  }
+  function tick() {
+    const el = $("flip"); if (!el) return;
+    const n = new Date(), m = new Date(n); m.setHours(24, 0, 0, 0);
+    let t = Math.floor((m - n) / 1000);
+    const hh = String(Math.floor(t / 3600)).padStart(2, "0"); t %= 3600;
+    const mm = String(Math.floor(t / 60)).padStart(2, "0"), ss = String(t % 60).padStart(2, "0");
+    const dig = x => [...x].map(c => `<b>${c}</b>`).join("");
+    el.innerHTML = `${dig(hh)}<i>:</i>${dig(mm)}<i>:</i>${dig(ss)}`;
+  }
+  setInterval(tick, 1000);
+  document.querySelectorAll("[data-v]").forEach(b => b.onclick = () => { v = b.dataset.v; document.querySelectorAll("[data-v]").forEach(x => x.setAttribute("aria-pressed", String(x === b))); render(); });
+  document.querySelectorAll("[data-s]").forEach(b => b.onclick = () => { s = b.dataset.s; document.querySelectorAll("[data-s]").forEach(x => x.setAttribute("aria-pressed", String(x === b))); render(); });
+
+  /* Scout-Ausweis */
+  const P = { rank: "Bundesliga", icon: "🥇", title: "Taktikfuchs", level: 17, pct: 62, xpLeft: 640, next: "Champions League", nextIcon: "🌟", levelsToNext: 3, trophies: [5, 22], stars: [57, 180], tokens: 14, newTrophy: true };
+  const RANKS = [["⚽", "Kreisliga"], ["🥉", "Regionalliga"], ["🥈", "2. Bundesliga"], ["🥇", "Bundesliga"], ["🌟", "Champions League"], ["👑", "Weltklasse"]];
+  const ringSVG = (size, pct) => { const r = size / 2 - 3.5, C = 2 * Math.PI * r; return `<svg viewBox="0 0 ${size} ${size}"><circle cx="${size/2}" cy="${size/2}" r="${r}" fill="none" stroke="rgba(255,255,255,0.1)" stroke-width="5"/><circle cx="${size/2}" cy="${size/2}" r="${r}" fill="none" stroke="url(#rg)" stroke-width="5" stroke-linecap="round" stroke-dasharray="${C}" stroke-dashoffset="${C * (1 - pct / 100)}"/><defs><linearGradient id="rg"><stop offset="0" stop-color="#E8B23D"/><stop offset="1" stop-color="#F4D58D"/></linearGradient></defs></svg>`; };
+  const chev = `<svg viewBox="0 0 24 24"><path d="M9 5l7 7-7 7" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg>`;
+  const foot = `<div class="foot"><span class="st">🏆 <b>${P.trophies[0]}</b>/${P.trophies[1]}</span><span class="st">⭐ <b>${P.stars[0]}</b>/${P.stars[1]}</span><span class="st">📊 Wissen</span><span class="cta">${P.newTrophy ? '<span class="new" title="Neue Trophäe"></span>' : ""}Scout-Profil ${chev}</span></div>`;
+  function pA() {
+    return `<div class="sp">
+      <div class="body">
+        <div class="ring">${ringSVG(66, P.pct)}<div class="emb">${P.icon}</div><span class="lv">LVL ${P.level}</span></div>
+        <div class="info">
+          <div class="rk">${P.rank} <small>„${P.title}“</small></div>
+          <div class="xp"><i></i></div>
+          <div class="nx">Noch <b>${P.xpLeft} XP</b> bis Level ${P.level + 1}</div>
+          <div class="goal">Ziel: ${P.nextIcon} <b>${P.next}</b> in ${P.levelsToNext} Level</div>
+        </div>
+        <span class="tok">🔍 ${P.tokens}</span>
+      </div>${foot}</div>`;
+  }
+  function pB() {
+    const idx = 3;
+    const lad = RANKS.map((r, i) => {
+      const cls = i < idx ? "done" : i === idx ? "now" : i === idx + 1 ? "next" : "";
+      const seg = i < RANKS.length - 1 ? `<span class="seg ${i < idx ? "done" : i === idx ? "part" : ""}" style="--p:${P.pct}%"></span>` : "";
+      return `<span class="r ${cls}" title="${r[1]}">${r[0]}</span>${seg}`;
+    }).join("");
+    return `<div class="sp">
+      <div class="body" style="align-items:stretch">
+        <div class="info" style="gap:6px">
+          <div style="display:flex;align-items:baseline;justify-content:space-between;gap:8px"><div class="rk">${P.rank} <small>Level ${P.level}</small></div><span class="tok">🔍 ${P.tokens}</span></div>
+          <div class="ladder">${lad}</div>
+          <div class="nx">Noch <b>${P.xpLeft} XP</b> bis Level ${P.level + 1} · nächster Rang: <b>${P.next}</b></div>
+        </div>
+      </div>${foot}</div>`;
+  }
+  function pC() {
+    return `<div class="sp c">
+      <div class="body">
+        <div class="ring">${ringSVG(54, P.pct)}<div class="emb">${P.icon}</div><span class="lv">${P.level}</span></div>
+        <div class="info">
+          <div class="rk" style="font-size:20px">${P.rank}</div>
+          <div class="nx">Noch <b>${P.xpLeft} XP</b> bis Level ${P.level + 1}</div>
+          <div class="nx" style="font-size:12px">🏆 ${P.trophies[0]} · ⭐ ${P.stars[0]} · <span style="color:var(--gold);font-weight:600">${P.newTrophy ? '<span class="new"></span>' : ""}Scout-Profil ›</span></div>
+        </div>
+        <span class="tok">🔍 ${P.tokens}</span>
+      </div></div>`;
+  }
+  let pv = "A";
+  const PNOTES = {
+    A: "<b>Scout-Ausweis:</b> Rang-Emblem mit goldenem XP-Ring und Level-Plakette, Rang + verdienter Titel, XP-Balken und das nächste Ziel („Champions League in 3 Level“). Unten eine eigene Leiste mit Trophäen, Sternen, Wissen und „Scout-Profil ›“ – unübersehbar der Weg ins Profil. Goldener Punkt vor „Scout-Profil“ = neue Trophäe wartet.",
+    B: "<b>Karriereleiter:</b> Statt Ring zeigt eine Leiste alle sechs Ränge von Kreisliga bis Weltklasse – erreichte golden, der aktuelle groß, der nächste gestrichelt, der Fortschritt dazwischen als Balken. Man sieht die ganze Karriere auf einen Blick. Unten dieselbe Profil-Leiste wie A.",
+    C: "<b>Kompakt:</b> Fast so flach wie heute, aber mit XP-Ring, Level-Plakette und einer Textzeile mit Trophäen, Sternen und „Scout-Profil ›“. Spart am meisten Platz, wirkt aber weniger als Ausweis."
+  };
+  function renderP() {
+    $("pcard").innerHTML = pv === "A" ? pA() : pv === "B" ? pB() : pC();
+  }
+  document.querySelectorAll("[data-p]").forEach(b => b.onclick = () => { pv = b.dataset.p; document.querySelectorAll("[data-p]").forEach(x => x.setAttribute("aria-pressed", String(x === b))); renderP(); });
+
+  /* Modus-Kacheln */
+  const W = { n: 1, name: "Kreisliga", lvl: 5, stars: [23, 180], worldStars: [11, 30], total: 60, archive: 12, known: 64 };
+  const CH = `<svg viewBox="0 0 24 24"><path d="M9 5l7 7-7 7" fill="none" stroke="currentColor" stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round"/></svg>`;
+  const pips = () => `<div class="worlds" aria-label="Welt ${W.n} von 5">${[1,2,3,4,5].map((i, k) => `${k ? "<b></b>" : ""}<i class="${i < W.n ? "done" : i === W.n ? "now" : ""}"></i>`).join("")}</div>`;
+  const ring = (pct, col, track) => { const r = 18, C = 2 * Math.PI * r; return `<svg viewBox="0 0 44 44"><circle cx="22" cy="22" r="${r}" fill="none" stroke="${track}" stroke-width="5"/><circle cx="22" cy="22" r="${r}" fill="none" stroke="${col}" stroke-width="5" stroke-linecap="round" stroke-dasharray="${C}" stroke-dashoffset="${C * (1 - pct / 100)}"/></svg>`; };
+  function mOld() {
+    return `<div class="old camp"><div style="font-size:30px">🌍</div><div style="font-family:Anton,Impact,sans-serif;font-size:22px;text-transform:uppercase">Kampagne</div><div style="font-size:12.5px">Welt 1 · <b>Kreisliga</b><br>⭐ ${W.stars[0]}/${W.stars[1]}</div></div>
+            <div class="old"><div style="font-size:30px">🎲</div><div style="font-family:Anton,Impact,sans-serif;font-size:22px;text-transform:uppercase">Frei spielen</div><div style="font-size:12.5px;color:var(--muted)">${W.total} Aufstellungen</div></div>`;
+  }
+  function mA() {
+    return `<div class="mt camp"><div class="ic">🌍</div><div class="nm">Kampagne</div>
+        <div style="display:flex;flex-direction:column;align-items:center;gap:5px">${pips()}<div class="wl">Welt ${W.n} · ${W.name} <em>· Level ${W.lvl}</em></div></div>
+        <div class="ft">Weiter spielen ${CH}</div></div>
+      <div class="mt free"><div class="ic">🎲</div><div class="nm">Frei spielen</div>
+        <div style="display:flex;flex-direction:column;align-items:center;gap:5px"><div class="big" style="color:var(--gold-2)">${W.total}<small>Aufstellungen</small></div><div class="chipsrow"><span>WM</span><span>CL</span><span>BL</span><span>📅 ${W.archive}</span></div></div>
+        <div class="ft">Zufall oder Filter ${CH}</div></div>`;
+  }
+  function mB() {
+    return `<div class="mt camp st"><div class="ic">🌍</div><div class="nm">Kampagne</div>
+        <div class="ringbox">${ring(W.worldStars[0] / W.worldStars[1] * 100, "#14202B", "rgba(20,32,43,0.15)")}<div class="t"><b>Welt ${W.n}</b><span>${W.name} · ⭐ ${W.worldStars[0]}/${W.worldStars[1]}</span></div></div>
+        <div class="ft">Level ${W.lvl} spielen ${CH}</div></div>
+      <div class="mt free st"><div class="ic">🎲</div><div class="nm">Frei spielen</div>
+        <div class="ringbox">${ring(W.known, "#E8B23D", "rgba(255,255,255,0.1)")}<div class="t"><b style="color:var(--gold-2)">${W.total}</b><span style="color:var(--muted)">Spiele · ${W.known} % gelernt</span></div></div>
+        <div class="ft">Training starten ${CH}</div></div>`;
+  }
+  function mC() {
+    return `<div class="mt camp sb"><div class="ic" style="font-size:24px">🌍</div><div class="nm">Kampagne</div>
+        <div class="board"><div><b>${W.n}/5</b><span>Welt</span></div><div><b>${W.stars[0]}</b><span>⭐ Sterne</span></div></div>
+        <div class="ft">${W.name} · Level ${W.lvl} ${CH}</div></div>
+      <div class="mt free sb"><div class="ic" style="font-size:24px">🎲</div><div class="nm">Frei spielen</div>
+        <div class="board"><div><b>${W.total}</b><span>Spiele</span></div><div><b>${W.known}%</b><span>Gelernt</span></div></div>
+        <div class="ft">Zufall oder Filter ${CH}</div></div>`;
+  }
+
+  function mA2() {
+    const world = [1,2,3,4,5].map((i, k) => `${k ? `<b class="${i <= W.n ? "done" : ""}"></b>` : ""}<i class="${i < W.n ? "done" : i === W.n ? "now" : ""}">${i < W.n ? "✓" : i === W.n ? i : ""}</i>`).join("");
+    const FORM = [9, 7, 11, 6, 10]; // älteste → neueste
+    const xi = FORM.map((n, i) => `<i class="${n >= 9 ? "w" : n >= 7 ? "m" : "l"} ${i === FORM.length - 1 ? "last" : ""}">${n}</i>`).join("");
+    const avg = (FORM.reduce((a, b) => a + b, 0) / FORM.length).toFixed(1).replace(".", ",");
+    return `<div class="mt camp a2"><div class="ic">🌍</div><div class="nm">Kampagne</div>
+        <div class="wp" aria-label="Welt ${W.n} von 5">${world}</div>
+        <div class="ln">${W.name} <em>· Level ${W.lvl}</em></div>
+        <div class="ft">Weiter spielen ${CH}</div></div>
+      <div class="mt free a2"><div class="ic">🎲</div><div class="nm">Frei spielen</div>
+        <div class="form" aria-label="Formkurve der letzten 5 Spiele">${xi}</div>
+        <div class="ln">Formkurve <em>· Ø <b>${avg}</b> Treffer</em></div>
+        <div class="ft">Zufall oder Filter ${CH}</div></div>`;
+  }
+
+  let mv = "A2";
+  const MNOTES = {
+    A2: "<b>A überarbeitet:</b> Beide Kacheln sind jetzt spiegelgleich aufgebaut: Icon, Titel, eine Bildzeile, eine Textzeile, Aktionsleiste – alles auf derselben Höhe und in derselben Schriftgröße. Kampagne: die 5 Welten als Kette (erledigt ✓, aktuelle Welt groß mit Nummer), darunter „Kreisliga · Level 5“. Frei spielen: die Formkurve – deine letzten 5 Ergebnisse als Felder mit Trefferzahl (grün 9–11, gold 7–8, grau darunter; das neueste umrandet), darunter der Schnitt. Kein Hinweis darauf, wie viel du schon durch hast. Dezente Hintergründe: Lichtschein bei der Kampagne, Mittellinie und Anstoßkreis beim Freispiel.",
+    "0": "<b>Heute:</b> Beide Kacheln zentrieren ihren Inhalt einzeln – deshalb sitzen Icon, Titel und Text nicht auf einer Höhe, und darunter steht nur eine Textzeile.",
+    A: "<b>Spielstand:</b> Beide Kacheln haben exakt dasselbe Raster (Icon, Titel, Info, Fußleiste auf gleicher Höhe). Kampagne zeigt die 5 Welten als Punkte – erledigte dunkel, aktuelle groß –, darunter Welt, Name und Level. Frei spielen zeigt die Anzahl groß und Wettbewerbs-Chips inkl. Archiv. Unten jeweils eine Aktionsleiste: „Weiter spielen ›“ / „Zufall oder Filter ›“.",
+    B: "<b>Stadion:</b> Gleiches Raster, dazu je ein Fortschrittsring: Kampagne = Sterne der aktuellen Welt, Frei spielen = wie viel Prozent aller Positionen du schon gelernt hast. Fußleiste nennt konkret das nächste Level bzw. „Training starten“.",
+    C: "<b>Anzeigetafel:</b> Gleiches Raster, die Infos als zwei dunkle Anzeigefelder mit großen Zahlen (Welt 1/5 + Sterne bzw. Spiele + gelernt) – passt zur Klappziffer-Optik der Tages-Karte."
+  };
+  function renderM() {
+    $("tiles").innerHTML = mv === "0" ? mOld() : mv === "A2" ? mA2() : mv === "A" ? mA() : mv === "B" ? mB() : mC();
+    $("note").innerHTML = MNOTES[mv];
+  }
+  document.querySelectorAll("[data-m]").forEach(b => b.onclick = () => { mv = b.dataset.m; document.querySelectorAll("[data-m]").forEach(x => x.setAttribute("aria-pressed", String(x === b))); renderM(); });
+
+  render(); renderP(); renderM();
+})();
+</script>
+</body>
+</html>

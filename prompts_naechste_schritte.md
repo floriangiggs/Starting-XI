@@ -29,8 +29,9 @@ vorige umgesetzt, getestet und committet ist.
 | 15 | Kampagne auf ca. 60 Aufstellungen ausbauen | ✅ erledigt (60 Aufstellungen) |
 | 16 | Tages-Karte im Ticket-Stil | – |
 | 17 | Level-Kachel „Scout-Ausweis“ mit Weg ins Scout-Profil | 16 |
+| 18 | Modus-Kacheln: einheitliches Raster, Welten-Kette, Formkurve | 17 |
 
-**Empfohlene Reihenfolge ab jetzt:** 16 → 17 → 8
+**Empfohlene Reihenfolge ab jetzt:** 16 → 17 → 18 → 8
 
 Prompt 7 steht bewusst vor der Tages-Challenge: Nur mit der neuen
 Update-Strategie kommen neue Tages-Aufstellungen zuverlässig auf dem iPhone an.
@@ -40,7 +41,8 @@ Optische Vorlagen: `prototypes/scout-rad.html` (Prompt 6),
 `prototypes/navigation.html` (Prompt 11b – Bildschirme, Übergänge,
 Welten-Ausschmückung), `prototypes/ladescreen.html` (Prompt 11d) und
 `prototypes/tageskarte.html` (Prompt 16, nur Variante „Ticket – neu“) und
-`prototypes/scout-ausweis.html` (Prompt 17, nur Variante A).
+`prototypes/scout-ausweis.html` (Prompt 17, nur Variante A) und
+`prototypes/modus-kacheln.html` (Prompt 18, nur „A · neu“).
 
 **Wichtig nach jeder Änderung:** Der Service Worker liefert die App aus dem
 Cache. Jeder Prompt erhöht deshalb `CACHE_NAME` in `sw.js` – sonst sieht die
@@ -1377,6 +1379,70 @@ Test-Profilen: Level 1 (Kreisliga, kein Titel), Level 17 (mit Titel und
 neuer Trophäe), Level 30 (Weltklasse, "Höchster Rang erreicht",
 Goldrahmen). Tipp auf die Kachel öffnet das Scout-Profil; nach Öffnen der
 Trophäen verschwindet der goldene Punkt.
+```
+
+---
+
+## Prompt 18 – Modus-Kacheln „Kampagne“ und „Frei spielen“
+
+```
+Lies CLAUDE.md. Optische Überarbeitung der beiden Modus-Kacheln auf dem
+Start-Bildschirm (#modeTileCampaign, #modeTileFreeplay) → kurz Plan
+zeigen, dann umsetzen. Optik 1:1 aus prototypes/modus-kacheln.html –
+maßgeblich ist NUR "A · neu" (Funktion mA2, CSS .mt/.a2/.wp/.form/.ln/.ft).
+Voraussetzung: Prompts 16 und 17 sind umgesetzt.
+
+Befund heute: Jede Kachel zentriert ihren Inhalt einzeln (flex,
+justify-content: center) – bei unterschiedlich langen Texten sitzen Icon,
+Titel und Infozeile nicht auf einer Höhe. Die Infozeile ist reiner Text
+und wirkt langweilig.
+
+1. Gemeinsames Raster
+   - Beide Kacheln nutzen dasselbe CSS-Grid mit festen Zeilen: Icon,
+     Titel (Anton), Bildzeile, Textzeile, Aktionsleiste. Alle Zeilen liegen
+     in beiden Kacheln exakt auf gleicher Höhe, gleiche Schriftgrößen.
+   - Aktionsleiste unten über die volle Kachelbreite, abgesetzt durch
+     feine Linie, Text in Anton mit Pfeil ›.
+   - Dezente Hintergründe wie im Prototyp: Kampagne heller Lichtschein
+     oben, Frei spielen Mittellinie + Anstoßkreis (sehr transparent).
+
+2. Kachel Kampagne (Gold)
+   - Icon 🌍, Titel "KAMPAGNE".
+   - Bildzeile: die Welten als Kette (Anzahl aus den Tiers mit
+     Aufstellungen): abgeschlossene Welt = dunkler Punkt mit ✓, aktuelle
+     Welt = großer dunkler Punkt mit Weltnummer, künftige = leere Ringe,
+     Verbindungsstriche dazwischen (abgeschlossen dunkel).
+   - Textzeile: "<Weltname> · Level n" (aktuelle Welt = erste noch nicht
+     komplett bestandene freigeschaltete Welt; Level = erstes nicht
+     bestandenes Level darin). Ist alles geschafft: alle Punkte ✓ und
+     "Alle Welten geschafft".
+   - Aktionsleiste: "WEITER SPIELEN ›". Navigation wie bisher (Weltkarte).
+
+3. Kachel Frei spielen (dunkel)
+   - Icon 🎲, Titel "FREI SPIELEN".
+   - Bildzeile: FORMKURVE – die letzten 5 Freispiel-Ergebnisse als kleine
+     Felder mit der Trefferzahl (Anton), älteste links, neueste rechts und
+     umrandet. Farben: 9–11 grün (--ok), 7–8 gold, darunter grau.
+     Weniger als 5 Spiele: die fehlenden Felder leer/gestrichelt.
+   - Textzeile: "Formkurve · Ø x,x Treffer" (Schnitt der angezeigten
+     Spiele, deutsches Komma). Ohne Spiele: "Noch keine Spiele".
+   - KEINE Anzeige, wie viele Aufstellungen schon gespielt/gelernt sind
+     (keine Prozente, kein "x von y") – das soll bewusst offen bleiben.
+   - Datenquelle: neues Feld profile.freeplayForm (Array, max. 5 Einträge,
+     Trefferzahl 0–11), wird in evaluatePitch NUR im Freispiel (weder
+     Kampagne noch Tages-Challenge) hinten angehängt und auf 5 gekürzt.
+   - Aktionsleiste: "ZUFALL ODER FILTER ›". Navigation wie bisher.
+
+4. Platz: Die Startseite muss mit Scout-Ausweis (17) und Tages-Ticket (16)
+   weiterhin ohne Scrollen auf 375×667 bis 430×932 passen; Kachelhöhe
+   entsprechend wählen (Prototyp ca. 180px). Schriften laut CLAUDE.md,
+   alte nicht mehr genutzte .mode-tile-Styles entfernen. sw.js
+   CACHE_NAME erhöhen.
+
+Test: Screenshots der Startseite bei 375×667, 402×874 und 430×932 mit
+Test-Profilen: neu (Welt 1, keine Freispiele), mittendrin (Welt 3,
+Formkurve 9/7/11/6/10), alles geschafft. Prüfen, dass Icon, Titel,
+Bild- und Textzeile beider Kacheln pixelgenau auf gleicher Höhe liegen.
 ```
 
 ---
