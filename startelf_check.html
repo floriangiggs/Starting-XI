@@ -428,32 +428,55 @@
   .wd.today { color: var(--chalk); font-weight: 600; }
   .wd.today .pip { border-style: dashed; border-color: var(--gold-2); }
 
-  /* ---- Tages-Challenge-Karte auf der Startseite (Prompt 13, Optik 1:1 aus Prototyp) ---- */
-  .daily { position: relative; overflow: hidden; border-radius: 12px; border: 1.5px solid rgba(232,178,61,0.7); padding: 12px 14px; background:
-      radial-gradient(circle at 92% 0%, rgba(232,178,61,0.18), transparent 50%),
-      linear-gradient(160deg, #22553b, #173f2b 75%);
-    box-shadow: 0 6px 16px rgba(0,0,0,0.3); display: grid; grid-template-columns: 1fr auto; gap: 4px 12px; align-items: center; flex-shrink: 0; }
-  .d-kicker { font-family: 'Oswald', sans-serif; font-weight: 600; font-size: 11px; letter-spacing: 0.1em; text-transform: uppercase; color: var(--gold-2); }
-  .d-title { font-family: 'Anton', sans-serif; font-size: 20px; line-height: 1.1; text-transform: uppercase; display: flex; align-items: baseline; gap: 8px; flex-wrap: wrap; }
-  .d-title .diff { font-family: 'Oswald', sans-serif; font-weight: 600; font-size: 12px; letter-spacing: 0.02em; text-transform: none; }
-  .d-sub { font-family: 'Oswald', sans-serif; font-size: 12.5px; font-weight: 300; color: var(--muted); }
-  .timer { display: flex; align-items: baseline; gap: 8px; margin-top: 2px; }
-  .timer-lbl { font-family: 'Oswald', sans-serif; font-weight: 500; font-size: 11.5px; letter-spacing: 0.06em; text-transform: uppercase; color: var(--muted); }
-  .timer-val { font-family: 'Anton', sans-serif; font-size: 24px; line-height: 1; letter-spacing: 0.04em; color: var(--gold-2); text-shadow: 0 0 14px rgba(232,178,61,0.35); font-variant-numeric: tabular-nums; }
-  .timer-val .sep { opacity: 0.6; margin: 0 1px; }
-  .d-right { grid-row: 1 / span 3; grid-column: 2; display: flex; flex-direction: column; align-items: flex-end; gap: 7px; }
-  .d-flame { font-family: 'Oswald', sans-serif; font-weight: 700; font-size: 14px; color: var(--flame); display: flex; align-items: center; gap: 3px; }
-  .d-play { border: none; border-radius: 9px; padding: 9px 16px; font-family: 'Oswald', sans-serif; font-weight: 700; font-size: 14px; background: linear-gradient(135deg, var(--gold), var(--gold-2)); color: var(--ink); box-shadow: 0 3px 0 #9C7422; cursor: pointer; }
-  .d-play:active { transform: translateY(2px); box-shadow: 0 1px 0 #9C7422; }
-  .d-play.ghost { background: rgba(0,0,0,0.25); color: var(--chalk); border: 1px solid rgba(242,239,230,0.3); box-shadow: none; }
-  .d-result { display: flex; align-items: center; gap: 10px; }
-  .mini-form { display: flex; flex-direction: column; gap: 2px; align-items: center; }
-  .mini-form .r { display: flex; gap: 2px; }
-  .sq { width: 7px; height: 7px; border-radius: 2px; flex-shrink: 0; }
-  .sq.g { background: var(--ok); } .sq.y { background: var(--gold); } .sq.x { background: #3A4652; }
-  .d-score { font-family: 'Anton', sans-serif; font-size: 20px; line-height: 1; }
-  .d-score small { font-size: 13px; color: var(--muted); }
-  .copied { grid-column: 1 / -1; font-family: 'Oswald', sans-serif; font-size: 11.5px; color: var(--ok); min-height: 0; }
+  /* ---- Tages-Challenge-Karte im Ticket-Stil (Prompt 16, Optik 1:1 aus prototypes/tageskarte.html "Ticket - neu").
+     Alle Regeln unter .t1 gescoped: Klassennamen wie .title/.go/.meter/.mini/.sep/.md existieren in der App schon. ---- */
+  .t1 { --stub: 100px; position: relative; height: 148px; flex-shrink: 0; display: grid; grid-template-columns: minmax(0, 1fr) var(--stub); filter: drop-shadow(0 8px 16px rgba(0,0,0,0.35)); }
+  .t1 .main, .t1 .stub { border: 1.5px solid rgba(232,178,61,0.75); }
+  .t1 .main { min-width: 0; position: relative; padding: 11px 12px 11px 16px; display: flex; flex-direction: column; justify-content: space-between; border-right: none; border-radius: 14px 0 0 14px;
+    background: radial-gradient(circle at 0% 0%, rgba(232,178,61,0.22), transparent 45%), repeating-linear-gradient(90deg, rgba(255,255,255,0.035) 0 18px, transparent 18px 36px), linear-gradient(150deg, #27603F, #173F2B 80%); }
+  .t1 .stub { position: relative; border-left: none; border-radius: 0 14px 14px 0; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 9px;
+    background: radial-gradient(circle at 30% 0%, #FFF1C4, transparent 60%), linear-gradient(160deg, #f6da9c, var(--gold) 55%, #C8921F); color: var(--ink); }
+  .t1 .stub::before { content: ""; position: absolute; left: -1px; top: 12px; bottom: 12px; border-left: 3px dotted rgba(20,32,43,0.5); }
+  .t1 .notch { position: absolute; right: var(--stub); width: 20px; height: 20px; margin-right: -10px; border-radius: 50%; background: var(--ink); border: 1.5px solid rgba(232,178,61,0.75); z-index: 2; }
+  .t1 .notch.t { top: -11px; clip-path: inset(50% 0 0 0); } .t1 .notch.b { bottom: -11px; clip-path: inset(0 0 50% 0); }
+  .t1 .date { display: flex; align-items: center; gap: 7px; font-family: 'Oswald', sans-serif; font-weight: 400; font-size: 13.5px; color: rgba(242,239,230,0.82); }
+  .t1 .date .live { width: 7px; height: 7px; border-radius: 50%; background: var(--ok); box-shadow: 0 0 0 3px rgba(46,204,113,0.18); }
+  .t1 .title { font-family: 'Anton', Impact, sans-serif; font-weight: 400; font-size: clamp(24px, 7.4vw, 31px); overflow: hidden; line-height: 0.95; text-transform: uppercase; letter-spacing: 0.005em; white-space: nowrap; }
+  .t1 .title span { color: var(--gold); text-shadow: 0 0 18px rgba(232,178,61,0.35); }
+  .t1 .meta { display: flex; align-items: center; gap: 9px; font-family: 'Oswald', sans-serif; font-weight: 500; font-size: 13.5px; white-space: nowrap; }
+  .t1 .meta .md { font-family: 'Anton', Impact, sans-serif; font-weight: 400; font-size: 15px; letter-spacing: 0.02em; color: var(--chalk); }
+  .t1 .meta .sep { width: 4px; height: 4px; border-radius: 50%; background: rgba(242,239,230,0.35); }
+  .t1 .meter { display: inline-flex; gap: 3px; } .t1 .meter i { width: 14px; height: 5px; border-radius: 3px; background: rgba(255,255,255,0.18); } .t1 .meter i.on { background: currentColor; box-shadow: 0 0 6px currentColor; }
+  .t1 .tl { display: flex; align-items: center; gap: 8px; }
+  .t1 .tl .l { font-family: 'Oswald', sans-serif; font-weight: 400; font-size: 12px; color: var(--muted); line-height: 1.15; }
+  .t1 .flip { display: inline-flex; gap: 3px; align-items: center; }
+  .t1 .flip b { font-family: 'Anton', Impact, sans-serif; font-weight: 400; font-size: 19px; line-height: 1; min-width: 17px; padding: 4px 3px 3px; text-align: center; border-radius: 4px; color: var(--gold-2); position: relative;
+    background: linear-gradient(180deg, #0d171f 0 49%, #0a1218 51% 100%); box-shadow: inset 0 0 0 1px rgba(255,255,255,0.06), 0 2px 0 rgba(0,0,0,0.35); }
+  .t1 .flip b::after { content: ""; position: absolute; left: 0; right: 0; top: 50%; height: 1px; background: rgba(0,0,0,0.6); }
+  .t1 .flip i { font-style: normal; font-family: 'Anton', Impact, sans-serif; font-size: 18px; color: rgba(244,213,141,0.55); margin: 0 1px; }
+  .t1 .fl { display: flex; flex-direction: column; align-items: center; line-height: 1; }
+  .t1 .fl b { font-family: 'Anton', Impact, sans-serif; font-weight: 400; font-size: 30px; color: var(--ink); }
+  .t1 .fl span { font-family: 'Oswald', sans-serif; font-weight: 600; font-size: 11.5px; color: rgba(20,32,43,0.75); margin-top: 3px; }
+  .t1 .go { border: 1.5px solid rgba(20,32,43,0.35); border-radius: 10px; padding: 8px 12px; font-family: 'Anton', Impact, sans-serif; font-weight: 400; font-size: 17px; letter-spacing: 0.04em; text-transform: uppercase; color: var(--gold-2); cursor: pointer;
+    background: repeating-linear-gradient(90deg, rgba(255,255,255,0.04) 0 9px, transparent 9px 18px), linear-gradient(150deg, #2B6A46, #173F2B); box-shadow: 0 3px 0 #0E2A1C, inset 0 1px 0 rgba(255,255,255,0.12); }
+  .t1 .go:active { transform: translateY(2px); box-shadow: 0 1px 0 #0E2A1C; }
+  .t1 .go.ghost { background: rgba(20,32,43,0.12); color: var(--ink); border: 1.5px solid rgba(20,32,43,0.45); box-shadow: none; }
+  .t1 .res { display: flex; align-items: center; gap: 10px; }
+  .t1 .res .sc { font-family: 'Anton', Impact, sans-serif; font-size: 26px; line-height: 1; } .t1 .res .sc small { font-size: 15px; color: var(--muted); }
+  .t1 .res .st { font-family: 'Oswald', sans-serif; font-weight: 400; font-size: 13px; line-height: 1.2; color: var(--gold-2); } .t1 .res .st span { display: block; color: var(--muted); }
+  .t1 .mini { display: flex; flex-direction: column; gap: 2px; align-items: center; } .t1 .mini .r { display: flex; gap: 2px; }
+  .t1 .sq { width: 9px; height: 9px; border-radius: 2px; flex-shrink: 0; } .t1 .sq.g { background: var(--ok); } .t1 .sq.y { background: var(--gold); } .t1 .sq.x { background: #3A4652; }
+  /* Der Prototyp ist auf ~402px Breite ausgelegt; auf schmaleren Handys (375/360px) etwas kompakter, sonst bricht das Timer-Label um. */
+  .t1 .tl .l { white-space: nowrap; }
+  .t1 .meta.compact .meter { display: none; }
+  @media (max-width: 389px) {
+    .t1 { --stub: 92px; }
+    .t1 .main { padding: 11px 8px 11px 14px; }
+    .t1 .flip { gap: 2px; }
+    .t1 .flip b { font-size: 17px; min-width: 15px; padding: 4px 2px 3px; }
+    .t1 .flip i { font-size: 16px; margin: 0; }
+    .t1 .go { padding: 8px 10px; font-size: 16px; }
+  }
 
   .guide-title { font-family: 'Anton', sans-serif; font-size: 22px; text-transform: uppercase; text-align: center; margin-bottom: 14px; color: var(--gold); }
   .guide-row { display: flex; align-items: flex-start; gap: 12px; padding: 11px 0; border-bottom: 1px solid var(--line); }
@@ -591,7 +614,7 @@
       </div>
     </button>
 
-    <div id="dailyCard" class="daily"></div>
+    <div id="dailyCard" class="t1"></div>
 
     <div class="mode-tiles" id="modeTiles"></div>
   </section>
@@ -2720,58 +2743,77 @@ function dailyStarsTotal() {
   return Object.values(profile.daily).reduce((sum, d) => sum + (d.stars || 0), 0);
 }
 
-// Kompakte Tages-Challenge-Karte auf der Startseite (Prompt 13, Optik 1:1 aus Prototyp) -
-// zwei Zustaende: offen (Spielen-Button) und geloest (Mini-Raster + Teilen-Button).
+// Tages-Challenge-Karte auf der Startseite (Prompt 16: Ticket-Stil, Optik 1:1 aus
+// prototypes/tageskarte.html "Ticket - neu") - zwei Zustaende: offen (Starten-Button) und
+// geloest (Mini-Raster + Teilen-Button). Links der breite gruene Abschnitt, rechts der
+// goldene Abriss mit Serie und Button.
 function renderDailyCard() {
   const card = document.getElementById("dailyCard");
   const dateKey = localDateKey();
   const dayNum = dayNumber(dateKey);
   const now = new Date();
-  const wd = ["So", "Mo", "Di", "Mi", "Do", "Fr", "Sa"][now.getDay()];
   const diff = WEEKDAY_DIFFICULTY[now.getDay()];
-  const dateStr = String(now.getDate()).padStart(2, "0") + "." + String(now.getMonth() + 1).padStart(2, "0") + ".";
+  const longDate = now.toLocaleDateString("de-DE", { weekday: "long", day: "numeric", month: "long" });
   const result = profile.daily[dateKey];
+  const streak = profile.streak.current;
+  // Stufe 5 (DIFF_COLOR #c1392b) ist auf dem gruenen Ticket zu dunkel - hier das hellere Koralle aus dem Prototyp.
+  const diffColor = diff === 5 ? "#e0705f" : DIFF_COLOR[diff];
+  const meter = `<span class="meter" aria-hidden="true">${[1, 2, 3, 4, 5].map(i => `<i class="${i <= diff ? "on" : ""}"></i>`).join("")}</span>`;
 
-  const left = `
-    <div class="d-kicker">Tages-Challenge · ${dateStr}</div>
-    <div class="d-title">Tag <span>${dayNum}</span><span class="diff" style="color:${DIFF_COLOR[diff]}">${wd} · ${DIFF_LABEL[diff]}</span></div>`;
-
+  let lower;
   if (!result) {
-    card.innerHTML = left + `
-      <div class="timer"><span class="timer-lbl">Neue in</span><span class="timer-val" id="dailyTimer">–</span></div>
-      <div class="d-right">
-        <div class="d-flame" aria-label="Serie ${profile.streak.current} Tage">🔥 ${profile.streak.current}</div>
-        <button class="d-play" type="button" id="dailyPlayBtn">Spielen</button>
-      </div>`;
-    document.getElementById("dailyPlayBtn").onclick = startDailyChallenge;
+    lower = `
+        <div class="meta" style="color:${diffColor}"><span class="md">Spieltag ${dayNum}</span><span class="sep"></span>${meter}<span>${DIFF_LABEL[diff]}</span></div>
+        <div class="tl"><span class="l">Neue Challenge in</span><span class="flip" id="dailyTimer"></span></div>`;
   } else {
     const gridHtml = result.grid.map(row => `<div class="r">${row.map(c => {
       const cls = c === "🟩" ? "g" : c === "🟨" ? "y" : "x";
       return `<span class="sq ${cls}"></span>`;
     }).join("")}</div>`).join("");
-    card.innerHTML = left + `
-      <div class="d-result">
-        <div class="mini-form" aria-label="Ergebnis in Aufstellungsform">${gridHtml}</div>
-        <div class="d-score">${result.correct}<small>/11</small></div>
-        <div class="timer" style="flex-direction:column;gap:2px"><span class="timer-lbl">Nächste in</span><span class="timer-val" id="dailyTimer" style="font-size:20px">–</span></div>
-      </div>
-      <div class="d-right">
-        <div class="d-flame" aria-label="Serie ${profile.streak.current} Tage">🔥 ${profile.streak.current}</div>
-        <button class="d-play ghost" type="button" id="dailyShareBtn">Teilen</button>
-      </div>`;
-    document.getElementById("dailyShareBtn").onclick = () => shareDailyResult(dayNum, result.correct, result.grid, profile.streak.current);
+    const starsHtml = result.stars > 0 ? "⭐".repeat(result.stars) + "<br>" : "";
+    lower = `
+        <div class="res"><div class="mini" aria-label="Ergebnis in Aufstellungsform">${gridHtml}</div><span class="sc">${result.correct}<small>/11</small></span><span class="st">${starsHtml}<span>Spieltag ${dayNum}</span></span></div>
+        <div class="tl"><span class="l">Nächste in</span><span class="flip" id="dailyTimer"></span></div>`;
   }
+
+  card.innerHTML = `<span class="notch t"></span><span class="notch b"></span>
+    <div class="main">
+      <div class="date"><span class="live"></span>${longDate}</div>
+      <div class="title">Tages-<span>Challenge</span></div>${lower}
+    </div>
+    <div class="stub">
+      <div class="fl" aria-label="Serie ${streak} Tage"><b>🔥${streak}</b><span>Tage Serie</span></div>
+      <button class="go${result ? " ghost" : ""}" type="button" id="${result ? "dailyShareBtn" : "dailyPlayBtn"}">${result ? "Teilen" : "Starten"}</button>
+    </div>`;
+
+  if (result) document.getElementById("dailyShareBtn").onclick = () => shareDailyResult(dayNum, result.correct, result.grid, profile.streak.current);
+  else document.getElementById("dailyPlayBtn").onclick = startDailyChallenge;
+  fitDailyMeta();
   tickDailyTimer();
 }
 
+// Passt die Meta-Zeile (Spieltag · Leuchtbalken · Stufenname) nicht in den linken Abschnitt - z. B. samstags mit
+// "Champions League" auf schmalen Handys -, entfaellt der Leuchtbalken statt dass der Stufenname unter dem Abriss verschwindet.
+function fitDailyMeta() {
+  const meta = document.querySelector("#dailyCard .meta");
+  if (!meta) return;
+  meta.classList.remove("compact");
+  if (meta.scrollWidth > meta.clientWidth) meta.classList.add("compact");
+}
+window.addEventListener("resize", fitDailyMeta);
+
+// Restzeit bis lokale Mitternacht als Klappziffern (je Ziffer ein eigenes Kaestchen) - nur
+// Textwechsel pro Sekunde, keine Animation (CLAUDE.md).
 function tickDailyTimer() {
   const el = document.getElementById("dailyTimer");
   if (!el) return;
   const n = new Date(), midnight = new Date(n);
   midnight.setHours(24, 0, 0, 0);
   let s = Math.max(0, Math.floor((midnight - n) / 1000));
-  const h = String(Math.floor(s / 3600)).padStart(2, "0"); s %= 3600;
-  el.innerHTML = h + '<span class="sep">:</span>' + String(Math.floor(s / 60)).padStart(2, "0") + '<span class="sep">:</span>' + String(s % 60).padStart(2, "0");
+  const hh = String(Math.floor(s / 3600)).padStart(2, "0"); s %= 3600;
+  const mm = String(Math.floor(s / 60)).padStart(2, "0"), ss = String(s % 60).padStart(2, "0");
+  const dig = x => [...x].map(c => `<b>${c}</b>`).join("");
+  el.innerHTML = `${dig(hh)}<i>:</i>${dig(mm)}<i>:</i>${dig(ss)}`;
 }
 
 function renderModeTiles() {
