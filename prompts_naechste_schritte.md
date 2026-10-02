@@ -28,8 +28,9 @@ vorige umgesetzt, getestet und committet ist.
 | 14 | Recherche Tages-Pool (Gegenseiten + neue Spiele) | ✅ erledigt (41 Aufstellungen) |
 | 15 | Kampagne auf ca. 60 Aufstellungen ausbauen | ✅ erledigt (60 Aufstellungen) |
 | 16 | Tages-Karte im Ticket-Stil | – |
+| 17 | Level-Kachel „Scout-Ausweis“ mit Weg ins Scout-Profil | 16 |
 
-**Empfohlene Reihenfolge ab jetzt:** 16 → 8
+**Empfohlene Reihenfolge ab jetzt:** 16 → 17 → 8
 
 Prompt 7 steht bewusst vor der Tages-Challenge: Nur mit der neuen
 Update-Strategie kommen neue Tages-Aufstellungen zuverlässig auf dem iPhone an.
@@ -38,7 +39,8 @@ Optische Vorlagen: `prototypes/scout-rad.html` (Prompt 6),
 `prototypes/scout-profil.html` (Prompts 11–13) und
 `prototypes/navigation.html` (Prompt 11b – Bildschirme, Übergänge,
 Welten-Ausschmückung), `prototypes/ladescreen.html` (Prompt 11d) und
-`prototypes/tageskarte.html` (Prompt 16, nur Variante „Ticket – neu“).
+`prototypes/tageskarte.html` (Prompt 16, nur Variante „Ticket – neu“) und
+`prototypes/scout-ausweis.html` (Prompt 17, nur Variante A).
 
 **Wichtig nach jeder Änderung:** Der Service Worker liefert die App aus dem
 Cache. Jeder Prompt erhöht deshalb `CACHE_NAME` in `sw.js` – sonst sieht die
@@ -1316,6 +1318,65 @@ Modus-Kacheln).
 Test: Screenshots der Startseite (offen und gelöst) bei 375×667, 402×874
 und 430×932; Vergleich mit dem Prototyp kurz kommentieren; kein Scrollen;
 Starten und Teilen funktionieren.
+```
+
+---
+
+## Prompt 17 – Level-Kachel „Scout-Ausweis“
+
+```
+Lies CLAUDE.md. Optische Überarbeitung der Profilleiste (#profileBar) auf
+dem Start-Bildschirm → kurz Plan zeigen, dann umsetzen. Optik 1:1 aus
+prototypes/scout-ausweis.html übernehmen – maßgeblich ist NUR Variante A
+(Funktion pA, CSS .sp/.ring/.foot). Voraussetzung: Prompt 16 ist umgesetzt.
+
+Ziel: Die Leiste wird zum "Scout-Ausweis": Level und Rang wirken wie etwas,
+auf das man stolz ist, das nächste Ziel ist sichtbar, und der Weg ins
+Scout-Profil ist unübersehbar (heute gibt es keinen Hinweis darauf, dass
+ein Tipp das Profil öffnet).
+
+1. Aufbau (renderProfileBar / #profileBar)
+   - Gesamte Kachel bleibt ein Button, Tipp öffnet wie bisher das
+     Scout-Profil (Bottom-Sheet aus Prompt 12).
+   - Oberer Teil:
+     links: Rang-Emblem (Rang-Icon aus RANKS, goldener Verlauf) mit
+       XP-Fortschritt als goldenem RING drumherum (SVG, Anteil = XP im
+       aktuellen Level) und Level-Plakette "LVL n" (Anton) unten am Ring.
+     Mitte: Rangname groß in Anton; dahinter – falls vorhanden –
+       profile.unlockedTitle in Oswald gold („Titel“); darunter XP-Balken;
+       darunter "Noch x XP bis Level n+1"; darunter
+       "Ziel: <Icon> <nächster Rang> in k Level" (aus RANKS: nächster Rang
+       mit min > Level, k = min − Level). Im höchsten Rang stattdessen
+       "Höchster Rang erreicht".
+     rechts oben: Token-Chip 🔍 (wie bisher).
+   - Fußleiste (abgesetzt durch feine Goldlinie): 🏆 gewonnene/alle
+     Trophäen (aus TROPHIES), ⭐ Kampagnen-Sterne erreicht/max (aus
+     profile.campaign.stars), "📊 Wissen", rechts "SCOUT-PROFIL ›" in
+     Anton gold.
+   - Neue-Trophäe-Hinweis: kleiner goldener Punkt vor "SCOUT-PROFIL",
+     solange eine Trophäe gewonnen, im Profil aber noch nicht angesehen
+     wurde (neues Feld z. B. profile.seenTrophies; beim Öffnen des
+     Trophäen-Reiters als gesehen markieren). Kein Blinken.
+   - Das 🔥-Serien-Chip entfällt in dieser Kachel (die Serie steht groß
+     auf der Tages-Karte aus Prompt 16).
+   - Weltklasse-Goldrahmen (gold-frame ab Level 30) bleibt erhalten.
+
+2. Platz
+   - Die Kachel wird höher als heute (ca. 125–135px statt 91px). Den
+     Platz aus den verbleibenden Abständen der Startseite nehmen; die
+     Startseite muss weiterhin ohne Scrollen auf 375×667 bis 430×932
+     passen. Abstände zwischen Kopf, Kachel, Tages-Karte und
+     Modus-Kacheln gleichmäßig.
+
+3. Schriften laut CLAUDE.md (Anton für Rang, Level, Zahlen und
+   "SCOUT-PROFIL"; Oswald für alles andere; kein Mono). Alte, nicht mehr
+   genutzte Styles der Profilleiste entfernen. sw.js CACHE_NAME erhöhen.
+
+Test: Screenshots der Startseite bei 375×667, 402×874 und 430×932 mit
+Test-Profilen: Level 1 (Kreisliga, kein Titel), Level 17 (mit Titel und
+neuer Trophäe), Level 30 (Weltklasse, "Höchster Rang erreicht",
+Goldrahmen). Tipp auf die Kachel öffnet das Scout-Profil; nach Öffnen der
+Trophäen verschwindet der goldene Punkt.
 ```
 
 ---
