@@ -27,8 +27,9 @@ vorige umgesetzt, getestet und committet ist.
 | 13d | Neues App-Icon „Taktiktafel – Flutlicht“ | ✅ erledigt |
 | 14 | Recherche Tages-Pool (Gegenseiten + neue Spiele) | ✅ erledigt (41 Aufstellungen) |
 | 15 | Kampagne auf ca. 60 Aufstellungen ausbauen | ✅ erledigt (60 Aufstellungen) |
+| 16 | Tages-Karte im Ticket-Stil | – |
 
-**Empfohlene Reihenfolge ab jetzt:** 8
+**Empfohlene Reihenfolge ab jetzt:** 16 → 8
 
 Prompt 7 steht bewusst vor der Tages-Challenge: Nur mit der neuen
 Update-Strategie kommen neue Tages-Aufstellungen zuverlässig auf dem iPhone an.
@@ -36,7 +37,8 @@ Update-Strategie kommen neue Tages-Aufstellungen zuverlässig auf dem iPhone an.
 Optische Vorlagen: `prototypes/scout-rad.html` (Prompt 6),
 `prototypes/scout-profil.html` (Prompts 11–13) und
 `prototypes/navigation.html` (Prompt 11b – Bildschirme, Übergänge,
-Welten-Ausschmückung) und `prototypes/ladescreen.html` (Prompt 11d).
+Welten-Ausschmückung), `prototypes/ladescreen.html` (Prompt 11d) und
+`prototypes/tageskarte.html` (Prompt 16, nur Variante „Ticket – neu“).
 
 **Wichtig nach jeder Änderung:** Der Service Worker liefert die App aus dem
 Cache. Jeder Prompt erhöht deshalb `CACHE_NAME` in `sw.js` – sonst sieht die
@@ -1254,6 +1256,66 @@ Eredivisie (0), Spiele vor 2000 (0). Weiterhin ausgewogen über die Stufen
 3. Recherche-Regeln wie Prompt 5/14 (Quelle, details, aliases, nichts aus
    dem Gedächtnis), Etappen zu je 5, Hook-Ergebnis zeigen.
 4. Trophäen/Sterne-Summen passen sich automatisch an – kurz prüfen.
+```
+
+---
+
+## Prompt 16 – Tages-Karte im Ticket-Stil
+
+```
+Lies CLAUDE.md. Optische Überarbeitung der Tages-Challenge-Karte auf dem
+Start-Bildschirm → kurz Plan zeigen, dann umsetzen. Optik 1:1 aus
+prototypes/tageskarte.html übernehmen – maßgeblich ist NUR die Variante
+"Ticket – neu" (CSS .t1, Funktion v1b). Prototyp als Referenz lesen, nicht
+einbinden.
+
+Ziel: Die Karte wirkt wie eine Eintrittskarte und typografisch nicht mehr
+"maschinell". Position auf der Startseite bleibt (zwischen Profilleiste und
+Modus-Kacheln).
+
+1. Aufbau (renderDailyCard / #dailyCard)
+   - Ticket mit zwei Abschnitten: links breit (grüner Verlauf mit
+     Rasenstreifen, goldener Rand), rechts ca. 100px Abriss-Abschnitt in
+     GOLD (Verlauf wie im Prototyp). Dazwischen gepunktete Abrisslinie und
+     oben/unten je eine halbrunde Einkerbung in der Hintergrundfarbe.
+   - Höhe ca. 148px (heute ca. 99px). Den Mehrplatz aus den Abständen der
+     Startseite nehmen, aber unter der Profilleiste/Level-Kachel weiterhin
+     Reserve lassen – die Level-Kachel wird später überarbeitet und braucht
+     dann ggf. mehr Platz. Startseite weiterhin ohne Scrollen auf 375×667
+     bis 430×932.
+
+2. Linker Abschnitt
+   - Zeile 1: kleiner grüner Live-Punkt + Datum AUSGESCHRIEBEN in Oswald
+     400 (z. B. "Freitag, 2. Oktober" via toLocaleDateString("de-DE",
+     { weekday: "long", day: "numeric", month: "long" })) – keine
+     gesperrten Großbuchstaben.
+   - Zeile 2: großer Titel in Anton "TAGES-CHALLENGE", "Tages-" chalk,
+     "Challenge" gold mit leichtem Glow.
+   - Zeile 3 (offen): "Spieltag n" (Anton, klein), Trennpunkt,
+     Schwierigkeit als Leuchtbalken mit 5 Segmenten in DIFF_COLOR der
+     Tagesstufe, dahinter der Stufenname.
+     Zeile 3 (gelöst): Mini-Raster in Aufstellungsform, "x/11" (Anton),
+     Tages-Sterne aus profile.daily[dateKey].stars und "Spieltag n".
+   - Zeile 4: "Neue Challenge in" (offen) bzw. "Nächste in" (gelöst) +
+     Timer als Klappziffern: jede Ziffer in einem eigenen dunklen Kästchen
+     mit Mittellinie (Anton), Doppelpunkte dezent. Ziffern aktualisieren
+     sich jede Sekunde OHNE Animation/Blinken (CLAUDE.md).
+
+3. Rechter Abschnitt (gold)
+   - Serie: "🔥 n" in Anton (dunkle Schrift auf Gold), darunter
+     "Tage Serie" in Oswald.
+   - Offen: Button "STARTEN" in Anton – GRÜN wie die linke Seite
+     (grüner Verlauf mit Rasenstreifen, Schrift Gold-hell, dunkle
+     Schattenkante); startet startDailyChallenge().
+   - Gelöst: Button "TEILEN" (dezent, dunkle Schrift auf Gold mit Rahmen),
+     ruft die bestehende Teilen-Funktion auf.
+
+4. Alte, nicht mehr genutzte .d-* Styles entfernen. Schriften laut
+   CLAUDE.md (kein Mono). sw.js CACHE_NAME erhöhen.
+
+Test: Screenshots der Startseite (offen und gelöst) bei 375×667, 402×874
+und 430×932; Vergleich mit dem Prototyp kurz kommentieren; kein Scrollen;
+Starten und Teilen funktionieren.
 ```
 
 ---
