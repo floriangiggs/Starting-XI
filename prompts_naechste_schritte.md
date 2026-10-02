@@ -32,8 +32,9 @@ vorige umgesetzt, getestet und committet ist.
 | 18 | Modus-Kacheln: einheitliches Raster, Welten-Kette, Formkurve | 17 |
 | 19 | „So geht's“ als Reiter-Blatt (4 Themen) + Texte mit Code abgeglichen | – |
 | 20 | Frei spielen neu sortiert, Stufe 1–5, Tages-Archiv als eigene Karte | 19 |
+| 21 | Ladescreen etwas langsamer (~4 s statt ~2,4 s) | – |
 
-**Empfohlene Reihenfolge ab jetzt:** 16 → 17 → 18 → 19 → 20 → 8
+**Empfohlene Reihenfolge ab jetzt:** 16 → 17 → 18 → 19 → 20 → 21 → 8
 
 Prompt 7 steht bewusst vor der Tages-Challenge: Nur mit der neuen
 Update-Strategie kommen neue Tages-Aufstellungen zuverlässig auf dem iPhone an.
@@ -1599,6 +1600,41 @@ Test: Screenshots bei 375×667 und 430×932 (Level < 15 und ≥ 15, mit und
 ohne Archiv); Klick-Tests: Deutschland + Stufe 3 → Zahl stimmt mit
 manueller Zählung überein; Alle Wettbewerbe setzt zurück; Archiv-Karte
 startet ein Archivspiel ohne Sterne.
+```
+
+---
+
+## Prompt 21 – Ladescreen etwas langsamer
+
+```
+Lies CLAUDE.md. Kleine Timing-Änderung am Ladescreen (runSplash /
+finishSplash) – kein Plan Mode nötig, Änderung kurz beschreiben und
+umsetzen.
+
+Befund: Der Ladescreen läuft heute ca. 2,4 s (Zähler DUR = 1800 ms +
+600 ms Anpfiff). Die Startelf läuft dadurch sehr schnell ein, der Tipp
+unten ist kaum lesbar. Der Prototyp prototypes/ladescreen.html war mit
+3200 ms + 850 ms angelegt und wirkt deutlich besser.
+
+1. Zeitwerte als Konstante SPLASH_TIMING oben im Splash-Block:
+   counterMs: 3200 (bisher 1800), kickoffHoldMs: 900 (bisher 600),
+   reduced-motion-Werte unverändert (800 / 100). Gesamtdauer damit ca.
+   4,1 s. Alle Teil-Animationen (Spieler-Einlauf ab 8 %, Statustexte,
+   Fortschrittsbalken) hängen weiter an der Prozentkurve und strecken
+   sich automatisch mit – nichts doppelt timen.
+2. Überspringen bleibt: Tipp irgendwo auf den Ladescreen beendet ihn
+   sofort (skipSplash, existiert schon). Neu: kleiner Hinweis
+   "Tippen zum Überspringen" (Oswald 300, ca. 12px, gedimmt) am unteren
+   Rand, der nach ca. 1,2 s einmal sanft einblendet und dann stehen
+   bleibt – kein Blinken/Pulsieren.
+3. Weiterhin nur beim App-Start, nie bei Bildschirmwechseln. 100 %
+   erst, wenn Mindestdauer UND document.fonts.ready erfüllt sind (wie
+   bisher). sw.js CACHE_NAME erhöhen.
+
+Test: Ablauf einmal per Video/Screenshot-Serie (0 s, 1 s, 2 s, 3 s, 4 s)
+bei 402×874 prüfen: alle 11 Spieler stehen vor dem Anpfiff, Tipp und
+Statustexte sind lesbar, Tippen überspringt sofort, keine
+Konsolenfehler.
 ```
 
 ---
