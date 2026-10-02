@@ -325,30 +325,40 @@
 
   .hidden { display: none !important; }
 
-  /* ---- Profil / Level-System ---- */
-  .profile-bar { width: 100%; text-align: left; background: var(--ink-2); border: 1px solid var(--line); border-radius: 10px; padding: 9px 12px; display: flex; align-items: center; gap: 10px; cursor: pointer; box-shadow: 0 4px 14px rgba(0,0,0,0.2); transition: transform 0.1s ease; }
-  .profile-bar:active { transform: scale(0.99); }
+  /* ---- Profil / Level-System: Scout-Ausweis (Prompt 17, Optik 1:1 aus prototypes/scout-ausweis.html Variante A).
+     Alle Regeln unter .profile-bar gescoped - .info/.goal/.xp/.new u. a. gibt es in der App teils schon. ---- */
   .rank-icon { position: relative; width: 38px; height: 38px; border-radius: 50%; flex-shrink: 0; display: flex; align-items: center; justify-content: center; font-size: 17px; line-height: 1; border: 2px solid var(--rank-c1, var(--gold)); background: radial-gradient(circle at 35% 30%, var(--rank-c1, #8a6a4a), var(--rank-c2, #5c4326) 75%); box-shadow: 0 4px 12px rgba(0,0,0,0.4), inset 0 0 10px rgba(0,0,0,0.35), 0 0 0 3px rgba(255,255,255,0.03); }
-  .rank-icon.legendary { animation: rankGlow 2s ease-in-out infinite; }
-  @keyframes rankGlow { 0%, 100% { box-shadow: 0 4px 12px rgba(0,0,0,0.4), inset 0 0 10px rgba(0,0,0,0.3), 0 0 10px 2px var(--rank-c1, var(--gold)); } 50% { box-shadow: 0 4px 18px rgba(0,0,0,0.4), inset 0 0 10px rgba(0,0,0,0.3), 0 0 18px 6px var(--rank-c1, var(--gold)); } }
-  .profile-mid { flex: 1; min-width: 0; }
-  .profile-row1 { display: flex; justify-content: space-between; align-items: center; margin-bottom: 5px; gap: 8px; }
-  .rank-name { font-family: 'Oswald', sans-serif; font-weight: 700; font-size: 13px; color: var(--chalk); }
-  .rank-title { font-family: 'Oswald', sans-serif; font-weight: 500; font-size: 10px; color: var(--gold); }
-  .level-chip { display: inline-flex; align-items: baseline; gap: 4px; flex-shrink: 0; background: linear-gradient(135deg, var(--gold), #f4d58d); color: var(--ink); padding: 2px 9px; border-radius: 20px; box-shadow: 0 2px 8px rgba(232,178,61,0.4); }
-  .level-chip .level-chip-num { font-family: 'Anton', sans-serif; font-weight: 400; font-size: 14px; line-height: 1; }
-  .level-chip .level-chip-tag { font-family: 'Oswald', sans-serif; font-weight: 600; font-size: 9px; letter-spacing: 0.08em; }
-  .xp-bar-track { background: rgba(255,255,255,0.08); border-radius: 20px; height: 7px; overflow: hidden; position: relative; }
-  .xp-bar-fill { background: linear-gradient(90deg, var(--gold), #f4d58d); height: 100%; border-radius: 20px; transition: width 0.5s ease; position: relative; overflow: hidden; box-shadow: 0 0 10px rgba(232,178,61,0.55); }
-  .xp-bar-fill::after { content: ""; position: absolute; inset: 0; width: 40%; background: linear-gradient(90deg, transparent, rgba(255,255,255,0.55), transparent); animation: xpShine 2.4s ease-in-out infinite; }
-  @keyframes xpShine { 0% { transform: translateX(-120%); } 100% { transform: translateX(280%); } }
-  .xp-next { font-family: 'Oswald', sans-serif; font-weight: 300; font-size: 11.5px; color: rgba(242,239,230,0.7); margin-top: 5px; display: flex; align-items: center; gap: 6px; }
-  .xp-next b { color: var(--gold); font-weight: 700; }
-  .xp-ball { display: inline-block; font-size: 19px; line-height: 1; }
-  .profile-bar.gold-frame { border-color: var(--gold); box-shadow: 0 0 0 1px var(--gold), 0 0 14px rgba(232,178,61,0.25); }
-  .currency-stack { display: flex; flex-direction: column; gap: 5px; flex-shrink: 0; }
-  .token-count { flex-shrink: 0; font-family: 'Anton', sans-serif; font-size: 13px; font-weight: 400; color: #7db8ff; background: rgba(74,163,255,0.12); border: 1px solid rgba(74,163,255,0.3); border-radius: 20px; padding: 6px 10px; text-align: center; }
-  .streak-count { flex-shrink: 0; font-family: 'Anton', sans-serif; font-size: 13px; font-weight: 400; color: var(--flame); background: rgba(240,169,59,0.12); border: 1px solid rgba(240,169,59,0.35); border-radius: 20px; padding: 6px 10px; text-align: center; }
+  .profile-bar { display: block; width: 100%; padding: 0; text-align: left; font: inherit; color: var(--chalk); cursor: pointer; position: relative; flex-shrink: 0; border-radius: 14px; overflow: hidden; border: 1.5px solid rgba(232,178,61,0.55);
+    background: radial-gradient(circle at 0% 0%, rgba(232,178,61,0.16), transparent 45%), linear-gradient(160deg, #22313F, #18242F 70%); box-shadow: 0 8px 18px rgba(0,0,0,0.3); transition: transform 0.1s ease; }
+  .profile-bar:active { transform: scale(0.99); }
+  .profile-bar:focus-visible { outline: 2px solid var(--gold-2); outline-offset: 3px; }
+  .profile-bar.gold-frame { border-color: var(--gold); box-shadow: 0 0 0 1px var(--gold), 0 0 14px rgba(232,178,61,0.25), 0 8px 18px rgba(0,0,0,0.3); }
+  .profile-bar .body { display: flex; align-items: center; gap: 12px; padding: 11px 12px 9px; }
+  .profile-bar .ring { position: relative; width: 66px; height: 66px; flex-shrink: 0; }
+  .profile-bar .ring svg { position: absolute; inset: 0; transform: rotate(-90deg); }
+  .profile-bar .ring .emb { position: absolute; inset: 7px; border-radius: 50%; display: grid; place-items: center; font-size: 25px; background: radial-gradient(circle at 35% 30%, #f9e3a8, #b8862a 75%); box-shadow: inset 0 -3px 6px rgba(0,0,0,0.3), 0 0 14px rgba(232,178,61,0.35); }
+  .profile-bar .ring .lv { position: absolute; left: 50%; bottom: -7px; transform: translateX(-50%); font-family: 'Anton', Impact, sans-serif; font-weight: 400; font-size: 13px; line-height: 1; padding: 3px 7px 2px; border-radius: 10px; background: var(--ink); color: var(--gold-2); border: 1.5px solid var(--gold); white-space: nowrap; }
+  .profile-bar .info { flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 4px; }
+  .profile-bar .rk { font-family: 'Anton', Impact, sans-serif; font-weight: 400; font-size: 23px; line-height: 1; text-transform: uppercase; display: flex; flex-wrap: wrap; align-items: baseline; column-gap: 8px; row-gap: 2px; }
+  .profile-bar .rk.long { font-size: 19px; }
+  .profile-bar .rk small { font-family: 'Oswald', sans-serif; font-weight: 500; font-size: 12.5px; text-transform: none; color: var(--gold-2); }
+  .profile-bar .xp { height: 8px; border-radius: 5px; background: rgba(255,255,255,0.08); overflow: hidden; position: relative; }
+  .profile-bar .xp i { position: absolute; inset: 0 auto 0 0; border-radius: 5px; background: linear-gradient(90deg, var(--gold), var(--gold-2)); box-shadow: 0 0 10px rgba(232,178,61,0.55); transition: width 0.5s ease; }
+  .profile-bar .nx { font-family: 'Oswald', sans-serif; font-weight: 400; font-size: 12.5px; color: var(--muted); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .profile-bar .nx b { color: var(--gold-2); font-weight: 600; }
+  .profile-bar .goal { font-family: 'Oswald', sans-serif; font-weight: 400; font-size: 12px; color: rgba(242,239,230,0.8); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .profile-bar .goal b { color: var(--gold-2); font-weight: 600; }
+  .profile-bar .tok { flex-shrink: 0; align-self: flex-start; font-family: 'Oswald', sans-serif; font-weight: 700; font-size: 13px; color: var(--token); background: rgba(74,163,255,0.12); border: 1px solid rgba(74,163,255,0.3); border-radius: 20px; padding: 3px 9px; }
+  .profile-bar .foot { display: flex; align-items: center; gap: 12px; padding: 7px 12px; border-top: 1px solid rgba(232,178,61,0.25); background: rgba(0,0,0,0.18); font-family: 'Oswald', sans-serif; font-weight: 400; font-size: 13px; }
+  .profile-bar .foot .st { display: inline-flex; align-items: center; gap: 4px; color: rgba(242,239,230,0.85); white-space: nowrap; }
+  .profile-bar .foot .st b { font-family: 'Anton', Impact, sans-serif; font-weight: 400; font-size: 14px; color: var(--chalk); }
+  .profile-bar .foot .cta { margin-left: auto; display: inline-flex; align-items: center; gap: 4px; font-family: 'Anton', Impact, sans-serif; font-weight: 400; font-size: 14px; letter-spacing: 0.03em; text-transform: uppercase; color: var(--gold); white-space: nowrap; }
+  .profile-bar .foot .cta svg { width: 14px; height: 14px; }
+  .profile-bar .foot .new { display: inline-block; width: 8px; height: 8px; border-radius: 50%; background: var(--gold); box-shadow: 0 0 0 3px rgba(232,178,61,0.25); margin-right: 3px; }
+  @media (max-width: 389px) {
+    .profile-bar .foot { gap: 8px; padding: 7px 10px; font-size: 12.5px; }
+    .profile-bar .foot .wissen-txt { display: none; }
+  }
 
   .toast-stack { position: fixed; top: 16px; left: 50%; transform: translateX(-50%); z-index: 50; display: flex; flex-direction: column; gap: 8px; width: 92%; max-width: 500px; pointer-events: none; }
   #srFx { position: fixed; inset: 0; width: 100%; height: 100%; pointer-events: none; z-index: 55; }
@@ -598,21 +608,7 @@
       <div class="sub">Echte Spiele aus der Fußballgeschichte - stell die Startelf nach und zeig, wer sich wirklich auskennt.</div>
     </header>
 
-    <button type="button" class="profile-bar" id="profileBar">
-      <div class="rank-icon" id="rankIcon">🟫</div>
-      <div class="profile-mid">
-        <div class="profile-row1">
-          <span><span class="rank-name" id="rankName">Kreisliga</span> <span class="rank-title" id="rankTitle"></span></span>
-          <span class="level-chip"><span class="level-chip-num" id="levelChipNum">1</span><span class="level-chip-tag">LVL</span></span>
-        </div>
-        <div class="xp-bar-track"><div class="xp-bar-fill" id="xpBarFill" style="width:0%"></div></div>
-        <div class="xp-next" id="xpNext">Noch <b>100</b> XP bis Lvl 2</div>
-      </div>
-      <div class="currency-stack">
-        <div class="token-count" id="tokenCount">🔍 0</div>
-        <div class="streak-count" id="streakCount">🔥 0</div>
-      </div>
-    </button>
+    <button type="button" class="profile-bar" id="profileBar"></button>
 
     <div id="dailyCard" class="t1"></div>
 
@@ -2136,27 +2132,55 @@ function showTrophyToast(t) {
   showToast(TROPHY_KIND_ICON[t.kind] + " Trophäe gewonnen: <b>" + t.name + "</b> · 🔍 +" + ECONOMY.earnAchievement);
 }
 
+// Gewonnene Trophaeen (gleiche Quelle wie der Trophaeen-Reiter im Scout-Profil).
+function wonTrophyIds() {
+  return TROPHIES.filter((t) => t.check(profile)).map((t) => t.id);
+}
+
+// Scout-Ausweis auf der Startseite (Prompt 17, Optik 1:1 aus prototypes/scout-ausweis.html Variante A):
+// Rang-Emblem mit goldenem XP-Ring, Level-Plakette, Rang + Titel, XP-Balken, naechstes Ziel und
+// eine Fussleiste mit Trophaeen/Sternen/Wissen und dem Weg ins Scout-Profil.
 function renderProfileBar() {
   const rank = rankForLevel(profile.level);
   const baseXP = xpForLevel(profile.level - 1);
   const nextXP = xpForLevel(profile.level);
   const progress = Math.max(0, Math.min(1, (profile.totalXP - baseXP) / (nextXP - baseXP)));
-
   const remainingXP = Math.max(0, nextXP - profile.totalXP);
 
-  const rankIconEl = document.getElementById("rankIcon");
-  rankIconEl.textContent = rank.icon;
-  rankIconEl.style.setProperty("--rank-c1", rank.c1);
-  rankIconEl.style.setProperty("--rank-c2", rank.c2);
-  rankIconEl.classList.toggle("legendary", !!rank.legendary);
-  document.getElementById("rankName").textContent = rank.name;
-  document.getElementById("rankTitle").textContent = profile.unlockedTitle ? "· \"" + profile.unlockedTitle + "\"" : "";
-  document.getElementById("levelChipNum").textContent = profile.level;
-  document.getElementById("xpBarFill").style.width = (progress * 100).toFixed(0) + "%";
-  document.getElementById("xpNext").innerHTML = "<span class=\"xp-ball\">⚽</span> Noch <b>" + remainingXP + " XP</b> bis Lvl " + (profile.level + 1);
-  document.getElementById("tokenCount").textContent = "🔍 " + profile.hintTokens;
-  document.getElementById("streakCount").textContent = "🔥 " + profile.streak.current;
-  document.getElementById("profileBar").classList.toggle("gold-frame", profile.level >= 30);
+  // Bestehende Spieler sollen fuer schon vorher gewonnene Trophaeen keinen "neu"-Punkt sehen.
+  if (!Array.isArray(profile.seenTrophies)) {
+    profile.seenTrophies = wonTrophyIds();
+    saveProfile(profile);
+  }
+  const won = wonTrophyIds();
+  const hasNewTrophy = won.some((id) => !profile.seenTrophies.includes(id));
+  const stars = starsSummaryTotal();
+
+  const nextRank = RANKS.find((r) => r.min > profile.level);
+  const goalHtml = nextRank
+    ? `Ziel: ${nextRank.icon} <b>${nextRank.name}</b> in ${nextRank.min - profile.level} Level`
+    : "Höchster Rang erreicht";
+
+  const r = 29.5, C = 2 * Math.PI * r;
+  const ring = `<svg viewBox="0 0 66 66" aria-hidden="true"><circle cx="33" cy="33" r="${r}" fill="none" stroke="rgba(255,255,255,0.1)" stroke-width="5"/><circle cx="33" cy="33" r="${r}" fill="none" stroke="url(#pbRingGrad)" stroke-width="5" stroke-linecap="round" stroke-dasharray="${C.toFixed(2)}" stroke-dashoffset="${(C * (1 - progress)).toFixed(2)}"/><defs><linearGradient id="pbRingGrad"><stop offset="0" stop-color="#E8B23D"/><stop offset="1" stop-color="#F4D58D"/></linearGradient></defs></svg>`;
+  const chev = `<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M9 5l7 7-7 7" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg>`;
+  const title = profile.unlockedTitle ? `<small>„${profile.unlockedTitle}“</small>` : "";
+
+  const bar = document.getElementById("profileBar");
+  bar.setAttribute("aria-label", "Scout-Profil öffnen");
+  bar.innerHTML = `
+    <div class="body">
+      <div class="ring">${ring}<div class="emb">${rank.icon}</div><span class="lv">LVL ${profile.level}</span></div>
+      <div class="info">
+        <div class="rk${rank.name.length > 13 ? " long" : ""}">${rank.name} ${title}</div>
+        <div class="xp"><i style="width:${(progress * 100).toFixed(0)}%"></i></div>
+        <div class="nx">Noch <b>${remainingXP} XP</b> bis Level ${profile.level + 1}</div>
+        <div class="goal">${goalHtml}</div>
+      </div>
+      <span class="tok">🔍 ${profile.hintTokens}</span>
+    </div>
+    <div class="foot"><span class="st">🏆 <b>${won.length}</b>/${TROPHIES.length}</span><span class="st">⭐ <b>${stars.earned}</b>/${stars.max}</span><span class="st">📊 <span class="wissen-txt">Wissen</span></span><span class="cta">${hasNewTrophy ? '<span class="new" title="Neue Trophäe"></span>' : ""}Scout-Profil ${chev}</span></div>`;
+  bar.classList.toggle("gold-frame", profile.level >= 30);
 
   applyUnlockedFeatures();
   renderUnlockRow();
@@ -3128,6 +3152,13 @@ function renderProfileSheetPanel() {
     panel.querySelectorAll(".trophy").forEach((btn) => {
       btn.onclick = () => { selectedTrophyId = btn.dataset.id; renderProfileSheetPanel(); };
     });
+    // Trophaeen-Reiter angesehen -> der goldene "neu"-Punkt am Scout-Ausweis verschwindet (Prompt 17).
+    const won = wonTrophyIds();
+    if (won.some((id) => !profile.seenTrophies.includes(id))) {
+      profile.seenTrophies = won;
+      saveProfile(profile);
+      renderProfileBar();
+    }
   }
   if (profileSheetTab === "kn") {
     const btn = document.getElementById("trainWeaknessBtn");
