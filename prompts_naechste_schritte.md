@@ -30,8 +30,10 @@ vorige umgesetzt, getestet und committet ist.
 | 16 | Tages-Karte im Ticket-Stil | – |
 | 17 | Level-Kachel „Scout-Ausweis“ mit Weg ins Scout-Profil | 16 |
 | 18 | Modus-Kacheln: einheitliches Raster, Welten-Kette, Formkurve | 17 |
+| 19 | „So geht's“ als Reiter-Blatt (4 Themen) + Texte mit Code abgeglichen | – |
+| 20 | Frei spielen neu sortiert, Stufe 1–5, Tages-Archiv als eigene Karte | 19 |
 
-**Empfohlene Reihenfolge ab jetzt:** 16 → 17 → 18 → 8
+**Empfohlene Reihenfolge ab jetzt:** 16 → 17 → 18 → 19 → 20 → 8
 
 Prompt 7 steht bewusst vor der Tages-Challenge: Nur mit der neuen
 Update-Strategie kommen neue Tages-Aufstellungen zuverlässig auf dem iPhone an.
@@ -42,7 +44,8 @@ Optische Vorlagen: `prototypes/scout-rad.html` (Prompt 6),
 Welten-Ausschmückung), `prototypes/ladescreen.html` (Prompt 11d) und
 `prototypes/tageskarte.html` (Prompt 16, nur Variante „Ticket – neu“) und
 `prototypes/scout-ausweis.html` (Prompt 17, nur Variante A) und
-`prototypes/modus-kacheln.html` (Prompt 18, nur „A · neu“).
+`prototypes/modus-kacheln.html` (Prompt 18, nur „A · neu“) und
+`prototypes/regeln.html` (Prompt 19) und `prototypes/freispiel.html` (Prompt 20).
 
 **Wichtig nach jeder Änderung:** Der Service Worker liefert die App aus dem
 Cache. Jeder Prompt erhöht deshalb `CACHE_NAME` in `sw.js` – sonst sieht die
@@ -1443,6 +1446,159 @@ Test: Screenshots der Startseite bei 375×667, 402×874 und 430×932 mit
 Test-Profilen: neu (Welt 1, keine Freispiele), mittendrin (Welt 3,
 Formkurve 9/7/11/6/10), alles geschafft. Prüfen, dass Icon, Titel,
 Bild- und Textzeile beider Kacheln pixelgenau auf gleicher Höhe liegen.
+```
+
+---
+
+## Prompt 19 – „So geht's“ als Reiter-Blatt
+
+```
+Lies CLAUDE.md. Strukturelle Änderung an der Spielanleitung → Plan Mode,
+Plan zeigen, dann umsetzen. Optik 1:1 aus prototypes/regeln.html
+(Daten-Array P mit 4 Reitern, CSS .tabs/.panel/.goal/.num/.help/.warn/
+.modes/.stars/.chain/.mini).
+
+Befund heute: openGuideModal() listet 14 GUIDE_SECTIONS ungeordnet
+untereinander – unübersichtlich. Zwei Texte sind veraltet bzw. falsch:
+"Achievements" (es gibt inzwischen auch Trophäen) und "Schwierigkeit
+steigt zur Wochenmitte hin" (laut WEEKDAY_DIFFICULTY: Mo 1 → So 5).
+"Aufdecken ... ohne XP-Abzug" ist irreführend: eine aufgedeckte Position
+zählt als richtig, bekommt aber gar keine Positions-XP.
+
+1. Neues Blatt "SO GEHT'S" (ersetzt die Liste in openGuideModal)
+   - Kopf: Titel "SO GEHT'S" (Anton, "GEHT'S" gold) + "Schließen".
+   - Darunter 4 Reiter (role="tablist", Icon + Label, aktiver Reiter
+     goldener Rahmen): ⚽ SPIELEN · 🔍 HILFEN · 🏟️ MODI · 🏆 BELOHNUNG.
+   - Jeder Reiter passt OHNE Scrollen auf 375×667 bis 430×932 (Panel darf
+     nur als Notlösung intern scrollen). Kein Auf-/Zuklappen.
+   - Zuletzt geöffneter Reiter wird nicht gespeichert – startet immer bei
+     SPIELEN.
+
+2. Inhalte (Texte wie im Prototyp, Zahlen IMMER aus den Konstanten
+   ECONOMY / XP_RULES / PASS_THRESHOLD ziehen, nichts hart codieren):
+   SPIELEN: grüne Ziel-Karte mit kleiner Spielfeld-Skizze (SVG aus dem
+     Prototyp) – Text enthält den bisherigen Fußnoten-Hinweis "echte
+     Startelf eines konkreten Spiels, keine typische Stammelf". Darunter
+     "So trägst du ein" mit 3 nummerierten Schritten: Nachname reicht /
+     Falsche Zeile? / Fast richtig (Feld gold, Korrigieren = weniger XP).
+   HILFEN: zwei Karten mit Preisschild – Scout-Rad (spinCost 🔍, Tipp
+     1. Buchstabe/Rückennummer/Nationalität/Jackpot Name, Position bringt
+     weniger XP) und Aufdecken (revealCost 🔍, zählt als richtig, keine
+     Positions-XP). Hinweisbalken: jede Hilfe kostet ⭐⭐⭐ und beendet
+     die Kombo, gilt in allen Modi. Karte "Token verdienen" als Chips MIT
+     Menge: +earnFirstPass Erstmals gespielt, +earnPerfect Perfekte
+     Aufstellung (einmalig), +earnDaily Tages-Challenge, +earnLevelUp je
+     Level-Up, +earnAchievement Trophäe / Achievement. Fußnote
+     Rückennummer/Nationalität nur wo Daten vorliegen, bei
+     Nationalteams keine Nationalität.
+   MODI: Vergleichstabelle Kampagne / Tages-Challenge / Frei spielen mit
+     Zeilen Spiele (5 Welten / 1 pro Tag / frei wählbar), Versuche
+     (beliebig / 1 / beliebig), Sterne (✓ ✓ –), Serie (– ✓ –).
+     Darunter je ein Satz: Kampagne (ab PASS_THRESHOLD von 11 bestanden),
+     Tages-Challenge (Mo leicht, So am schwersten, Serie bis
+     +dailyStreakBonusMax XP, teilbar), Frei spielen (Training ohne
+     Druck; mehrere Wettbewerbe/Stufen = mehr Spiele, beides kombiniert
+     grenzt ein; Tages-Archiv). Frei spielen bekommt KEINEN eigenen
+     Info-Button – die Erklärung steht hier.
+   BELOHNUNG: Sterne als 3 Stufen (7/11, 9/11, 11/11 ohne Hilfe – nur
+     Kampagne & Tages-Challenge), Kette XP › Level › Rang mit Chips
+     (neu gelöste Positionen, neue Sterne, Tages-Challenge) + Hinweis
+     Trainings-XP, Karten Kombo und Trophäen, Leiste "Ab Level 15:
+     Hardcore-Modus im Freispiel – nur Stufe 4–5".
+
+3. Datenstruktur: GUIDE_SECTIONS durch GUIDE_TABS ersetzen (je Reiter
+   id, icon, label, render()). Das Regeln-Modal im Spielfeld
+   (openRulesModal, RULES_SECTION_TITLES) nutzt dasselbe Blatt, zeigt
+   aber nur SPIELEN, HILFEN, BELOHNUNG und darunter weiterhin
+   "🔍 Aktueller Stand: n Scout-Token". hasSeenGuide/helpDot und
+   hasSeenPitchRules/rulesDot verhalten sich wie bisher. Alte
+   .guide-row-Styles entfernen, falls nicht mehr genutzt.
+
+4. Nichts an Spielmechanik, Token-Kosten oder XP ändern – nur Anzeige.
+   Prüfe beim Umsetzen jede Aussage gegen den Code; weicht etwas ab,
+   gilt der Code und der Text wird angepasst (im Plan auflisten).
+   Kleiner Datenfix nebenbei: NATIONAL_TEAM_LEAGUES enthält "Copa
+   America" ohne Akzent, die Daten nutzen "Copa América" – auf die
+   Schreibweise der Daten angleichen und "Afrika-Cup" (Tages-Pool)
+   ergänzen. sw.js CACHE_NAME erhöhen.
+
+Test: Screenshots aller 4 Reiter + Regeln-Modal bei 375×667 und
+430×932; prüfen, dass kein Reiter scrollt und keine Konsolenfehler.
+```
+
+---
+
+## Prompt 20 – Frei spielen neu sortiert
+
+```
+Lies CLAUDE.md. Umbau des Freispiel-Bildschirms (#screen-freeplay) →
+kurz Plan zeigen, dann umsetzen. Optik 1:1 aus prototypes/freispiel.html
+(CSS .lab/.grp/.gl/.chips/.ch/.levels/.lvl/.count/.go/.arch).
+Voraussetzung: Prompt 19 (die Erklärung steht im Reiter MODI, daher
+KEIN eigener Info-Button auf diesem Bildschirm).
+
+Befund heute: Liga- und Stufen-Chips stehen ohne Überschrift und
+ungeordnet, "Bundesliga / DFB-Pokal" und "Bundesliga" stehen getrennt,
+die Stufen heißen wie Wettbewerbe (Kreisliga … Champions League) und
+werden mit den echten Wettbewerben verwechselt. "📅 Archiv" steht
+zwischen den Ligen, obwohl es kein Wettbewerb ist.
+
+1. Abschnitt WETTBEWERB
+   - Überschrift (Anton, gold) + rechts "Mehrfachauswahl möglich"
+     (Oswald 300).
+   - Chip "Alle Wettbewerbe <n>" (aktiv = goldener Verlauf).
+   - Gruppen mit kleiner Beschriftung links: Turniere (WM, EM, Copa
+     América), Europapokal (Champions League, Europa League), Ligen &
+     Pokal (Deutschland, England, Spanien, Italien, Niederlande).
+   - Ein Länder-Chip steht für mehrere league-Werte: neue Konstante
+     FREEPLAY_GROUPS (Chip-Label → league-Werte), z. B. Deutschland =
+     Bundesliga + 2. Bundesliga + Bundesliga / DFB-Pokal + DFB-Pokal.
+     Kurzlabels WM/EM nur in der Anzeige. selectedLeagues bleibt ein Set
+     von league-Werten (Chip an = alle seine Werte rein, aus = raus), so
+     funktionieren poolForActiveLeague() und trainWeakness() unverändert.
+   - Jede league aus LINEUP_CHALLENGES muss genau einem Chip zugeordnet
+     sein; fehlt eine Zuordnung, im Plan melden (nicht still weglassen).
+     Chips ohne Aufstellungen ausblenden. Zahl je Chip = passende
+     Aufstellungen.
+
+2. Abschnitt SCHWIERIGKEIT
+   - Überschrift + "Mehrfachauswahl möglich".
+   - 5 gleich breite Kacheln "Stufe 1" … "Stufe 5" mit 5-Balken-Anzeige
+     in DIFF_COLOR und "<n> Spiele". DIFF_LABEL selbst NICHT ändern (wird
+     für Welten-Namen gebraucht) – nur hier "Stufe n" anzeigen.
+   - Kein eigener "Alle Stufen"-Chip mehr: keine Stufe gewählt = alle.
+   - Hardcore-Modus (ab Level 15, bisher #unlockRow): als kleiner
+     Schalter "🔥 Hardcore · nur Stufe 4–5" direkt unter den Stufen,
+     Verhalten wie bisher (profile.hardcoreMode).
+
+3. Unten
+   - "<n> Aufstellungen passen" (Zahl Anton), grüner Button
+     "🎲 Zufällige Aufstellung", darunter klein (Oswald 300) "Die Partie
+     bleibt geheim, bis du sie spielst."
+   - Bei 0 Treffern: Button deaktiviert, Text "Keine Aufstellung passt –
+     wähle etwas ab".
+   - Tages-Archiv als eigene Karte (gestrichelter Goldrahmen): "📅
+     TAGES-ARCHIV – Verpasste Tages-Challenges nachspielen" + Anzahl.
+     Tipp startet eine zufällige archivierte Tages-Aufstellung direkt
+     (bisherige Logik von showDailyArchive/archivedDailyChallenges, aber
+     ohne Umweg über den Filter). Gespielt wird mit Freispiel-Regeln:
+     keine Sterne, keine Serie, kein earnDaily. Ohne Archiv-Einträge
+     Karte ausblenden.
+
+4. Spielfluss & Token unverändert lassen: Scout-Rad/Aufdecken, Kosten,
+   Kombo, XP und Token-Vergabe im Freispiel funktionieren genau wie
+   bisher. Prüfe das nach dem Umbau mit je einem Freispiel aus Filter
+   und aus dem Archiv (Token-Stand vor/nach Rad und Aufdecken, Kombo,
+   Ergebnis-Quittung).
+
+5. Muss ohne Scrollen auf 375×667 bis 430×932 passen. Alte
+   .filter-btn-Styles entfernen, falls nicht mehr genutzt. sw.js
+   CACHE_NAME erhöhen.
+
+Test: Screenshots bei 375×667 und 430×932 (Level < 15 und ≥ 15, mit und
+ohne Archiv); Klick-Tests: Deutschland + Stufe 3 → Zahl stimmt mit
+manueller Zählung überein; Alle Wettbewerbe setzt zurück; Archiv-Karte
+startet ein Archivspiel ohne Sterne.
 ```
 
 ---

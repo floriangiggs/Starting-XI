@@ -1,0 +1,138 @@
+<!doctype html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, viewport-fit=cover">
+<!-- Referenz-Prototyp für Prompt 20 (Frei spielen neu sortiert). Maßgeblich: CSS .lab/.grp/.gl/.chips/.ch/.levels/.lvl/.count/.go/.arch. Zahlen sind Beispieldaten. KEIN Info-Button. Nicht einbinden. -->
+<title>Frei spielen neu</title>
+
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Anton&family=Oswald:wght@300;400;500;600;700&display=swap">
+<style>
+  :root {
+    --pitch: #1F4D36; --chalk: #F2EFE6; --gold: #E8B23D; --gold-2: #F4D58D;
+    --ink: #14202B; --ink-2: #1C2B38; --ink-3: #243A4D; --line: rgba(242,239,230,0.14);
+    --muted: rgba(242,239,230,0.68); --dim: rgba(242,239,230,0.45); --token: #7DB8FF; --ok: #2ECC71; --flame: #F0A93B;
+    color-scheme: dark;
+  }
+  * { box-sizing: border-box; }
+  html, body { background: var(--ink); }
+  body { margin: 0; color: var(--chalk); font-family: Oswald, "Arial Narrow", system-ui, sans-serif; -webkit-tap-highlight-color: transparent; }
+  button { font-family: inherit; color: inherit; cursor: pointer; touch-action: manipulation; }
+  button:focus-visible { outline: 2px solid var(--gold-2); outline-offset: 3px; }
+  .controls { position: sticky; top: 0; z-index: 30; background: rgba(20,32,43,0.95); border-bottom: 1px solid var(--line); padding: 10px 16px; display: flex; justify-content: center; }
+  .seg { display: inline-flex; border: 1px solid var(--line); border-radius: 20px; padding: 3px; gap: 3px; }
+  .seg button { font-weight: 600; font-size: 13px; background: transparent; color: var(--muted); border: none; border-radius: 16px; padding: 6px 12px; }
+  .seg button[aria-pressed="true"] { background: linear-gradient(160deg, #f6da9c, var(--gold)); color: var(--ink); }
+
+  .phone { width: min(402px, 100%); height: 780px; margin: 16px auto 28px; position: relative; overflow: hidden; border-radius: 28px; border: 1px solid var(--line);
+    background: repeating-linear-gradient(90deg, rgba(255,255,255,0.02) 0 2px, transparent 2px 40px), var(--ink); }
+  .scr { position: absolute; inset: 0; display: flex; flex-direction: column; padding: 14px 16px 16px; }
+  .scr[hidden] { display: none; }
+  .topbar { display: flex; align-items: center; gap: 10px; min-height: 42px; flex-shrink: 0; }
+  .back { display: inline-flex; align-items: center; gap: 6px; background: var(--ink-2); border: 1px solid var(--line); border-radius: 22px; padding: 8px 14px 8px 11px; font-family: Anton, Impact, sans-serif; font-size: 15px; text-transform: uppercase; }
+  .back i { font-style: normal; color: var(--gold); }
+  .tt { font-family: Anton, Impact, sans-serif; font-size: 22px; text-transform: uppercase; flex: 1; }
+  .info-btn { display: inline-flex; align-items: center; gap: 5px; border: 1px solid rgba(232,178,61,0.5); background: rgba(232,178,61,0.12); color: var(--gold-2); border-radius: 20px; padding: 7px 12px; font-weight: 600; font-size: 13px; }
+
+  /* ---------- So geht's ---------- */
+  .sheet-bg { position: absolute; inset: 0; background: rgba(8,13,18,0.6); display: flex; align-items: flex-end; }
+  .sheet { width: 100%; max-height: 92%; overflow-y: auto; background: var(--ink); border-top: 1px solid var(--line); border-radius: 18px 18px 0 0; padding: 12px 16px 22px; display: flex; flex-direction: column; gap: 12px; }
+  .grab { width: 44px; height: 5px; border-radius: 3px; background: var(--line); margin: 0 auto; }
+  .sh-head { display: flex; justify-content: space-between; align-items: center; }
+  .sh-title { font-family: Anton, Impact, sans-serif; font-size: 26px; text-transform: uppercase; line-height: 1; }
+  .sh-title span { color: var(--gold); }
+  .x { background: transparent; border: 1px solid var(--line); border-radius: 20px; padding: 6px 14px; font-weight: 500; font-size: 13px; }
+  .goal { border-radius: 12px; padding: 12px 14px; background: linear-gradient(150deg, #27603F, #173F2B 80%); border: 1.5px solid rgba(232,178,61,0.6); display: flex; gap: 12px; align-items: center; }
+  .goal .ic { font-size: 28px; }
+  .goal b { font-family: Anton, Impact, sans-serif; font-weight: 400; font-size: 17px; text-transform: uppercase; display: block; color: var(--gold-2); }
+  .goal p { margin: 2px 0 0; font-weight: 300; font-size: 14px; line-height: 1.4; }
+  .acc { border-radius: 12px; border: 1px solid var(--line); background: var(--ink-2); overflow: hidden; }
+  .acc > button { width: 100%; display: flex; align-items: center; gap: 12px; padding: 12px 14px; background: none; border: none; text-align: left; }
+  .acc .gi { width: 38px; height: 38px; border-radius: 10px; display: grid; place-items: center; font-size: 19px; background: rgba(232,178,61,0.12); border: 1px solid rgba(232,178,61,0.35); flex-shrink: 0; }
+  .acc .gt { flex: 1; }
+  .acc .gt b { font-family: Anton, Impact, sans-serif; font-weight: 400; font-size: 18px; text-transform: uppercase; display: block; line-height: 1.1; }
+  .acc .gt span { font-weight: 300; font-size: 12.5px; color: var(--muted); }
+  .acc .chev { width: 18px; height: 18px; color: var(--gold); transition: transform 0.2s; }
+  .acc.open .chev { transform: rotate(90deg); }
+  .acc .body { display: none; padding: 0 14px 12px; flex-direction: column; gap: 9px; }
+  .acc.open .body { display: flex; }
+  .item { display: grid; grid-template-columns: 26px 1fr; gap: 8px; padding-top: 9px; border-top: 1px solid var(--line); }
+  .item .ii { font-size: 17px; line-height: 1.3; }
+  .item b { font-weight: 600; font-size: 14.5px; }
+  .item p { margin: 2px 0 0; font-weight: 300; font-size: 13.5px; line-height: 1.45; color: rgba(242,239,230,0.85); }
+  .item .keys { display: flex; flex-wrap: wrap; gap: 5px; margin-top: 6px; }
+  .item .keys span { font-weight: 600; font-size: 12px; padding: 2px 8px; border-radius: 10px; background: rgba(255,255,255,0.06); border: 1px solid var(--line); white-space: nowrap; }
+  .item .keys span.g { color: var(--gold-2); border-color: rgba(232,178,61,0.4); }
+
+  /* ---------- Freispiel ---------- */
+  .fp { flex: 1; min-height: 0; display: flex; flex-direction: column; gap: 12px; margin-top: 8px; }
+  .lab { display: flex; justify-content: space-between; align-items: baseline; }
+  .lab b { font-family: Anton, Impact, sans-serif; font-weight: 400; font-size: 16px; text-transform: uppercase; color: var(--gold-2); letter-spacing: 0.02em; }
+  .lab span { font-weight: 300; font-size: 12px; color: var(--dim); }
+  .grp { display: grid; grid-template-columns: 74px 1fr; gap: 6px 8px; align-items: start; }
+  .grp .gl { font-weight: 500; font-size: 11.5px; color: var(--muted); padding-top: 6px; line-height: 1.15; }
+  .chips { display: flex; flex-wrap: wrap; gap: 5px; }
+  .ch { border: 1px solid var(--line); background: var(--ink-2); border-radius: 16px; padding: 5px 10px; font-weight: 500; font-size: 13px; color: rgba(242,239,230,0.82); white-space: nowrap; }
+  .ch small { color: var(--dim); font-weight: 400; margin-left: 3px; }
+  .ch.on { background: rgba(232,178,61,0.16); border-color: rgba(232,178,61,0.6); color: var(--gold-2); }
+  .ch.all.on { background: linear-gradient(160deg, #f6da9c, var(--gold)); color: var(--ink); border-color: var(--gold); }
+  .ch.all.on small { color: rgba(20,32,43,0.6); }
+  .levels { display: grid; grid-template-columns: repeat(5, 1fr); gap: 5px; }
+  .lvl { border: 1px solid var(--line); background: var(--ink-2); border-radius: 10px; padding: 7px 2px 6px; display: flex; flex-direction: column; align-items: center; gap: 4px; }
+  .lvl .bars { display: flex; gap: 2px; } .lvl .bars i { width: 5px; height: 10px; border-radius: 2px; background: rgba(255,255,255,0.15); } .lvl .bars i.on { background: currentColor; }
+  .lvl b { font-family: Anton, Impact, sans-serif; font-weight: 400; font-size: 13px; line-height: 1; }
+  .lvl span { font-weight: 400; font-size: 10px; color: var(--dim); }
+  .lvl.on { border-color: currentColor; background: color-mix(in srgb, currentColor 14%, transparent); }
+  .count { text-align: center; font-weight: 300; font-size: 14px; color: var(--muted); margin-top: auto; }
+  .count b { font-family: Anton, Impact, sans-serif; font-weight: 400; color: var(--chalk); font-size: 16px; }
+  .go { border: none; border-radius: 12px; padding: 14px; font-family: Anton, Impact, sans-serif; font-size: 19px; text-transform: uppercase; letter-spacing: 0.03em; color: var(--chalk);
+    background: repeating-linear-gradient(90deg, rgba(255,255,255,0.04) 0 14px, transparent 14px 28px), linear-gradient(150deg, #2F7A50, #1B4A32); box-shadow: 0 4px 0 #0E2A1C; }
+  .arch { display: flex; align-items: center; gap: 12px; border-radius: 12px; padding: 10px 12px; border: 1px dashed rgba(232,178,61,0.5); background: rgba(232,178,61,0.06); text-align: left; width: 100%; color: inherit; }
+  .arch .ai { font-size: 22px; }
+  .arch b { font-family: Anton, Impact, sans-serif; font-weight: 400; font-size: 15px; text-transform: uppercase; display: block; color: var(--gold-2); }
+  .arch span { font-weight: 300; font-size: 12.5px; color: var(--muted); }
+  .arch .n { margin-left: auto; font-family: Anton, Impact, sans-serif; font-size: 20px; color: var(--gold); }
+  .tip { position: absolute; left: 16px; right: 16px; bottom: 16px; }
+  .note { max-width: 402px; margin: -12px auto 0; padding: 0 16px 24px; font-weight: 300; font-size: 14px; line-height: 1.5; color: var(--muted); text-align: center; }
+  .note b { color: var(--chalk); font-weight: 600; }
+</style>
+
+</head>
+<body>
+<div class="controls"><div class="seg"><button type="button" aria-pressed="true">Frei spielen · neu</button></div></div>
+
+<div class="phone">
+  <!-- Frei spielen -->
+  <section class="scr" id="free">
+    <div class="topbar"><button class="back" type="button"><i>←</i> Start</button><div class="tt">Frei spielen</div></div>
+    <div class="fp">
+      <div class="lab"><b>Wettbewerb</b><span>Mehrfachauswahl möglich</span></div>
+      <button type="button" class="ch all on" style="align-self:flex-start">Alle Wettbewerbe <small>60</small></button>
+      <div class="grp">
+        <div class="gl">Turniere</div><div class="chips"><button class="ch">WM <small>11</small></button><button class="ch">EM <small>5</small></button><button class="ch">Copa América <small>2</small></button></div>
+        <div class="gl">Europapokal</div><div class="chips"><button class="ch">Champions League <small>11</small></button><button class="ch">Europa League <small>4</small></button></div>
+        <div class="gl">Ligen &amp; Pokal</div><div class="chips"><button class="ch">Deutschland <small>10</small></button><button class="ch">England <small>6</small></button><button class="ch">Spanien <small>6</small></button><button class="ch">Italien <small>4</small></button><button class="ch">Niederlande <small>1</small></button></div>
+      </div>
+      <div class="lab" style="margin-top:4px"><b>Schwierigkeit</b><span>Mehrfachauswahl möglich</span></div>
+      <div class="levels" id="levels"></div>
+      <div class="count"><b>60</b> Aufstellungen passen</div>
+      <button class="go" type="button">🎲 Zufällige Aufstellung</button>
+      <button class="arch" type="button"><span class="ai">📅</span><span><b>Tages-Archiv</b><span>Verpasste Tages-Challenges nachspielen</span></span><span class="n">4</span></button>
+    </div>
+  </section>
+
+</div>
+<p class="note" id="note"></p>
+
+<script>
+(() => {
+  const $ = id => document.getElementById(id);
+  const LV = [["1", "Kreisliga", "#7fd99a", 10], ["2", "Regionalliga", "#a8d94a", 13], ["3", "Bundesliga", "#e8b23d", 11], ["4", "Champ. League", "#e8863d", 13], ["5", "Weltklasse", "#e0705f", 13]];
+  $("levels").innerHTML = LV.map(([n, name, c, k], i) => `<button type="button" class="lvl" style="color:${c}"><span class="bars">${[1,2,3,4,5].map(j => `<i class="${j <= +n ? "on" : ""}"></i>`).join("")}</span><b>Stufe ${n}</b><span>${k} Spiele</span></button>`).join("");
+  document.querySelectorAll(".ch:not(.all), .lvl").forEach(b => b.addEventListener("click", () => { b.classList.toggle("on"); document.querySelector(".ch.all").classList.toggle("on", !document.querySelector(".ch.on:not(.all)")); }));
+  document.getElementById("note").innerHTML = "<b>Frei spielen – geordnet:</b> Überschriften „Wettbewerb“ und „Schwierigkeit“ mit Hinweis auf Mehrfachauswahl. Wettbewerbe in drei Gruppen (Turniere · Europapokal · Ligen &amp; Pokal), Ligen nach Land zusammengefasst. Schwierigkeit als „Stufe 1–5“ mit Balken. Tages-Archiv als eigene Karte unten. Kein eigener Info-Button – erklärt wird im Reiter „Modi“ von So geht's.";
+})();
+</script>
+
+</body>
+</html>

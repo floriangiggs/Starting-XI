@@ -1,0 +1,243 @@
+<!doctype html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, viewport-fit=cover">
+<!-- Referenz-Prototyp für Prompt 19 (So geht's als Reiter-Blatt). Maßgeblich: Daten-Array P (4 Reiter) und CSS .tabs/.panel/.goal/.num/.help/.warn/.modes/.stars/.chain/.mini. Texte sind mit dem Code abgeglichen (Stand Prompt 15), Zahlen im Code aus ECONOMY/XP_RULES ziehen. Nicht einbinden. -->
+<title>So geht's – Regeln</title>
+
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Anton&family=Oswald:wght@300;400;500;600;700&display=swap">
+<style>
+  :root {
+    --pitch: #1F4D36; --chalk: #F2EFE6; --gold: #E8B23D; --gold-2: #F4D58D;
+    --ink: #14202B; --ink-2: #1C2B38; --ink-3: #243A4D; --line: rgba(242,239,230,0.14);
+    --muted: rgba(242,239,230,0.7); --dim: rgba(242,239,230,0.45); --token: #7DB8FF; --ok: #2ECC71; --flame: #F0A93B;
+    color-scheme: dark;
+  }
+  * { box-sizing: border-box; }
+  html, body { background: var(--ink); }
+  body { margin: 0; color: var(--chalk); font-family: Oswald, "Arial Narrow", system-ui, sans-serif; -webkit-tap-highlight-color: transparent; }
+  button { font-family: inherit; color: inherit; cursor: pointer; touch-action: manipulation; }
+  button:focus-visible { outline: 2px solid var(--gold-2); outline-offset: 3px; }
+  .controls { position: sticky; top: 0; z-index: 30; background: rgba(20,32,43,0.95); border-bottom: 1px solid var(--line); padding: 10px 16px; display: flex; justify-content: center; }
+  .seg { display: inline-flex; border: 1px solid var(--line); border-radius: 20px; padding: 3px; gap: 3px; }
+  .seg button { font-weight: 600; font-size: 13px; background: transparent; color: var(--muted); border: none; border-radius: 16px; padding: 6px 12px; }
+  .seg button[aria-pressed="true"] { background: linear-gradient(160deg, #f6da9c, var(--gold)); color: var(--ink); }
+
+  .phone { width: min(402px, 100%); height: 780px; margin: 16px auto 28px; position: relative; overflow: hidden; border-radius: 28px; border: 1px solid var(--line);
+    background: repeating-linear-gradient(90deg, rgba(255,255,255,0.02) 0 2px, transparent 2px 40px), var(--ink); }
+  .sheet-bg { position: absolute; inset: 0; background: rgba(8,13,18,0.6); display: flex; align-items: flex-end; }
+  .sheet { width: 100%; height: 94%; background: var(--ink); border-top: 1px solid var(--line); border-radius: 18px 18px 0 0; padding: 12px 16px 16px; display: flex; flex-direction: column; gap: 12px; }
+  .grab { width: 44px; height: 5px; border-radius: 3px; background: var(--line); margin: 0 auto; flex-shrink: 0; }
+  .sh-head { display: flex; justify-content: space-between; align-items: center; flex-shrink: 0; }
+  .sh-title { font-family: Anton, Impact, sans-serif; font-size: 26px; text-transform: uppercase; line-height: 1; }
+  .sh-title span { color: var(--gold); }
+  .x { background: transparent; border: 1px solid var(--line); border-radius: 20px; padding: 6px 14px; font-weight: 500; font-size: 13px; }
+
+  /* Reiter */
+  .tabs { display: grid; grid-template-columns: repeat(4, minmax(0,1fr)); gap: 4px; background: var(--ink-2); border: 1px solid var(--line); border-radius: 12px; padding: 4px; flex-shrink: 0; }
+  .tabs button { border: none; background: transparent; border-radius: 9px; padding: 6px 2px 5px; display: flex; flex-direction: column; align-items: center; gap: 1px; color: var(--muted); }
+  .tabs button i { font-style: normal; font-size: 17px; line-height: 1.2; }
+  .tabs button span { font-weight: 600; font-size: 12px; text-transform: uppercase; letter-spacing: 0.04em; }
+  .tabs button[aria-selected="true"] { background: rgba(232,178,61,0.16); color: var(--gold-2); box-shadow: inset 0 0 0 1px rgba(232,178,61,0.55); }
+
+  /* Schritte */
+  .steps-head { display: flex; align-items: center; gap: 10px; flex-shrink: 0; }
+  .steps-head .k { font-weight: 600; font-size: 12px; text-transform: uppercase; letter-spacing: 0.1em; color: var(--gold-2); }
+  .steps-head .t { font-family: Anton, Impact, sans-serif; font-size: 20px; text-transform: uppercase; }
+  .prog { display: grid; grid-template-columns: repeat(4, 1fr); gap: 5px; flex-shrink: 0; }
+  .prog i { height: 4px; border-radius: 2px; background: rgba(255,255,255,0.12); }
+  .prog i.on { background: var(--gold); }
+  .nav { display: grid; grid-template-columns: 1fr 1.6fr; gap: 8px; flex-shrink: 0; }
+  .nav button { border-radius: 12px; padding: 12px; font-family: Anton, Impact, sans-serif; font-size: 16px; text-transform: uppercase; letter-spacing: 0.03em; }
+  .nav .prev { background: transparent; border: 1px solid var(--line); color: var(--muted); }
+  .nav .prev:disabled { opacity: 0.35; }
+  .nav .next { border: none; color: var(--chalk); background: repeating-linear-gradient(90deg, rgba(255,255,255,0.04) 0 14px, transparent 14px 28px), linear-gradient(150deg, #2F7A50, #1B4A32); box-shadow: 0 3px 0 #0E2A1C; }
+
+  .panel { flex: 1; min-height: 0; overflow-y: auto; display: flex; flex-direction: column; gap: 10px; }
+  .card { border-radius: 12px; border: 1px solid var(--line); background: var(--ink-2); padding: 11px 13px; }
+  .h { font-weight: 600; font-size: 12px; text-transform: uppercase; letter-spacing: 0.1em; color: var(--gold-2); margin: 0 0 7px; }
+  p.t { margin: 0; font-weight: 300; font-size: 14px; line-height: 1.45; color: rgba(242,239,230,0.88); }
+  p.t b { font-weight: 600; color: var(--chalk); }
+  .small { font-weight: 300; font-size: 12px; color: var(--dim); line-height: 1.4; margin: 6px 0 0; }
+
+  /* Ziel */
+  .goal { border-radius: 12px; padding: 12px 13px; background: linear-gradient(150deg, #27603F, #173F2B 80%); border: 1.5px solid rgba(232,178,61,0.6); display: grid; grid-template-columns: 1fr 96px; gap: 12px; align-items: center; }
+  .goal b { font-family: Anton, Impact, sans-serif; font-weight: 400; font-size: 18px; text-transform: uppercase; display: block; color: var(--gold-2); }
+  .goal p { margin: 3px 0 0; font-weight: 300; font-size: 14px; line-height: 1.4; }
+  .goal svg { width: 96px; height: auto; display: block; }
+
+  /* Nummerierte Schritte */
+  .num { display: grid; grid-template-columns: 26px 1fr; gap: 10px; align-items: start; }
+  .num + .num { margin-top: 10px; }
+  .num .n { width: 26px; height: 26px; border-radius: 50%; display: grid; place-items: center; font-family: Anton, Impact, sans-serif; font-size: 14px; background: var(--gold); color: var(--ink); }
+  .num b { font-weight: 600; font-size: 14.5px; display: block; }
+  .num p { margin: 1px 0 0; font-weight: 300; font-size: 13.5px; line-height: 1.4; color: rgba(242,239,230,0.85); }
+  .field { display: inline-block; border-radius: 6px; padding: 0 6px; font-weight: 600; font-size: 12.5px; }
+  .field.gold { background: rgba(232,178,61,0.2); color: var(--gold-2); border: 1px solid rgba(232,178,61,0.6); }
+
+  /* Hilfen */
+  .two { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+  .help { border-radius: 12px; border: 1px solid rgba(125,184,255,0.35); background: rgba(125,184,255,0.07); padding: 11px 11px 10px; display: flex; flex-direction: column; gap: 5px; }
+  .help .top { display: flex; justify-content: space-between; align-items: center; }
+  .help .ic { font-size: 24px; }
+  .cost { font-family: Anton, Impact, sans-serif; font-size: 17px; color: var(--token); white-space: nowrap; }
+  .help b { font-family: Anton, Impact, sans-serif; font-weight: 400; font-size: 17px; text-transform: uppercase; }
+  .help p { margin: 0; font-weight: 300; font-size: 13px; line-height: 1.4; color: rgba(242,239,230,0.85); }
+  .warn { display: flex; gap: 10px; align-items: center; border-radius: 12px; padding: 9px 12px; background: rgba(240,169,59,0.08); border: 1px solid rgba(240,169,59,0.35); }
+  .warn .ic { font-size: 18px; }
+  .warn p { margin: 0; font-weight: 300; font-size: 13.5px; line-height: 1.4; }
+  .warn p b { font-weight: 600; color: var(--flame); }
+  .chips { display: flex; flex-wrap: wrap; gap: 5px; }
+  .chips span { font-weight: 500; font-size: 12.5px; padding: 3px 9px; border-radius: 12px; background: rgba(255,255,255,0.05); border: 1px solid var(--line); white-space: nowrap; }
+  .chips span.tk { color: var(--token); border-color: rgba(125,184,255,0.35); }
+  .chips span.g { color: var(--gold-2); border-color: rgba(232,178,61,0.4); }
+
+  /* Modi-Tabelle */
+  .modes { display: grid; grid-template-columns: 78px repeat(3, minmax(0,1fr)); border-radius: 12px; border: 1px solid var(--line); overflow: hidden; background: var(--ink-2); }
+  .modes > div { padding: 7px 5px; font-size: 13px; text-align: center; border-top: 1px solid var(--line); display: flex; align-items: center; justify-content: center; line-height: 1.25; }
+  .modes .rh { justify-content: flex-start; padding-left: 10px; font-weight: 500; font-size: 12px; color: var(--muted); text-align: left; }
+  .modes .ch { border-top: none; flex-direction: column; gap: 2px; padding: 9px 4px 8px; background: rgba(255,255,255,0.03); }
+  .modes .ch i { font-style: normal; font-size: 19px; }
+  .modes .ch b { font-family: Anton, Impact, sans-serif; font-weight: 400; font-size: 13.5px; text-transform: uppercase; line-height: 1.05; }
+  .modes .c0 { border-top: none; background: rgba(255,255,255,0.03); }
+  .modes .y { color: var(--ok); font-weight: 600; }
+  .modes .no { color: var(--dim); }
+  .modes .v { font-weight: 400; font-size: 12.5px; color: rgba(242,239,230,0.9); }
+  .mline { display: grid; grid-template-columns: 24px 1fr; gap: 8px; }
+  .mline + .mline { margin-top: 8px; }
+  .mline .ic { font-size: 17px; }
+  .mline p { margin: 0; font-weight: 300; font-size: 13.5px; line-height: 1.4; }
+  .mline p b { font-weight: 600; }
+
+  /* Belohnungen */
+  .stars { display: grid; grid-template-columns: repeat(3, 1fr); gap: 6px; }
+  .st { border-radius: 10px; border: 1px solid rgba(232,178,61,0.4); background: rgba(232,178,61,0.08); padding: 8px 4px 7px; text-align: center; }
+  .st .s { font-size: 14px; letter-spacing: 1px; line-height: 1.2; }
+  .st b { font-family: Anton, Impact, sans-serif; font-weight: 400; font-size: 20px; display: block; color: var(--gold-2); line-height: 1.15; }
+  .st span { font-weight: 300; font-size: 11.5px; color: var(--muted); }
+  .chain { display: grid; grid-template-columns: 1fr auto 1fr auto 1fr; align-items: center; gap: 4px; text-align: center; }
+  .chain .c { border-radius: 10px; background: rgba(255,255,255,0.04); border: 1px solid var(--line); padding: 7px 2px; }
+  .chain .c i { font-style: normal; font-size: 16px; display: block; }
+  .chain .c b { font-family: Anton, Impact, sans-serif; font-weight: 400; font-size: 14px; text-transform: uppercase; }
+  .chain .a { color: var(--gold); font-weight: 600; }
+  .row2 { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+  .mini { border-radius: 12px; border: 1px solid var(--line); background: var(--ink-2); padding: 10px 11px; }
+  .mini .ic { font-size: 20px; }
+  .mini b { font-family: Anton, Impact, sans-serif; font-weight: 400; font-size: 15px; text-transform: uppercase; display: block; margin-top: 2px; }
+  .mini p { margin: 2px 0 0; font-weight: 300; font-size: 12.5px; line-height: 1.38; color: rgba(242,239,230,0.85); }
+
+  .note { max-width: 402px; margin: -12px auto 0; padding: 0 16px 24px; font-weight: 300; font-size: 14px; line-height: 1.5; color: var(--muted); text-align: center; }
+  .note b { color: var(--chalk); font-weight: 600; }
+</style>
+
+</head>
+<body>
+<div class="controls">
+  <div class="seg" role="group" aria-label="Variante">
+    <button type="button" data-v="tabs" aria-pressed="true">So geht's · Reiter</button>
+    
+  </div>
+</div>
+
+<div class="phone">
+  <div class="sheet-bg"><div class="sheet" id="sheet"></div></div>
+</div>
+<p class="note" id="note"></p>
+
+<script>
+(() => {
+  const $ = id => document.getElementById(id);
+  const pitch = `<svg viewBox="0 0 96 120" aria-hidden="true">
+    <rect x="1" y="1" width="94" height="118" rx="6" fill="#1F4D36" stroke="rgba(242,239,230,.5)"/>
+    <line x1="1" y1="60" x2="95" y2="60" stroke="rgba(242,239,230,.35)"/><circle cx="48" cy="60" r="11" fill="none" stroke="rgba(242,239,230,.35)"/>
+    <rect x="28" y="100" width="40" height="19" fill="none" stroke="rgba(242,239,230,.35)"/><rect x="28" y="1" width="40" height="19" fill="none" stroke="rgba(242,239,230,.35)"/>
+    ${[[48,110,1],[18,88,1],[38,92,1],[58,92,0],[78,88,0],[22,62,1],[48,68,0],[74,62,2],[48,44,0],[30,24,0],[66,24,1]].map(([x,y,s]) =>
+      `<circle cx="${x}" cy="${y}" r="5.5" fill="${s===1?'#2ECC71':s===2?'#E8B23D':'rgba(242,239,230,.18)'}" stroke="${s?'none':'rgba(242,239,230,.6)'}" stroke-dasharray="${s?'':'2 2'}"/>`).join("")}
+  </svg>`;
+
+  const P = [
+    { k: "spielen", ic: "⚽", t: "Spielen", html: `
+      <div class="goal"><div><b>Das Ziel</b><p>Jede Karte zeigt die echte Startelf eines konkreten Spiels – recherchiert, keine „typische Stammelf“. Trag alle 11 auf den richtigen Positionen ein.</p></div>${pitch}</div>
+      <div class="card"><div class="h">So trägst du ein</div>
+        <div class="num"><span class="n">1</span><div><b>Nachname reicht</b><p>Vorname brauchst du nicht – einfach den Nachnamen ins Feld tippen.</p></div></div>
+        <div class="num"><span class="n">2</span><div><b>Falsche Zeile? Kein Problem</b><p>Der Spieler rutscht automatisch auf seine richtige Position – sofern er zu keiner anderen offenen Position passt.</p></div></div>
+        <div class="num"><span class="n">3</span><div><b>Fast richtig</b><p>Kleiner Tippfehler? Das Feld wird <span class="field gold">gold</span>. Mit „Korrigieren“ übernimmst du die richtige Schreibweise – für etwas weniger XP.</p></div></div>
+      </div>` },
+    { k: "hilfen", ic: "🔍", t: "Hilfen", html: `
+      <p class="t">Du hängst fest? Gib <b>Scout-Token 🔍</b> aus und hol dir Hilfe.</p>
+      <div class="two">
+        <div class="help"><div class="top"><span class="ic">🎡</span><span class="cost">1 🔍</span></div><b>Scout-Rad</b><p>Dreh für einen Tipp: 1. Buchstabe, Rückennummer, Nationalität – oder als Jackpot der ganze Name. Position bringt weniger XP.</p></div>
+        <div class="help"><div class="top"><span class="ic">👁️</span><span class="cost">3 🔍</span></div><b>Aufdecken</b><p>Zeigt sofort den kompletten Namen. Zählt als richtig, bringt aber keine Positions-XP.</p></div>
+      </div>
+      <div class="warn"><span class="ic">⚠️</span><p>Jede Hilfe kostet dich <b>⭐⭐⭐</b> für dieses Spiel und deine <b>Kombo endet</b>. Gilt in allen Modi.</p></div>
+      <div class="card"><div class="h">Token verdienen</div>
+        <div class="chips"><span class="tk">+1 Erstmals gespielt</span><span class="tk">+2 Perfekte Aufstellung (einmalig)</span><span class="tk">+1 Tages-Challenge</span><span class="tk">+3 je Level-Up</span><span class="tk">+2 Trophäe / Achievement</span></div>
+        <p class="small">Rückennummer und Nationalität gibt es nur, wo Daten vorliegen. Bei Nationalteams keine Nationalität.</p>
+      </div>` },
+    { k: "modi", ic: "🏟️", t: "Modi", html: `
+      <div class="modes">
+        <div class="c0"></div>
+        <div class="ch"><i>🌍</i><b>Kampagne</b></div>
+        <div class="ch"><i>📅</i><b>Tages-<br>Challenge</b></div>
+        <div class="ch"><i>🎲</i><b>Frei<br>spielen</b></div>
+        <div class="rh">Spiele</div><div class="v">5 Welten</div><div class="v">1 pro Tag</div><div class="v">frei wählbar</div>
+        <div class="rh">Versuche</div><div class="v">beliebig</div><div class="v">1</div><div class="v">beliebig</div>
+        <div class="rh">Sterne ⭐</div><div class="y">✓</div><div class="y">✓</div><div class="no">–</div>
+        <div class="rh">Serie 🔥</div><div class="no">–</div><div class="y">✓</div><div class="no">–</div>
+      </div>
+      <div class="card">
+        <div class="mline"><span class="ic">🌍</span><p><b>Kampagne:</b> Von Kreisliga bis Weltklasse. Ab <b>7 von 11</b> ist ein Level bestanden – das nächste wird frei.</p></div>
+        <div class="mline"><span class="ic">📅</span><p><b>Tages-Challenge:</b> Für alle dasselbe Spiel. <b>Montag leicht, Sonntag am schwersten.</b> Täglich spielen baut deine 🔥-Serie auf – bis zu <b>+50 % XP</b>. Ergebnis als Raster teilbar.</p></div>
+        <div class="mline"><span class="ic">🎲</span><p><b>Frei spielen:</b> Training ohne Druck. Mehrere Wettbewerbe oder Stufen antippen = mehr Spiele, beides kombiniert grenzt die Auswahl ein. Mit Tages-Archiv für verpasste Tage.</p></div>
+      </div>` },
+    { k: "belohnung", ic: "🏆", t: "Belohnung", html: `
+      <div class="card"><div class="h">Sterne · Kampagne &amp; Tages-Challenge</div>
+        <div class="stars">
+          <div class="st"><div class="s">⭐</div><b>7/11</b><span>richtig</span></div>
+          <div class="st"><div class="s">⭐⭐</div><b>9/11</b><span>richtig</span></div>
+          <div class="st"><div class="s">⭐⭐⭐</div><b>11/11</b><span>ohne Hilfe</span></div>
+        </div>
+      </div>
+      <div class="card"><div class="h">XP sammeln &amp; aufsteigen</div>
+        <div class="chain"><div class="c"><i>✨</i><b>XP</b></div><span class="a">›</span><div class="c"><i>📊</i><b>Level</b></div><span class="a">›</span><div class="c"><i>🎖️</i><b>Rang</b></div></div>
+        <div class="chips" style="margin-top:9px"><span class="g">Neu gelöste Positionen</span><span class="g">Neue Sterne</span><span class="g">Tages-Challenge</span></div>
+        <p class="small">Wiederholen ohne Fortschritt bringt nur kleine Trainings-XP.</p>
+      </div>
+      <div class="row2">
+        <div class="mini"><span class="ic">🔥</span><b>Kombo</b><p>Richtige Positionen ohne Hilfe in Folge = mehr XP. Hilfe, Korrigieren oder ein falsch verlassenes Feld setzt sie zurück.</p></div>
+        <div class="mini"><span class="ic">🏆</span><b>Trophäen</b><p>Pokale, Schalen und Medaillen für besondere Leistungen – manche mit Titel. Alles im Scout-Profil.</p></div>
+      </div>
+      <div class="warn" style="background:rgba(232,178,61,0.07);border-color:rgba(232,178,61,0.35)"><span class="ic">🔓</span><p><b style="color:var(--gold-2)">Ab Level 15:</b> Hardcore-Modus im Freispiel – nur Stufe 4–5.</p></div>` }
+  ];
+
+  let v = "tabs", cur = 0;
+  function render() {
+    const head = `<div class="grab"></div><div class="sh-head"><div class="sh-title">So <span>geht's</span></div><button class="x" type="button">Schließen</button></div>`;
+    if (v === "tabs") {
+      $("sheet").innerHTML = head +
+        `<div class="tabs" role="tablist">${P.map((p, i) => `<button type="button" role="tab" data-i="${i}" aria-selected="${i === cur}"><i>${p.ic}</i><span>${p.t}</span></button>`).join("")}</div>
+         <div class="panel" role="tabpanel">${P[cur].html}</div>`;
+      $("sheet").querySelectorAll("[data-i]").forEach(b => b.onclick = () => { cur = +b.dataset.i; render(); });
+    } else {
+      $("sheet").innerHTML = head +
+        `<div class="prog">${P.map((_, i) => `<i class="${i <= cur ? "on" : ""}"></i>`).join("")}</div>
+         <div class="steps-head"><span class="k">Schritt ${cur + 1} von ${P.length}</span><span class="t">${P[cur].ic} ${P[cur].t}</span></div>
+         <div class="panel">${P[cur].html}</div>
+         <div class="nav"><button type="button" class="prev" ${cur === 0 ? "disabled" : ""}>‹ Zurück</button><button type="button" class="next">${cur === P.length - 1 ? "Los geht's ✓" : "Weiter ›"}</button></div>`;
+      $("sheet").querySelector(".prev").onclick = () => { if (cur > 0) { cur--; render(); } };
+      $("sheet").querySelector(".next").onclick = () => { cur = cur === P.length - 1 ? 0 : cur + 1; render(); };
+    }
+  }
+  const NOTES = {
+    tabs: "<b>So geht's als Reiter-Blatt:</b> Vier Themen als Reiter oben – ein Tipp, und alles zum Thema ist sofort sichtbar, ohne Auf- und Zuklappen und ohne Scrollen. Wichtige Fakten sind keine Fließtexte mehr, sondern Bausteine: Spielfeld-Skizze beim Ziel, nummerierte Eingabe-Schritte, Token-Kosten als Preisschilder, Modi als Vergleichstabelle, Sterne als drei Stufen. Gut als Nachschlagewerk – man springt direkt zu dem, was man sucht.",
+    steps: "<b>C · Schritt für Schritt:</b> Dieselben vier Seiten, aber nacheinander wie eine kleine Einführung mit Fortschrittsbalken und „Weiter“. Ideal beim allerersten Start, als Nachschlagewerk später etwas umständlicher, weil man sich bis zur gesuchten Seite durchklicken muss."
+  };
+  function setV(x) { v = x; cur = 0; document.querySelectorAll("[data-v]").forEach(b => b.setAttribute("aria-pressed", String(b.dataset.v === x))); $("note").innerHTML = NOTES[x]; render(); }
+  document.querySelectorAll("[data-v]").forEach(b => b.onclick = () => setV(b.dataset.v));
+  setV("tabs");
+})();
+</script>
+
+</body>
+</html>
