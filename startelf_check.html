@@ -734,7 +734,9 @@
   #splash .tip .ic { font-size: 20px; }
   #splash .tip .k { font-family: 'Oswald', sans-serif; font-weight: 600; font-size: 11.5px; letter-spacing: 0.1em; text-transform: uppercase; color: var(--gold-2); }
   #splash .tip .t { font-family: 'Oswald', sans-serif; font-weight: 300; font-size: 13.5px; line-height: 1.35; color: rgba(242,239,230,0.85); }
-  #splash .foot { font-family: 'Oswald', sans-serif; font-weight: 300; font-size: 11.5px; color: rgba(242,239,230,0.42); margin-top: 8px; text-align: center; }
+  #splash .skip { position: relative; z-index: 2; margin-top: 10px; font-family: 'Oswald', sans-serif; font-weight: 300; font-size: 12px; color: rgba(242,239,230,0.5); text-align: center; opacity: 0; transition: opacity 0.9s ease 1.2s; }
+  #splash.on .skip { opacity: 1; }
+  #splash .foot { font-family: 'Oswald', sans-serif; font-weight: 300; font-size: 11.5px; color: rgba(242,239,230,0.42); margin-top: 6px; text-align: center; }
 
   #splash .kickoff { position: absolute; inset: 0; display: grid; place-items: center; pointer-events: none; z-index: 5; }
   #splash .kickoff span { font-family: 'Anton', sans-serif; font-size: clamp(54px, 13vw, 84px); text-transform: uppercase; color: var(--gold-2); text-shadow: 0 0 40px rgba(232,178,61,0.6); opacity: 0; transform: scale(0.7); }
@@ -845,6 +847,7 @@
         <div class="t" id="splashTip"></div>
       </div>
     </div>
+    <div class="skip" aria-hidden="true">Tippen zum Überspringen</div>
     <div class="foot" id="splashVersion"></div>
     <div class="kickoff" id="splashKickoff"><span>Anpfiff!</span></div>
   </div>
@@ -6108,6 +6111,10 @@ function evaluatePitch() {
    liste) - TW steht dort bereits zuerst, LA zuletzt, passt exakt zur
    gewuenschten Einlauf-Reihenfolge. */
 const SPLASH_REDUCED_MOTION = matchMedia("(prefers-reduced-motion: reduce)").matches;
+// Zeitwerte (Prompt 21): counterMs = Dauer des Prozent-Zaehlers, kickoffHoldMs = Anpfiff-Einblendung,
+// bevor der Ladescreen ausblendet. Gesamtdauer normal ca. 4,1 s. Spieler-Einlauf, Statustexte und
+// Fortschrittsbalken haengen an der Prozentkurve und strecken sich automatisch mit.
+const SPLASH_TIMING = SPLASH_REDUCED_MOTION ? { counterMs: 800, kickoffHoldMs: 100 } : { counterMs: 3200, kickoffHoldMs: 900 };
 const SPLASH_STATUS = [
   [0, "Rasen wird gemäht …"], [14, "Linien werden gekreidet …"], [28, "Trikots werden verteilt …"],
   [45, "Taktiktafel wird vorbereitet …"], [62, "Startelf wird aufgestellt …"], [84, "Kapitänsbinde wird angelegt …"], [97, "Gleich geht's los!"]
@@ -6145,7 +6152,7 @@ function runSplash() {
   splash.addEventListener("click", skipSplash, { once: true });
 
   const xi = PITCH_LAYOUTS["4-3-3"];
-  const DUR = SPLASH_REDUCED_MOTION ? 800 : 1800; // Zaehler-Dauer; + ~0.6s Anpfiff = ~2.4s gesamt
+  const DUR = SPLASH_TIMING.counterMs;
   const curve = t => { const e = t < 0.5 ? 2 * t * t : 1 - Math.pow(-2 * t + 2, 2.4) / 2; return Math.min(1, e + 0.03 * Math.sin(t * 14) * (1 - t)); };
   const t0 = performance.now();
   let lastStatus = -1;
@@ -6198,7 +6205,7 @@ function finishSplash() {
   setTimeout(() => {
     splash.classList.add("out");
     setTimeout(() => splash.remove(), 520);
-  }, SPLASH_REDUCED_MOTION ? 100 : 600);
+  }, SPLASH_TIMING.kickoffHoldMs);
 }
 
 /* ================= INIT ================= */
