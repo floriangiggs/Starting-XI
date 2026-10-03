@@ -515,12 +515,108 @@
     .t1 .go { padding: 8px 10px; font-size: 16px; }
   }
 
-  .guide-title { font-family: 'Anton', sans-serif; font-size: 22px; text-transform: uppercase; text-align: center; margin-bottom: 14px; color: var(--gold); }
-  .guide-row { display: flex; align-items: flex-start; gap: 12px; padding: 11px 0; border-bottom: 1px solid var(--line); }
-  .guide-row:last-child { border-bottom: none; }
-  .guide-icon { font-size: 20px; width: 28px; text-align: center; flex-shrink: 0; margin-top: 1px; }
-  .guide-heading { font-family: 'Oswald', sans-serif; font-weight: 700; font-size: 14px; margin-bottom: 2px; }
-  .guide-desc { font-family: 'Oswald', sans-serif; font-weight: 300; font-size: 12.5px; color: rgba(242,239,230,0.65); line-height: 1.4; }
+  /* ---- So geht's / Regeln als Reiter-Blatt (Prompt 19) - alles unter .gs gescoped ---- */
+  .modal-sheet.gs { --muted: rgba(242,239,230,0.7); --dim: rgba(242,239,230,0.45);
+    display: flex; flex-direction: column; gap: 12px; overflow: hidden;
+    max-height: none; height: min(700px, calc(100vh - 16px)); height: min(700px, calc(100dvh - 16px));
+    padding: 14px 16px calc(14px + env(safe-area-inset-bottom)); }
+  .gs .sh-head { display: flex; justify-content: space-between; align-items: center; flex-shrink: 0; }
+  .gs .sh-title { font-family: 'Anton', Impact, sans-serif; font-size: 26px; text-transform: uppercase; line-height: 1; }
+  .gs .sh-title span { color: var(--gold); }
+  .gs .sh-head .modal-close { margin: 0; }
+
+  .gs .tabs { display: grid; grid-template-columns: repeat(var(--n, 4), minmax(0,1fr)); gap: 4px; background: var(--ink-2); border: 1px solid var(--line); border-radius: 12px; padding: 4px; flex-shrink: 0; }
+  .gs .tabs button { border: none; background: transparent; border-radius: 9px; padding: 6px 2px 5px; display: flex; flex-direction: column; align-items: center; gap: 1px; color: var(--muted); font-family: 'Oswald', sans-serif; cursor: pointer; }
+  .gs .tabs button i { font-style: normal; font-size: 17px; line-height: 1.2; }
+  .gs .tabs button span { font-weight: 600; font-size: 12px; text-transform: uppercase; letter-spacing: 0.04em; }
+  .gs .tabs button[aria-selected="true"] { background: rgba(232,178,61,0.16); color: var(--gold-2); box-shadow: inset 0 0 0 1px rgba(232,178,61,0.55); }
+  .gs .tabs button:focus-visible { outline: 2px solid var(--gold-2); outline-offset: 2px; }
+
+  .gs .panel { flex: 1; min-height: 0; overflow-y: auto; display: flex; flex-direction: column; gap: 10px; }
+  .gs .card { border-radius: 12px; border: 1px solid var(--line); background: var(--ink-2); padding: 11px 13px; }
+  .gs .h { font-family: 'Oswald', sans-serif; font-weight: 600; font-size: 12px; text-transform: uppercase; letter-spacing: 0.1em; color: var(--gold-2); margin: 0 0 7px; }
+  .gs p.t { margin: 0; font-weight: 300; font-size: 14px; line-height: 1.45; color: rgba(242,239,230,0.88); }
+  .gs p.t b { font-weight: 600; color: var(--chalk); }
+  .gs .small { font-weight: 300; font-size: 12px; color: var(--dim); line-height: 1.4; margin: 6px 0 0; }
+  .gs .stand { flex-shrink: 0; text-align: center; font-weight: 300; font-size: 13px; color: var(--muted); }
+  .gs .stand b { font-weight: 600; color: var(--chalk); }
+
+  .gs .goal { border-radius: 12px; padding: 12px 13px; background: linear-gradient(150deg, #27603F, #173F2B 80%); border: 1.5px solid rgba(232,178,61,0.6); display: grid; grid-template-columns: 1fr 96px; gap: 12px; align-items: center; }
+  .gs .goal b { font-family: 'Anton', Impact, sans-serif; font-weight: 400; font-size: 18px; text-transform: uppercase; display: block; color: var(--gold-2); }
+  .gs .goal p { margin: 3px 0 0; font-weight: 300; font-size: 14px; line-height: 1.4; }
+  .gs .goal svg { width: 96px; height: auto; display: block; }
+
+  .gs .num { display: grid; grid-template-columns: 26px 1fr; gap: 10px; align-items: start; }
+  .gs .num + .num { margin-top: 10px; }
+  .gs .num .n { width: 26px; height: 26px; border-radius: 50%; display: grid; place-items: center; font-family: 'Anton', Impact, sans-serif; font-size: 14px; background: var(--gold); color: var(--ink); }
+  .gs .num b { font-weight: 600; font-size: 14.5px; display: block; }
+  .gs .num p { margin: 1px 0 0; font-weight: 300; font-size: 13.5px; line-height: 1.4; color: rgba(242,239,230,0.85); }
+  .gs .field { display: inline-block; border-radius: 6px; padding: 0 6px; font-weight: 600; font-size: 12.5px; }
+  .gs .field.gold { background: rgba(232,178,61,0.2); color: var(--gold-2); border: 1px solid rgba(232,178,61,0.6); }
+
+  .gs .two { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+  .gs .help { border-radius: 12px; border: 1px solid rgba(125,184,255,0.35); background: rgba(125,184,255,0.07); padding: 11px 11px 10px; display: flex; flex-direction: column; gap: 5px; }
+  .gs .help .top { display: flex; justify-content: space-between; align-items: center; }
+  .gs .help .ic { font-size: 24px; }
+  .gs .cost { font-family: 'Anton', Impact, sans-serif; font-size: 17px; color: var(--token); white-space: nowrap; }
+  .gs .help b { font-family: 'Anton', Impact, sans-serif; font-weight: 400; font-size: 17px; text-transform: uppercase; }
+  .gs .help p { margin: 0; font-weight: 300; font-size: 13px; line-height: 1.4; color: rgba(242,239,230,0.85); }
+  .gs .warn { display: flex; gap: 10px; align-items: center; border-radius: 12px; padding: 9px 12px; background: rgba(240,169,59,0.08); border: 1px solid rgba(240,169,59,0.35); }
+  .gs .warn .ic { font-size: 18px; }
+  .gs .warn p { margin: 0; font-weight: 300; font-size: 13.5px; line-height: 1.4; }
+  .gs .warn p b { font-weight: 600; color: var(--flame); }
+  .gs .warn.gold { background: rgba(232,178,61,0.07); border-color: rgba(232,178,61,0.35); }
+  .gs .warn.gold p b { color: var(--gold-2); }
+  .gs .chips { display: flex; flex-wrap: wrap; gap: 5px; }
+  .gs .chips span { font-weight: 500; font-size: 12.5px; padding: 3px 9px; border-radius: 12px; background: rgba(255,255,255,0.05); border: 1px solid var(--line); white-space: nowrap; }
+  .gs .chips span.tk { color: var(--token); border-color: rgba(125,184,255,0.35); }
+  .gs .chips span.g { color: var(--gold-2); border-color: rgba(232,178,61,0.4); }
+
+  .gs .modes { display: grid; grid-template-columns: 78px repeat(3, minmax(0,1fr)); border-radius: 12px; border: 1px solid var(--line); overflow: hidden; background: var(--ink-2); }
+  .gs .modes > div { padding: 7px 5px; font-size: 13px; text-align: center; border-top: 1px solid var(--line); display: flex; align-items: center; justify-content: center; line-height: 1.25; }
+  .gs .modes .rh { justify-content: flex-start; padding-left: 10px; font-weight: 500; font-size: 12px; color: var(--muted); text-align: left; }
+  .gs .modes .ch { border-top: none; flex-direction: column; gap: 2px; padding: 9px 4px 8px; background: rgba(255,255,255,0.03); }
+  .gs .modes .ch i { font-style: normal; font-size: 19px; }
+  .gs .modes .ch b { font-family: 'Anton', Impact, sans-serif; font-weight: 400; font-size: 13.5px; text-transform: uppercase; line-height: 1.05; }
+  .gs .modes .c0 { border-top: none; background: rgba(255,255,255,0.03); }
+  .gs .modes .y { color: var(--ok); font-weight: 600; }
+  .gs .modes .no { color: var(--dim); }
+  .gs .modes .v { font-weight: 400; font-size: 12.5px; color: rgba(242,239,230,0.9); }
+  .gs .mline { display: grid; grid-template-columns: 24px 1fr; gap: 8px; }
+  .gs .mline + .mline { margin-top: 8px; }
+  .gs .mline .ic { font-size: 17px; }
+  .gs .mline p { margin: 0; font-weight: 300; font-size: 13.5px; line-height: 1.4; }
+  .gs .mline p b { font-weight: 600; }
+
+  .gs .stars { display: grid; grid-template-columns: repeat(3, 1fr); gap: 6px; }
+  .gs .st { border-radius: 10px; border: 1px solid rgba(232,178,61,0.4); background: rgba(232,178,61,0.08); padding: 8px 4px 7px; text-align: center; }
+  .gs .st .s { font-size: 14px; letter-spacing: 1px; line-height: 1.2; }
+  .gs .st b { font-family: 'Anton', Impact, sans-serif; font-weight: 400; font-size: 20px; display: block; color: var(--gold-2); line-height: 1.15; }
+  .gs .st span { font-weight: 300; font-size: 11.5px; color: var(--muted); }
+  .gs .chain { display: grid; grid-template-columns: 1fr auto 1fr auto 1fr; align-items: center; gap: 4px; text-align: center; }
+  .gs .chain .c { border-radius: 10px; background: rgba(255,255,255,0.04); border: 1px solid var(--line); padding: 7px 2px; }
+  .gs .chain .c i { font-style: normal; font-size: 16px; display: block; }
+  .gs .chain .c b { font-family: 'Anton', Impact, sans-serif; font-weight: 400; font-size: 14px; text-transform: uppercase; }
+  .gs .chain .a { color: var(--gold); font-weight: 600; }
+  .gs .row2 { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+  .gs .mini { border-radius: 12px; border: 1px solid var(--line); background: var(--ink-2); padding: 10px 11px; }
+  .gs .mini .ic { font-size: 20px; }
+  .gs .mini b { font-family: 'Anton', Impact, sans-serif; font-weight: 400; font-size: 15px; text-transform: uppercase; display: block; margin-top: 2px; }
+  .gs .mini p { margin: 2px 0 0; font-weight: 300; font-size: 12.5px; line-height: 1.38; color: rgba(242,239,230,0.85); }
+  /* Kurze Handys (375x667): etwas dichter, damit auch "Belohnung" ohne internen Scroll passt. */
+  @media (max-height: 700px) {
+    .modal-sheet.gs { gap: 9px; padding-top: 12px; padding-bottom: calc(12px + env(safe-area-inset-bottom)); }
+    .gs .panel { gap: 7px; }
+    .gs .card { padding: 8px 11px; }
+    .gs .h { margin-bottom: 5px; }
+    .gs .tabs button { padding: 5px 2px 4px; }
+    .gs .st { padding: 5px 4px 4px; }
+    .gs .chain .c { padding: 5px 2px; }
+    .gs .small { margin-top: 4px; }
+    .gs .mini { padding: 8px 10px; }
+    .gs .mini p { font-size: 12px; line-height: 1.32; }
+    .gs .warn { padding: 7px 11px; }
+  }
 
   .unlock-row { display: flex; flex-direction: column; gap: 7px; margin-bottom: 16px; }
   .unlock-row-label { font-family: 'Oswald', sans-serif; font-weight: 600; font-size: 10px; letter-spacing: 0.12em; text-transform: uppercase; color: rgba(242,239,230,0.4); }
@@ -1882,7 +1978,7 @@ const XP_RULES = {
   dailyStreakBonusPerDay: 0.10, dailyStreakBonusMax: 0.50 // Prompt 13: +10%/Serientag, Deckel 50%
 };
 
-const NATIONAL_TEAM_LEAGUES = new Set(["Weltmeisterschaft", "Europameisterschaft", "Copa America"]);
+const NATIONAL_TEAM_LEAGUES = new Set(["Weltmeisterschaft", "Europameisterschaft", "Copa América", "Afrika-Cup"]);
 
 // Nur die ISO-3166/UK-Sondercodes, die in LINEUP_CHALLENGES tatsaechlich vorkommen
 // (plus GB-NIR fuers Datenmodell), fuer die Anzeige im Scout-Rad-Ergebnis.
@@ -2248,48 +2344,124 @@ function renderUnlockRow() {
   });
 }
 
-/* ================= SPIELANLEITUNG ================= */
-const GUIDE_SECTIONS = [
-  { icon: "🎯", title: "Ziel", desc: "Jede Karte zeigt ein echtes Spiel aus der Fußballgeschichte. Trag die komplette Startelf auf ihrer richtigen Position ein." },
-  { icon: "⌨️", title: "Eingabe", desc: "Nachname reicht. Tippst du ihn versehentlich in die falsche Zeile, landet er trotzdem automatisch auf seiner echten Position, sofern er zu keiner anderen offenen Position ebenfalls passt." },
-  { icon: "✏️", title: "Fast richtig", desc: "Kleiner Tippfehler? Das Feld färbt sich gold - mit \"Korrigieren\" trägst du die richtige Schreibweise ein, für etwas weniger XP als beim ersten Versuch." },
-  { icon: "🎡", title: "Scout-Rad", desc: "Tipp im Positions-Panel auf \"Scout-Rad öffnen\" und dreh für 1 🔍 Scout-Token: 1. Buchstabe, Rückennummer, Nationalität oder als Jackpot der ganze Name. Jeder Dreh zählt als Hinweis (etwas weniger XP, kein ⭐⭐⭐ mehr für diese Aufstellung). Rückennummer/Nationalität gibt's nur, wo die Daten vorliegen; Nationalität entfällt bei Nationalmannschaftsspielen." },
-  { icon: "👁️", title: "Aufdecken", desc: "Direkt neben dem Scout-Rad: zeigt für 3 🔍 Scout-Token sofort den kompletten Namen, ohne XP-Abzug." },
-  { icon: "🔍", title: "Scout-Token verdienen", desc: "Du bekommst Scout-Token fürs erste Spielen einer Aufstellung, für eine perfekte Aufstellung (einmalig je Aufstellung), für den Abschluss der Tages-Challenge, bei jedem Level-Up und für neu freigeschaltete Achievements." },
-  { icon: "⭐", title: "Sterne", desc: "Sterne gibt's nur in der Kampagne und in der Tages-Challenge, bis zu 3 pro Aufstellung: ⭐ ab 7/11, ⭐⭐ ab 9/11, ⭐⭐⭐ nur für 11/11 ganz ohne Scout-Rad, Aufdecken oder Korrigieren. Das Freispiel ist reines Training ohne Sterne. Nur die erste Verbesserung zählt für XP - Wiederholen ohne Fortschritt bringt nur noch kleine Trainings-XP." },
-  { icon: "🔥", title: "Kombo", desc: "Richtige Positionen ohne Hilfe in Folge erhöhen die Kombo und damit dein Positions-XP. Ein Scout-Rad-Dreh, Aufdecken, Korrigieren oder ein falsch verlassenes Feld setzt die Kombo zurück." },
-  { icon: "🏟️", title: "Kampagne", desc: "Fünf Welten von Kreisliga bis Weltklasse. Mindestens 7 von 11 richtig, um ein Level zu bestehen und das nächste freizuschalten." },
-  { icon: "🎲", title: "Frei spielen", desc: "Liga und Schwierigkeit frei wählbar, ganz ohne Fortschrittsdruck - für schnelle Runden zwischendurch." },
-  { icon: "📅", title: "Tages-Challenge", desc: "Jeden Tag eine feste Aufstellung, für alle gleich - nur ein Versuch, danach gesperrt bis zum nächsten Tag. Schwierigkeit steigt zur Wochenmitte hin. Löst du sie am Folgetag deiner letzten Serie, wächst dein 🔥-Streak weiter - er gibt bis zu 50% mehr XP auf die Tages-Challenge. Das Ergebnis lässt sich als Raster teilen." },
-  { icon: "📈", title: "Level & Rang", desc: "Neue Positionen, neue Sterne und die Tages-Challenge bringen XP. Dein Rang steigt automatisch mit." },
-  { icon: "🏅", title: "Achievements", desc: "Sammelbare Abzeichen für besondere Leistungen - manche schalten sogar einen eigenen Titel frei." },
-  { icon: "🔓", title: "Freischaltungen", desc: "Ab Level 15 gibt's den Hardcore-Modus mit den schwersten Aufstellungen." }
+/* ================= SPIELANLEITUNG (Prompt 19: Reiter-Blatt) =================
+   Vier Reiter statt einer langen Liste. Alle Zahlen kommen aus ECONOMY /
+   XP_RULES / PASS_THRESHOLD - nur "9 von 11" (2. Stern) und "Level 15 /
+   Stufe 4-5" (Hardcore) haben im Code keine Konstante und stehen hier als
+   Literale wie in evaluatePitch() bzw. poolForActiveLeague(). */
+const GUIDE_PITCH_SKETCH = `<svg viewBox="0 0 96 120" aria-hidden="true">
+    <rect x="1" y="1" width="94" height="118" rx="6" fill="#1F4D36" stroke="rgba(242,239,230,.5)"/>
+    <line x1="1" y1="60" x2="95" y2="60" stroke="rgba(242,239,230,.35)"/><circle cx="48" cy="60" r="11" fill="none" stroke="rgba(242,239,230,.35)"/>
+    <rect x="28" y="100" width="40" height="19" fill="none" stroke="rgba(242,239,230,.35)"/><rect x="28" y="1" width="40" height="19" fill="none" stroke="rgba(242,239,230,.35)"/>
+    ${[[48,110,1],[18,88,1],[38,92,1],[58,92,0],[78,88,0],[22,62,1],[48,68,0],[74,62,2],[48,44,0],[30,24,0],[66,24,1]].map(([x, y, s]) =>
+      `<circle cx="${x}" cy="${y}" r="5.5" fill="${s === 1 ? "#2ECC71" : s === 2 ? "#E8B23D" : "rgba(242,239,230,.18)"}" stroke="${s ? "none" : "rgba(242,239,230,.6)"}" stroke-dasharray="${s ? "" : "2 2"}"/>`).join("")}
+  </svg>`;
+
+const GUIDE_TABS = [
+  { id: "spielen", icon: "⚽", label: "Spielen", render: () => `
+    <div class="goal"><div><b>Das Ziel</b><p>Jede Karte zeigt die echte Startelf eines konkreten Spiels – recherchiert, keine „typische Stammelf“. Trag alle 11 auf den richtigen Positionen ein.</p></div>${GUIDE_PITCH_SKETCH}</div>
+    <div class="card"><div class="h">So trägst du ein</div>
+      <div class="num"><span class="n">1</span><div><b>Nachname reicht</b><p>Vorname brauchst du nicht – einfach den Nachnamen ins Feld tippen.</p></div></div>
+      <div class="num"><span class="n">2</span><div><b>Falsche Zeile? Kein Problem</b><p>Der Spieler rutscht automatisch auf seine richtige Position – sofern er zu keiner anderen offenen Position passt.</p></div></div>
+      <div class="num"><span class="n">3</span><div><b>Fast richtig</b><p>Kleiner Tippfehler? Das Feld wird <span class="field gold">gold</span>. Mit „Korrigieren“ übernimmst du die richtige Schreibweise – für etwas weniger XP.</p></div></div>
+    </div>` },
+  { id: "hilfen", icon: "🔍", label: "Hilfen", render: () => `
+    <p class="t">Du hängst fest? Gib <b>Scout-Token 🔍</b> aus und hol dir Hilfe.</p>
+    <div class="two">
+      <div class="help"><div class="top"><span class="ic">🎡</span><span class="cost">${ECONOMY.spinCost} 🔍</span></div><b>Scout-Rad</b><p>Dreh für einen Tipp: 1. Buchstabe, Rückennummer, Nationalität – oder als Jackpot der ganze Name. Position bringt weniger XP.</p></div>
+      <div class="help"><div class="top"><span class="ic">👁️</span><span class="cost">${ECONOMY.revealCost} 🔍</span></div><b>Aufdecken</b><p>Zeigt sofort den kompletten Namen. Zählt als richtig, bringt aber keine Positions-XP.</p></div>
+    </div>
+    <div class="warn"><span class="ic">⚠️</span><p>Jede Hilfe – auch Korrigieren – kostet dich <b>⭐⭐⭐</b> für dieses Spiel und deine <b>Kombo endet</b>. Gilt in allen Modi.</p></div>
+    <div class="card"><div class="h">Token verdienen</div>
+      <div class="chips">
+        <span class="tk">+${ECONOMY.earnFirstPass} Erstmals gespielt</span>
+        <span class="tk">+${ECONOMY.earnPerfect} Perfekte Aufstellung (einmalig)</span>
+        <span class="tk">+${ECONOMY.earnDaily} Tages-Challenge</span>
+        <span class="tk">+${ECONOMY.earnLevelUp} je Level-Up</span>
+        <span class="tk">+${ECONOMY.earnAchievement} Trophäe / Achievement</span>
+      </div>
+      <p class="small">Rückennummer und Nationalität gibt es nur, wo Daten vorliegen. Bei Nationalteams keine Nationalität.</p>
+    </div>` },
+  { id: "modi", icon: "🏟️", label: "Modi", render: () => `
+    <div class="modes">
+      <div class="c0"></div>
+      <div class="ch"><i>🌍</i><b>Kampagne</b></div>
+      <div class="ch"><i>📅</i><b>Tages-<br>Challenge</b></div>
+      <div class="ch"><i>🎲</i><b>Frei<br>spielen</b></div>
+      <div class="rh">Spiele</div><div class="v">5 Welten</div><div class="v">1 pro Tag</div><div class="v">frei wählbar</div>
+      <div class="rh">Versuche</div><div class="v">beliebig</div><div class="v">1</div><div class="v">beliebig</div>
+      <div class="rh">Sterne ⭐</div><div class="y">✓</div><div class="y">✓</div><div class="no">–</div>
+      <div class="rh">Serie 🔥</div><div class="no">–</div><div class="y">✓</div><div class="no">–</div>
+    </div>
+    <div class="card">
+      <div class="mline"><span class="ic">🌍</span><p><b>Kampagne:</b> Von Kreisliga bis Weltklasse. Ab <b>${PASS_THRESHOLD} von 11</b> ist ein Level bestanden – das nächste wird frei.</p></div>
+      <div class="mline"><span class="ic">📅</span><p><b>Tages-Challenge:</b> Für alle dasselbe Spiel. <b>Montag leicht, Sonntag am schwersten.</b> Täglich spielen baut deine 🔥-Serie auf – bis zu <b>+${Math.round(XP_RULES.dailyStreakBonusMax * 100)} % XP</b>. Ergebnis als Raster teilbar.</p></div>
+      <div class="mline"><span class="ic">🎲</span><p><b>Frei spielen:</b> Training ohne Druck. Mehrere Wettbewerbe oder Stufen antippen = mehr Spiele, beides kombiniert grenzt die Auswahl ein. Mit Tages-Archiv für verpasste Tage.</p></div>
+    </div>` },
+  { id: "belohnung", icon: "🏆", label: "Belohnung", render: () => `
+    <div class="card"><div class="h">Sterne · Kampagne &amp; Tages-Challenge</div>
+      <div class="stars">
+        <div class="st"><div class="s">⭐</div><b>${PASS_THRESHOLD}/11</b><span>richtig</span></div>
+        <div class="st"><div class="s">⭐⭐</div><b>9/11</b><span>richtig</span></div>
+        <div class="st"><div class="s">⭐⭐⭐</div><b>11/11</b><span>ohne Hilfe</span></div>
+      </div>
+    </div>
+    <div class="card"><div class="h">XP sammeln &amp; aufsteigen</div>
+      <div class="chain"><div class="c"><i>✨</i><b>XP</b></div><span class="a">›</span><div class="c"><i>📊</i><b>Level</b></div><span class="a">›</span><div class="c"><i>🎖️</i><b>Rang</b></div></div>
+      <div class="chips" style="margin-top:9px"><span class="g">Neu gelöste Positionen</span><span class="g">Neue Sterne</span><span class="g">Tages-Challenge</span></div>
+      <p class="small">Wiederholen ohne Fortschritt bringt nur kleine Trainings-XP.</p>
+    </div>
+    <div class="row2">
+      <div class="mini"><span class="ic">🔥</span><b>Kombo</b><p>Richtige Positionen ohne Hilfe in Folge = mehr XP. Hilfe, Korrigieren oder ein falsch verlassenes Feld setzt sie zurück.</p></div>
+      <div class="mini"><span class="ic">🏆</span><b>Trophäen</b><p>Pokale, Schalen und Medaillen für besondere Leistungen – manche mit Titel. Alles im Scout-Profil.</p></div>
+    </div>
+    <div class="warn gold"><span class="ic">🔓</span><p><b>Ab Level 15:</b> Hardcore-Modus im Freispiel – nur Stufe 4–5.</p></div>` }
 ];
 
-function openGuideModal() {
+// Gemeinsamer Aufbau fuer "So geht's" (alle Reiter) und das Regeln-Modal im Spielfeld
+// (nur eine Auswahl). Der aktive Reiter wird nicht gespeichert - startet immer vorn.
+function openGuideSheet({ titleHTML, label, tabIds, footerHTML = "" }) {
+  const tabs = GUIDE_TABS.filter(t => tabIds.includes(t.id));
   const backdrop = document.createElement("div");
   backdrop.className = "modal-backdrop";
   backdrop.innerHTML = `
-    <div class="modal-sheet">
-      <button class="modal-close" id="closeGuideModal">Schließen</button>
-      <div class="guide-title">So funktioniert's</div>
-      ${GUIDE_SECTIONS.map(s => `
-        <div class="guide-row">
-          <div class="guide-icon">${s.icon}</div>
-          <div>
-            <div class="guide-heading">${s.title}</div>
-            <div class="guide-desc">${s.desc}</div>
-          </div>
-        </div>`).join("")}
-      <div class="guide-desc" style="margin-top:14px; text-align:center;">
-        Alle Aufstellungen sind recherchiert und stammen aus echten, konkreten Spielen -
-        keine "typischen Stammelf"-Angaben, sondern reale Startelf einer bestimmten Partie.
-      </div>
+    <div class="modal-sheet gs" role="dialog" aria-modal="true" aria-label="${label}">
+      <div class="sh-head"><div class="sh-title">${titleHTML}</div><button class="modal-close" type="button">Schließen</button></div>
+      <div class="tabs" role="tablist" style="--n:${tabs.length}">${tabs.map(t =>
+        `<button type="button" role="tab" id="gsTab-${t.id}" aria-controls="gsPanel" data-tab="${t.id}"><i>${t.icon}</i><span>${t.label}</span></button>`).join("")}</div>
+      <div class="panel" id="gsPanel" role="tabpanel"></div>
+      ${footerHTML}
     </div>`;
   document.body.appendChild(backdrop);
-  document.getElementById("closeGuideModal").onclick = () => backdrop.remove();
-  backdrop.onclick = (e) => { if (e.target === backdrop) backdrop.remove(); };
+  const panel = backdrop.querySelector(".panel");
+  const tabBtns = [...backdrop.querySelectorAll("[data-tab]")];
+  const show = (i) => {
+    tabBtns.forEach((b, j) => { b.setAttribute("aria-selected", String(j === i)); b.tabIndex = j === i ? 0 : -1; });
+    panel.setAttribute("aria-labelledby", tabBtns[i].id);
+    panel.innerHTML = tabs[i].render();
+    panel.scrollTop = 0;
+  };
+  tabBtns.forEach((b, i) => {
+    b.onclick = () => show(i);
+    b.onkeydown = (e) => {
+      if (e.key !== "ArrowRight" && e.key !== "ArrowLeft") return;
+      const next = (i + (e.key === "ArrowRight" ? 1 : tabBtns.length - 1)) % tabBtns.length;
+      show(next);
+      tabBtns[next].focus();
+    };
+  });
+  show(0);
+  const close = () => backdrop.remove();
+  backdrop.querySelector(".modal-close").onclick = close;
+  backdrop.onclick = (e) => { if (e.target === backdrop) close(); };
+}
 
+function openGuideModal() {
+  openGuideSheet({
+    titleHTML: "So <span>geht's</span>",
+    label: "So geht's",
+    tabIds: ["spielen", "hilfen", "modi", "belohnung"]
+  });
   if (!profile.hasSeenGuide) {
     profile.hasSeenGuide = true;
     saveProfile(profile);
@@ -2299,10 +2471,7 @@ function openGuideModal() {
 
 document.getElementById("helpBtn").onclick = openGuideModal;
 
-// Regeln-Modal im Spielfeld (Prompt 11c): nutzt dieselben GUIDE_SECTIONS wie die
-// Anleitung (per Titel-Whitelist gefiltert) statt die Texte doppelt zu pflegen.
-const RULES_SECTION_TITLES = ["Eingabe", "Fast richtig", "Scout-Rad", "Aufdecken", "Sterne", "Kombo"];
-
+// Regeln-Modal im Spielfeld (Prompt 11c): dasselbe Blatt, aber ohne den Reiter "Modi".
 function markPitchRulesSeen() {
   if (profile.hasSeenPitchRules) return;
   profile.hasSeenPitchRules = true;
@@ -2312,26 +2481,12 @@ function markPitchRulesSeen() {
 }
 
 function openRulesModal() {
-  const sections = GUIDE_SECTIONS.filter(s => RULES_SECTION_TITLES.includes(s.title));
-  const backdrop = document.createElement("div");
-  backdrop.className = "modal-backdrop";
-  backdrop.innerHTML = `
-    <div class="modal-sheet">
-      <button class="modal-close" id="closeRulesModal">Schließen</button>
-      <div class="guide-title">Regeln</div>
-      ${sections.map(s => `
-        <div class="guide-row">
-          <div class="guide-icon">${s.icon}</div>
-          <div>
-            <div class="guide-heading">${s.title}</div>
-            <div class="guide-desc">${s.desc}</div>
-          </div>
-        </div>`).join("")}
-      <div class="guide-desc" style="margin-top:14px; text-align:center;">🔍 Aktueller Stand: <b>${profile.hintTokens}</b> Scout-Token</div>
-    </div>`;
-  document.body.appendChild(backdrop);
-  document.getElementById("closeRulesModal").onclick = () => backdrop.remove();
-  backdrop.onclick = (e) => { if (e.target === backdrop) backdrop.remove(); };
+  openGuideSheet({
+    titleHTML: "Die <span>Regeln</span>",
+    label: "Regeln",
+    tabIds: ["spielen", "hilfen", "belohnung"],
+    footerHTML: `<div class="stand">🔍 Aktueller Stand: <b>${profile.hintTokens}</b> Scout-Token</div>`
+  });
   markPitchRulesSeen();
 }
 
