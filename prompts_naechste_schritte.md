@@ -27,12 +27,12 @@ vorige umgesetzt, getestet und committet ist.
 | 13d | Neues App-Icon „Taktiktafel – Flutlicht“ | ✅ erledigt |
 | 14 | Recherche Tages-Pool (Gegenseiten + neue Spiele) | ✅ erledigt (41 Aufstellungen) |
 | 15 | Kampagne auf ca. 60 Aufstellungen ausbauen | ✅ erledigt (60 Aufstellungen) |
-| 16 | Tages-Karte im Ticket-Stil | – |
-| 17 | Level-Kachel „Scout-Ausweis“ mit Weg ins Scout-Profil | 16 |
-| 18 | Modus-Kacheln: einheitliches Raster, Welten-Kette, Formkurve | 17 |
-| 19 | „So geht's“ als Reiter-Blatt (4 Themen) + Texte mit Code abgeglichen | – |
-| 20 | Frei spielen neu sortiert, Stufe 1–5, Tages-Archiv als eigene Karte | 19 |
-| 21 | Ladescreen etwas langsamer (~4 s statt ~2,4 s) | – |
+| 16 | Tages-Karte im Ticket-Stil | ✅ erledigt |
+| 17 | Level-Kachel „Scout-Ausweis“ mit Weg ins Scout-Profil | ✅ erledigt |
+| 18 | Modus-Kacheln: einheitliches Raster, Welten-Kette, Formkurve | ✅ erledigt |
+| 19 | „So geht's“ als Reiter-Blatt (4 Themen) + Texte mit Code abgeglichen | ✅ erledigt |
+| 20 | Frei spielen neu sortiert, Stufe 1–5, Tages-Archiv als eigene Karte | ✅ erledigt |
+| 21 | Ladescreen etwas langsamer (~4 s statt ~2,4 s) | ✅ erledigt |
 
 **Empfohlene Reihenfolge ab jetzt:** 16 → 17 → 18 → 19 → 20 → 21 → 8
 
