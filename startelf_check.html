@@ -92,20 +92,47 @@
   .diff-dot { width: 6px; height: 6px; border-radius: 50%; background: rgba(255,255,255,0.2); }
   .diff-dot.on { background: currentColor; }
 
-  /* ---- Start: Modus-Kacheln (ersetzen die alte mode-row, Prompt 11b) ---- */
+  /* ---- Start: Modus-Kacheln (Prompt 18, Optik 1:1 aus prototypes/modus-kacheln.html "A - neu").
+     Beide Kacheln teilen dasselbe Grid mit festen Zeilen (Icon, Titel, Bildzeile, Textzeile, Aktionsleiste),
+     dadurch liegen alle Zeilen exakt auf gleicher Hoehe. Regeln unter .mode-tiles gescoped. ---- */
   #dailyCard:empty { display: none; }
-  .mode-tiles { display: flex; gap: 10px; flex: 1; min-height: 0; max-height: clamp(150px, 24vh, 210px); }
-  .mode-tile { flex: 1; border-radius: 14px; border: 2px solid var(--line); background: var(--ink-2); display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 4px; padding: 10px 8px; cursor: pointer; box-shadow: 0 5px 12px rgba(0,0,0,0.3); text-align: center; }
-  .mode-tile:active { transform: scale(0.97); }
-  .mode-tile .mt-icon { font-size: clamp(26px, 4.6vh, 38px); line-height: 1; }
-  .mode-tile .mt-name { font-family: 'Anton', sans-serif; font-weight: 400; font-size: clamp(18px, 3.2vh, 25px); text-transform: uppercase; line-height: 1.1; }
-  .mode-tile .mt-sub { font-family: 'Oswald', sans-serif; font-size: 12.5px; font-weight: 400; line-height: 1.3; }
-  .mode-tile .mt-sub b { font-weight: 700; }
-  .mode-tile .mt-bar { width: 78%; height: 6px; border-radius: 3px; background: rgba(20,32,43,0.25); overflow: hidden; margin-top: 4px; }
-  .mode-tile .mt-bar i { display: block; height: 100%; background: var(--ink); border-radius: 3px; }
-  .mode-tile.camp { background: linear-gradient(160deg, #f6da9c, var(--gold)); color: var(--ink); border-color: var(--gold); box-shadow: 0 10px 22px rgba(232,178,61,0.4), inset 0 2px 0 rgba(255,255,255,0.35); }
-  .mode-tile.free { color: rgba(242,239,230,0.9); }
-  .mode-tile.free .mt-sub { color: var(--muted); }
+  .mode-tiles { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; flex-shrink: 0; }
+  .mode-tiles .mt { position: relative; overflow: hidden; border-radius: 14px; border: 2px solid var(--line); display: grid; grid-template-rows: 34px 28px 22px 20px auto; justify-items: center; align-items: center; row-gap: 5px; padding: 12px 10px 0; text-align: center; font: inherit; color: var(--chalk); background: var(--ink-2); box-shadow: 0 6px 14px rgba(0,0,0,0.3); cursor: pointer; appearance: none; -webkit-appearance: none; }
+  .mode-tiles .mt:active { transform: scale(0.98); }
+  .mode-tiles .mt:focus-visible { outline: 2px solid var(--gold-2); outline-offset: 3px; }
+  .mode-tiles .mt.camp { background: linear-gradient(160deg, #f6da9c, var(--gold) 60%, #D49B26); color: var(--ink); border-color: var(--gold); box-shadow: 0 10px 22px rgba(232,178,61,0.35), inset 0 2px 0 rgba(255,255,255,0.35); }
+  .mode-tiles .mt::after { content: ""; position: absolute; inset: 0; pointer-events: none; opacity: 0.5; }
+  .mode-tiles .mt.camp::after { background: radial-gradient(circle at 50% 18%, rgba(255,255,255,0.45), transparent 38%); }
+  .mode-tiles .mt.free::after { background: radial-gradient(circle at 50% 50%, transparent 0 34px, rgba(242,239,230,0.07) 35px 36px, transparent 37px), linear-gradient(rgba(242,239,230,0.07), rgba(242,239,230,0.07)) 0 50% / 100% 1px no-repeat; }
+  .mode-tiles .mt > * { position: relative; z-index: 1; }
+  .mode-tiles .mt .ic { font-size: 30px; line-height: 1; }
+  .mode-tiles .mt .nm { font-family: 'Anton', Impact, sans-serif; font-weight: 400; font-size: 22px; line-height: 1; text-transform: uppercase; letter-spacing: 0.01em; }
+  .mode-tiles .mt .ft { justify-self: stretch; align-self: end; margin: 6px -10px 0; padding: 7px 10px; display: flex; justify-content: center; align-items: center; gap: 4px; font-family: 'Anton', Impact, sans-serif; font-weight: 400; font-size: 13px; letter-spacing: 0.04em; text-transform: uppercase; }
+  .mode-tiles .mt.camp .ft { background: rgba(20,32,43,0.12); border-top: 1px solid rgba(20,32,43,0.18); color: var(--ink); }
+  .mode-tiles .mt.free .ft { background: rgba(0,0,0,0.2); border-top: 1px solid var(--line); color: var(--gold); }
+  .mode-tiles .mt .ft svg { width: 12px; height: 12px; }
+  .mode-tiles .wp { display: flex; align-items: center; }
+  .mode-tiles .wp i { width: 14px; height: 14px; border-radius: 50%; display: grid; place-items: center; font-style: normal; font-family: 'Anton', Impact, sans-serif; font-size: 9px; border: 2px solid rgba(20,32,43,0.3); background: rgba(20,32,43,0.08); color: transparent; }
+  .mode-tiles .wp i.done { background: var(--ink); border-color: var(--ink); color: var(--gold-2); font-size: 8px; }
+  .mode-tiles .wp i.now { width: 22px; height: 22px; font-size: 13px; background: var(--ink); border-color: var(--ink); color: var(--gold-2); box-shadow: 0 0 0 3px rgba(20,32,43,0.18); }
+  .mode-tiles .wp b { width: 9px; height: 2px; background: rgba(20,32,43,0.28); }
+  .mode-tiles .wp b.done { background: var(--ink); }
+  .mode-tiles .ln { font-family: 'Oswald', sans-serif; font-weight: 600; font-size: 13.5px; line-height: 1; white-space: nowrap; }
+  .mode-tiles .ln em { font-style: normal; font-weight: 400; opacity: 0.72; }
+  .mode-tiles .mt.free .ln { color: rgba(242,239,230,0.9); }
+  .mode-tiles .mt.free .ln em { color: var(--muted); opacity: 1; }
+  .mode-tiles .mt.free .ln b { color: var(--gold-2); font-weight: 600; }
+  .mode-tiles .form { display: flex; gap: 4px; align-items: center; }
+  .mode-tiles .form i { width: 22px; height: 18px; border-radius: 4px; display: grid; place-items: center; font-style: normal; font-family: 'Anton', Impact, sans-serif; font-size: 11.5px; line-height: 1; color: var(--ink); }
+  .mode-tiles .form i.w { background: var(--ok); } .mode-tiles .form i.m { background: var(--gold); } .mode-tiles .form i.l { background: #4A5866; color: var(--chalk); }
+  .mode-tiles .form i.last { box-shadow: 0 0 0 2px var(--ink-2), 0 0 0 3.5px rgba(244,213,141,0.7); }
+  .mode-tiles .form i.e { background: rgba(255,255,255,0.08); border: 1px dashed rgba(255,255,255,0.25); }
+  /* Kurze Displays (iPhone SE/8: 667px): Kacheln etwas dichter, sonst reicht der Platz mit Scout-Ausweis + Tages-Ticket nicht. */
+  @media (max-height: 700px) {
+    .mode-tiles .mt { grid-template-rows: 30px 26px 22px 20px auto; row-gap: 4px; padding-top: 10px; }
+    .mode-tiles .mt .ic { font-size: 28px; }
+    .mode-tiles .mt .ft { margin-top: 4px; padding: 6px 10px; }
+  }
 
   /* ---- Kampagne: Stadion-Roadmap ---- */
   #campaignView { flex: 1; min-height: 0; display: flex; flex-direction: column; }
@@ -1804,6 +1831,7 @@ const defaultProfile = {
   trophiesWon: [], // Kampagne-Trophaeen-IDs (Achievements laufen weiter ueber profile.achievements)
   streak: { current: 0, best: 0, lastDayKey: null }, // NUR Tages-Challenge zaehlt, kein Serien-Schutz (Prompt 13)
   daily: {}, // dateKey ("YYYY-MM-DD") -> { id, correct, grid, stars }
+  freeplayForm: [], // Trefferzahlen (0-11) der letzten 5 Freispiel-Ergebnisse, aelteste zuerst (Prompt 18)
   stats: {
     lineupsPlayed: 0,
     lineupsPerfect: 0,
@@ -1916,6 +1944,7 @@ function loadProfile() {
     if (!Array.isArray(profile.trophiesWon)) profile.trophiesWon = [];
     if (!profile.streak || typeof profile.streak !== "object") profile.streak = { current: 0, best: 0, lastDayKey: null };
     if (!profile.daily || typeof profile.daily !== "object") profile.daily = {};
+    if (!Array.isArray(profile.freeplayForm)) profile.freeplayForm = [];
     if (typeof profile.stats.positionsCorrectFuzzy !== "number") profile.stats.positionsCorrectFuzzy = 0;
     // Fester Zufalls-Seed pro Profil (Prompt 9): macht die pro Kampagnen-Level geschenkten
     // Positionen deterministisch statt bei jedem Neustart neu auszuwuerfeln. Sofort
@@ -2840,25 +2869,49 @@ function tickDailyTimer() {
   el.innerHTML = `${dig(hh)}<i>:</i>${dig(mm)}<i>:</i>${dig(ss)}`;
 }
 
+// Modus-Kacheln der Startseite (Prompt 18, Optik 1:1 aus prototypes/modus-kacheln.html "A - neu"):
+// beide Kacheln im selben Raster - Icon, Titel, Bildzeile, Textzeile, Aktionsleiste.
 function renderModeTiles() {
   const tiles = document.getElementById("modeTiles");
-  const tier = currentCampaignTier();
-  const matches = getMatchesByTier(tier);
-  const passedCount = matches.filter(m => profile.campaign.levelPassed[m.id]).length;
-  const pct = matches.length ? Math.round((passedCount / matches.length) * 100) : 0;
-  const stars = starsSummaryTotal();
+  const chev = `<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M9 5l7 7-7 7" fill="none" stroke="currentColor" stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round"/></svg>`;
+
+  // Kampagne: Welten-Kette (nur Welten mit Aufstellungen), aktuelle Welt = erste noch nicht komplett bestandene.
+  const worlds = ROADMAP_NODES.map(n => n.tier).filter(t => getMatchesByTier(t).length > 0);
+  const isDone = t => getMatchesByTier(t).every(m => profile.campaign.levelPassed[m.id]);
+  const allDone = worlds.every(isDone);
+  const current = currentCampaignTier();
+  const chain = worlds.map((t, k) => {
+    const done = allDone || isDone(t), now = !allDone && t === current;
+    const prevDone = k > 0 && (allDone || isDone(worlds[k - 1]));
+    return `${k ? `<b class="${prevDone ? "done" : ""}"></b>` : ""}<i class="${done ? "done" : now ? "now" : ""}">${done ? "✓" : now ? t : ""}</i>`;
+  }).join("");
+  const curMatches = getMatchesByTier(current);
+  const firstOpen = curMatches.findIndex(m => !profile.campaign.levelPassed[m.id]);
+  const campLine = allDone ? "Alle Welten geschafft" : `${DIFF_LABEL[current]} <em>· Level ${firstOpen + 1}</em>`;
+
+  // Frei spielen: Formkurve der letzten 5 Freispiel-Ergebnisse (aelteste links, neueste rechts umrandet).
+  const form = profile.freeplayForm.slice(-5);
+  const cells = [];
+  for (let i = 0; i < 5; i++) {
+    const n = form[i - (5 - form.length)];
+    if (i < 5 - form.length) cells.push(`<i class="e"></i>`);
+    else cells.push(`<i class="${n >= 9 ? "w" : n >= 7 ? "m" : "l"}${i === 4 ? " last" : ""}">${n}</i>`);
+  }
+  const avg = form.length ? (form.reduce((a, b) => a + b, 0) / form.length).toFixed(1).replace(".", ",") : null;
+  const freeLine = avg ? `Formkurve <em>· Ø <b>${avg}</b> Treffer</em>` : "Noch keine Spiele";
 
   tiles.innerHTML = `
-    <button type="button" class="mode-tile camp" id="modeTileCampaign">
-      <div class="mt-icon">🌍</div>
-      <div class="mt-name">Kampagne</div>
-      <div class="mt-sub">Welt ${tier} · <b>${DIFF_LABEL[tier]}</b><br>⭐ <b>${stars.earned}/${stars.max}</b></div>
-      <div class="mt-bar"><i style="width:${pct}%"></i></div>
+    <button type="button" class="mt camp" id="modeTileCampaign">
+      <div class="ic">🌍</div><div class="nm">Kampagne</div>
+      <div class="wp" aria-label="Welt ${allDone ? worlds.length : current} von ${worlds.length}">${chain}</div>
+      <div class="ln">${campLine}</div>
+      <div class="ft">Weiter spielen ${chev}</div>
     </button>
-    <button type="button" class="mode-tile free" id="modeTileFreeplay">
-      <div class="mt-icon">🎲</div>
-      <div class="mt-name">Frei spielen</div>
-      <div class="mt-sub"><b>${LINEUP_CHALLENGES.length}</b> Aufstellungen</div>
+    <button type="button" class="mt free" id="modeTileFreeplay">
+      <div class="ic">🎲</div><div class="nm">Frei spielen</div>
+      <div class="form" aria-label="Formkurve der letzten 5 Spiele">${cells.join("")}</div>
+      <div class="ln">${freeLine}</div>
+      <div class="ft">Zufall oder Filter ${chev}</div>
     </button>`;
 
   document.getElementById("modeTileCampaign").onclick = () => navigate("worldmap");
@@ -5707,6 +5760,9 @@ function evaluatePitch() {
       bonusReasons.push(STAR_LABELS[s]);
       improved = true;
     }
+  } else {
+    // Freispiel: Formkurve der Startseiten-Kachel (Prompt 18) - nur die letzten 5 Ergebnisse
+    profile.freeplayForm = [...profile.freeplayForm, correct].slice(-5);
   }
   // Keine Verbesserung (weder neue Position noch neuer Stern) -> Trainings-XP, damit
   // Wiederholen nicht wertlos ist, aber auch keine bessere XP-Quelle als echtes Lernen.
