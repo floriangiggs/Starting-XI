@@ -67,8 +67,6 @@
   .topbar-title { font-family: 'Anton', sans-serif; font-size: 19px; text-transform: uppercase; line-height: 1.1; }
 
   #screen-start { justify-content: space-between; gap: clamp(8px, 1.6vh, 14px); }
-  #screen-freeplay { justify-content: center; gap: 12px; }
-  .freeplay-count { text-align: center; font-family: 'Oswald', sans-serif; font-weight: 300; font-size: 13px; color: var(--muted); margin-top: -4px; }
 
   header { position: relative; text-align: center; padding-top: 4px; }
   header::before { content: ""; position: absolute; top: -30px; left: 50%; transform: translateX(-50%); width: 260px; height: 170px; background: radial-gradient(ellipse, rgba(232,178,61,0.16), transparent 70%); pointer-events: none; z-index: -1; }
@@ -235,11 +233,6 @@
   .pass-banner.pass { background: rgba(46,204,113,0.15); color: #2ecc71; border: 1px solid rgba(46,204,113,0.4); }
   .pass-banner.fail { background: rgba(193,57,43,0.15); color: #E37464; border: 1px solid rgba(193,57,43,0.4); }
 
-  .filter-row { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 16px; }
-  .filter-btn { font-family: 'Oswald', sans-serif; font-weight: 700; font-size: 13px; letter-spacing: 0.01em; padding: 8px 14px; background: transparent; border: 1px solid var(--line); color: rgba(242,239,230,0.65); border-radius: 20px; cursor: pointer; }
-  .filter-btn:hover { border-color: var(--gold); color: var(--chalk); }
-  .filter-btn.active { background: var(--gold); border-color: var(--gold); color: var(--ink); font-weight: 700; }
-  .filter-btn.empty-filter, .filter-btn:disabled { opacity: 0.3; cursor: not-allowed; text-decoration: line-through; }
 
   .match-list { display: flex; flex-direction: column; gap: 10px; margin-bottom: 18px; }
   .match-card { background: var(--ink-2); border: 1px solid var(--line); border-radius: 10px; padding: 16px 18px; cursor: pointer; transition: border-color 0.15s, transform 0.1s; text-align: left; }
@@ -249,8 +242,6 @@
   .match-teams { font-family: 'Oswald', sans-serif; font-weight: 600; font-size: 16px; color: var(--chalk); margin-bottom: 3px; }
   .match-shape { font-family: 'Oswald', sans-serif; font-weight: 300; font-size: 10.5px; color: rgba(242,239,230,0.45); }
 
-  .random-btn { width: 100%; background: linear-gradient(135deg, #3fae63, #1f6b3f); color: var(--chalk); border: none; border-radius: 8px; padding: 15px; font-family: 'Oswald', sans-serif; font-weight: 700; font-size: 14.5px; text-transform: uppercase; letter-spacing: 0.03em; cursor: pointer; margin-bottom: 22px; box-shadow: 0 6px 18px rgba(63,174,99,0.3); transition: transform 0.1s ease; }
-  .random-btn:active { transform: scale(0.98); }
 
   /* ---- Pitch ---- */
   .bonus-panel { background: linear-gradient(180deg, rgba(193,57,43,0.10), var(--ink-2)); border: 1px solid rgba(193,57,43,0.35); border-radius: 10px; padding: 14px 16px; margin-bottom: 12px; box-shadow: 0 8px 24px rgba(0,0,0,0.28); }
@@ -618,11 +609,54 @@
     .gs .warn { padding: 7px 11px; }
   }
 
-  .unlock-row { display: flex; flex-direction: column; gap: 7px; margin-bottom: 16px; }
-  .unlock-row-label { font-family: 'Oswald', sans-serif; font-weight: 600; font-size: 10px; letter-spacing: 0.12em; text-transform: uppercase; color: rgba(242,239,230,0.4); }
-  .unlock-row-chips { display: flex; gap: 8px; flex-wrap: wrap; }
-  .unlock-chip { font-family: 'Oswald', sans-serif; font-weight: 500; font-size: 10.5px; padding: 6px 11px; border-radius: 20px; border: 1px solid var(--line); background: transparent; color: rgba(242,239,230,0.6); cursor: pointer; }
-  .unlock-chip.active { background: var(--gold); border-color: var(--gold); color: var(--ink); font-weight: 700; }
+
+  /* ---- Frei spielen (Prompt 20) - alles unter .fp gescoped ---- */
+  #screen-freeplay .fp { --muted: rgba(242,239,230,0.68); --dim: rgba(242,239,230,0.45);
+    flex: 1; min-height: 0; display: flex; flex-direction: column; gap: 12px; }
+  .fp .lab { display: flex; justify-content: space-between; align-items: baseline; }
+  .fp .lab.sep { margin-top: 4px; }
+  .fp .lab b { font-family: 'Anton', Impact, sans-serif; font-weight: 400; font-size: 16px; text-transform: uppercase; color: var(--gold-2); letter-spacing: 0.02em; }
+  .fp .lab span { font-family: 'Oswald', sans-serif; font-weight: 300; font-size: 12px; color: var(--dim); }
+  .fp .grp { display: grid; grid-template-columns: 74px 1fr; gap: 6px 8px; align-items: start; }
+  .fp .grp .gl { font-family: 'Oswald', sans-serif; font-weight: 500; font-size: 11.5px; color: var(--muted); padding-top: 6px; line-height: 1.15; }
+  .fp .chips { display: flex; flex-wrap: wrap; gap: 5px; }
+  .fp .ch { font-family: 'Oswald', sans-serif; border: 1px solid var(--line); background: var(--ink-2); border-radius: 16px; padding: 5px 10px; font-weight: 500; font-size: 13px; color: rgba(242,239,230,0.82); white-space: nowrap; cursor: pointer; }
+  .fp .ch small { color: var(--dim); font-weight: 400; margin-left: 3px; font-size: inherit; }
+  .fp .ch.on { background: rgba(232,178,61,0.16); border-color: rgba(232,178,61,0.6); color: var(--gold-2); }
+  .fp .ch.all { align-self: flex-start; }
+  .fp .ch.all.on { background: linear-gradient(160deg, #f6da9c, var(--gold)); color: var(--ink); border-color: var(--gold); }
+  .fp .ch.all.on small { color: rgba(20,32,43,0.6); }
+  .fp .levels { display: grid; grid-template-columns: repeat(5, 1fr); gap: 5px; }
+  .fp .lvl { font-family: 'Oswald', sans-serif; border: 1px solid var(--line); background: var(--ink-2); border-radius: 10px; padding: 7px 2px 6px; display: flex; flex-direction: column; align-items: center; gap: 4px; cursor: pointer; }
+  .fp .lvl .bars { display: flex; flex-direction: row; gap: 2px; }
+  .fp .lvl .bars i { width: 5px; height: 10px; border-radius: 2px; background: rgba(255,255,255,0.15); }
+  .fp .lvl .bars i.on { background: currentColor; }
+  .fp .lvl b { font-family: 'Anton', Impact, sans-serif; font-weight: 400; font-size: 13px; line-height: 1; }
+  .fp .lvl .n { font-weight: 400; font-size: 10px; color: var(--dim); }
+  .fp .lvl.on { border-color: currentColor; background: color-mix(in srgb, currentColor 14%, transparent); }
+  .fp .lvl:disabled { opacity: 0.3; cursor: not-allowed; }
+  .fp .hc { align-self: flex-start; font-family: 'Oswald', sans-serif; font-weight: 500; font-size: 12.5px; padding: 5px 12px; border-radius: 16px; border: 1px solid var(--line); background: transparent; color: rgba(242,239,230,0.7); cursor: pointer; }
+  .fp .hc.on { background: rgba(240,169,59,0.16); border-color: rgba(240,169,59,0.6); color: var(--flame); }
+  .fp .count { text-align: center; font-family: 'Oswald', sans-serif; font-weight: 300; font-size: 14px; color: var(--muted); margin-top: auto; }
+  .fp .count b { font-family: 'Anton', Impact, sans-serif; font-weight: 400; color: var(--chalk); font-size: 16px; }
+  .fp .count.none { color: #E37464; }
+  .fp .go { border: none; border-radius: 12px; padding: 14px; font-family: 'Anton', Impact, sans-serif; font-size: 19px; text-transform: uppercase; letter-spacing: 0.03em; color: var(--chalk); cursor: pointer;
+    background: repeating-linear-gradient(90deg, rgba(255,255,255,0.04) 0 14px, transparent 14px 28px), linear-gradient(150deg, #2F7A50, #1B4A32); box-shadow: 0 4px 0 #0E2A1C; }
+  .fp .go:active { transform: translateY(2px); box-shadow: 0 2px 0 #0E2A1C; }
+  .fp .go:disabled { opacity: 0.45; cursor: not-allowed; transform: none; }
+  .fp .secret { text-align: center; font-family: 'Oswald', sans-serif; font-weight: 300; font-size: 12px; color: var(--dim); margin-top: -6px; }
+  .fp .arch { display: flex; align-items: center; gap: 12px; border-radius: 12px; padding: 10px 12px; border: 1px dashed rgba(232,178,61,0.5); background: rgba(232,178,61,0.06); text-align: left; width: 100%; color: inherit; font-family: 'Oswald', sans-serif; cursor: pointer; }
+  .fp .arch .ai { font-size: 22px; }
+  .fp .arch b { font-family: 'Anton', Impact, sans-serif; font-weight: 400; font-size: 15px; text-transform: uppercase; display: block; color: var(--gold-2); }
+  .fp .arch .at span { font-weight: 300; font-size: 12.5px; color: var(--muted); }
+  .fp .arch .n { margin-left: auto; font-family: 'Anton', Impact, sans-serif; font-size: 20px; color: var(--gold); }
+  .fp button:focus-visible { outline: 2px solid var(--gold-2); outline-offset: 2px; }
+  /* Kurze Handys (375x667): etwas dichter, damit auch mit Hardcore-Schalter (ab Level 15) nichts scrollt. */
+  @media (max-height: 700px) {
+    #screen-freeplay .fp { gap: 9px; }
+    .fp .lab.sep { margin-top: 2px; }
+    .fp .go { padding: 12px; }
+  }
 
   body.theme-flutlicht .pitch { background: linear-gradient(180deg, #1a2a5c, #0f1638); }
   body.theme-flutlicht .pitch .halfway, body.theme-flutlicht .pitch .center-circle, body.theme-flutlicht .pitch .box-top, body.theme-flutlicht .pitch .box-bottom { border-color: rgba(180,180,255,0.3); }
@@ -762,12 +796,7 @@
       <button class="back-btn" type="button" id="backFromFreeplay"><span class="back-arrow">←</span>Start</button>
       <div class="topbar-title">Frei spielen</div>
     </div>
-    <div class="filter-row" id="filterRow"></div>
-    <div class="filter-row" id="diffFilterRow"></div>
-    <div id="unlockRow" class="unlock-row hidden"></div>
-    <div class="freeplay-count" id="freeplayCount"></div>
-    <button class="random-btn" id="randomBtn">🎲 Zufällige Aufstellung</button>
-    <div class="bonus-text" style="margin-top:-6px; margin-bottom:0">Die Partien bleiben geheim, bis du sie spielst - so bleibt's spannend.</div>
+    <div class="fp" id="freeplayBody"></div>
   </section>
 
   <!-- SPIELFELD -->
@@ -1692,7 +1721,7 @@ function refreshScreenContent(id) {
   if (id === "start") { renderDailyCard(); renderModeTiles(); }
   if (id === "worldmap") renderCampaignWorlds();
   if (id === "levelpath") renderCampaignLevels();
-  if (id === "freeplay") { buildFilterBar(); buildDifficultyFilterBar(); renderFreeplayCount(); }
+  if (id === "freeplay") renderFreeplay();
 }
 
 // Falls schon eine Übergangsanimation läuft (schnelles Wischen/Tippen kurz
@@ -2308,40 +2337,10 @@ function renderProfileBar() {
   bar.classList.toggle("gold-frame", profile.level >= 30);
 
   applyUnlockedFeatures();
-  renderUnlockRow();
 }
 
 function applyUnlockedFeatures() {
   document.body.classList.toggle("theme-flutlicht", profile.level >= 3 && profile.selectedTheme === "flutlicht");
-}
-
-function renderUnlockRow() {
-  const row = document.getElementById("unlockRow");
-  const chips = [];
-  // Theme-Umschalter (Klassisch/Flutlicht) bewusst ausgeblendet - noch nicht Release-reif.
-  if (profile.level >= 15) {
-    chips.push({ id: "hardcore", label: "🔥 Hardcore-Modus", active: !!profile.hardcoreMode });
-  }
-  if (chips.length === 0) { row.classList.add("hidden"); row.innerHTML = ""; return; }
-  row.classList.remove("hidden");
-  row.innerHTML = `<div class="unlock-row-label">🔓 Freigeschaltet - Spielfeld-Design &amp; Modi</div><div class="unlock-row-chips"></div>`;
-  const chipRow = row.querySelector(".unlock-row-chips");
-  chips.forEach(c => {
-    const btn = document.createElement("button");
-    btn.className = "unlock-chip" + (c.active ? " active" : "");
-    btn.textContent = c.label;
-    btn.title = c.id === "hardcore"
-      ? "Hardcore-Modus: nur die schwersten Aufstellungen (Stufe 4-5)"
-      : "Wechselt die Optik des Spielfelds";
-    btn.onclick = () => {
-      if (c.id === "theme_default") profile.selectedTheme = "default";
-      if (c.id === "theme_flutlicht") profile.selectedTheme = "flutlicht";
-      if (c.id === "hardcore") { profile.hardcoreMode = !profile.hardcoreMode; matchQueue = []; }
-      saveProfile(profile);
-      renderProfileBar();
-    };
-    chipRow.appendChild(btn);
-  });
 }
 
 /* ================= SPIELANLEITUNG (Prompt 19: Reiter-Blatt) =================
@@ -2510,85 +2509,94 @@ function archivedDailyChallenges() {
   return DAILY_CHALLENGES.filter(c => ids.has(c.id));
 }
 
-let showDailyArchive = false; // "📅 Archiv"-Chip - eigenes Flag statt Liga-Auswahl, da eine andere Datenquelle
+/* ================= FREI SPIELEN (Prompt 20) =================
+   Wettbewerbs-Chips in drei Gruppen. Ein Chip steht fuer mehrere league-Werte
+   aus LINEUP_CHALLENGES; selectedLeagues bleibt ein Set von league-Werten
+   (Chip an = alle seine Werte drin), damit poolForActiveLeague() und
+   trainWeakness() unveraendert funktionieren. Kurzlabels WM/EM nur hier. */
+const FREEPLAY_GROUPS = [
+  { label: "Turniere", chips: [
+    { label: "WM", leagues: ["Weltmeisterschaft"] },
+    { label: "EM", leagues: ["Europameisterschaft"] },
+    { label: "Copa América", leagues: ["Copa América"] },
+    { label: "Afrika-Cup", leagues: ["Afrika-Cup"] }
+  ] },
+  { label: "Europapokal", chips: [
+    { label: "Champions League", leagues: ["Champions League"] },
+    { label: "Europa League", leagues: ["Europa League"] }
+  ] },
+  { label: "Ligen & Pokal", chips: [
+    { label: "Deutschland", leagues: ["Bundesliga", "2. Bundesliga", "Bundesliga / DFB-Pokal", "DFB-Pokal"] },
+    { label: "England", leagues: ["Premier League"] },
+    { label: "Spanien", leagues: ["LaLiga"] },
+    { label: "Italien", leagues: ["Serie A"] },
+    { label: "Niederlande", leagues: ["Eredivisie"] }
+  ] }
+];
 
-function buildFilterBar() {
-  const leagues = [...new Set(LINEUP_CHALLENGES.map(m => m.league))];
-  const bar = document.getElementById("filterRow");
-  bar.innerHTML = "";
+let freeplaySource = "filter"; // "filter" | "archive" - damit "Nochmal (zufällig)" im Ergebnis beim Quellmodus bleibt
 
-  const allBtn = document.createElement("button");
-  allBtn.className = "filter-btn" + (selectedLeagues.size === 0 && !showDailyArchive ? " active" : "");
-  allBtn.textContent = "Alle (" + LINEUP_CHALLENGES.length + ")";
-  allBtn.onclick = () => { selectedLeagues.clear(); showDailyArchive = false; matchQueue = []; buildFilterBar(); buildDifficultyFilterBar(); renderFreeplayCount(); };
-  bar.appendChild(allBtn);
+// Gruppen mit nur den league-Werten, die es in LINEUP_CHALLENGES gibt, plus Zaehler; Chips ohne
+// Aufstellungen fallen weg. Ein neuer, noch nicht zugeordneter league-Wert bekommt automatisch
+// einen eigenen Chip unter "Weitere" (wird nie still weggelassen).
+function freeplayChipGroups() {
+  const present = new Set(LINEUP_CHALLENGES.map(m => m.league));
+  const mapped = new Set(FREEPLAY_GROUPS.flatMap(g => g.chips.flatMap(c => c.leagues)));
+  const groups = FREEPLAY_GROUPS.map(g => ({ label: g.label, chips: g.chips.map(c => ({ label: c.label, leagues: c.leagues.filter(l => present.has(l)) })) }));
+  const extra = [...present].filter(l => !mapped.has(l));
+  if (extra.length) groups.push({ label: "Weitere", chips: extra.map(l => ({ label: l, leagues: [l] })) });
+  return groups
+    .map(g => ({ label: g.label, chips: g.chips.map(c => ({ ...c, count: LINEUP_CHALLENGES.filter(m => c.leagues.includes(m.league)).length })).filter(c => c.count > 0) }))
+    .filter(g => g.chips.length > 0);
+}
 
-  leagues.forEach(l => {
-    const count = LINEUP_CHALLENGES.filter(m => m.league === l).length;
-    const btn = document.createElement("button");
-    btn.className = "filter-btn" + (selectedLeagues.has(l) ? " active" : "") + (count === 0 ? " empty-filter" : "");
-    btn.textContent = l + " (" + count + ")";
-    if (count === 0) {
-      btn.disabled = true;
-    } else {
-      btn.onclick = () => {
-        if (selectedLeagues.has(l)) selectedLeagues.delete(l); else selectedLeagues.add(l);
-        showDailyArchive = false;
-        matchQueue = [];
-        buildFilterBar(); buildDifficultyFilterBar(); renderFreeplayCount();
-      };
-    }
-    bar.appendChild(btn);
-  });
-
+function renderFreeplay() {
+  const body = document.getElementById("freeplayBody");
+  const groups = freeplayChipGroups();
+  const pool = poolForActiveLeague();
   const archiveCount = archivedDailyChallenges().length;
-  const archiveBtn = document.createElement("button");
-  archiveBtn.className = "filter-btn" + (showDailyArchive ? " active" : "") + (archiveCount === 0 ? " empty-filter" : "");
-  archiveBtn.textContent = "📅 Archiv (" + archiveCount + ")";
-  if (archiveCount === 0) {
-    archiveBtn.disabled = true;
-  } else {
-    archiveBtn.onclick = () => {
-      showDailyArchive = !showDailyArchive;
-      matchQueue = [];
-      buildFilterBar(); buildDifficultyFilterBar(); renderFreeplayCount();
-    };
-  }
-  bar.appendChild(archiveBtn);
-}
+  const chipOn = (c) => c.leagues.every(l => selectedLeagues.has(l));
+  const countText = pool.length === 0
+    ? "Keine Aufstellung passt – wähle etwas ab"
+    : `<b>${pool.length}</b> ${pool.length === 1 ? "Aufstellung passt" : "Aufstellungen passen"}`;
 
-function buildDifficultyFilterBar() {
-  const bar = document.getElementById("diffFilterRow");
-  bar.innerHTML = "";
+  body.innerHTML = `
+    <div class="lab"><b>Wettbewerb</b><span>Mehrfachauswahl möglich</span></div>
+    <button type="button" class="ch all${selectedLeagues.size === 0 ? " on" : ""}" id="fpAll">Alle Wettbewerbe <small>${LINEUP_CHALLENGES.length}</small></button>
+    <div class="grp">${groups.map((g, gi) => `
+      <div class="gl">${g.label}</div>
+      <div class="chips">${g.chips.map((c, ci) => `<button type="button" class="ch${chipOn(c) ? " on" : ""}" data-g="${gi}" data-c="${ci}" aria-pressed="${chipOn(c)}">${c.label} <small>${c.count}</small></button>`).join("")}</div>`).join("")}
+    </div>
+    <div class="lab sep"><b>Schwierigkeit</b><span>Mehrfachauswahl möglich</span></div>
+    <div class="levels">${[1, 2, 3, 4, 5].map(d => {
+      const n = LINEUP_CHALLENGES.filter(m => m.difficulty === d).length;
+      const on = selectedDifficulties.has(d);
+      return `<button type="button" class="lvl${on ? " on" : ""}" data-diff="${d}" style="color:${DIFF_COLOR[d]}" aria-pressed="${on}"${n === 0 ? " disabled" : ""}>
+        <span class="bars">${[1, 2, 3, 4, 5].map(j => `<i class="${j <= d ? "on" : ""}"></i>`).join("")}</span><b>Stufe ${d}</b><span class="n">${n} Spiele</span></button>`;
+    }).join("")}</div>
+    ${profile.level >= 15 ? `<button type="button" class="hc${profile.hardcoreMode ? " on" : ""}" id="fpHardcore" aria-pressed="${!!profile.hardcoreMode}">🔥 Hardcore · nur Stufe 4–5</button>` : ""}
+    <div class="count${pool.length === 0 ? " none" : ""}">${countText}</div>
+    <button type="button" class="go" id="fpGo"${pool.length === 0 ? " disabled" : ""}>🎲 Zufällige Aufstellung</button>
+    <div class="secret">Die Partie bleibt geheim, bis du sie spielst.</div>
+    ${archiveCount > 0 ? `<button type="button" class="arch" id="fpArchive"><span class="ai">📅</span><span class="at"><b>Tages-Archiv</b><span>Verpasste Tages-Challenges nachspielen</span></span><span class="n">${archiveCount}</span></button>` : ""}`;
 
-  const allBtn = document.createElement("button");
-  allBtn.className = "filter-btn" + (selectedDifficulties.size === 0 ? " active" : "");
-  allBtn.textContent = "Alle Stufen";
-  allBtn.onclick = () => { selectedDifficulties.clear(); matchQueue = []; buildFilterBar(); buildDifficultyFilterBar(); renderFreeplayCount(); };
-  bar.appendChild(allBtn);
-
-  [1, 2, 3, 4, 5].forEach(d => {
-    const count = LINEUP_CHALLENGES.filter(m => m.difficulty === d).length;
-    const btn = document.createElement("button");
-    const isActive = selectedDifficulties.has(d);
-    btn.className = "filter-btn" + (isActive ? " active" : "") + (count === 0 ? " empty-filter" : "");
-    btn.style.color = isActive ? "" : DIFF_COLOR[d];
-    btn.textContent = DIFF_LABEL[d] + " (" + count + ")";
-    if (count === 0) {
-      btn.disabled = true;
-    } else {
-      btn.onclick = () => {
-        if (selectedDifficulties.has(d)) selectedDifficulties.delete(d); else selectedDifficulties.add(d);
-        matchQueue = [];
-        buildFilterBar(); buildDifficultyFilterBar(); renderFreeplayCount();
-      };
-    }
-    bar.appendChild(btn);
+  const refresh = () => { matchQueue = []; renderFreeplay(); };
+  document.getElementById("fpAll").onclick = () => { selectedLeagues.clear(); refresh(); };
+  body.querySelectorAll("[data-g]").forEach(btn => btn.onclick = () => {
+    const c = groups[+btn.dataset.g].chips[+btn.dataset.c];
+    if (chipOn(c)) c.leagues.forEach(l => selectedLeagues.delete(l)); else c.leagues.forEach(l => selectedLeagues.add(l));
+    refresh();
   });
-}
-
-function renderFreeplayCount() {
-  document.getElementById("freeplayCount").textContent = poolForActiveLeague().length + " Aufstellungen passen";
+  body.querySelectorAll("[data-diff]").forEach(btn => btn.onclick = () => {
+    const d = +btn.dataset.diff;
+    if (selectedDifficulties.has(d)) selectedDifficulties.delete(d); else selectedDifficulties.add(d);
+    refresh();
+  });
+  const hc = document.getElementById("fpHardcore");
+  if (hc) hc.onclick = () => { profile.hardcoreMode = !profile.hardcoreMode; saveProfile(profile); refresh(); };
+  document.getElementById("fpGo").onclick = startFreeplayRandom;
+  const arch = document.getElementById("fpArchive");
+  if (arch) arch.onclick = startArchiveMatch;
 }
 
 let campaignTier = null;
@@ -3074,25 +3082,40 @@ function renderModeTiles() {
 }
 
 function poolForActiveLeague() {
-  if (showDailyArchive) return archivedDailyChallenges();
   let pool = selectedLeagues.size === 0 ? LINEUP_CHALLENGES : LINEUP_CHALLENGES.filter(m => selectedLeagues.has(m.league));
   if (selectedDifficulties.size > 0) pool = pool.filter(m => selectedDifficulties.has(m.difficulty));
   if (profile.level >= 15 && profile.hardcoreMode) {
     const hardOnly = pool.filter(m => m.difficulty >= 4);
     if (hardOnly.length > 0) pool = hardOnly;
   }
-  return pool; // kann leer sein - das wird bewusst NICHT still aufgefüllt, siehe randomBtn-Handler
+  return pool; // kann leer sein - das wird bewusst NICHT still aufgefüllt, siehe startFreeplayRandom()
 }
 
-document.getElementById("randomBtn").onclick = () => {
+function startFreeplayRandom() {
   const pool = poolForActiveLeague();
   if (pool.length === 0) {
     showToast("⚠️ Für diese Filterkombination gibt's noch keine Aufstellung - Filter anpassen.");
     return;
   }
+  freeplaySource = "filter";
   currentLevelContext = null;
+  currentDailyChallenge = null;
   startMatch(pickRandomMatch());
-};
+}
+
+// Tages-Archiv (Prompt 20): zufaellige, bereits vergangene Tages-Aufstellung - gespielt mit
+// reinen Freispiel-Regeln (kein currentDailyChallenge: keine Sterne, keine Serie, kein earnDaily).
+function startArchiveMatch() {
+  const pool = archivedDailyChallenges();
+  if (pool.length === 0) return;
+  const others = pool.length > 1 ? pool.filter(m => m.id !== lastShownId) : pool;
+  const m = others[Math.floor(Math.random() * others.length)];
+  lastShownId = m.id;
+  freeplaySource = "archive";
+  currentLevelContext = null;
+  currentDailyChallenge = null;
+  startMatch(m);
+}
 
 function renderDiffBadge(difficulty) {
   const color = DIFF_COLOR[difficulty];
@@ -3338,6 +3361,7 @@ function trainWeakness(groupName) {
   if (!leagues) return;
   selectedLeagues = new Set(leagues);
   selectedDifficulties.clear();
+  freeplaySource = "filter";
   matchQueue = [];
   const pool = poolForActiveLeague();
   if (pool.length === 0) return;
@@ -6064,6 +6088,7 @@ function evaluatePitch() {
     panel.appendChild(row);
     document.getElementById("backBtn").onclick = () => goBackTo("freeplay");
     document.getElementById("againBtn").onclick = () => {
+      if (freeplaySource === "archive") { startArchiveMatch(); return; }
       const pool = poolForActiveLeague();
       if (pool.length === 0) {
         showToast("⚠️ Für diese Filterkombination gibt's noch keine Aufstellung - Filter anpassen.");
