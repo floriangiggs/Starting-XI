@@ -1649,7 +1649,7 @@ Konsolenfehler.
 - *Später:* Belohnungsleiste („nächste Belohnung“: Rasenmuster, Rad-Designs, Titel)
 - *Später:* Scout-Aufträge (täglich/monatlich)
 - *Später (nach Capacitor):* Bestenlisten über Apple Game Center / Google Play Games
-- **Duell gegen Freunde** (Prototyp ): Stufe 1 „Duell per
+- **Duell gegen Freunde** (Prototyp `prototypes/duell.html`): Stufe 1 „Duell per
   Link“ ohne Server (gleiche Aufstellung, nacheinander gespielt, Ergebnis des
   Gegners verdeckt bis zum eigenen Spiel), 3:00 Zeitlimit, Abgeben-Button, keine
   Hilfen, Wertung: mehr Richtige vor schnellerer Zeit. Walkout-Enthüllung nach
@@ -1659,7 +1659,7 @@ Konsolenfehler.
   ggf. Echtzeit gegen Zufallsgegner mit Backend. Offen: Platz auf der Startseite,
   Ranking (Liga-Ränge mit Auf-/Abstieg, Saisons), Best of 3, Bilanz je Freund,
   Pool-Größe (für Ranking mit Fremden mehrere hundert Aufstellungen nötig).
-- **Monetarisierung** (Prototyp , erst nach Capacitor
+- **Monetarisierung** (Prototyp `prototypes/werbung.html`, erst nach Capacitor
   und mit echten Nutzerzahlen): freiwillige Belohnungs-Werbung „Video ansehen →
   +1 🔍“ (max. 3/Tag), Einmalkauf „Werbefrei“ ohne Spielvorteil, später
   kosmetische Extras. Nie Werbung automatisch, vor/während eines Spiels oder im
