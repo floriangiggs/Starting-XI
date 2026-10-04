@@ -33,8 +33,10 @@ vorige umgesetzt, getestet und committet ist.
 | 19 | „So geht's“ als Reiter-Blatt (4 Themen) + Texte mit Code abgeglichen | ✅ erledigt |
 | 20 | Frei spielen neu sortiert, Stufe 1–5, Tages-Archiv als eigene Karte | ✅ erledigt |
 | 21 | Ladescreen etwas langsamer (~4 s statt ~2,4 s) | ✅ erledigt |
+| 22 | Fehler aus dem Testlauf: Tages-Reihenfolge, Hilfe-Buttons, Spoiler, lange Namen u. a. | – |
+| 23 | Daten: Ajax 1995 durch echtes Spiel ersetzen, fehlende Rückennummern/Nationalitäten | 22 |
 
-**Empfohlene Reihenfolge ab jetzt:** 8 (Capacitor) – alle anderen Prompts sind erledigt
+**Empfohlene Reihenfolge ab jetzt:** 22 → 23 → 8
 
 Prompt 7 steht bewusst vor der Tages-Challenge: Nur mit der neuen
 Update-Strategie kommen neue Tages-Aufstellungen zuverlässig auf dem iPhone an.
@@ -1635,6 +1637,152 @@ Test: Ablauf einmal per Video/Screenshot-Serie (0 s, 1 s, 2 s, 3 s, 4 s)
 bei 402×874 prüfen: alle 11 Spieler stehen vor dem Anpfiff, Tipp und
 Statustexte sind lesbar, Tippen überspringt sofort, keine
 Konsolenfehler.
+```
+
+---
+
+## Prompt 22 – Fehler aus dem Testlauf
+
+```
+Lies CLAUDE.md. Mehrere Korrekturen nach einem automatisierten Testlauf
+(Stand nach Prompt 21) → Plan Mode, Plan zeigen, dann umsetzen. Jeder
+Punkt ist im Code bzw. per Test bestätigt. An Token-Kosten, XP-Werten und
+Spielregeln NICHTS ändern, außer wo unten ausdrücklich genannt.
+
+1. Tages-Challenge: feste gemischte Reihenfolge statt Wochentags-Stufen
+   Befund: getDailyChallenge() wählt nach WEEKDAY_DIFFICULTY aus Queues je
+   Stufe. Der Tages-Pool ist verteilt 3/17/16/4/1 (Stufe 1–5) → Stufe 5
+   (Sonntag) hat nur EINE Aufstellung und wiederholt sich jede Woche,
+   Montag alle 3, Samstag alle 4 Wochen.
+   Neu:
+   - Keine Bindung an Wochentag oder Stufe mehr. Jeden Tag kommt die
+     nächste Aufstellung aus DAILY_CHALLENGES in einer festen, gemischten
+     Reihenfolge – für ALLE Spieler gleich (deterministisch, kein
+     Math.random), damit das Teilen-Raster vergleichbar bleibt.
+   - Keine Wiederholung, bis alle Aufstellungen des Pools einmal dran
+     waren; dann beginnt eine neue Runde mit neuer Mischung. Die erste
+     Aufstellung einer neuen Runde darf nicht die letzte der alten sein.
+   - Stabil bei wachsendem Pool: optionales Feld since: "YYYY-MM-DD" je
+     Tages-Eintrag (fehlt = DAILY_EPOCH). Ein Tag berücksichtigt nur
+     Einträge mit since <= Tag. So ändern neue Aufstellungen niemals
+     bereits vergangene Tage (Archiv, profile.daily bleiben korrekt).
+   - Umsetzungsvorschlag: von Tag 1 an durchlaufen, Menge "used" je Runde
+     führen, aus den verfügbaren unbenutzten Einträgen den mit dem
+     kleinsten hashString(id + ":" + rundeNr) nehmen (mulberry32/
+     hashString existieren). Ergebnis je dateKey cachen.
+   - Ersetzt dailyQueueIndex/dailyQueueForDifficulty/WEEKDAY_DIFFICULTY.
+     archivedDailyChallenges() nutzt dieselbe Funktion getDailyChallenge
+     für jeden vergangenen Tag. Die Tages-Karte zeigt die Stufe der
+     tatsächlichen Aufstellung (heute: WEEKDAY_DIFFICULTY in der
+     Kartenlogik, ca. Zeile 2974).
+   - Texte anpassen: Reiter MODI in So geht's ("Montag leicht, Sonntag am
+     schwersten" → z. B. "Jeden Tag ein anderes Spiel, keine Wiederholung
+     bis alle durch sind"), alle weiteren Fundstellen per grep.
+   Test: 120 Tage ab DAILY_EPOCH simulieren und ausgeben – keine
+   Wiederholung innerhalb einer Runde, Runde = Poolgröße, beim Rundenwechsel
+   kein Doppel. Zusätzlich: einen Eintrag mit since in der Zukunft
+   hinzufügen → alle vergangenen Tage bleiben identisch.
+
+2. Hilfe-Buttons: erster Tipp geht verloren
+   Befund: Ist ein Namensfeld aktiv und man tippt auf "Scout-Rad öffnen",
+   "Aufdecken" oder "Korrigieren", passiert beim ersten Tipp nichts. Ursache:
+   blur des Feldes → runFuzzyCheck() → renderPositionPanel() baut das Panel
+   neu, der angetippte Button wird ersetzt, bevor click feuert (per Test für
+   alle drei Buttons bestätigt; zweiter Tipp funktioniert).
+   Fix: Panel-Buttons dürfen beim Antippen nicht ersetzt werden – z. B.
+   pointerdown/mousedown auf den Panel-Buttons mit preventDefault (Feld
+   behält den Fokus, Tastatur bleibt) und/oder renderPositionPanel im blur
+   nur aufrufen, wenn sich der Zustand (near) wirklich geändert hat.
+   Test: Feld fokussieren, Namen tippen, dann EIN Tipp auf jeden der drei
+   Buttons (tap, nicht JS-click) → jeweils sofortige Wirkung.
+
+3. Kontext-Satz verrät Spieler
+   Befund: In mind. 28 Aufstellungen nennt context vor dem Spiel einen
+   gesuchten Spieler (z. B. WM-Finale 2014 "Kloses letztes Länderspiel",
+   Clásico 2009 Messi, EM-Finale 2004 Charisteas) – auch in
+   Tages-Challenges.
+   Fix: Intro vor dem Spiel zeigt nur Wettbewerb/Datum, Partie, Stufe und
+   "Gesucht: Aufstellung von …". Der context-Satz erscheint erst NACH dem
+   Auswerten im Ergebnis als kleine Karte "💡 Wusstest du?". Texte selbst
+   nicht ändern.
+
+4. Lange Namen werden abgeschnitten
+   Befund: Bei 375/402/430 px Breite passen ca. 170–185 Namen nicht ins
+   Feld (z. B. "Schweinsteiger", "Alexander-Arnold", Island 2016 fast
+   komplett). applyNameFit() verkleinert nur ab 12 Zeichen pauschal.
+   Fix: Schrift im Feld schrittweise verkleinern, bis scrollWidth <=
+   clientWidth (Untergrenze ca. 8,5px), danach notfalls leicht engere
+   Laufweite. Spielfeld und Felder NICHT verkleinern. Gilt für richtige,
+   aufgedeckte, vorgegebene und nach dem Auswerten eingeblendete Namen.
+   Test: alle Aufstellungen (Kampagne + Tag) bei 375×667, 402×874,
+   430×932 mit allen Namen befüllen → 0 Felder mit scrollWidth >
+   clientWidth.
+
+5. Scout-Profil › Wissen: Stärke = Schwäche
+   Befund: Hat man erst eine Wettbewerbs-Gruppe gespielt, steht sie
+   gleichzeitig als "Stärke" und "Ausbaufähig" (z. B. Nationalmannschaften
+   97 %). Fix: "Ausbaufähig" + Trainieren-Button nur, wenn mind. zwei
+   Gruppen gespielt und die schwächste ≠ stärkste ist; sonst Hinweis
+   "Spiel weitere Wettbewerbe, um Stärken und Schwächen zu sehen".
+
+6. Tages-Archiv-Text
+   Die Karte heißt "Verpasste Tages-Challenges nachspielen", enthält aber
+   alle vergangenen (auch gespielte). Text ändern zu "Vergangene
+   Tages-Challenges nachspielen".
+
+7. Begriffe Achievement → Trophäe
+   Toast "Achievement freigeschaltet" (showAchievementToast) und Quittung
+   "Achievement: …" auf "Trophäe" umstellen – Anleitung und Profil sprechen
+   nur von Trophäen. Interne Namen dürfen bleiben.
+
+8. Schwierigkeits-Abzeichen
+   renderDiffBadge zeigt im Spiel nur den Liga-Namen ("Bundesliga"), das
+   Freispiel spricht von "Stufe 3". Abzeichen: "Stufe n · <Name>"
+   (DIFF_LABEL selbst nicht ändern).
+
+9. Scout-Rad-Fenster
+   Nach einem Dreh steht im Fenster weiter "Noch keine Tipps für diese
+   Position." – die Tipp-Chips im Fenster nach jedem Dreh aktualisieren.
+
+10. Startguthaben
+   Neue Profile starten mit 0 Token – im ersten Spiel steht bei jeder Hilfe
+   "Zu wenig Token". Neu: ECONOMY.startTokens = 3, nur für NEU angelegte
+   Profile (bestehende unverändert). Kurz im Reiter HILFEN erwähnen
+   ("Zum Start: 3 🔍").
+
+sw.js CACHE_NAME erhöhen. Zum Schluss alle Tests oben + ein kompletter
+Durchlauf (Kampagne-Level, Tages-Challenge, Freispiel, Archiv) ohne
+Konsolenfehler; Ergebnis kurz auflisten.
+```
+
+---
+
+## Prompt 23 – Daten nachrecherchieren
+
+```
+Lies CLAUDE.md (Datengenauigkeit: nur mit verlässlicher Quelle, nie aus
+dem Gedächtnis). Kleine Datenpflege in LINEUP_CHALLENGES → kurz Plan
+zeigen, dann umsetzen; Hook-Ergebnis zeigen.
+
+1. "ajax-eredivisie-1995" ist kein konkretes Spiel (comp "Eredivisie-
+   Meisterschaft, Saison 1994/95", kein Datum) – verstößt gegen die Regel
+   "echte Startelf einer bestimmten Partie" und fällt in der Wissens-
+   Statistik aus der Jahrzehnt-Wertung. Ersetzen durch ein konkretes
+   Ajax-Spiel derselben Ära und ähnlicher Schwierigkeit (z. B. ein
+   Eredivisie-Spiel oder das CL-Finale 24.05.1995), recherchiert mit
+   mindestens einer verlässlichen Quelle (Quelle im Commit nennen).
+   Gleiche Stufe und Position im Kampagnenpfad beibehalten; id ändern,
+   wenn sich das Spiel ändert, und profile-Daten zur alten id nicht
+   brechen (alte Fortschritte dürfen verfallen, aber keine Fehler).
+2. Für 6 Aufstellungen fehlt details (Rückennummer/Nationalität fürs
+   Scout-Rad): cl-finale-istanbul-2005, schalke-meister-der-herzen-2001,
+   el-clasico-2009, cl-finale-la-decima-2014, mancity-qpr-2012 und die
+   neue Ajax-Aufstellung. Recherchieren und ergänzen (Format wie bei den
+   anderen Einträgen); wo eine Angabe nicht sicher belegt ist, weglassen.
+3. Bei Nationalmannschafts-Spielen keine nat-Angaben ergänzen (Scout-Rad
+   blendet sie dort ohnehin aus).
+
+sw.js CACHE_NAME erhöhen. Zum Schluss die Konsistenzprüfung zeigen.
 ```
 
 ---
