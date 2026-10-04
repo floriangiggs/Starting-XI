@@ -1639,6 +1639,23 @@ Konsolenfehler.
 
 ---
 
+## Fahrplan (Stand 04.10.2026)
+
+1. **App fertig machen:** Feinschliff nach Beobachtungen, dann Prompt 8
+   (Capacitor) → App Store / Play Store.
+2. **Traffic aufbauen:** Store-Seite, Social Media (u. a. KI-unterstützte
+   Kurzvideos), Fokus auf Wiederkehr (Tages-Challenge, Serie, Duell per Link).
+3. **Erst dann Monetarisierung** (siehe Ideen-Speicher), schrittweise und
+   gemessen – Spielspaß vor Umsatz.
+4. **Skalieren:** mehr Aufstellungen, Duell gegen Zufallsgegner, Ranking.
+
+Leitplanken Social-Media-Videos: KI-Inhalte als solche kennzeichnen
+(Plattformregeln), keine Deepfakes/Abbilder echter Spieler, keine
+TV-Bilder, Vereinslogos oder Original-Trikots – stattdessen App-Aufnahmen
+(Bildschirm), eigene Grafiken, KI-Stimme/-Animation ohne echte Personen.
+
+---
+
 ## Ideen-Speicher (noch nicht ausgearbeitet)
 
 - **Themen-Pakete**: Legendäre Finals, Underdogs, Dramen, Pfalz-Paket (FCK)
