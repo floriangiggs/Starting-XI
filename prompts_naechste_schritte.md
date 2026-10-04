@@ -34,7 +34,7 @@ vorige umgesetzt, getestet und committet ist.
 | 20 | Frei spielen neu sortiert, Stufe 1–5, Tages-Archiv als eigene Karte | ✅ erledigt |
 | 21 | Ladescreen etwas langsamer (~4 s statt ~2,4 s) | ✅ erledigt |
 
-**Empfohlene Reihenfolge ab jetzt:** 16 → 17 → 18 → 19 → 20 → 21 → 8
+**Empfohlene Reihenfolge ab jetzt:** 8 (Capacitor) – alle anderen Prompts sind erledigt
 
 Prompt 7 steht bewusst vor der Tages-Challenge: Nur mit der neuen
 Update-Strategie kommen neue Tages-Aufstellungen zuverlässig auf dem iPhone an.
@@ -1649,3 +1649,20 @@ Konsolenfehler.
 - *Später:* Belohnungsleiste („nächste Belohnung“: Rasenmuster, Rad-Designs, Titel)
 - *Später:* Scout-Aufträge (täglich/monatlich)
 - *Später (nach Capacitor):* Bestenlisten über Apple Game Center / Google Play Games
+- **Duell gegen Freunde** (Prototyp ): Stufe 1 „Duell per
+  Link“ ohne Server (gleiche Aufstellung, nacheinander gespielt, Ergebnis des
+  Gegners verdeckt bis zum eigenen Spiel), 3:00 Zeitlimit, Abgeben-Button, keine
+  Hilfen, Wertung: mehr Richtige vor schnellerer Zeit. Walkout-Enthüllung nach
+  dem Start (Wettbewerb › Datum › Partie › Mannschaft), Uhr erst ab Anpfiff, kein
+  Kontext-Satz (könnte Spieler verraten). Fair-Play-Versprechen + Siegel
+  (App-Wechsel erkennen). Später: Game Center/Play Games (nach Capacitor), dann
+  ggf. Echtzeit gegen Zufallsgegner mit Backend. Offen: Platz auf der Startseite,
+  Ranking (Liga-Ränge mit Auf-/Abstieg, Saisons), Best of 3, Bilanz je Freund,
+  Pool-Größe (für Ranking mit Fremden mehrere hundert Aufstellungen nötig).
+- **Monetarisierung** (Prototyp , erst nach Capacitor
+  und mit echten Nutzerzahlen): freiwillige Belohnungs-Werbung „Video ansehen →
+  +1 🔍“ (max. 3/Tag), Einmalkauf „Werbefrei“ ohne Spielvorteil, später
+  kosmetische Extras. Nie Werbung automatisch, vor/während eines Spiels oder im
+  Duell. Vorher klären: Gewerbe/Steuern, Impressum/Datenschutz, DSGVO-
+  Einwilligung + Apple-Tracking-Abfrage, jugendgerechte Werbe-Einstellungen,
+  Nebentätigkeit beim Arbeitgeber.

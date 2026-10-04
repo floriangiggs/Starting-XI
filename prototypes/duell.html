@@ -1,0 +1,417 @@
+<!doctype html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, viewport-fit=cover">
+<!-- Ideen-Prototyp "Duell per Link" (noch KEIN Prompt): Herausfordern, Einladung, Walkout-Enthuellung (Wettbewerb > Datum > Partie > Mannschaft, Uhr erst ab Anpfiff), spielbares Duell (3:00, Abgeben, keine Hilfen), Ergebnis (mehr Richtige vor Zeit). Beispielaufstellung aus LINEUP_CHALLENGES "el-clasico-2009". Nicht einbinden. -->
+<title>Duell per Link</title>
+
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Anton&family=Oswald:wght@300;400;500;600;700&display=swap">
+<style>
+  :root {
+    --pitch: #1F4D36; --chalk: #F2EFE6; --gold: #E8B23D; --gold-2: #F4D58D;
+    --ink: #14202B; --ink-2: #1C2B38; --ink-3: #243A4D; --line: rgba(242,239,230,0.14);
+    --muted: rgba(242,239,230,0.7); --dim: rgba(242,239,230,0.45); --token: #7DB8FF; --ok: #2ECC71; --flame: #F0A93B; --bad: #E0705F;
+    color-scheme: dark;
+  }
+  * { box-sizing: border-box; }
+  html, body { background: var(--ink); }
+  body { margin: 0; color: var(--chalk); font-family: Oswald, "Arial Narrow", system-ui, sans-serif; -webkit-tap-highlight-color: transparent; }
+  button { font-family: inherit; color: inherit; cursor: pointer; touch-action: manipulation; }
+  button:focus-visible, input:focus-visible { outline: 2px solid var(--gold-2); outline-offset: 2px; }
+  .controls { position: sticky; top: 0; z-index: 30; background: rgba(20,32,43,0.95); border-bottom: 1px solid var(--line); padding: 10px 12px; display: flex; justify-content: center; }
+  .seg { display: inline-flex; flex-wrap: wrap; justify-content: center; border: 1px solid var(--line); border-radius: 20px; padding: 3px; gap: 3px; }
+  .seg button { font-weight: 600; font-size: 12.5px; background: transparent; color: var(--muted); border: none; border-radius: 16px; padding: 6px 10px; }
+  .seg button[aria-pressed="true"] { background: linear-gradient(160deg, #f6da9c, var(--gold)); color: var(--ink); }
+
+  .phone { width: min(402px, 100%); height: 800px; margin: 16px auto 28px; position: relative; overflow: hidden; border-radius: 28px; border: 1px solid var(--line);
+    background: repeating-linear-gradient(90deg, rgba(255,255,255,0.02) 0 2px, transparent 2px 40px), var(--ink); }
+  .scr { position: absolute; inset: 0; display: flex; flex-direction: column; gap: 12px; padding: 14px 16px 16px; }
+  .scr[hidden] { display: none; }
+  .topbar { display: flex; align-items: center; gap: 10px; min-height: 42px; flex-shrink: 0; }
+  .back { display: inline-flex; align-items: center; gap: 6px; background: var(--ink-2); border: 1px solid var(--line); border-radius: 22px; padding: 8px 14px 8px 11px; font-family: Anton, Impact, sans-serif; font-size: 15px; text-transform: uppercase; }
+  .back i { font-style: normal; color: var(--gold); }
+  .tt { font-family: Anton, Impact, sans-serif; font-size: 22px; text-transform: uppercase; flex: 1; }
+  .tt span { color: var(--gold); }
+  .lab { font-family: Anton, Impact, sans-serif; font-weight: 400; font-size: 15px; text-transform: uppercase; color: var(--gold-2); letter-spacing: 0.02em; }
+  .card { border-radius: 12px; border: 1px solid var(--line); background: var(--ink-2); padding: 11px 13px; }
+  .small { font-weight: 300; font-size: 12.5px; color: var(--muted); line-height: 1.4; }
+
+  /* Gegner-Auswahl */
+  .opp { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+  .opp button { text-align: left; border-radius: 12px; padding: 11px 12px; border: 1px solid var(--line); background: var(--ink-2); display: flex; flex-direction: column; gap: 3px; }
+  .opp button i { font-style: normal; font-size: 22px; }
+  .opp button b { font-family: Anton, Impact, sans-serif; font-weight: 400; font-size: 16px; text-transform: uppercase; }
+  .opp button span { font-weight: 300; font-size: 12.5px; color: var(--muted); line-height: 1.3; }
+  .opp button.on { border-color: rgba(232,178,61,0.7); background: rgba(232,178,61,0.1); }
+  .opp button.on b { color: var(--gold-2); }
+  .opp button.soon { border-style: dashed; opacity: 0.55; cursor: default; }
+  .soon-tag { align-self: flex-start; font-weight: 600; font-size: 10.5px; text-transform: uppercase; letter-spacing: 0.08em; padding: 1px 7px; border-radius: 8px; background: rgba(255,255,255,0.08); color: var(--muted); margin-top: 2px; }
+  .levels { display: grid; grid-template-columns: repeat(6, 1fr); gap: 5px; }
+  .lvl { border: 1px solid var(--line); background: var(--ink-2); border-radius: 10px; padding: 7px 2px 6px; display: flex; flex-direction: column; align-items: center; gap: 4px; }
+  .lvl .bars { display: flex; gap: 2px; } .lvl .bars i { width: 4px; height: 9px; border-radius: 2px; background: rgba(255,255,255,0.15); } .lvl .bars i.on { background: currentColor; }
+  .lvl b { font-family: Anton, Impact, sans-serif; font-weight: 400; font-size: 12.5px; line-height: 1; }
+  .lvl.on { border-color: currentColor; background: color-mix(in srgb, currentColor 14%, transparent); }
+  .lvl.rnd { color: var(--chalk); } .lvl.rnd .dice { font-size: 13px; line-height: 9px; height: 9px; }
+
+  .rules { display: grid; grid-template-columns: repeat(3, 1fr); gap: 6px; }
+  .rule { border-radius: 10px; background: rgba(255,255,255,0.04); border: 1px solid var(--line); padding: 8px 6px; text-align: center; }
+  .rule i { font-style: normal; font-size: 18px; display: block; }
+  .rule b { font-family: Anton, Impact, sans-serif; font-weight: 400; font-size: 17px; display: block; line-height: 1.15; }
+  .rule span { font-weight: 400; font-size: 11.5px; color: var(--muted); line-height: 1.25; display: block; }
+  .win { display: grid; grid-template-columns: 26px 1fr; gap: 8px; align-items: start; }
+  .win + .win { margin-top: 7px; }
+  .win .n { width: 22px; height: 22px; border-radius: 50%; display: grid; place-items: center; font-family: Anton, Impact, sans-serif; font-size: 12.5px; background: var(--gold); color: var(--ink); }
+  .win p { margin: 1px 0 0; font-weight: 300; font-size: 13.5px; line-height: 1.35; }
+  .win p b { font-weight: 600; }
+
+  .oath { display: flex; gap: 11px; align-items: center; border-radius: 12px; padding: 10px 12px; border: 1px solid rgba(46,204,113,0.35); background: rgba(46,204,113,0.06); text-align: left; width: 100%; color: inherit; }
+  .oath .box { width: 24px; height: 24px; border-radius: 7px; border: 2px solid rgba(46,204,113,0.6); display: grid; place-items: center; flex-shrink: 0; font-size: 14px; color: var(--ink); font-weight: 700; }
+  .oath.on .box { background: var(--ok); border-color: var(--ok); }
+  .oath b { font-weight: 600; font-size: 14px; display: block; }
+  .oath span { font-weight: 300; font-size: 12.5px; color: var(--muted); }
+  .go { border: none; border-radius: 12px; padding: 14px; font-family: Anton, Impact, sans-serif; font-size: 19px; text-transform: uppercase; letter-spacing: 0.03em; color: var(--gold-2); width: 100%;
+    background: repeating-linear-gradient(90deg, rgba(255,255,255,0.04) 0 14px, transparent 14px 28px), linear-gradient(150deg, #2F7A50, #1B4A32); box-shadow: 0 4px 0 #0E2A1C; }
+  .go:disabled { opacity: 0.4; cursor: default; }
+  .ghost { border: 1px solid var(--line); background: transparent; border-radius: 12px; padding: 11px; font-family: Anton, Impact, sans-serif; font-size: 16px; text-transform: uppercase; color: var(--muted); width: 100%; }
+  .spacer { flex: 1; }
+
+  /* Einladung */
+  .vs { border-radius: 16px; padding: 18px 14px 16px; background: linear-gradient(150deg, #27603F, #173F2B 80%); border: 1.5px solid rgba(232,178,61,0.6); text-align: center; position: relative; overflow: hidden; }
+  .vs::before { content: ""; position: absolute; left: 50%; top: 0; bottom: 0; width: 1px; background: rgba(242,239,230,0.15); }
+  .vs::after { content: ""; position: absolute; left: 50%; top: 50%; width: 110px; height: 110px; transform: translate(-50%,-50%); border: 1px solid rgba(242,239,230,0.15); border-radius: 50%; }
+  .vs .k { font-weight: 500; font-size: 12px; text-transform: uppercase; letter-spacing: 0.1em; color: var(--gold-2); position: relative; z-index: 1; }
+  .vs .row { display: grid; grid-template-columns: 1fr auto 1fr; align-items: center; margin-top: 12px; position: relative; z-index: 1; }
+  .av { display: flex; flex-direction: column; align-items: center; gap: 5px; }
+  .av .c { width: 62px; height: 62px; border-radius: 50%; display: grid; place-items: center; font-family: Anton, Impact, sans-serif; font-size: 26px; background: var(--ink); border: 2px solid var(--gold); }
+  .av .c.me { border-color: var(--chalk); }
+  .av b { font-family: Anton, Impact, sans-serif; font-weight: 400; font-size: 17px; text-transform: uppercase; }
+  .av span { font-weight: 300; font-size: 12px; color: rgba(242,239,230,0.8); }
+  .vs .x { font-family: Anton, Impact, sans-serif; font-size: 34px; color: var(--gold); text-shadow: 0 0 18px rgba(232,178,61,0.5); padding: 0 8px; background: #1E5236; border-radius: 50%; }
+  .facts { display: grid; grid-template-columns: repeat(3, 1fr); gap: 6px; margin-top: 14px; position: relative; z-index: 1; }
+  .facts div { background: rgba(10,20,15,0.35); border-radius: 9px; padding: 6px 4px; }
+  .facts b { font-family: Anton, Impact, sans-serif; font-weight: 400; font-size: 15px; display: block; }
+  .facts span { font-weight: 400; font-size: 11px; color: rgba(242,239,230,0.75); }
+  .locked { display: flex; gap: 10px; align-items: center; }
+  .locked .ic { font-size: 22px; }
+  .locked b { font-weight: 600; font-size: 14px; display: block; }
+
+  /* Duell-Spielfeld */
+  .hud { display: grid; grid-template-columns: 1fr auto 1fr; align-items: center; gap: 8px; flex-shrink: 0; }
+  .hud .side { display: flex; flex-direction: column; }
+  .hud .side.r { align-items: flex-end; text-align: right; }
+  .hud .side b { font-family: Anton, Impact, sans-serif; font-weight: 400; font-size: 13px; text-transform: uppercase; color: var(--muted); }
+  .hud .side .v { font-family: Anton, Impact, sans-serif; font-size: 22px; line-height: 1.05; }
+  .hud .side .v small { font-size: 13px; color: var(--muted); }
+  .hud .side .lock { font-weight: 400; font-size: 12.5px; color: var(--muted); line-height: 1.6; }
+  .clock { font-family: Anton, Impact, sans-serif; font-size: 34px; line-height: 1; padding: 6px 14px; border-radius: 12px; background: var(--ink-2); border: 1px solid rgba(232,178,61,0.5); color: var(--gold-2); min-width: 104px; text-align: center; }
+  .clock.low { border-color: rgba(224,112,95,0.7); color: #F2A497; }
+  .match { text-align: center; flex-shrink: 0; }
+  .match b { font-family: Anton, Impact, sans-serif; font-weight: 400; font-size: 17px; text-transform: uppercase; display: block; }
+  .match span { font-weight: 300; font-size: 12.5px; color: var(--muted); }
+  .pitch { flex: 1; min-height: 0; position: relative; border-radius: 14px; border: 1px solid rgba(242,239,230,0.3);
+    background: repeating-linear-gradient(180deg, rgba(255,255,255,0.035) 0 9%, transparent 9% 18%), linear-gradient(180deg, #24583D, #1A4430); }
+  .pitch .ln { position: absolute; border: 1px solid rgba(242,239,230,0.25); }
+  .pitch .half { left: 0; right: 0; top: 50%; height: 0; border-width: 1px 0 0; }
+  .pitch .circ { left: 50%; top: 50%; width: 76px; height: 76px; border-radius: 50%; transform: translate(-50%,-50%); }
+  .pitch .box1 { left: 25%; right: 25%; bottom: 0; height: 15%; border-bottom: none; }
+  .pitch .box2 { left: 25%; right: 25%; top: 0; height: 15%; border-top: none; }
+  .slot { position: absolute; transform: translate(-50%,-50%); display: flex; flex-direction: column; align-items: center; gap: 2px; width: 66px; }
+  .slot .ab { font-weight: 600; font-size: 10.5px; letter-spacing: 0.06em; color: rgba(242,239,230,0.75); }
+  .slot input { width: 66px; height: 28px; border-radius: 8px; border: 1px solid rgba(242,239,230,0.35); background: rgba(10,22,16,0.72); color: var(--chalk); font-family: Oswald, sans-serif; font-weight: 500; font-size: 12px; text-align: center; padding: 0 3px; }
+  .slot input::placeholder { color: rgba(242,239,230,0.35); font-weight: 300; }
+  .slot input.ok { border-color: var(--ok); background: rgba(46,204,113,0.28); }
+  .slot input.miss { border-color: rgba(224,112,95,0.7); background: rgba(224,112,95,0.18); color: rgba(242,239,230,0.8); }
+  .slot input:disabled { opacity: 1; -webkit-text-fill-color: currentColor; }
+  .nohelp { text-align: center; font-weight: 300; font-size: 12px; color: var(--dim); flex-shrink: 0; }
+  .give { border: 1px solid rgba(232,178,61,0.6); background: rgba(232,178,61,0.12); color: var(--gold-2); border-radius: 12px; padding: 12px; font-family: Anton, Impact, sans-serif; font-size: 18px; text-transform: uppercase; letter-spacing: 0.03em; width: 100%; flex-shrink: 0; }
+  .give small { font-family: Oswald, sans-serif; font-weight: 300; font-size: 12.5px; text-transform: none; letter-spacing: 0; color: var(--muted); display: block; margin-top: 1px; }
+
+  /* Ergebnis */
+  .banner { text-align: center; border-radius: 16px; padding: 14px 12px 12px; border: 1.5px solid; }
+  .banner.won { background: linear-gradient(150deg, #27603F, #173F2B 80%); border-color: rgba(232,178,61,0.7); }
+  .banner.lost { background: var(--ink-2); border-color: var(--line); }
+  .banner.draw { background: var(--ink-2); border-color: rgba(232,178,61,0.4); }
+  .banner .big { font-family: Anton, Impact, sans-serif; font-size: 36px; line-height: 1; text-transform: uppercase; }
+  .banner.won .big { color: var(--gold-2); }
+  .banner .why { font-weight: 400; font-size: 13.5px; margin-top: 6px; color: rgba(242,239,230,0.85); }
+  .cmp { display: grid; grid-template-columns: 1fr 1fr; border-radius: 14px; border: 1px solid var(--line); overflow: hidden; }
+  .cmp > div { padding: 12px; text-align: center; position: relative; }
+  .cmp > div + div { border-left: 1px solid var(--line); }
+  .cmp .who { font-family: Anton, Impact, sans-serif; font-size: 15px; text-transform: uppercase; color: var(--muted); }
+  .cmp .sc { font-family: Anton, Impact, sans-serif; font-size: 44px; line-height: 1.05; }
+  .cmp .sc small { font-size: 20px; color: var(--muted); }
+  .cmp .tm { font-family: Anton, Impact, sans-serif; font-size: 18px; color: var(--muted); }
+  .cmp .best { background: rgba(232,178,61,0.08); }
+  .cmp .best .who { color: var(--gold-2); }
+  .cmp .crown { position: absolute; top: 8px; right: 10px; font-size: 16px; }
+  .fp { display: inline-flex; align-items: center; gap: 4px; margin-top: 6px; font-weight: 500; font-size: 11.5px; padding: 2px 8px; border-radius: 10px; background: rgba(46,204,113,0.12); color: #8FE3B0; border: 1px solid rgba(46,204,113,0.35); }
+  .fp.warn { background: rgba(240,169,59,0.12); color: var(--flame); border-color: rgba(240,169,59,0.4); }
+  .grid2 { display: grid; grid-template-columns: 1fr auto 1fr; gap: 4px 8px; align-items: center; font-size: 13px; }
+  .grid2 .p { font-weight: 500; text-align: center; color: var(--muted); font-size: 11px; letter-spacing: 0.06em; }
+  .grid2 .a { text-align: right; } .grid2 .b { text-align: left; }
+  .grid2 .y { color: #8FE3B0; } .grid2 .nn { color: var(--dim); }
+  .twobtn { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+
+  /* Walkout */
+  #sw { padding: 0; gap: 0; overflow: hidden; background:
+      radial-gradient(120% 60% at 50% 115%, rgba(31,77,54,0.9), transparent 60%),
+      linear-gradient(180deg, #0B1218, #101A23 60%, #12261C); }
+  #sw .beam { position: absolute; top: -60px; width: 70%; height: 85%; opacity: 0; transition: opacity 0.9s ease; pointer-events: none;
+    background: conic-gradient(from 180deg at 50% 0%, transparent 42%, rgba(244,213,141,0.38) 50%, transparent 58%);
+    -webkit-mask-image: linear-gradient(180deg, #000 20%, transparent 100%); mask-image: linear-gradient(180deg, #000 20%, transparent 100%); }
+  #sw .beam.l { left: -18%; transform: rotate(-16deg); } #sw .beam.r { right: -18%; transform: rotate(16deg); }
+  #sw.lit .beam { opacity: 1; }
+  #sw .tunnel { position: absolute; left: 50%; bottom: -40px; width: 140%; height: 46%; transform: translateX(-50%); border-radius: 50% 50% 0 0; border: 1px solid rgba(242,239,230,0.08); }
+  #sw .top { position: relative; z-index: 2; padding: 18px 16px 0; display: flex; justify-content: space-between; align-items: center; }
+  #sw .top .k { font-weight: 600; font-size: 12px; text-transform: uppercase; letter-spacing: 0.12em; color: var(--gold-2); }
+  #sw .skip { background: transparent; border: 1px solid var(--line); border-radius: 18px; padding: 5px 12px; font-weight: 500; font-size: 12.5px; color: var(--muted); }
+  .wo { position: relative; z-index: 2; flex: 1; display: flex; flex-direction: column; justify-content: center; gap: 14px; padding: 0 22px; }
+  .wr { position: relative; opacity: 0; transform: translateY(18px) scale(0.96); transition: opacity 0.5s ease, transform 0.55s cubic-bezier(.2,1.2,.3,1); }
+  .wr.in { opacity: 1; transform: none; }
+  .wr .lb { font-weight: 600; font-size: 11.5px; text-transform: uppercase; letter-spacing: 0.12em; color: var(--dim); transition: color 0.4s; }
+  .wr .val { font-family: Anton, Impact, sans-serif; text-transform: uppercase; line-height: 1.05; font-size: 20px; color: rgba(242,239,230,0.75); transition: font-size 0.45s ease, color 0.45s ease; }
+  .wr .sub { font-weight: 300; font-size: 13px; color: var(--muted); max-height: 0; overflow: hidden; transition: max-height 0.4s ease; }
+  .wr.cur .lb { color: var(--gold-2); }
+  .wr.cur .val { font-size: 36px; color: var(--chalk); }
+  .wr.cur .sub { max-height: 24px; }
+  .wr .flare { position: absolute; left: -30px; top: 50%; width: 220px; height: 120px; transform: translateY(-50%); border-radius: 50%; pointer-events: none;
+    background: radial-gradient(closest-side, rgba(244,213,141,0.35), transparent); opacity: 0; }
+  .wr.cur .flare { animation: woFlare 1s ease-out 1 forwards; }
+  @keyframes woFlare { 0% { opacity: 0; transform: translateY(-50%) scale(0.4); } 35% { opacity: 1; } 100% { opacity: 0; transform: translateY(-50%) scale(1.5); } }
+  .wr .sweep { position: absolute; inset: 0; pointer-events: none; overflow: hidden; }
+  .wr.cur .sweep::after { content: ""; position: absolute; top: 0; bottom: 0; width: 40%; left: -50%; background: linear-gradient(100deg, transparent, rgba(244,213,141,0.12), transparent); transform: skewX(-18deg); animation: woSweep 0.9s ease-out 0.15s 1 forwards; }
+  @keyframes woSweep { to { left: 120%; } }
+  .wr.team { padding: 12px 14px; border-radius: 14px; border: 1.5px solid transparent; transition: border-color 0.5s, background 0.5s, opacity 0.5s ease, transform 0.55s cubic-bezier(.2,1.2,.3,1); }
+  .wr.team.cur { border-color: rgba(232,178,61,0.75); background: linear-gradient(150deg, rgba(39,96,63,0.85), rgba(23,63,43,0.85)); box-shadow: 0 0 40px rgba(232,178,61,0.18); }
+  .wr.team.cur .val { color: var(--gold-2); font-size: 40px; text-shadow: 0 0 18px rgba(232,178,61,0.45); }
+  .cd { position: absolute; inset: 0; z-index: 4; display: grid; place-items: center; pointer-events: none; }
+  .cd span { font-family: Anton, Impact, sans-serif; font-size: 120px; line-height: 1; color: var(--gold-2); text-shadow: 0 0 30px rgba(232,178,61,0.5); opacity: 0; }
+  .cd span.cdgo { animation: woCount 0.62s ease-out 1 forwards; }
+  .cd span.ko { font-size: 64px; text-transform: uppercase; }
+  @keyframes woCount { 0% { opacity: 0; transform: scale(1.6); } 25% { opacity: 1; transform: scale(1); } 80% { opacity: 1; } 100% { opacity: 0; transform: scale(0.85); } }
+  #sw.dim .wo { opacity: 0.25; transition: opacity 0.4s; }
+  .wo-foot { position: relative; z-index: 2; text-align: center; padding: 0 16px 22px; font-weight: 300; font-size: 12.5px; color: var(--dim); }
+  .note { max-width: 402px; margin: -12px auto 0; padding: 0 16px 24px; font-weight: 300; font-size: 14px; line-height: 1.5; color: var(--muted); text-align: center; }
+  .note b { color: var(--chalk); font-weight: 600; }
+</style>
+
+</head>
+<body>
+<div class="controls">
+  <div class="seg" role="group" aria-label="Bildschirm">
+    <button type="button" data-s="s1" aria-pressed="true">1 · Herausfordern</button>
+    <button type="button" data-s="s2" aria-pressed="false">2 · Einladung</button>
+    <button type="button" data-s="sw" aria-pressed="false">3 · Walkout</button>
+    <button type="button" data-s="s3" aria-pressed="false">4 · Duell</button>
+    <button type="button" data-s="s4" aria-pressed="false">5 · Ergebnis</button>
+  </div>
+</div>
+
+<div class="phone">
+  <!-- 1 Herausfordern -->
+  <section class="scr" id="s1">
+    <div class="topbar"><button class="back" type="button"><i>←</i> Start</button><div class="tt">Duell</div></div>
+    <div class="lab">Gegner</div>
+    <div class="opp">
+      <button type="button" class="on"><i>🤝</i><b>Freund</b><span>Link per WhatsApp &amp; Co. schicken</span></button>
+      <button type="button" class="soon" aria-disabled="true"><i>🌍</i><b>Zufälliger Gegner</b><span>Gegen Spieler weltweit</span><span class="soon-tag">Bald</span></button>
+    </div>
+    <div class="lab">Schwierigkeit</div>
+    <div class="levels" id="duelLv"></div>
+    <div class="card">
+      <div class="rules">
+        <div class="rule"><i>⏱️</i><b>3:00</b><span>Zeitlimit</span></div>
+        <div class="rule"><i>🚫</i><b>Ohne</b><span>Scout-Rad &amp; Aufdecken</span></div>
+        <div class="rule"><i>🎲</i><b>Geheim</b><span>Spiel erst beim Anpfiff</span></div>
+      </div>
+      <div style="margin-top:11px">
+        <div class="win"><span class="n">1</span><p>Wer <b>mehr Spieler</b> richtig hat, gewinnt – egal wie lange.</p></div>
+        <div class="win"><span class="n">2</span><p>Bei Gleichstand gewinnt die <b>schnellere Zeit</b>.</p></div>
+      </div>
+    </div>
+    <button type="button" class="oath" id="oath1"><span class="box">✓</span><span><b>Fair-Play-Versprechen</b><span>Ich spiele ohne Google, KI und Hilfe von außen.</span></span></button>
+    <div class="spacer"></div>
+    <button type="button" class="go" id="startBtn" disabled>Anpfiff &amp; Link teilen</button>
+    <div class="small" style="text-align:center;margin-top:-4px">Du spielst zuerst, dein Freund danach dieselbe Aufstellung.</div>
+  </section>
+
+  <!-- 2 Einladung -->
+  <section class="scr" id="s2" hidden>
+    <div class="topbar"><button class="back" type="button"><i>←</i> Start</button><div class="tt">Duell</div></div>
+    <div class="vs">
+      <div class="k">Du wurdest herausgefordert</div>
+      <div class="row">
+        <div class="av"><div class="c">M</div><b>Max</b><span>Rang: Stammspieler</span></div>
+        <div class="x">VS</div>
+        <div class="av"><div class="c me">F</div><b>Du</b><span>Rang: Scout</span></div>
+      </div>
+      <div class="facts"><div><b>Stufe 2</b><span>Schwierigkeit</span></div><div><b>3:00</b><span>Zeitlimit</span></div><div><b>Keine</b><span>Hilfen</span></div></div>
+    </div>
+    <div class="card locked"><span class="ic">🔒</span><div><b>Max hat schon gespielt</b><span class="small">Sein Ergebnis siehst du erst nach deinem Spiel.</span></div></div>
+    <div class="card">
+      <div class="win"><span class="n">1</span><p>Wer <b>mehr Spieler</b> richtig hat, gewinnt.</p></div>
+      <div class="win"><span class="n">2</span><p>Bei Gleichstand gewinnt die <b>schnellere Zeit</b>.</p></div>
+      <div class="win"><span class="n">⏱</span><p>Du weißt nicht weiter? <b>Abgeben</b> stoppt deine Zeit.</p></div>
+    </div>
+    <button type="button" class="oath" id="oath2"><span class="box">✓</span><span><b>Fair-Play-Versprechen</b><span>Ich spiele ohne Google, KI und Hilfe von außen.</span></span></button>
+    <div class="spacer"></div>
+    <button type="button" class="go" id="acceptBtn" disabled>Annehmen &amp; Anpfiff</button>
+    <button type="button" class="ghost">Ablehnen</button>
+  </section>
+
+  <!-- Walkout -->
+  <section class="scr" id="sw" hidden>
+    <div class="beam l"></div><div class="beam r"></div><div class="tunnel"></div>
+    <div class="top"><span class="k">Duell gegen Max</span><button type="button" class="skip" id="skipWo">Überspringen ›</button></div>
+    <div class="wo">
+      <div class="wr" data-i="0"><div class="flare"></div><div class="sweep"></div><div class="lb">Wettbewerb</div><div class="val">LaLiga</div><div class="sub">34. Spieltag</div></div>
+      <div class="wr" data-i="1"><div class="flare"></div><div class="sweep"></div><div class="lb">Datum</div><div class="val">2. Mai 2009</div><div class="sub">Samstag</div></div>
+      <div class="wr" data-i="2"><div class="flare"></div><div class="sweep"></div><div class="lb">Partie</div><div class="val">Real Madrid – FC Barcelona</div><div class="sub">Endstand 2:6</div></div>
+      <div class="wr team" data-i="3"><div class="flare"></div><div class="sweep"></div><div class="lb">Du stellst auf</div><div class="val">FC Barcelona</div><div class="sub">Alle 11 · Formation 4-3-3</div></div>
+    </div>
+    <div class="cd"><span id="cdN"></span></div>
+    <div class="wo-foot">Die Zeit startet erst mit dem Anpfiff.</div>
+  </section>
+
+  <!-- 3 Duell -->
+  <section class="scr" id="s3" hidden>
+    <div class="hud">
+      <div class="side"><b>Du</b><span class="v" id="myScore">0<small>/11</small></span></div>
+      <div class="clock" id="clock">3:00</div>
+      <div class="side r"><b>Max</b><span class="lock">🔒 verdeckt</span></div>
+    </div>
+    <div class="match"><b>Real Madrid – FC Barcelona 2:6</b><span>LaLiga · 02.05.2009 · Aufstellung FC Barcelona</span></div>
+    <div class="pitch" id="pitch">
+      <div class="ln half"></div><div class="ln circ"></div><div class="ln box1"></div><div class="ln box2"></div>
+    </div>
+    <div class="nohelp">🚫 Im Duell gibt es kein Scout-Rad und kein Aufdecken.</div>
+    <button type="button" class="give" id="giveBtn">⏹ Abgeben<small>Zeit stoppen und mit dem aktuellen Stand werten</small></button>
+  </section>
+
+  <!-- 4 Ergebnis -->
+  <section class="scr" id="s4" hidden>
+    <div class="topbar"><button class="back" type="button"><i>←</i> Start</button><div class="tt">Duell</div></div>
+    <div class="banner" id="banner"><div class="big" id="bigTxt"></div><div class="why" id="whyTxt"></div></div>
+    <div class="cmp">
+      <div id="cMe"><span class="crown" id="crMe"></span><div class="who">Du</div><div class="sc" id="scMe"></div><div class="tm" id="tmMe"></div><span class="fp" id="fpMe">🤝 Fair Play</span></div>
+      <div id="cOp"><span class="crown" id="crOp"></span><div class="who">Max</div><div class="sc">8<small>/11</small></div><div class="tm">2:41</div><span class="fp">🤝 Fair Play</span></div>
+    </div>
+    <div class="card">
+      <div class="lab" style="font-size:13px;margin-bottom:7px">Position für Position</div>
+      <div class="grid2" id="pp"></div>
+    </div>
+    <div class="spacer"></div>
+    <div class="twobtn"><button type="button" class="go" style="font-size:17px">🔁 Revanche</button><button type="button" class="ghost" style="color:var(--chalk)">📤 Teilen</button></div>
+  </section>
+</div>
+<p class="note" id="note"></p>
+
+<script>
+(() => {
+  const $ = id => document.getElementById(id);
+  // Beispiel aus LINEUP_CHALLENGES (id "el-clasico-2009"), Layout aus PITCH_LAYOUTS["4-3-3"]
+  const LAYOUT = [["TW",50,90],["RV",80,72],["RIV",60,76],["LIV",40,76],["LV",20,72],["RZM",68,50],["ZM",50,60],["LZM",32,50],["RA",80,18],["ST",50,12],["LA",20,18]];
+  const XI = { TW:"Valdés", RV:"Alves", RIV:"Puyol", LIV:"Piqué", LV:"Abidal", RZM:"Xavi", ZM:"Touré", LZM:"Iniesta", RA:"Messi", ST:"Eto'o", LA:"Henry" };
+  const OPP = { TW:1, RV:1, RIV:1, LIV:1, LV:0, RZM:1, ZM:0, LZM:1, RA:1, ST:1, LA:0 }; // Max: 8/11 in 2:41
+  const OPP_N = 8, OPP_T = 161, LIMIT = 180;
+  const norm = s => s.normalize("NFD").replace(/[̀-ͯ]/g, "").toLowerCase().replace(/[^a-z]/g, "");
+
+  // Stufen
+  const LV = [["1","#7fd99a"],["2","#a8d94a"],["3","#e8b23d"],["4","#e8863d"],["5","#e0705f"]];
+  $("duelLv").innerHTML = LV.map(([n,c], i) => `<button type="button" class="lvl ${i===1?"on":""}" style="color:${c}"><span class="bars">${[1,2,3,4,5].map(j=>`<i class="${j<=+n?"on":""}"></i>`).join("")}</span><b>Stufe ${n}</b></button>`).join("")
+    + `<button type="button" class="lvl rnd"><span class="dice">🎲</span><b>Zufall</b></button>`;
+  $("duelLv").querySelectorAll(".lvl").forEach(b => b.onclick = () => { $("duelLv").querySelectorAll(".lvl").forEach(x => x.classList.remove("on")); b.classList.add("on"); });
+  [["oath1","startBtn"],["oath2","acceptBtn"]].forEach(([o,btn]) => $(o).onclick = () => { $(o).classList.toggle("on"); $(btn).disabled = !$(o).classList.contains("on"); });
+  $("startBtn").onclick = () => show("s2");
+  $("acceptBtn").onclick = () => show("sw");
+
+  // Spielfeld
+  let left = LIMIT, timer = null, done = false;
+  const fmt = s => Math.floor(s/60) + ":" + String(s%60).padStart(2,"0");
+  function buildPitch() {
+    $("pitch").querySelectorAll(".slot").forEach(e => e.remove());
+    LAYOUT.forEach(([ab,x,y]) => {
+      const d = document.createElement("div"); d.className = "slot"; d.style.left = x + "%"; d.style.top = y + "%";
+      d.innerHTML = `<span class="ab">${ab}</span><input type="text" autocomplete="off" autocapitalize="words" spellcheck="false" placeholder="Name" data-ab="${ab}" aria-label="${ab}">`;
+      $("pitch").appendChild(d);
+    });
+    $("pitch").querySelectorAll("input").forEach(inp => inp.addEventListener("input", () => {
+      if (norm(inp.value) === norm(XI[inp.dataset.ab])) { inp.value = XI[inp.dataset.ab]; inp.classList.add("ok"); inp.disabled = true; score(); }
+    }));
+  }
+  function score() {
+    const n = $("pitch").querySelectorAll("input.ok").length;
+    $("myScore").innerHTML = n + "<small>/11</small>";
+    if (n === 11) finish();
+  }
+  function startDuel() {
+    clearInterval(timer); done = false; left = LIMIT; $("clock").textContent = fmt(left); $("clock").classList.remove("low");
+    buildPitch(); score();
+    timer = setInterval(() => { left--; $("clock").textContent = fmt(Math.max(0,left)); $("clock").classList.toggle("low", left <= 30); if (left <= 0) finish(); }, 1000);
+  }
+  function finish() {
+    if (done) return; done = true; clearInterval(timer);
+    const got = {}; $("pitch").querySelectorAll("input").forEach(i => { got[i.dataset.ab] = i.classList.contains("ok"); if (!got[i.dataset.ab]) { i.value = XI[i.dataset.ab]; i.classList.add("miss"); i.disabled = true; } });
+    const n = Object.values(got).filter(Boolean).length, t = LIMIT - Math.max(0,left);
+    setTimeout(() => { result(n, t, got); show("s4", true); }, 700);
+  }
+  $("giveBtn").onclick = finish;
+
+  function result(n, t, got) {
+    let state, why;
+    if (n > OPP_N) { state = "won"; why = `Du hattest ${n - OPP_N} ${n - OPP_N === 1 ? "Spieler" : "Spieler"} mehr – die Zeit spielt keine Rolle.`; }
+    else if (n < OPP_N) { state = "lost"; why = `Max wusste ${OPP_N - n} mehr – auch wenn ${t < OPP_T ? "du schneller warst" : "er länger gebraucht hat"}.`; }
+    else if (t < OPP_T) { state = "won"; why = `Gleich viele Richtige – du warst ${OPP_T - t} Sekunden schneller.`; }
+    else if (t > OPP_T) { state = "lost"; why = `Gleich viele Richtige – Max war ${t - OPP_T} Sekunden schneller.`; }
+    else { state = "draw"; why = "Gleich viele Richtige und exakt gleiche Zeit."; }
+    $("banner").className = "banner " + state;
+    $("bigTxt").textContent = state === "won" ? "Sieg! 🏆" : state === "lost" ? "Niederlage" : "Unentschieden";
+    $("whyTxt").textContent = why;
+    $("scMe").innerHTML = n + "<small>/11</small>"; $("tmMe").textContent = fmt(t);
+    $("cMe").classList.toggle("best", state === "won"); $("cOp").classList.toggle("best", state === "lost");
+    $("crMe").textContent = state === "won" ? "👑" : ""; $("crOp").textContent = state === "lost" ? "👑" : "";
+    $("pp").innerHTML = LAYOUT.map(([ab]) => `<span class="a ${got[ab]?"y":"nn"}">${got[ab]?"✓ ":"– "}${got[ab]?XI[ab]:""}</span><span class="p">${ab}</span><span class="b ${OPP[ab]?"y":"nn"}">${OPP[ab]?"✓":"–"}</span>`).join("");
+  }
+
+
+  // Walkout: Wettbewerb > Datum > Partie > Mannschaft, dann 3-2-1-Anpfiff
+  let woT = [];
+  function clearWo() { woT.forEach(clearTimeout); woT = []; }
+  function walkout() {
+    clearWo();
+    const sw = $("sw"), rows = [...sw.querySelectorAll(".wr")], n = $("cdN");
+    sw.classList.remove("lit", "dim"); rows.forEach(r => r.classList.remove("in", "cur")); n.className = ""; n.textContent = "";
+    void sw.offsetWidth;
+    const at = (ms, fn) => woT.push(setTimeout(fn, ms));
+    at(150, () => sw.classList.add("lit"));
+    const STEP = 1250;
+    rows.forEach((r, i) => at(700 + i * STEP, () => { rows.forEach(x => x.classList.remove("cur")); r.classList.add("in", "cur"); }));
+    const cdStart = 700 + rows.length * STEP + 600;
+    at(cdStart - 150, () => sw.classList.add("dim"));
+    ["3","2","1","Anpfiff!"].forEach((t, i) => at(cdStart + i * 650, () => { n.className = ""; void n.offsetWidth; n.textContent = t; n.className = "cdgo" + (i === 3 ? " ko" : ""); }));
+    at(cdStart + 4 * 650 + 250, () => show("s3"));
+  }
+  $("skipWo").onclick = () => show("s3");
+  const NOTES = {
+    s1: "<b>Herausfordern:</b> Gegner wählen (Freund per Link – Zufallsgegner erst später), Stufe wählen oder 🎲 Zufall. Die Regeln stehen kompakt auf einer Karte. Ohne Fair-Play-Versprechen kein Anpfiff.",
+    s2: "<b>Einladung:</b> Das öffnet sich beim Freund über den Link. Max hat schon gespielt, sein Ergebnis bleibt verdeckt, bis du fertig bist – so kann niemand auf ein Ergebnis hinspielen.",
+    sw: "<b>Walkout:</b> Erst nach „Annehmen &amp; Anpfiff“ erfährst du, um welches Spiel es geht – Schritt für Schritt wie beim FIFA-Walkout: Wettbewerb › Datum › Partie › deine Mannschaft. Jede Info leuchtet einmal auf und rückt dann nach oben, danach 3-2-1-Anpfiff. Die Uhr startet erst danach – beide Spieler bekommen exakt dieselbe Show. Überspringen geht jederzeit (startet nur die Uhr früher). Zum erneuten Ansehen oben auf „3 · Walkout“ tippen.",
+    s3: "<b>Duell – zum Ausprobieren:</b> Echte Aufstellung aus der App (El Clásico 2009, Barça). Tipp die Nachnamen ein, richtige Felder werden grün. 3:00 Minuten, keine Hilfen, ⏹ Abgeben stoppt die Zeit. Der Gegner bleibt verdeckt.",
+    s4: "<b>Ergebnis:</b> Erst zählt die Anzahl Richtige, bei Gleichstand die Zeit – die Begründung steht direkt im Banner. Darunter der Vergleich Position für Position und das 🤝 Fair-Play-Siegel (würde z. B. fehlen, wenn jemand die App während des Duells verlassen hat). Max hat hier im Beispiel 8/11 in 2:41."
+  };
+  function show(id, keep) {
+    ["s1","s2","sw","s3","s4"].forEach(x => $(x).hidden = x !== id);
+    if (id === "sw") walkout(); else clearWo();
+    document.querySelectorAll("[data-s]").forEach(b => b.setAttribute("aria-pressed", String(b.dataset.s === id)));
+    $("note").innerHTML = NOTES[id];
+    if (id === "s3") startDuel(); else clearInterval(timer);
+    if (id === "s4" && !keep) { const got = {}; LAYOUT.forEach(([ab], i) => got[ab] = i !== 4 && i !== 10); result(9, 152, got); }
+  }
+  document.querySelectorAll("[data-s]").forEach(b => b.onclick = () => show(b.dataset.s));
+  show("s1");
+})();
+</script>
+
+</body>
+</html>
