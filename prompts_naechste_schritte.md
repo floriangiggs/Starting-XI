@@ -1666,3 +1666,11 @@ Konsolenfehler.
   Duell. Vorher klären: Gewerbe/Steuern, Impressum/Datenschutz, DSGVO-
   Einwilligung + Apple-Tracking-Abfrage, jugendgerechte Werbe-Einstellungen,
   Nebentätigkeit beim Arbeitgeber.
+  Idee „Festgebissen“-Moment: Wer an einer Position hängt (z. B. 2 Fehlversuche
+  oder ca. 45 s ohne Fortschritt), sieht im Positions-Panel dezent „Hängst du
+  fest? 🎬 Gratis-Dreh am Scout-Rad“ – kein Pop-up. Zählt wie ein normaler
+  Hinweis (kein ⭐⭐⭐, Kombo endet, weniger XP). Vorschlag: Video gibt nur
+  Scout-Rad-Drehs, Aufdecken bleibt Token-only (Token behalten ihren Wert);
+  Tageslimit gemeinsam mit den Token-Videos; nie im Duell; Tages-Challenge
+  markiert es im Teilen-Raster als Hilfe. Schwierigkeit NICHT künstlich
+  erhöhen, um Videos zu verkaufen.
