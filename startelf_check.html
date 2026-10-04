@@ -265,7 +265,6 @@
   .pos-input.bad { border-color: var(--red); background: rgba(193,57,43,0.35); color: var(--chalk); }
   .pos-input.revealed { border-color: #4aa3ff; background: rgba(74,163,255,0.3); color: var(--chalk); font-weight: 700; }
   .pos-input.prefilled { border-color: #d9a441; background: rgba(217,164,65,0.28); color: var(--chalk); font-weight: 600; }
-  .pos-input.long-name { font-size: clamp(8.5px, 2.4vw, 11.5px); }
   .pos-input.active-field { box-shadow: 0 0 0 3px var(--gold), 0 2px 6px rgba(0,0,0,0.25); }
   .pos-input.near { border-color: var(--gold); background: rgba(232,178,61,0.28); color: var(--chalk); font-weight: 600; }
   .pos-slot:has(.pos-input.near)::after { content: "✏️"; position: absolute; top: -4px; right: -4px; font-size: 10px; }
@@ -1923,11 +1922,43 @@ function isNearFor(challenge, abbr, typedRaw) {
   return false;
 }
 
-// Lange Nachnamen (z.B. "Schweinsteiger") nicht im schmalen .pos-input abschneiden -
-// Schrift etwas verkleinern statt abzuschneiden.
-function applyNameFit(input) {
-  input.classList.toggle("long-name", input.value.length > 11);
+// Lange Nachnamen (z.B. "Schweinsteiger", "Alexander-Arnold") nie im schmalen .pos-input
+// abschneiden (Prompt 22): Schrift schrittweise verkleinern, bis der Name passt (Untergrenze
+// 8,5px), danach notfalls leicht engere Laufweite. Feld und Spielfeld bleiben unveraendert.
+function fitNameNow(input) {
+  input.style.fontSize = "";
+  input.style.letterSpacing = "";
+  input.style.paddingLeft = input.style.paddingRight = "";
+  if (!input.value || !input.clientWidth) return; // leer oder (noch) nicht sichtbar
+  const MIN = 8.5;
+  const over = () => input.scrollWidth > input.clientWidth;
+  let size = parseFloat(getComputedStyle(input).fontSize);
+  while (over() && size > MIN) {
+    size = Math.max(MIN, size - 0.5);
+    input.style.fontSize = size + "px";
+  }
+  // Danach schrittweise: engere Laufweite, dann weniger seitliches Polster im Feld, zuletzt noch engerer Lauf.
+  for (const ls of [-0.02, -0.04]) { if (!over()) break; input.style.letterSpacing = ls + "em"; }
+  let pad = parseFloat(getComputedStyle(input).paddingLeft);
+  while (over() && pad > 1) {
+    pad = Math.max(1, pad - 1);
+    input.style.paddingLeft = input.style.paddingRight = pad + "px";
+  }
+  for (const ls of [-0.05, -0.06]) { if (!over()) break; input.style.letterSpacing = ls + "em"; }
+  while (over() && size > 8) { // letzte Reserve fuer extrem lange Doppelnamen auf schmalen Handys
+    size = Math.max(8, size - 0.5);
+    input.style.fontSize = size + "px";
+  }
+  for (const ls of [-0.07, -0.08]) { if (!over()) break; input.style.letterSpacing = ls + "em"; }
 }
+function applyNameFit(input) {
+  fitNameNow(input);
+  requestAnimationFrame(() => fitNameNow(input)); // nach Layout/Schriftwechsel (Klassen wie .ok/.revealed sind fett)
+}
+function refitAllNames() { document.querySelectorAll(".pos-input").forEach(fitNameNow); }
+let refitTimer;
+window.addEventListener("resize", () => { clearTimeout(refitTimer); refitTimer = setTimeout(refitAllNames, 120); });
+if (document.fonts && document.fonts.ready) document.fonts.ready.then(refitAllNames);
 
 // Rein optisch: Anfangsbuchstabe wird gross geschrieben, sobald klein getippt -
 // Cursor-Position bleibt dabei erhalten. Die Namensprüfung selbst normalisiert
@@ -1990,6 +2021,7 @@ const ECONOMY = {
   spinCost: 1, revealCost: 3,
   earnFirstPass: 1, earnPerfect: 2, earnDaily: 1,
   earnLevelUp: 3, earnAchievement: 2,
+  startTokens: 3, // Startguthaben, nur fuer NEU angelegte Profile (Prompt 22)
   wheel: { firstLetter: 30, shirtNumber: 30, nationality: 30, fullName: 10 }
 };
 
@@ -2048,7 +2080,7 @@ function loadProfile() {
     // muss ebenfalls durch die Seed-Vergabe unten laufen, sonst wuerde jedes neue Profil
     // denselben, beim Skript-Parse einmalig ausgewuerfelten Seed bekommen (siehe Prompt 9).
     const profile = !parsed
-      ? structuredClone(defaultProfile)
+      ? { ...structuredClone(defaultProfile), hintTokens: ECONOMY.startTokens }
       : (parsed.version !== defaultProfile.version
           ? { ...structuredClone(defaultProfile), ...parsed, version: defaultProfile.version }
           : parsed);
@@ -2281,7 +2313,7 @@ function showLevelUpToast(newLevel, levelsGained) {
   setTimeout(close, 4500);
 }
 function showAchievementToast(a) {
-  showToast(a.icon + " Achievement freigeschaltet: <b>" + a.name + "</b>" + (a.title ? " (Titel: \"" + a.title + "\")" : "") + " · 🔍 +" + ECONOMY.earnAchievement);
+  showToast(a.icon + " Trophäe gewonnen: <b>" + a.name + "</b>" + (a.title ? " (Titel: \"" + a.title + "\")" : "") + " · 🔍 +" + ECONOMY.earnAchievement);
 }
 
 const TROPHY_KIND_ICON = { cup: "🏆", plate: "🥈", flame: "🔥", medal: "🎖️" };
@@ -2376,11 +2408,12 @@ const GUIDE_TABS = [
     <div class="warn"><span class="ic">⚠️</span><p>Jede Hilfe – auch Korrigieren – kostet dich <b>⭐⭐⭐</b> für dieses Spiel und deine <b>Kombo endet</b>. Gilt in allen Modi.</p></div>
     <div class="card"><div class="h">Token verdienen</div>
       <div class="chips">
+        <span class="tk">Zum Start: ${ECONOMY.startTokens} 🔍</span>
         <span class="tk">+${ECONOMY.earnFirstPass} Erstmals gespielt</span>
         <span class="tk">+${ECONOMY.earnPerfect} Perfekte Aufstellung (einmalig)</span>
         <span class="tk">+${ECONOMY.earnDaily} Tages-Challenge</span>
         <span class="tk">+${ECONOMY.earnLevelUp} je Level-Up</span>
-        <span class="tk">+${ECONOMY.earnAchievement} Trophäe / Achievement</span>
+        <span class="tk">+${ECONOMY.earnAchievement} Trophäe</span>
       </div>
       <p class="small">Rückennummer und Nationalität gibt es nur, wo Daten vorliegen. Bei Nationalteams keine Nationalität.</p>
     </div>` },
@@ -2397,7 +2430,7 @@ const GUIDE_TABS = [
     </div>
     <div class="card">
       <div class="mline"><span class="ic">🌍</span><p><b>Kampagne:</b> Von Kreisliga bis Weltklasse. Ab <b>${PASS_THRESHOLD} von 11</b> ist ein Level bestanden – das nächste wird frei.</p></div>
-      <div class="mline"><span class="ic">📅</span><p><b>Tages-Challenge:</b> Für alle dasselbe Spiel. <b>Montag leicht, Sonntag am schwersten.</b> Täglich spielen baut deine 🔥-Serie auf – bis zu <b>+${Math.round(XP_RULES.dailyStreakBonusMax * 100)} % XP</b>. Ergebnis als Raster teilbar.</p></div>
+      <div class="mline"><span class="ic">📅</span><p><b>Tages-Challenge:</b> Für alle dasselbe Spiel. <b>Jeden Tag ein anderes Spiel – keine Wiederholung, bis alle durch sind.</b> Täglich spielen baut deine 🔥-Serie auf – bis zu <b>+${Math.round(XP_RULES.dailyStreakBonusMax * 100)} % XP</b>. Ergebnis als Raster teilbar.</p></div>
       <div class="mline"><span class="ic">🎲</span><p><b>Frei spielen:</b> Training ohne Druck. Mehrere Wettbewerbe oder Stufen antippen = mehr Spiele, beides kombiniert grenzt die Auswahl ein. Mit Tages-Archiv für verpasste Tage.</p></div>
     </div>` },
   { id: "belohnung", icon: "🏆", label: "Belohnung", render: () => `
@@ -2495,20 +2528,13 @@ function openRulesModal() {
 let profile = loadProfile();
 document.getElementById("profileBar").onclick = openProfileSheet;
 
-// Tages-Challenge-Eintraege, deren Tag vorbei ist (Prompt 13) - ermittelt ueber ALLE
-// vergangenen Kalendertage, welche DAILY_CHALLENGES-ids je gezogen wurden. Aktuell immer
-// leer (DAILY_CHALLENGES ist leer), das Befuellen ist Prompt 14.
+// Tages-Challenge-Eintraege, deren Tag vorbei ist (Prompt 13/22) - ermittelt ueber ALLE
+// vergangenen Kalendertage (Tag 1 bis gestern) mit derselben getDailyChallenge() wie die Tageskarte.
 function archivedDailyChallenges() {
   if (DAILY_CHALLENGES.length === 0) return [];
   const todayNum = dayNumber(localDateKey());
   const ids = new Set();
-  for (let d = 1; d < todayNum; d++) {
-    const dt = new Date(DAILY_EPOCH + "T00:00:00");
-    dt.setDate(dt.getDate() + (d - 1));
-    const { difficulty, index } = dailyQueueIndex(localDateKey(dt));
-    const queue = dailyQueueForDifficulty(difficulty);
-    if (queue.length > 0) ids.add(queue[index % queue.length].id);
-  }
+  for (let d = 1; d < todayNum; d++) ids.add(getDailyChallenge(dailyDateKeyForDay(d)).id);
   return DAILY_CHALLENGES.filter(c => ids.has(c.id));
 }
 
@@ -2581,7 +2607,7 @@ function renderFreeplay() {
     <div class="count${pool.length === 0 ? " none" : ""}">${countText}</div>
     <button type="button" class="go" id="fpGo"${pool.length === 0 ? " disabled" : ""}>🎲 Zufällige Aufstellung</button>
     <div class="secret">Die Partie bleibt geheim, bis du sie spielst.</div>
-    ${archiveCount > 0 ? `<button type="button" class="arch" id="fpArchive"><span class="ai">📅</span><span class="at"><b>Tages-Archiv</b><span>Verpasste Tages-Challenges nachspielen</span></span><span class="n">${archiveCount}</span></button>` : ""}`;
+    ${archiveCount > 0 ? `<button type="button" class="arch" id="fpArchive"><span class="ai">📅</span><span class="at"><b>Tages-Archiv</b><span>Vergangene Tages-Challenges nachspielen</span></span><span class="n">${archiveCount}</span></button>` : ""}`;
 
   const refresh = () => { matchQueue = []; renderFreeplay(); };
   document.getElementById("fpAll").onclick = () => { selectedLeagues.clear(); refresh(); };
@@ -2971,7 +2997,7 @@ function renderDailyCard() {
   const dateKey = localDateKey();
   const dayNum = dayNumber(dateKey);
   const now = new Date();
-  const diff = WEEKDAY_DIFFICULTY[now.getDay()];
+  const diff = getDailyChallenge(dateKey).difficulty; // Stufe der tatsaechlichen Aufstellung
   const longDate = now.toLocaleDateString("de-DE", { weekday: "long", day: "numeric", month: "long" });
   const result = profile.daily[dateKey];
   const streak = profile.streak.current;
@@ -3124,7 +3150,7 @@ function renderDiffBadge(difficulty) {
   const color = DIFF_COLOR[difficulty];
   const dots = [1, 2, 3, 4, 5].map(n => `<span class="diff-dot${n <= difficulty ? " on" : ""}"></span>`).join("");
   return `<span class="diff-badge" style="background:${color}22; color:${color}; border:1px solid ${color}66">
-    ${DIFF_LABEL[difficulty]} <span class="diff-dots">${dots}</span>
+    Stufe ${difficulty} · ${DIFF_LABEL[difficulty]} <span class="diff-dots">${dots}</span>
   </span>`;
 }
 
@@ -3343,12 +3369,17 @@ function profileKnowledgeHTML() {
   const strongest = playedGroups.length ? playedGroups.reduce((a, b) => (b[1].rate > a[1].rate ? b : a)) : null;
   const weakest = playedGroups.length ? playedGroups.reduce((a, b) => (b[1].rate < a[1].rate ? b : a)) : null;
 
+  // "Ausbaufähig" nur, wenn mindestens zwei Gruppen gespielt sind und die schwächste nicht
+  // zugleich die stärkste ist (Prompt 22) - sonst steht dieselbe Gruppe doppelt da.
+  const showWeak = playedGroups.length >= 2 && strongest && weakest && weakest[0] !== strongest[0];
   return `
     <div class="insight">
       <div class="ins strong"><div class="sheet-label">Stärke</div><div class="n">${strongest ? strongest[0] : "–"}</div><div class="p">${strongest ? strongest[1].rate + "% Treffer" : "Noch zu wenig gespielt"}</div></div>
-      <div class="ins weak"><div class="sheet-label">Ausbaufähig</div><div class="n">${weakest ? weakest[0] : "–"}</div><div class="p">${weakest ? weakest[1].rate + "% Treffer" : "Noch zu wenig gespielt"}</div></div>
+      ${showWeak
+        ? `<div class="ins weak"><div class="sheet-label">Ausbaufähig</div><div class="n">${weakest[0]}</div><div class="p">${weakest[1].rate}% Treffer</div></div>`
+        : `<div class="ins"><div class="p">Spiel weitere Wettbewerbe, um Stärken und Schwächen zu sehen</div></div>`}
     </div>
-    ${weakest ? `<button class="action btn-gold" id="trainWeaknessBtn" data-group="${weakest[0]}" style="width:100%">🎯 ${weakest[0]} trainieren</button>` : ""}
+    ${showWeak ? `<button class="action btn-gold" id="trainWeaknessBtn" data-group="${weakest[0]}" style="width:100%">🎯 ${weakest[0]} trainieren</button>` : ""}
     <div class="sheet-label">Trefferquote nach Wettbewerb</div>
     <div class="bars">${renderRateBars(groupRates)}</div>
     <div class="sheet-label">Nach Jahrzehnt</div>
@@ -3549,9 +3580,7 @@ function localDateKey(d = new Date()) {
   return d.getFullYear() + "-" + String(d.getMonth() + 1).padStart(2, "0") + "-" + String(d.getDate()).padStart(2, "0");
 }
 
-const DAILY_EPOCH = "2026-09-28"; // Montag - Tag 1
-// JS Date.getDay(): 0=So..6=Sa. Schwierigkeit nach Wochentag (Mo 1, Di 2, Mi 2, Do 3, Fr 3, Sa 4, So 5).
-const WEEKDAY_DIFFICULTY = { 0: 5, 1: 1, 2: 2, 3: 2, 4: 3, 5: 3, 6: 4 };
+const DAILY_EPOCH = "2026-09-28"; // Tag 1
 
 function dayNumber(dateKey) {
   const epoch = new Date(DAILY_EPOCH + "T00:00:00");
@@ -3559,22 +3588,17 @@ function dayNumber(dateKey) {
   return Math.round((d - epoch) / 86400000) + 1;
 }
 
-// Zaehlt, der wievielte Tag mit dieser Schwierigkeit dateKey seit Epoch ist (Di UND Mi
-// sind beide Stufe 2, zaehlen also gemeinsam) - einfache Schleife, laeuft nur 1x/Tag.
-function dailyQueueIndex(dateKey) {
-  const targetDiff = WEEKDAY_DIFFICULTY[new Date(dateKey + "T00:00:00").getDay()];
-  const total = dayNumber(dateKey);
-  let count = 0;
-  for (let d = 1; d <= total; d++) {
-    const dt = new Date(DAILY_EPOCH + "T00:00:00");
-    dt.setDate(dt.getDate() + (d - 1));
-    if (WEEKDAY_DIFFICULTY[dt.getDay()] === targetDiff) count++;
-  }
-  return { difficulty: targetDiff, index: count - 1 }; // 0-basiert
+// dateKey (lokales Datum) fuer den n-ten Tag seit DAILY_EPOCH (Tag 1 = DAILY_EPOCH).
+function dailyDateKeyForDay(n) {
+  const [y, m, d] = DAILY_EPOCH.split("-").map(Number);
+  return localDateKey(new Date(y, m - 1, d + n - 1));
 }
 
 // Neues Array, gleiches Schema wie LINEUP_CHALLENGES plus optionales pairedWith (id
-// einer Kampagnen-Aufstellung, deren Gegenseite hier ergaenzt wird) - wird in
+// einer Kampagnen-Aufstellung, deren Gegenseite hier ergaenzt wird) und optionales
+// since: "YYYY-MM-DD" (ab diesem Tag im Pool; fehlt = DAILY_EPOCH). NEUE Eintraege MUESSEN
+// since = Einfuegetag (oder spaeter) tragen, sonst aendern sie bereits vergangene Tage -
+// siehe getDailyChallenge() - wird in
 // Prompt 14 batchweise mit recherchierten Aufstellungen befuellt (Datengenauigkeit
 // siehe CLAUDE.md: nie raten, nur mit verlaesslicher Quelle).
 const DAILY_CHALLENGES = [
@@ -5132,20 +5156,45 @@ const DAILY_CHALLENGES = [
   },
 ];
 
-function dailyQueueForDifficulty(difficulty) {
-  return DAILY_CHALLENGES.filter(c => c.difficulty === difficulty).sort((a, b) => a.id.localeCompare(b.id));
+// Tages-Reihenfolge (Prompt 22): keine Bindung an Wochentag oder Stufe. Jeder Tag bekommt die
+// naechste Aufstellung in einer festen, gemischten Reihenfolge - fuer alle Spieler gleich
+// (rein deterministisch, kein Math.random), damit das Teilen-Raster vergleichbar bleibt.
+// Keine Wiederholung, bis alle Aufstellungen einer Runde dran waren; dann neue Runde mit neuer
+// Mischung (die erste einer neuen Runde ist nie die letzte der alten). Es zaehlen nur Eintraege
+// mit since <= Tag - so aendern neue Aufstellungen nie bereits vergangene Tage.
+// Die Folge wird von Tag 1 an berechnet und gecacht (inkrementell erweitert).
+let dailySchedule = { entries: [], round: 1, used: new Set(), lastId: null };
+function resetDailySchedule() { dailySchedule = { entries: [], round: 1, used: new Set(), lastId: null }; }
+
+function dailyScheduleExtend(untilDay) {
+  const s = dailySchedule;
+  while (s.entries.length < untilDay) {
+    const dateKey = dailyDateKeyForDay(s.entries.length + 1);
+    const avail = DAILY_CHALLENGES.filter(c => (c.since || DAILY_EPOCH) <= dateKey);
+    let cand = avail.filter(c => !s.used.has(c.id));
+    if (cand.length === 0 && avail.length > 0) { // Runde komplett -> neue Runde, neue Mischung
+      s.round++;
+      s.used.clear();
+      cand = avail.length > 1 ? avail.filter(c => c.id !== s.lastId) : avail;
+    }
+    let pick = null, pickHash = 0;
+    for (const c of cand) {
+      const hv = hashString(c.id + ":" + s.round);
+      if (pick === null || hv < pickHash || (hv === pickHash && c.id < pick.id)) { pick = c; pickHash = hv; }
+    }
+    if (pick) { s.used.add(pick.id); s.lastId = pick.id; }
+    s.entries.push(pick);
+  }
 }
 
-// Liefert fuer jeden Kalendertag deterministisch dieselbe Aufstellung - faellt nie aus:
-// feste Warteschlange pro Schwierigkeit, bei leerer/erschoepfter Queue Fallback ueber
-// den deterministischen RNG aus Prompt 9 (hashString/mulberry32, oben wiederverwendet).
 function getDailyChallenge(dateKey) {
-  const { difficulty, index } = dailyQueueIndex(dateKey);
-  const queue = dailyQueueForDifficulty(difficulty);
-  if (queue.length > 0) return queue[index % queue.length];
-  const pool = LINEUP_CHALLENGES.filter(m => m.difficulty === difficulty);
+  const day = Math.max(1, dayNumber(dateKey));
+  dailyScheduleExtend(day);
+  const m = dailySchedule.entries[day - 1];
+  if (m) return m;
+  // Fallback (leerer Tages-Pool): deterministisch aus den Kampagnen-Aufstellungen
   const rng = mulberry32(hashString(dateKey));
-  return pool[Math.floor(rng() * pool.length)];
+  return LINEUP_CHALLENGES[Math.floor(rng() * LINEUP_CHALLENGES.length)];
 }
 
 let currentDailyChallenge = null; // { dateKey, id } - analog currentLevelContext, vor jedem startMatch() gesetzt/genullt
@@ -5428,7 +5477,10 @@ function renderPitch() {
       });
     }
 
-    panel.querySelector("#srOpenBtn").addEventListener("click", () => openScoutWheelModal(abbr, input));
+    panel.querySelector("#srOpenBtn").addEventListener("click", () => {
+      if (document.activeElement === input) input.blur(); // Tastatur weg, Modal frei
+      openScoutWheelModal(abbr, input);
+    });
 
     panel.querySelector("#srRevealBtn").addEventListener("click", () => {
       if (profile.hintTokens < ECONOMY.revealCost || input.classList.contains("ok") || input.classList.contains("revealed")) return;
@@ -5438,11 +5490,11 @@ function renderPitch() {
       renderProfileBar();
       tokenRevealed.add(abbr);
       input.value = m.players[abbr];
-      applyNameFit(input);
       input.classList.remove("bad", "ok");
       input.classList.add("revealed");
       input.disabled = true;
       input.dataset.counted = "1";
+      applyNameFit(input);
       renderPositionPanel(abbr);
     });
   }
@@ -5653,6 +5705,8 @@ function renderPitch() {
       flashUntil = WHEEL_RM ? 0 : performance.now() + 900;
       stageEl.classList.remove("sr-win"); void stageEl.offsetWidth; stageEl.classList.add("sr-win");
       showSpinResult(pick);
+      // Tipp sofort auch im Chip-Bereich zeigen; drawnSet (und damit das Rad-Segment) folgt verzoegert.
+      chipsEl.innerHTML = chipsHTML(m, abbr, new Set([...drawnSet, pick.id]));
       const rect = wheelCanvas.getBoundingClientRect();
       scoutBurst(rect.left + rect.width / 2, rect.top + rect.height * 0.12, pick.jackpot ? 170 : 60, pick.jackpot);
 
@@ -5661,11 +5715,11 @@ function renderPitch() {
         if (pick.id === "fullName") {
           tokenRevealed.add(abbr);
           input.value = m.players[abbr];
-          applyNameFit(input);
           input.classList.remove("bad", "ok");
           input.classList.add("revealed");
           input.disabled = true;
           input.dataset.counted = "1";
+          applyNameFit(input);
           if (onSolved) onSolved();
         } else {
           renderChips(); renderButtons();
@@ -5745,8 +5799,11 @@ function renderPitch() {
     clearTimeout(fuzzyTimers.get(abbr));
     if (input.classList.contains("ok") || input.classList.contains("revealed") || input.classList.contains("prefilled")) return;
     const near = isNearFor(m, abbr, input.value);
+    const changed = input.classList.contains("near") !== near;
     input.classList.toggle("near", near);
-    if (activePosAbbr === abbr) renderPositionPanel(abbr);
+    // Panel nur neu bauen, wenn sich der Fast-richtig-Zustand wirklich aendert - sonst wird ein
+    // gerade angetippter Panel-Button ersetzt, bevor sein click feuert (Prompt 22).
+    if (changed && activePosAbbr === abbr) renderPositionPanel(abbr);
   }
 
   pitchView.querySelectorAll(".pos-input").forEach(input => {
@@ -5757,6 +5814,11 @@ function renderPitch() {
     });
     input.addEventListener("keydown", (e) => { if (e.key === "Enter") runFuzzyCheck(input); });
   });
+
+  // Panel-Buttons nehmen dem Namensfeld beim Antippen weder Fokus noch Tastatur (mousedown-
+  // preventDefault) - so loest der erste Tipp sofort aus (Prompt 22).
+  const posPanelEl = document.getElementById("positionPanel");
+  if (posPanelEl) posPanelEl.addEventListener("mousedown", (e) => { if (e.target.closest("button")) e.preventDefault(); });
 
   const firstSelectable = positions.find(p => !prefilledAbbrs.has(p.abbr));
   if (firstSelectable) setActivePosition(firstSelectable.abbr);
@@ -5873,6 +5935,7 @@ function evaluatePitch() {
     input.classList.add(isCorrect ? "ok" : "bad");
     input.disabled = true;
     if (!isCorrect) input.value = target;
+    applyNameFit(input); // nach Auswertung (Klasse + ggf. eingeblendeter Name)
     if (isCorrect) { correct++; correctAbbrs.push(p.abbr); }
   });
   pitchView.querySelectorAll("#srSpinBtn, #srRevealBtn, .sr-hub").forEach(btn => btn.disabled = true);
@@ -6003,7 +6066,7 @@ function evaluatePitch() {
   }
 
   const newlyUnlocked = checkAchievements(profile);
-  newlyUnlocked.forEach(a => receipt.push({ label: "Achievement: " + a.name, amount: ECONOMY.earnAchievement }));
+  newlyUnlocked.forEach(a => receipt.push({ label: "Trophäe: " + a.name, amount: ECONOMY.earnAchievement }));
   const newlyWonTrophies = checkTrophies(profile);
   newlyWonTrophies.forEach(t => receipt.push({ label: "Trophäe: " + t.name, amount: ECONOMY.earnAchievement }));
   saveProfile(profile);
