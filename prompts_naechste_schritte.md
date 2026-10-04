@@ -33,7 +33,7 @@ vorige umgesetzt, getestet und committet ist.
 | 19 | „So geht's“ als Reiter-Blatt (4 Themen) + Texte mit Code abgeglichen | ✅ erledigt |
 | 20 | Frei spielen neu sortiert, Stufe 1–5, Tages-Archiv als eigene Karte | ✅ erledigt |
 | 21 | Ladescreen etwas langsamer (~4 s statt ~2,4 s) | ✅ erledigt |
-| 22 | Fehler aus dem Testlauf: Tages-Reihenfolge, Hilfe-Buttons, Spoiler, lange Namen u. a. | – |
+| 22 | Fehler aus dem Testlauf: Tages-Reihenfolge, Hilfe-Buttons, lange Namen u. a. | – |
 | 23 | Daten: Ajax 1995 durch echtes Spiel ersetzen, fehlende Rückennummern/Nationalitäten | 22 |
 
 **Empfohlene Reihenfolge ab jetzt:** 22 → 23 → 8
@@ -1696,17 +1696,7 @@ Spielregeln NICHTS ändern, außer wo unten ausdrücklich genannt.
    Test: Feld fokussieren, Namen tippen, dann EIN Tipp auf jeden der drei
    Buttons (tap, nicht JS-click) → jeweils sofortige Wirkung.
 
-3. Kontext-Satz verrät Spieler
-   Befund: In mind. 28 Aufstellungen nennt context vor dem Spiel einen
-   gesuchten Spieler (z. B. WM-Finale 2014 "Kloses letztes Länderspiel",
-   Clásico 2009 Messi, EM-Finale 2004 Charisteas) – auch in
-   Tages-Challenges.
-   Fix: Intro vor dem Spiel zeigt nur Wettbewerb/Datum, Partie, Stufe und
-   "Gesucht: Aufstellung von …". Der context-Satz erscheint erst NACH dem
-   Auswerten im Ergebnis als kleine Karte "💡 Wusstest du?". Texte selbst
-   nicht ändern.
-
-4. Lange Namen werden abgeschnitten
+3. Lange Namen werden abgeschnitten
    Befund: Bei 375/402/430 px Breite passen ca. 170–185 Namen nicht ins
    Feld (z. B. "Schweinsteiger", "Alexander-Arnold", Island 2016 fast
    komplett). applyNameFit() verkleinert nur ab 12 Zeichen pauschal.
@@ -1718,33 +1708,33 @@ Spielregeln NICHTS ändern, außer wo unten ausdrücklich genannt.
    430×932 mit allen Namen befüllen → 0 Felder mit scrollWidth >
    clientWidth.
 
-5. Scout-Profil › Wissen: Stärke = Schwäche
+4. Scout-Profil › Wissen: Stärke = Schwäche
    Befund: Hat man erst eine Wettbewerbs-Gruppe gespielt, steht sie
    gleichzeitig als "Stärke" und "Ausbaufähig" (z. B. Nationalmannschaften
    97 %). Fix: "Ausbaufähig" + Trainieren-Button nur, wenn mind. zwei
    Gruppen gespielt und die schwächste ≠ stärkste ist; sonst Hinweis
    "Spiel weitere Wettbewerbe, um Stärken und Schwächen zu sehen".
 
-6. Tages-Archiv-Text
+5. Tages-Archiv-Text
    Die Karte heißt "Verpasste Tages-Challenges nachspielen", enthält aber
    alle vergangenen (auch gespielte). Text ändern zu "Vergangene
    Tages-Challenges nachspielen".
 
-7. Begriffe Achievement → Trophäe
+6. Begriffe Achievement → Trophäe
    Toast "Achievement freigeschaltet" (showAchievementToast) und Quittung
    "Achievement: …" auf "Trophäe" umstellen – Anleitung und Profil sprechen
    nur von Trophäen. Interne Namen dürfen bleiben.
 
-8. Schwierigkeits-Abzeichen
+7. Schwierigkeits-Abzeichen
    renderDiffBadge zeigt im Spiel nur den Liga-Namen ("Bundesliga"), das
    Freispiel spricht von "Stufe 3". Abzeichen: "Stufe n · <Name>"
    (DIFF_LABEL selbst nicht ändern).
 
-9. Scout-Rad-Fenster
+8. Scout-Rad-Fenster
    Nach einem Dreh steht im Fenster weiter "Noch keine Tipps für diese
    Position." – die Tipp-Chips im Fenster nach jedem Dreh aktualisieren.
 
-10. Startguthaben
+9. Startguthaben
    Neue Profile starten mit 0 Token – im ersten Spiel steht bei jeder Hilfe
    "Zu wenig Token". Neu: ECONOMY.startTokens = 3, nur für NEU angelegte
    Profile (bestehende unverändert). Kurz im Reiter HILFEN erwähnen
