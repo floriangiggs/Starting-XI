@@ -39,10 +39,10 @@ vorige umgesetzt, getestet und committet ist.
 | 25 | Duell Teil 1: Hosting-Prüfung, Links, Startseite (Duell-Kachel), Duell-Bildschirme | ✅ erledigt |
 | 26 | Duell Teil 2: Spielen, Walkout, Ergebnis, XP, Bilanz, Trophäen | ✅ erledigt |
 | 27 | Duell-Einladung: „Hier im Browser spielen“ ohne Funktion, Fair-Play-Schritt klarer | – |
-| 28 | Duell: Ergebnis kommt sicher an, beendete Duelle (Richtige + Zeiten), Duelle entfernen | 27 |
-| 29 | Duell: Zwischenstand nach jeder Runde, vorzeitige Entscheidung, Auflösung beim Abpfiff | 28 |
+| 28 | Duell: Ergebnis kommt sicher an, beendete Duelle (Richtige + Zeiten), Duelle entfernen | ⏸ zurückgestellt – kommt ins Online-Duell |
+| 29 | Duell: Zwischenstand nach jeder Runde, vorzeitige Entscheidung, Auflösung beim Abpfiff | ⏸ zurückgestellt – kommt ins Online-Duell |
 
-**Empfohlene Reihenfolge ab jetzt:** 27 → 28 → 29 → 8
+**Empfohlene Reihenfolge ab jetzt:** 27 → weitere Offline-Feinschliffe → Planung Online-Duell → 8
 
 Prompt 7 steht bewusst vor der Tages-Challenge: Nur mit der neuen
 Update-Strategie kommen neue Tages-Aufstellungen zuverlässig auf dem iPhone an.
@@ -2121,6 +2121,14 @@ Screenshots bei 375/402.
 ```
 
 ---
+
+> **Entscheidung 05.10.2026:** Das Link-Duell bleibt bis zum Store-Release
+> wie es ist (nur Prompt 27 als kleiner Fix). Prompts 28 und 29 sind
+> zurückgestellt: Ihre Inhalte (Ergebnis kommt an, beendete Duelle mit
+> Richtigen/Zeiten, Duelle entfernen, Zwischenstand, Auflösung) gehen in
+> die Planung „Online-Duell“ ein, die in den nächsten Tagen gründlich
+> ausgearbeitet und erst zum Store-Release umgesetzt wird. Bis dahin Fokus
+> auf die Offline-Modi.
 
 ## Prompt 28 – Duell: Ergebnis kommt sicher an, beendete Duelle, entfernen
 
