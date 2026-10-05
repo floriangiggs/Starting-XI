@@ -1886,6 +1886,11 @@ TV-Bilder, Vereinslogos oder Original-Trikots – stattdessen App-Aufnahmen
   ggf. Echtzeit gegen Zufallsgegner mit Backend. Offen: Platz auf der Startseite,
   Ranking (Liga-Ränge mit Auf-/Abstieg, Saisons), Best of 3, Bilanz je Freund,
   Pool-Größe (für Ranking mit Fremden mehrere hundert Aufstellungen nötig).
+  Entscheidung 05.10.2026: Duell wird Hauptmodus neben der Kampagne –
+  Startseite Variante A: Duell-Kachel statt Frei-spielen-Kachel, Frei spielen
+  als schmale Leiste darunter (mit Mini-Formkurve). Später, mit genug Traffic,
+  kann das Duell noch prominenter werden (z. B. breite Kachel). Umbau der
+  Startseite erst zusammen mit dem Duell selbst.
 - **Monetarisierung** (Prototyp `prototypes/werbung.html`, erst nach Capacitor
   und mit echten Nutzerzahlen): freiwillige Belohnungs-Werbung „Video ansehen →
   +1 🔍“ (max. 3/Tag), Einmalkauf „Werbefrei“ ohne Spielvorteil, später
