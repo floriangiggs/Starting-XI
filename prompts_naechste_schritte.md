@@ -1900,6 +1900,12 @@ TV-Bilder, Vereinslogos oder Original-Trikots – stattdessen App-Aufnahmen
   Folge). Aufstellungen aus allen Pools (Kampagne + Tag), innerhalb eines Duells
   verschieden und nicht unmittelbar wiederholt (zuletzt in Duellen gespielte
   zurückstellen). Ohne Server: Ergebnis wird per Link zurückgeschickt.
+  Überarbeitet 05.10.2026: Duell ersetzt die Frei-spielen-Kachel direkt;
+  Frei spielen nur noch als kleine Textzeile unter den Kacheln ("Lieber allein
+  trainieren? Frei spielen ›"). Optik ohne Versalien-Überschriften, in der
+  Sprache der Tages-Karte (Anzeigetafel/Klappziffern, Tickets, Wappen).
+  Walkout: Partie fest zweizeilig (Heim / gegen Gast), Schriftgröße je Zeile
+  vorab einpassen – kein Umbruch-Wechsel beim Verkleinern (Glitch-Fix).
 - **Monetarisierung** (Prototyp `prototypes/werbung.html`, erst nach Capacitor
   und mit echten Nutzerzahlen): freiwillige Belohnungs-Werbung „Video ansehen →
   +1 🔍“ (max. 3/Tag), Einmalkauf „Werbefrei“ ohne Spielvorteil, später
