@@ -39,7 +39,7 @@ vorige umgesetzt, getestet und committet ist.
 | 25 | Duell Teil 1: Hosting-Prüfung, Links, Startseite (Duell-Kachel), Duell-Bildschirme | ✅ erledigt |
 | 26 | Duell Teil 2: Spielen, Walkout, Ergebnis, XP, Bilanz, Trophäen | ✅ erledigt |
 | 27 | Duell-Einladung: „Hier im Browser spielen“ ohne Funktion, Fair-Play-Schritt klarer | – |
-| 28 | Duell: Ergebnis kommt sicher an, beendete Duelle mit Richtigen und Zeiten | 27 |
+| 28 | Duell: Ergebnis kommt sicher an, beendete Duelle (Richtige + Zeiten), Duelle entfernen | 27 |
 
 **Empfohlene Reihenfolge ab jetzt:** 27 → 28 → 8
 
@@ -2113,7 +2113,7 @@ Screenshots bei 375/402.
 
 ---
 
-## Prompt 28 – Duell: Ergebnis kommt sicher an + beendete Duelle
+## Prompt 28 – Duell: Ergebnis kommt sicher an, beendete Duelle, entfernen
 
 ```
 Lies CLAUDE.md. Änderungen am Duell (Prompts 25–27) → Plan Mode, Plan
@@ -2160,11 +2160,41 @@ Abpfiff nicht mehr abrufbar.
      Knöpfe "🔁 Revanche" und (Eingeladener, falls nicht gesendet)
      "Ergebnis senden".
    - Herausforderer-Duelle ohne Rückmeldung bleiben "offen" (mit
-     "Ergebnis eintragen"), nach 14 Tagen optional "Duell entfernen".
+     "Ergebnis eintragen"), siehe auch Punkt 4.
 
 3. Aufräumen: Übersicht bleibt übersichtlich (offene oben, beendete
    darunter, Freunde-Bilanz, Trophäen). Startseiten-Kachel: Zahl = Duelle,
    bei denen ich etwas tun muss (spielen ODER Ergebnis senden).
+
+4. Duelle entfernen (Befund in der App: offene Duelle lassen sich gar
+   nicht entfernen – nur eine Einladung über "Ablehnen"; ein selbst
+   angelegtes, nie gespieltes Duell oder ein Duell, auf dessen Rückmeldung
+   man nie mehr wartet, bleibt für immer unter "Offene Duelle")
+   - Jedes Ticket (offen und beendet) bekommt rechts oben einen kleinen
+     "⋯"-Knopf (Trefferfläche mind. 44px) → Aktionsblatt im App-Stil (KEIN
+     confirm()/alert()). Optionen je nach Zustand:
+     · Offen, ich bin dran (Einladung): "Ablehnen".
+     · Offen, selbst angelegt und noch nicht gespielt: "Duell löschen".
+     · Offen, Gegner ist dran: "Erinnern" (Link erneut teilen), "Ergebnis
+       eintragen", "Duell zurückziehen" – mit Satz: "Dein Freund kann noch
+       spielen, sein Ergebnis wird dann aber nicht mehr gezählt."
+     · Beendet: "Ergebnis ansehen", "Revanche", "Aus Verlauf entfernen".
+   - Bilanz, XP, Trophäen und duelStats bleiben beim Entfernen IMMER
+     unverändert – entfernt wird nur der Eintrag aus der Liste. Ein
+     zurückgezogenes/gelöschtes offenes Duell zählt nicht als Niederlage.
+   - Nach dem Entfernen Toast "Duell entfernt · Rückgängig" (ca. 5 s,
+     Rückgängig stellt den Eintrag exakt wieder her). Zurückziehen eines
+     offenen Duells, bei dem der Gegner noch spielen könnte, vorher im
+     Aktionsblatt bestätigen.
+   - Kommt später doch eine Rückmeldung (#duelr) zu einem entfernten
+     Duell: freundlicher Hinweis "Dieses Duell hast du entfernt", nichts
+     zählen, kein Absturz (entfernte duelIds in profile.duelRemoved merken,
+     max. 100).
+   - Am Ende der Liste "Beendete Duelle": "Verlauf leeren" (mit Bestätigung
+     im Aktionsblatt; Bilanz bleibt).
+   - Automatisch: offene Duelle ohne Bewegung seit 14 Tagen als
+     "abgelaufen" markieren (graues Ticket, Aktion "Entfernen"), nicht
+     still löschen.
 
 Hinweis für später (nicht in diesem Prompt): Wirklich automatisch für beide
 Seiten wird das erst mit einem kleinen Online-Speicher bzw. Accounts
@@ -2176,7 +2206,11 @@ heraus, B spielt → B sieht Ergebnis + Senden-Hinweis → Rückmelde-Link in
 einem DRITTEN Profil ohne das Duell öffnen → Ergebnis-Seite mit Code
 kopieren → Code bei A einfügen → bei A und B steht das Duell unter
 "Beendete Duelle" mit identischen Zahlen (Richtige + Zeiten je Runde);
-erneutes Öffnen/Einfügen zählt nichts doppelt; keine Konsolenfehler.
+erneutes Öffnen/Einfügen zählt nichts doppelt. Entfernen: je ein offenes
+(eigenes, ungespieltes), ein zurückgezogenes und ein beendetes Duell
+entfernen → Liste aktualisiert, Bilanz/XP unverändert, Rückgängig stellt
+wieder her, spätere Rückmeldung zum entfernten Duell zeigt nur den
+Hinweis; keine Konsolenfehler.
 ```
 
 ---
