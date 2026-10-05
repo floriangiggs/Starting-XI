@@ -839,6 +839,116 @@
   .duel-name-box { display: flex; flex-direction: column; gap: 12px; }
   .duel-name-box input { border-radius: 10px; border: 1px solid var(--line); background: rgba(10,22,16,0.6); color: var(--chalk); font-family: 'Oswald', sans-serif; font-size: 18px; padding: 10px 12px; width: 100%; }
 
+  /* ---- Duell Teil 2 (Prompt 26): Walkout, Spiel, Abpfiff - Optik aus prototypes/duell.html, gescoped ---- */
+  #screen-duelplay.walkout { padding: 0; gap: 0; overflow: hidden; background:
+      radial-gradient(120% 60% at 50% 115%, rgba(31,77,54,0.9), transparent 60%),
+      linear-gradient(180deg, #0B1218, #101A23 60%, #12261C); }
+  #screen-duelplay .wk { position: relative; flex: 1; display: flex; flex-direction: column; min-height: 0; overflow: hidden; }
+  #screen-duelplay .wk .beam { position: absolute; top: -60px; width: 70%; height: 85%; opacity: 0; transition: opacity 0.9s ease; pointer-events: none;
+    background: conic-gradient(from 180deg at 50% 0%, transparent 42%, rgba(244,213,141,0.38) 50%, transparent 58%);
+    -webkit-mask-image: linear-gradient(180deg, #000 20%, transparent 100%); mask-image: linear-gradient(180deg, #000 20%, transparent 100%); }
+  #screen-duelplay .wk .beam.l { left: -18%; transform: rotate(-16deg); } #screen-duelplay .wk .beam.r { right: -18%; transform: rotate(16deg); }
+  #screen-duelplay .wk.lit .beam { opacity: 1; }
+  #screen-duelplay .wk .tunnel { position: absolute; left: 50%; bottom: -40px; width: 140%; height: 46%; transform: translateX(-50%); border-radius: 50% 50% 0 0; border: 1px solid rgba(242,239,230,0.08); }
+  #screen-duelplay .wk .top { position: relative; z-index: 2; padding: max(18px, env(safe-area-inset-top)) 16px 0; display: flex; justify-content: space-between; align-items: center; gap: 10px; }
+  #screen-duelplay .wk .top .k { font-family: 'Oswald', sans-serif; font-weight: 500; font-size: 14px; color: var(--gold-2); min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  #screen-duelplay .wk .skip { background: transparent; border: 1px solid var(--line); border-radius: 18px; padding: 5px 12px; font-family: 'Oswald', sans-serif; font-weight: 500; font-size: 12.5px; color: rgba(242,239,230,0.7); cursor: pointer; flex-shrink: 0; }
+  #screen-duelplay .wk .wo { position: relative; z-index: 2; flex: 1; display: flex; flex-direction: column; justify-content: center; gap: 14px; padding: 0 22px; min-height: 0; }
+  #screen-duelplay .wk .wr { position: relative; opacity: 0; transform: translateY(18px) scale(0.96); transition: opacity 0.5s ease, transform 0.55s cubic-bezier(.2,1.2,.3,1); }
+  #screen-duelplay .wk .wr.in { opacity: 1; transform: none; }
+  #screen-duelplay .wk .wr .lb { font-family: 'Oswald', sans-serif; font-weight: 600; font-size: 11.5px; text-transform: uppercase; letter-spacing: 0.12em; color: rgba(242,239,230,0.45); transition: color 0.4s; }
+  #screen-duelplay .wk .wr .val { font-family: 'Anton', Impact, sans-serif; line-height: 1.05; font-size: 20px; color: rgba(242,239,230,0.75); white-space: nowrap; transition: font-size 0.45s ease, color 0.45s ease; text-transform: uppercase; }
+  #screen-duelplay .wk .wr .sub { font-family: 'Oswald', sans-serif; font-weight: 300; font-size: 13px; color: rgba(242,239,230,0.7); max-height: 0; overflow: hidden; transition: max-height 0.4s ease; }
+  #screen-duelplay .wk .wr.cur .lb { color: var(--gold-2); }
+  #screen-duelplay .wk .wr.cur .val { color: var(--chalk); font-size: var(--fs, 36px); }
+  #screen-duelplay .wk .wr.cur .sub { max-height: 24px; }
+  #screen-duelplay .wk .wr .flare { position: absolute; left: -30px; top: 50%; width: 220px; height: 120px; transform: translateY(-50%); border-radius: 50%; pointer-events: none;
+    background: radial-gradient(closest-side, rgba(244,213,141,0.35), transparent); opacity: 0; }
+  #screen-duelplay .wk .wr.cur .flare { animation: dwFlare 1s ease-out 1 forwards; }
+  @keyframes dwFlare { 0% { opacity: 0; transform: translateY(-50%) scale(0.4); } 35% { opacity: 1; } 100% { opacity: 0; transform: translateY(-50%) scale(1.5); } }
+  #screen-duelplay .wk .wr .sweep { position: absolute; inset: 0; pointer-events: none; overflow: hidden; }
+  #screen-duelplay .wk .wr.cur .sweep::after { content: ""; position: absolute; top: 0; bottom: 0; width: 40%; left: -50%; background: linear-gradient(100deg, transparent, rgba(244,213,141,0.12), transparent); transform: skewX(-18deg); animation: dwSweep 0.9s ease-out 0.15s 1 forwards; }
+  @keyframes dwSweep { to { left: 120%; } }
+  #screen-duelplay .wk .wr.team { padding: 12px 14px; border-radius: 14px; border: 1.5px solid transparent; transition: border-color 0.5s, background 0.5s, opacity 0.5s ease, transform 0.55s cubic-bezier(.2,1.2,.3,1); }
+  #screen-duelplay .wk .wr.team.cur { border-color: rgba(232,178,61,0.75); background: linear-gradient(150deg, rgba(39,96,63,0.85), rgba(23,63,43,0.85)); box-shadow: 0 0 40px rgba(232,178,61,0.18); }
+  #screen-duelplay .wk .wr.team.cur .val { color: var(--gold-2); font-size: var(--fs, 40px); text-shadow: 0 0 18px rgba(232,178,61,0.45); }
+  #screen-duelplay .wk .wr .val .vsl { font-family: 'Oswald', sans-serif; font-weight: 300; font-size: 0.5em; text-transform: none; color: var(--gold-2); vertical-align: 0.35em; margin-right: 0.15em; }
+  #screen-duelplay .wk .cd { position: absolute; inset: 0; z-index: 4; display: grid; place-items: center; pointer-events: none; }
+  #screen-duelplay .wk .cd span { font-family: 'Anton', Impact, sans-serif; font-size: 120px; line-height: 1; color: var(--gold-2); text-shadow: 0 0 30px rgba(232,178,61,0.5); opacity: 0; }
+  #screen-duelplay .wk .cd span.cdgo { animation: dwCount 0.62s ease-out 1 forwards; }
+  #screen-duelplay .wk .cd span.ko { font-size: 64px; text-transform: uppercase; }
+  @keyframes dwCount { 0% { opacity: 0; transform: scale(1.6); } 25% { opacity: 1; transform: scale(1); } 80% { opacity: 1; } 100% { opacity: 0; transform: scale(0.85); } }
+  #screen-duelplay .wk.dim .wo { opacity: 0.25; transition: opacity 0.4s; }
+  #screen-duelplay .wk .wo-foot { position: relative; z-index: 2; text-align: center; padding: 0 16px max(22px, env(safe-area-inset-bottom)); font-family: 'Oswald', sans-serif; font-weight: 300; font-size: 12.5px; color: rgba(242,239,230,0.45); }
+  @media (prefers-reduced-motion: reduce) {
+    #screen-duelplay .wk .wr { transition: none; transform: none; }
+    #screen-duelplay .wk .wr.cur .flare, #screen-duelplay .wk .wr.cur .sweep::after { animation: none; }
+    #screen-duelplay .wk .cd span.cdgo { animation: none; opacity: 1; }
+  }
+  /* Spiel */
+  #screen-duelplay .dplay { gap: 10px; min-height: 100%; }
+  #screen-duelplay .dplay .hud { position: sticky; top: 0; z-index: 6; display: grid; grid-template-columns: 1fr auto 1fr; align-items: center; gap: 8px; padding: 4px 0 6px; background: var(--ink); }
+  #screen-duelplay .hud .side { display: flex; flex-direction: column; min-width: 0; }
+  #screen-duelplay .hud .side.r { align-items: flex-end; text-align: right; }
+  #screen-duelplay .hud .side b { font-family: 'Oswald', sans-serif; font-weight: 500; font-size: 13px; color: var(--muted); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; max-width: 100%; }
+  #screen-duelplay .hud .side .v { font-family: 'Anton', Impact, sans-serif; font-size: 22px; line-height: 1.05; }
+  #screen-duelplay .hud .side .v small { font-size: 13px; color: var(--muted); }
+  #screen-duelplay .hud .side .lock { font-family: 'Oswald', sans-serif; font-weight: 400; font-size: 12.5px; color: var(--muted); line-height: 1.6; }
+  #screen-duelplay .clock2 .flip b { font-size: 28px; min-width: 24px; padding: 5px 3px 4px; }
+  #screen-duelplay .clock2 .flip i { font-size: 24px; margin: 0 2px; }
+  #screen-duelplay .clock2.low .flip b { color: #F2A497; }
+  #screen-duelplay .series { display: flex; justify-content: center; align-items: center; gap: 10px; flex-shrink: 0; }
+  #screen-duelplay .series .rd { font-family: 'Oswald', sans-serif; font-weight: 500; font-size: 13.5px; color: var(--gold-2); }
+  #screen-duelplay .series .dots { display: flex; gap: 4px; } #screen-duelplay .series .dots i { width: 22px; height: 6px; border-radius: 3px; background: rgba(242,239,230,0.18); } #screen-duelplay .series .dots i.cur { background: var(--gold); }
+  #screen-duelplay .series .cancel { margin-left: 6px; background: none; border: none; font-family: 'Oswald', sans-serif; font-weight: 500; font-size: 12px; color: var(--dim); text-decoration: underline; text-underline-offset: 3px; cursor: pointer; padding: 2px 4px; }
+  #screen-duelplay .match { text-align: center; flex-shrink: 0; }
+  #screen-duelplay .match b { font-family: 'Anton', Impact, sans-serif; font-weight: 400; font-size: 17px; display: block; line-height: 1.15; }
+  #screen-duelplay .match span { font-family: 'Oswald', sans-serif; font-weight: 300; font-size: 12.5px; color: var(--muted); }
+  #screen-duelplay .dplay .pitch-wrap { margin-bottom: 4px; }
+  #screen-duelplay .pos-input.miss { border-color: rgba(224,112,95,0.8); background: rgba(224,112,95,0.28); color: var(--chalk); }
+  #screen-duelplay .givewrap { position: sticky; bottom: 0; z-index: 6; margin-top: auto; padding: 14px 0 2px; background: linear-gradient(180deg, transparent, var(--ink) 30%); }
+  #screen-duelplay .give { border: 1px solid rgba(232,178,61,0.6); background: rgba(232,178,61,0.12); color: var(--gold-2); border-radius: 12px; padding: 12px; font-family: 'Anton', Impact, sans-serif; font-size: 18px; width: 100%; cursor: pointer; }
+  #screen-duelplay .give small { font-family: 'Oswald', sans-serif; font-weight: 300; font-size: 12.5px; color: var(--muted); display: block; margin-top: 1px; }
+  #screen-duelplay .give:disabled { opacity: 0.5; }
+  #screen-duelplay .between { text-align: center; align-items: center; justify-content: center; flex: 1; display: flex; flex-direction: column; gap: 14px; }
+  #screen-duelplay .between .rb { font-family: 'Anton', Impact, sans-serif; font-size: 34px; line-height: 1.05; }
+  #screen-duelplay .between .rb span { color: var(--gold); }
+  #screen-duelplay .between .rs { font-family: 'Oswald', sans-serif; font-weight: 300; font-size: 15px; color: var(--muted); }
+  /* Abpfiff */
+  .dl .res2 { border-radius: 16px; padding: 14px 14px 12px; text-align: center; border: 1.5px solid rgba(232,178,61,0.65);
+    background: repeating-linear-gradient(90deg, rgba(255,255,255,0.03) 0 16px, transparent 16px 32px), linear-gradient(150deg, #27603F, #173F2B 85%); }
+  .dl .res2.lost { background: var(--ink-2); border-color: var(--line); }
+  .dl .res2 .k3 { font-family: 'Oswald', sans-serif; font-weight: 400; font-size: 14px; color: rgba(242,239,230,0.85); }
+  .dl .res2 .big2 { font-family: 'Anton', Impact, sans-serif; font-size: 42px; line-height: 1; margin: 2px 0 10px; }
+  .dl .res2 .big2 span { color: var(--gold); text-shadow: 0 0 20px rgba(232,178,61,0.45); }
+  .dl .res2 .sb { display: grid; grid-template-columns: 1fr auto 1fr; align-items: center; }
+  .dl .res2 .sb .p { display: flex; flex-direction: column; align-items: center; gap: 4px; font-family: 'Oswald', sans-serif; font-weight: 500; font-size: 13px; min-width: 0; }
+  .dl .res2 .sb .p em { font-style: normal; max-width: 100%; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  .dl .res2 .why2 { margin-top: 9px; font-family: 'Oswald', sans-serif; font-weight: 300; font-size: 13.5px; color: rgba(242,239,230,0.85); }
+  .dl .rr { display: flex; flex-direction: column; gap: 6px; }
+  .dl .rr .r { display: grid; grid-template-columns: 62px 1fr 26px 1fr; align-items: center; gap: 6px; padding: 7px 10px; border-radius: 10px; background: var(--ink-2); border: 1px solid var(--line); }
+  .dl .rr .r .n { font-family: 'Oswald', sans-serif; font-weight: 600; font-size: 13px; color: var(--muted); }
+  .dl .rr .r .v { font-family: 'Anton', Impact, sans-serif; font-size: 17px; line-height: 1; }
+  .dl .rr .r .v small { font-family: 'Oswald', sans-serif; font-weight: 300; font-size: 12px; color: var(--muted); margin-left: 5px; }
+  .dl .rr .r .v.b { text-align: right; }
+  .dl .rr .r .v.w { color: var(--gold-2); }
+  .dl .rr .r .c { text-align: center; font-size: 15px; }
+  .dl .rr .r .why3 { grid-column: 2 / span 3; font-family: 'Oswald', sans-serif; font-weight: 300; font-size: 11.5px; color: var(--dim); margin-top: -2px; }
+  .dl .xpt { display: flex; justify-content: space-between; align-items: center; border-radius: 12px; padding: 9px 12px; border: 1px solid rgba(46,204,113,0.3); background: rgba(46,204,113,0.06); }
+  .dl .xpt span { font-family: 'Oswald', sans-serif; font-weight: 400; font-size: 13.5px; } .dl .xpt span small { display: block; font-weight: 300; font-size: 12px; color: var(--muted); }
+  .dl .xpt b { font-family: 'Anton', Impact, sans-serif; font-weight: 400; font-size: 24px; color: #8FE3B0; }
+  .dl .send2 { border: none; border-radius: 12px; padding: 12px; width: 100%; font-family: 'Anton', Impact, sans-serif; font-size: 18px; letter-spacing: 0.02em; color: var(--ink); cursor: pointer;
+    background: linear-gradient(160deg, #f6da9c, var(--gold)); box-shadow: 0 3px 0 #9C7422; flex-shrink: 0; }
+  .dl .ghost2.light { color: var(--chalk); }
+  .dl .fpl { display: flex; gap: 6px; flex-wrap: wrap; }
+  .dl .fpl span { display: inline-flex; align-items: center; gap: 4px; font-family: 'Oswald', sans-serif; font-weight: 500; font-size: 11.5px; padding: 2px 8px; border-radius: 10px; background: rgba(46,204,113,0.12); color: #8FE3B0; border: 1px solid rgba(46,204,113,0.35); }
+  .dl .fpl span.warn { background: rgba(240,169,59,0.12); color: var(--flame); border-color: rgba(240,169,59,0.4); }
+  @media (max-height: 700px) {
+    #screen-duelplay .dplay { gap: 8px; }
+    .dl .res2 { padding: 10px 12px 9px; } .dl .res2 .big2 { font-size: 34px; margin-bottom: 6px; }
+    .dl .rr .r { padding: 5px 10px; } .dl .rr { gap: 4px; }
+  }
+
   body.theme-flutlicht .pitch { background: linear-gradient(180deg, #1a2a5c, #0f1638); }
   body.theme-flutlicht .pitch .halfway, body.theme-flutlicht .pitch .center-circle, body.theme-flutlicht .pitch .box-top, body.theme-flutlicht .pitch .box-bottom { border-color: rgba(180,180,255,0.3); }
   body.theme-flutlicht .pitch .center-dot { background: rgba(180,180,255,0.3); }
@@ -988,6 +1098,8 @@
   <section class="screen scroll-y" id="screen-duels" aria-label="Deine Duelle" hidden><div class="dl" id="duelsView"></div></section>
   <section class="screen scroll-y" id="screen-duelnew" aria-label="Neues Duell" hidden><div class="dl" id="duelNewView"></div></section>
   <section class="screen scroll-y" id="screen-duelinvite" aria-label="Einladung" hidden><div class="dl" id="duelInviteView"></div></section>
+  <section class="screen" id="screen-duelplay" aria-label="Duell" hidden><div id="duelPlayView"></div></section>
+  <section class="screen scroll-y" id="screen-duelresult" aria-label="Abpfiff" hidden><div class="dl" id="duelResultView"></div></section>
 
   <!-- SPIELFELD -->
   <section class="screen scroll-y" id="screen-game" aria-label="Spielfeld" hidden>
@@ -1914,6 +2026,8 @@ function refreshScreenContent(id) {
   if (id === "duels") renderDuels();
   if (id === "duelnew") renderDuelNew();
   if (id === "duelinvite") renderDuelInvite();
+  if (id === "duelplay") renderDuelPlay();
+  if (id === "duelresult") renderDuelResult();
 }
 
 // Falls schon eine Übergangsanimation läuft (schnelles Wischen/Tippen kurz
@@ -1989,6 +2103,7 @@ function goBackTo(id) {
 }
 
 window.addEventListener("popstate", (e) => {
+  if (duelBackGuard(e)) return; // laufendes Duell: Rueckfrage statt Verlassen (Prompt 26)
   historyNavPending = false;
   navStack = (e.state && e.state.stack) || ["start"];
   showScreen(navStack[navStack.length - 1], "back");
@@ -2235,7 +2350,8 @@ const XP_RULES = {
   trainingXP: 10,   // Wiederholung ohne jede Verbesserung (weder neue Position noch neuer Stern)
   firstPlayXP: 20,  // "Erstmals gespielt" - unabhaengig von Sternen/Verbesserung
   starBonus: { 1: 50, 2: 75, 3: 125 }, // einmalig, beim ERSTEN Erreichen der jeweiligen Stufe
-  dailyStreakBonusPerDay: 0.10, dailyStreakBonusMax: 0.50 // Prompt 13: +10%/Serientag, Deckel 50%
+  dailyStreakBonusPerDay: 0.10, dailyStreakBonusMax: 0.50, // Prompt 13: +10%/Serientag, Deckel 50%
+  duelRoundXP: 15, duelWinXP: 40 // Duell (Prompt 26): je gespielter Aufstellung / fuer den Duellsieg - keine Token, keine Sterne
 };
 
 const NATIONAL_TEAM_LEAGUES = new Set(["Weltmeisterschaft", "Europameisterschaft", "Copa América", "Afrika-Cup"]);
@@ -2521,7 +2637,7 @@ function showAchievementToast(a) {
 
 const TROPHY_KIND_ICON = { cup: "🏆", plate: "🥈", flame: "🔥", medal: "🎖️" };
 function showTrophyToast(t) {
-  showToast(TROPHY_KIND_ICON[t.kind] + " Trophäe gewonnen: <b>" + t.name + "</b> · 🔍 +" + ECONOMY.earnAchievement);
+  showToast(TROPHY_KIND_ICON[t.kind] + " Trophäe gewonnen: <b>" + t.name + "</b>" + (t.noToken ? "" : " · 🔍 +" + ECONOMY.earnAchievement));
 }
 
 // Gewonnene Trophaeen (gleiche Quelle wie der Trophaeen-Reiter im Scout-Profil).
@@ -3423,7 +3539,14 @@ const ACHIEVEMENT_TROPHIES = ACHIEVEMENTS.map((a) => ({
   progress: ACHIEVEMENT_PROGRESS[a.id] || ((p) => [p.achievements.includes(a.id) ? 1 : 0, 1])
 }));
 
-const TROPHIES = [...CAMPAIGN_TROPHIES, ...SERIES_TROPHIES, ...ACHIEVEMENT_TROPHIES];
+// Duell-Trophaeen (Prompt 26): eigene Gruppe, bewusst OHNE Token-Belohnung (noToken).
+const DUEL_TROPHY_DEFS = [
+  { id: "duel_first", group: "Duell", kind: "medal", icon: "⚔️", name: "Erster Sieg", req: "1 Duellsieg", desc: "Dein erstes Duell gegen einen Freund gewonnen.", noToken: true, check: (p) => p.duelStats.wins >= 1, progress: (p) => [Math.min(p.duelStats.wins, 1), 1] },
+  { id: "duel_sweep", group: "Duell", kind: "plate", icon: "🧹", name: "Sweep", req: "Best of 3/5 ohne Rundenverlust", desc: "Ein Duell mit mindestens drei Runden gewonnen, ohne eine Runde abzugeben.", noToken: true, check: (p) => p.duelStats.sweeps >= 1, progress: (p) => [Math.min(p.duelStats.sweeps, 1), 1] },
+  { id: "duel_ten", group: "Duell", kind: "cup", icon: "🏆", name: "10 Siege", req: "10 Duellsiege", desc: "Zehn Duelle gegen Freunde gewonnen.", noToken: true, check: (p) => p.duelStats.wins >= 10, progress: (p) => [Math.min(p.duelStats.wins, 10), 10] },
+  { id: "duel_streak5", group: "Duell", kind: "flame", icon: "🔥", name: "5 in Folge", req: "5 Siege in Folge", desc: "Fünf Duelle hintereinander gewonnen.", noToken: true, check: (p) => p.duelStats.bestStreak >= 5, progress: (p) => [Math.min(p.duelStats.bestStreak, 5), 5] }
+];
+const TROPHIES = [...CAMPAIGN_TROPHIES, ...SERIES_TROPHIES, ...DUEL_TROPHY_DEFS, ...ACHIEVEMENT_TROPHIES];
 
 // Analog checkAchievements(): merkt neu gewonnene Kampagne-/Serien-Trophaeen in
 // profile.trophiesWon, damit jede genau einmal Toast+Token ausloest. Achievement-Trophaeen
@@ -3431,11 +3554,11 @@ const TROPHIES = [...CAMPAIGN_TROPHIES, ...SERIES_TROPHIES, ...ACHIEVEMENT_TROPH
 // Buchfuehrung).
 function checkTrophies(profile) {
   const newlyWon = [];
-  [...CAMPAIGN_TROPHIES, ...SERIES_TROPHIES].forEach((t) => {
+  [...CAMPAIGN_TROPHIES, ...SERIES_TROPHIES, ...DUEL_TROPHY_DEFS].forEach((t) => {
     if (!profile.trophiesWon.includes(t.id) && t.check(profile)) {
       profile.trophiesWon.push(t.id);
       newlyWon.push(t);
-      profile.hintTokens += ECONOMY.earnAchievement;
+      if (!t.noToken) profile.hintTokens += ECONOMY.earnAchievement; // Duell-Trophaeen geben keine Token
     }
   });
   return newlyWon;
@@ -3493,7 +3616,7 @@ function profileOverviewHTML() {
 }
 
 function profileTrophiesHTML() {
-  const groups = ["Kampagne", "Serie & Tages-Challenge", "Besondere Leistungen"];
+  const groups = ["Kampagne", "Serie & Tages-Challenge", "Duell", "Besondere Leistungen"];
   const wonCount = TROPHIES.filter((t) => t.check(profile)).length;
   const sel = selectedTrophyId && TROPHIES.find((t) => t.id === selectedTrophyId);
   let detailHtml = `<div class="sheet-note">Tippe auf eine Trophäe für Details.</div>`;
@@ -6604,12 +6727,6 @@ const APP_URL = "https://floriangiggs.github.io/Starting-XI/startelf_check.html"
 const DUEL_CODE_VERSION = 1;
 const DUEL_FORMATS = [{ rounds: 1, label: "Einzel", sub: "1 Spiel" }, { rounds: 3, label: "Best of 3", sub: "3 Spiele" }, { rounds: 5, label: "Best of 5", sub: "5 Spiele" }];
 const DUEL_TIMES = [{ seconds: 120, label: "2 Min", sub: "Blitz" }, { seconds: 180, label: "3 Min", sub: "Standard" }, { seconds: 300, label: "5 Min", sub: "Entspannt" }];
-const DUEL_TROPHIES = [
-  { id: "first", icon: "⚔️", name: "Erster Sieg", check: s => s.wins >= 1 },
-  { id: "sweep", icon: "🧹", name: "Sweep", check: s => s.sweeps >= 1 },
-  { id: "ten", icon: "🏆", name: "10 Siege", check: s => s.wins >= 10 },
-  { id: "streak5", icon: "🔥", name: "5 in Folge", check: s => s.bestStreak >= 5 }
-];
 const DUEL_ERRORS = {
   format: "Das ist kein gültiger Duell-Link oder -Code.",
   checksum: "Der Link ist beschädigt oder unvollständig - bitte noch einmal vollständig kopieren.",
@@ -6765,6 +6882,7 @@ function handleDuelInput(text) {
   const opp = { name: d.name || "Freund", deviceId: d.deviceId, rank: d.rank, level: d.level };
   if (d.kind === "c") {
     if (!d.lineups.every(id => dailyMatchById(id))) return { error: "lineups" };
+    if (d.results.length && d.results.length !== d.rounds) return { error: "format" };
     if (!profile.duels[d.id]) {
       profile.duels[d.id] = { role: "opponent", opponent: opp, settings: { rounds: d.rounds, seconds: d.seconds, difficulty: d.difficulty }, lineups: d.lineups, mine: [], theirs: d.results.length ? d.results : null, status: "todo", created: Date.now() };
       saveProfile(profile);
@@ -6773,10 +6891,13 @@ function handleDuelInput(text) {
   }
   const duel = profile.duels[d.id];
   if (!duel || duel.role !== "challenger") return { error: "unknown" };
-  duel.opponent = opp;
-  duel.theirs = d.results;
-  duel.status = "done"; // Auswertung (Sieg/Niederlage, XP) baut Prompt 26
-  saveProfile(profile);
+  if (d.results.length !== duel.settings.rounds) return { error: "format" };
+  if (!duel.result) {
+    duel.opponent = opp;
+    duel.theirs = d.results;
+    saveProfile(profile);
+    evaluateDuel(d.id); // Status "done", sobald beide Seiten komplett sind (Prompt 26)
+  }
   return { ok: true, kind: "r", id: d.id, name: opp.name };
 }
 let activeInviteId = null;
@@ -6828,7 +6949,7 @@ function ensureDuelName(cb) { if (profile.duelName) cb(); else askDuelName(cb); 
 
 /* ---- Statistik / Trophaeen (Daten pflegt Prompt 26) ---- */
 function duelOpenTodo() { return Object.values(profile.duels).filter(d => d.status === "todo").length; }
-function duelTrophyStates() { return DUEL_TROPHIES.map(t => ({ ...t, won: t.check(profile.duelStats) })); }
+function duelTrophyStates() { return DUEL_TROPHY_DEFS.map(t => ({ ...t, won: t.check(profile) })); }
 
 /* ---- Startseite: Duell-Kachel (renderModeTiles baut sie) ---- */
 function duelTileHTML(chev) {
@@ -6898,9 +7019,9 @@ function renderDuels() {
   root.querySelectorAll("[data-act='play']").forEach(b => b.onclick = () => {
     const d = profile.duels[b.dataset.id];
     if (d && d.role === "opponent") { activeInviteId = b.dataset.id; inviteFair = false; navigate("duelinvite"); }
-    else showToast("Das Spielen kommt mit dem nächsten Update.");
+    else startDuelRun(b.dataset.id);
   });
-  root.querySelectorAll("[data-act='remind']").forEach(b => b.onclick = () => shareDuelLink(b.dataset.id));
+  root.querySelectorAll("[data-act='remind']").forEach(b => b.onclick = () => profile.duels[b.dataset.id].role === "challenger" ? shareDuelLink(b.dataset.id) : shareDuelResult(b.dataset.id));
   const paste = document.getElementById("duelPaste"), input = document.getElementById("duelPasteInput"), msg = document.getElementById("duelPasteMsg");
   document.getElementById("duelPasteToggle").onclick = () => { paste.hidden = !paste.hidden; if (!paste.hidden) input.focus(); };
   // Fehler stehen direkt im Feld, bei Erfolg oeffnet finishDuelOpen die Einladung bzw. meldet die Rueckmeldung.
@@ -6924,7 +7045,9 @@ function finishDuelOpen(res) {
     if (navStack[navStack.length - 1] === "duelinvite") renderDuelInvite(); else navigate("duelinvite");
   } else {
     showToast("✅ Ergebnis von " + res.name + " eingetragen");
-    renderDuels();
+    const duel = profile.duels[res.id];
+    if (duel && duel.result) { activeResultId = res.id; if (navStack[navStack.length - 1] === "duelresult") renderDuelResult(); else navigate("duelresult"); }
+    else if (navStack[navStack.length - 1] === "duels") renderDuels();
   }
 }
 
@@ -6956,12 +7079,11 @@ function renderDuelNew() {
   document.getElementById("duelFair").onclick = () => { duelDraft.fair = !duelDraft.fair; renderDuelNew(); };
   document.getElementById("duelStart").onclick = () => {
     if (!duelDraft.fair) return;
-    ensureDuelName(async () => {
+    ensureDuelName(() => {
       const id = createDuel(duelDraft);
       duelDraft.fair = false;
       renderModeTiles();
-      await shareDuelLink(id);
-      goBack(); // zurueck zur Uebersicht - das Duell steht dort als "du bist dran"
+      startDuelRun(id); // Teil 2: sofort spielen - der Link (mit deinen Ergebnissen) wird nach dem Spiel geteilt
     });
   };
 }
@@ -7004,17 +7126,435 @@ function renderDuelInvite() {
   document.getElementById("duelInvFair").onclick = () => { inviteFair = !inviteFair; renderDuelInvite(); };
   const copy = document.getElementById("duelCopyCode");
   if (copy) copy.onclick = () => copyText(duelChallengeCode(activeInviteId), "Code kopiert - in der App unter Duelle › Code einfügen");
-  document.getElementById("duelAccept").onclick = () => { if (inviteFair) showToast("Das Spielen kommt mit dem nächsten Update."); };
+  document.getElementById("duelAccept").onclick = () => { if (inviteFair) ensureDuelName(() => startDuelRun(activeInviteId)); };
   document.getElementById("duelDecline").onclick = () => { delete profile.duels[activeInviteId]; saveProfile(profile); activeInviteId = null; renderModeTiles(); goBack(); };
 }
 
 // Duell-Name im Scout-Profil (Uebersicht)
 function duelNameRowHTML() {
-  return `<div class="duel-name-row"><span>⚔️ Duell-Name</span><b>${profile.duelName ? duelEsc(profile.duelName) : "noch nicht festgelegt"}</b><button type="button" id="duelNameEdit">${profile.duelName ? "ändern" : "festlegen"}</button></div>`;
+  const s = profile.duelStats;
+  const stats = `<div class="duel-name-row"><span>⚔️ Duelle</span><b>${s.wins} : ${s.losses}${s.draws ? " · " + s.draws + " Remis" : ""}${s.streak ? " · 🔥 " + s.streak : ""}</b></div>`;
+  return stats + `<div class="duel-name-row"><span>⚔️ Duell-Name</span><b>${profile.duelName ? duelEsc(profile.duelName) : "noch nicht festgelegt"}</b><button type="button" id="duelNameEdit">${profile.duelName ? "ändern" : "festlegen"}</button></div>`;
 }
 function bindDuelNameRow() {
   const b = document.getElementById("duelNameEdit");
   if (b) b.onclick = () => askDuelName(() => renderProfileSheetPanel());
+}
+
+/* ================= DUELL, TEIL 2 (Prompt 26): Spielen, Ergebnis, Belohnung =================
+   Eigener, schlanker Spielfeld-Pfad (nur Optik/Namenspruefung des normalen Spiels, KEINE Hilfen,
+   Vorgaben, Kombo und KEINE Schreibzugriffe auf profile.best/stats/Sterne). Die Uhr laeuft
+   zeitstempelbasiert - eine Pause durch Verlassen der App gibt es nicht. */
+const duelSecondsFor = (d) => window.DUEL_TEST_SECONDS || d.settings.seconds; // Test-Hook: kurze Rundenzeit per window.DUEL_TEST_SECONDS
+const fmtMS = (s) => { s = Math.max(0, Math.round(s)); return Math.floor(s / 60) + ":" + String(s % 60).padStart(2, "0"); };
+let duelRun = null;          // laufendes Duell { id, round, phase, ... } - null, wenn keins laeuft
+let activeResultId = null;
+
+/* ---- Auswertung (rein, auf beiden Seiten identisch) ---- */
+function duelOutcome(mine, theirs) {
+  const rounds = mine.map((m, i) => {
+    const t = theirs[i] || { correct: 0, seconds: Infinity };
+    if (m.correct !== t.correct) return { w: m.correct > t.correct ? "me" : "op", by: "correct" };
+    if (m.seconds !== t.seconds) return { w: m.seconds < t.seconds ? "me" : "op", by: "time" };
+    return { w: "draw", by: "draw" };
+  });
+  const mw = rounds.filter(r => r.w === "me").length, ow = rounds.filter(r => r.w === "op").length;
+  const sum = (a, k) => a.reduce((s, r) => s + r[k], 0);
+  let outcome, by = "rounds";
+  if (mw !== ow) outcome = mw > ow ? "win" : "loss";
+  else if (sum(mine, "correct") !== sum(theirs, "correct")) { outcome = sum(mine, "correct") > sum(theirs, "correct") ? "win" : "loss"; by = "correct"; }
+  else if (sum(mine, "seconds") !== sum(theirs, "seconds")) { outcome = sum(mine, "seconds") < sum(theirs, "seconds") ? "win" : "loss"; by = "time"; }
+  else { outcome = "draw"; by = "draw"; }
+  return { rounds, mw, ow, outcome, by };
+}
+
+function applyDuelStats(d, o) {
+  const s = profile.duelStats;
+  if (o.outcome === "win") { s.wins++; s.streak++; s.bestStreak = Math.max(s.bestStreak, s.streak); if (d.settings.rounds >= 3 && o.mw === d.settings.rounds) s.sweeps++; }
+  else if (o.outcome === "loss") { s.losses++; s.streak = 0; }
+  else { s.draws++; s.streak = 0; } // Remis bricht die Serie
+  if (d.opponent) {
+    const p = s.perOpponent[d.opponent.deviceId] || (s.perOpponent[d.opponent.deviceId] = { name: d.opponent.name, w: 0, l: 0, d: 0 });
+    p.name = d.opponent.name;
+    if (o.outcome === "win") p.w++; else if (o.outcome === "loss") p.l++; else p.d++;
+  }
+}
+
+function duelAward(amount, reason) {
+  const r = awardXP(profile, amount, reason); // currentDailyChallenge ist im Duell immer null -> kein Serien-Bonus
+  if (r.leveledUp) showLevelUpToast(r.newLevel, r.levelsGained);
+  return amount;
+}
+
+// Ergebnis berechnen, wenn BEIDE Seiten komplett sind; idempotent (duel.result).
+function evaluateDuel(id) {
+  const d = profile.duels[id];
+  if (!d || d.result) return d && d.result ? true : false;
+  const n = d.settings.rounds;
+  if (d.mine.length < n || !d.theirs || d.theirs.length < n) return false;
+  const o = duelOutcome(d.mine, d.theirs);
+  d.result = { outcome: o.outcome, mw: o.mw, ow: o.ow, by: o.by, rounds: o.rounds };
+  applyDuelStats(d, o);
+  if (!d.xp) d.xp = { rounds: 0, win: 0 };
+  if (o.outcome === "win") d.xp.win = duelAward(XP_RULES.duelWinXP, "Duellsieg");
+  d.status = "done";
+  const won = checkTrophies(profile);
+  saveProfile(profile);
+  renderProfileBar();
+  won.forEach(showTrophyToast);
+  return true;
+}
+
+/* ---- Lauf starten / beenden ---- */
+function startDuelRun(id) {
+  const d = profile.duels[id];
+  if (!d) return;
+  if (d.active) { // Runde war begonnen, aber nie beendet (App geschlossen/Reload) -> gilt als aufgegeben
+    d.mine.push({ correct: 0, seconds: duelSecondsFor(d), left: 1 });
+    d.playedRounds = (d.playedRounds || 0) + 1;
+    d.active = null;
+    saveProfile(profile);
+  }
+  if (d.mine.length >= d.settings.rounds) { duelRun = { id }; endDuelRun(); return; }
+  duelRun = { id, round: d.mine.length, phase: "walkout", left: 0, timers: [], active: true };
+  if (navStack[navStack.length - 1] === "duelplay") renderDuelPlay(); else navigate("duelplay");
+}
+
+function endDuelRun() {
+  const r = duelRun, id = r.id;
+  (r.timers || []).forEach(clearTimeout);
+  clearInterval(r.tick);
+  duelRun = null; // vor dem Navigieren: der popstate-Guard darf nicht mehr greifen
+  const d = profile.duels[id];
+  const played = d.playedRounds || d.mine.length;
+  if (!d.xp) d.xp = { rounds: 0, win: 0 };
+  d.xp.rounds += duelAward(XP_RULES.duelRoundXP * played, "Duell gespielt");
+  d.lineups.forEach(l => { profile.duelRecent = profile.duelRecent.filter(x => x !== l); profile.duelRecent.push(l); });
+  profile.duelRecent = profile.duelRecent.slice(-40);
+  d.status = "waiting";
+  saveProfile(profile);
+  evaluateDuel(id); // Eingeladener: Ergebnis des Herausforderers steckt im Link -> sofort fertig
+  saveProfile(profile);
+  renderProfileBar(); renderModeTiles();
+  activeResultId = id;
+  navigate("duelresult");
+}
+
+/* ---- Walkout ---- */
+function duelMatchInfo(m) {
+  const dm = m.comp.match(/(\d{1,2})\.(\d{1,2})\.(\d{4})/);
+  const dt = dm ? new Date(+dm[3], +dm[2] - 1, +dm[1]) : null;
+  const norm = s => s.toLowerCase().replace(/[^a-zäöüß0-9]/g, "");
+  const parts = m.comp.replace(/\([^)]*\)/g, "").replace(/\d{1,2}\.\d{1,2}\.\d{4}/, "").split(",").map(s => s.trim()).filter(Boolean).filter(p => norm(p) !== norm(m.league));
+  const tm = m.teams.match(/^(.+?) gegen (.+?) (\d+:\d+)(.*)$/);
+  return {
+    league: m.league, stage: parts.join(" · "),
+    date: dt ? dt.toLocaleDateString("de-DE", { day: "numeric", month: "long", year: "numeric" }) : m.comp,
+    weekday: dt ? dt.toLocaleDateString("de-DE", { weekday: "long" }) : "",
+    home: tm ? tm[1].trim() : m.teams, away: tm ? tm[2].trim() : "", score: tm ? (tm[3] + tm[4]).trim() : "",
+    side: m.side.replace(/^Aufstellung von\s+/i, "")
+  };
+}
+
+function walkoutHTML(d, m) {
+  const i = duelMatchInfo(m), o = d.opponent;
+  const vs = `<span class="vsl" style="font-family:'Oswald',sans-serif;font-weight:300;font-size:0.5em;text-transform:none">gegen</span>`;
+  const row = (k, lb, val, sub, cls = "") => `<div class="wr ${cls}" data-i="${k}"><div class="flare"></div><div class="sweep"></div><div class="lb">${lb}</div><div class="val">${val}</div><div class="sub">${sub}</div></div>`;
+  return `
+    <div class="wk" id="duelWk">
+      <div class="beam l"></div><div class="beam r"></div><div class="tunnel"></div>
+      <div class="top"><span class="k">Runde ${duelRun.round + 1} von ${d.settings.rounds}${o ? " · gegen " + duelEsc(o.name) : ""}</span><button type="button" class="skip" id="duelSkipWo">Überspringen ›</button></div>
+      <div class="wo">
+        ${row(0, "Wettbewerb", duelEsc(i.league), duelEsc(i.stage))}
+        ${row(1, "Datum", duelEsc(i.date), duelEsc(i.weekday))}
+        ${row(2, "Partie", i.away ? `${duelEsc(i.home)}<br>${vs} ${duelEsc(i.away)}` : duelEsc(i.home), i.score ? "Endstand " + duelEsc(i.score) : "")}
+        ${row(3, "Du stellst auf", duelEsc(i.side), `Alle 11 · Formation ${m.formation}`, "team")}
+      </div>
+      <div class="cd"><span id="duelCdN"></span></div>
+      <div class="wo-foot">Die Zeit startet erst mit dem Anpfiff.</div>
+    </div>`;
+}
+
+function runWalkout(d) {
+  const r = duelRun, wk = document.getElementById("duelWk");
+  const rows = [...wk.querySelectorAll(".wr")], n = document.getElementById("duelCdN");
+  const at = (ms, fn) => r.timers.push(setTimeout(fn, ms));
+  // Glitch-Fix (Prompt 26): jede Zeile bekommt vorab die groesste Schrift, bei der IHRE LAENGSTE Zeile in EINE Zeile passt
+  // (nowrap) - beim Gross-/Kleinwerden bricht nichts um und nichts springt. Breite aus dem Fenster, nicht aus dem (beim
+  // Aufbau evtl. noch versteckten) Layout.
+  const stageW = Math.min(window.innerWidth, 560);
+  rows.forEach(row => {
+    const v = row.querySelector(".val"), isTeam = row.classList.contains("team"), max = isTeam ? 40 : 36;
+    const lines = v.innerHTML.split("<br>");
+    let wMax = 1;
+    lines.forEach(h => {
+      const probe = document.createElement("span");
+      probe.innerHTML = h;
+      probe.style.cssText = "position:absolute;visibility:hidden;white-space:nowrap;font-size:100px;text-transform:uppercase;font-family:'Anton',Impact,sans-serif";
+      document.body.appendChild(probe);
+      wMax = Math.max(wMax, probe.getBoundingClientRect().width);
+      probe.remove();
+    });
+    const avail = stageW - 44 - (isTeam ? 31 : 0) - 4;
+    row.style.setProperty("--fs", Math.max(18, Math.min(max, Math.floor(avail * 100 / wMax))) + "px");
+  });
+  const STEP = REDUCED_MOTION ? 350 : 1250;
+  at(150, () => wk.classList.add("lit"));
+  rows.forEach((row, i) => at(REDUCED_MOTION ? 100 + i * STEP : 700 + i * STEP, () => { rows.forEach(x => x.classList.remove("cur")); row.classList.add("in", "cur"); }));
+  const cdStart = (REDUCED_MOTION ? 100 : 700) + rows.length * STEP + (REDUCED_MOTION ? 200 : 600);
+  at(cdStart - 150, () => wk.classList.add("dim"));
+  ["3", "2", "1", "Anpfiff!"].forEach((t, i) => at(cdStart + i * (REDUCED_MOTION ? 450 : 650), () => { n.className = ""; void n.offsetWidth; n.textContent = t; n.className = "cdgo" + (i === 3 ? " ko" : ""); }));
+  at(cdStart + 4 * (REDUCED_MOTION ? 450 : 650) + 250, () => startDuelRound());
+  document.getElementById("duelSkipWo").onclick = () => { r.timers.forEach(clearTimeout); r.timers = []; startDuelRound(); };
+}
+
+/* ---- Runde ---- */
+function duelPitchHTML(m) {
+  return `<div class="pitch-wrap"><div class="pitch"><div class="halfway"></div><div class="center-circle"></div><div class="center-dot"></div><div class="box-top"></div><div class="box-bottom"></div>
+    ${PITCH_LAYOUTS[m.formation].map(p => `<div class="pos-slot" style="left:${p.x}%; top:${p.y}%;"><div class="pos-label">${p.abbr}</div><input type="text" class="pos-input" data-abbr="${p.abbr}" placeholder="Name" autocomplete="off" autocapitalize="words" autocorrect="off" spellcheck="false" aria-label="${p.abbr}"></div>`).join("")}
+  </div></div>`;
+}
+
+function duelClockHTML(s) {
+  return `<span class="flip">${duelFlip(fmtMS(s))}</span>`;
+}
+
+function startDuelRound() {
+  const r = duelRun;
+  if (!r || r.phase === "play") return;
+  const d = profile.duels[r.id];
+  (r.timers || []).forEach(clearTimeout); r.timers = [];
+  r.phase = "play"; r.left = 0; r.finishing = false; r.view = null;
+  r.limit = duelSecondsFor(d); r.start = Date.now(); r.endAt = r.start + r.limit * 1000;
+  d.active = { round: r.round, startedAt: r.start }; // Reload/App schliessen = aufgegeben (siehe startDuelRun)
+  saveProfile(profile);
+  renderDuelPlay();
+}
+
+function bindDuelPitch(root, m) {
+  const inputs = [...root.querySelectorAll(".pos-input")];
+  const byAbbr = (a) => inputs.find(i => i.dataset.abbr === a);
+  const score = () => { const n = inputs.filter(i => i.classList.contains("ok")).length; const el = document.getElementById("duelMyScore"); if (el) el.innerHTML = n + "<small>/11</small>"; if (n === inputs.length) finishDuelRound("done"); };
+  const accept = (abbr) => { const i = byAbbr(abbr); i.value = m.players[abbr]; i.classList.add("ok"); i.disabled = true; applyNameFit(i); score(); };
+  inputs.forEach(inp => inp.addEventListener("input", () => {
+    capitalizeFirstLetter(inp);
+    const abbr = inp.dataset.abbr, typed = inp.value;
+    if (isAcceptedFor(m, abbr, typed)) { accept(abbr); return; }
+    // Falsche Zeile: passt der Name zu GENAU EINER anderen offenen Position, rutscht er dorthin (wie im normalen Spiel).
+    const cands = inputs.filter(o => o !== inp && !o.disabled && isAcceptedFor(m, o.dataset.abbr, typed)).map(o => o.dataset.abbr);
+    if (cands.length === 1) { inp.value = ""; accept(cands[0]); }
+  }));
+}
+
+function finishDuelRound(reason) {
+  const r = duelRun;
+  if (!r || r.phase !== "play" || r.finishing) return;
+  r.finishing = true;
+  clearInterval(r.tick);
+  const d = profile.duels[r.id], m = dailyMatchById(d.lineups[r.round]);
+  const inputs = [...document.querySelectorAll("#duelPlayView .pos-input")];
+  const correct = inputs.filter(i => i.classList.contains("ok")).length;
+  const seconds = reason === "time" ? r.limit : Math.min(r.limit, Math.max(1, Math.round((Date.now() - r.start) / 1000)));
+  inputs.forEach(i => { if (!i.classList.contains("ok")) { i.value = m.players[i.dataset.abbr]; i.classList.add("miss"); i.disabled = true; applyNameFit(i); } });
+  const give = document.getElementById("duelGive"); if (give) give.disabled = true;
+  r.timers.push(setTimeout(() => {
+    d.mine.push({ correct, seconds, left: r.left });
+    d.playedRounds = (d.playedRounds || 0) + 1;
+    d.active = null;
+    saveProfile(profile);
+    if (d.mine.length >= d.settings.rounds) endDuelRun();
+    else { r.phase = "between"; r.view = null; renderDuelPlay(); }
+  }, REDUCED_MOTION ? 300 : 900));
+}
+
+function duelTick() {
+  const r = duelRun;
+  if (!r || r.phase !== "play" || r.finishing) return;
+  const left = Math.max(0, Math.ceil((r.endAt - Date.now()) / 1000));
+  if (left !== r.shown) {
+    r.shown = left;
+    const c = document.getElementById("duelClock");
+    if (c) { c.innerHTML = duelClockHTML(left); c.classList.toggle("low", left <= 30); }
+  }
+  if (Date.now() >= r.endAt) finishDuelRound("time");
+}
+
+// Verlassen der App waehrend einer Runde zaehlen (Fair Play)
+document.addEventListener("visibilitychange", () => {
+  if (document.hidden && duelRun && duelRun.phase === "play" && !duelRun.finishing) duelRun.left++;
+});
+
+/* ---- Abbrechen ---- */
+function confirmDuelAbort() {
+  if (!duelRun || document.getElementById("duelAbortBox")) return;
+  const d = profile.duels[duelRun.id];
+  const backdrop = document.createElement("div");
+  backdrop.className = "modal-backdrop";
+  backdrop.id = "duelAbortBox";
+  backdrop.innerHTML = `<div class="modal-sheet"><div class="duel-name-box">
+      <div style="font-family:'Anton',Impact,sans-serif;font-size:24px">Duell abbrechen?</div>
+      <div style="font-family:'Oswald',sans-serif;font-weight:300;font-size:14px;color:var(--muted)">${d.mine.length || duelRun.phase === "play" ? "Die laufende Runde zählt mit dem aktuellen Stand, die übrigen Runden zählen 0 von 11." : "Du hast noch nichts gespielt – das Duell bleibt offen und du kannst später starten."}</div>
+      <div class="dl" style="gap:8px"><button type="button" class="startbtn" id="duelAbortNo">Weiterspielen</button><button type="button" class="ghost2" id="duelAbortYes">Abbrechen</button></div>
+    </div></div>`;
+  document.body.appendChild(backdrop);
+  backdrop.querySelector("#duelAbortNo").onclick = () => backdrop.remove();
+  backdrop.querySelector("#duelAbortYes").onclick = () => { backdrop.remove(); abortDuelRun(); };
+}
+function abortDuelRun() {
+  const r = duelRun;
+  if (!r) return;
+  const d = profile.duels[r.id];
+  clearInterval(r.tick); (r.timers || []).forEach(clearTimeout);
+  if (r.phase === "play" && !r.finishing) {
+    const inputs = [...document.querySelectorAll("#duelPlayView .pos-input")];
+    d.mine.push({ correct: inputs.filter(i => i.classList.contains("ok")).length, seconds: Math.min(r.limit, Math.max(1, Math.round((Date.now() - r.start) / 1000))), left: r.left });
+    d.playedRounds = (d.playedRounds || 0) + 1;
+  }
+  d.active = null;
+  if (d.mine.length === 0) { duelRun = null; saveProfile(profile); goBack(); return; } // nichts gespielt -> Duell bleibt offen
+  while (d.mine.length < d.settings.rounds) d.mine.push({ correct: 0, seconds: duelSecondsFor(d), left: 0 });
+  saveProfile(profile);
+  endDuelRun();
+}
+// Zurueck-Taste/Wischgeste waehrend des Duells: Eintrag wieder vorschieben + Rueckfrage (vor dem normalen popstate-Handler)
+function duelBackGuard(e) {
+  if (!duelRun || !duelRun.active) return false;
+  const top = ((e.state && e.state.stack) || ["start"]).slice(-1)[0];
+  if (top === "duelplay") return false;
+  history.pushState({ stack: navStack.slice() }, "", "#duelplay");
+  historyNavPending = false;
+  confirmDuelAbort();
+  return true;
+}
+
+/* ---- Bildschirm "duelplay" (Walkout / Spiel / Zwischenkarte) ---- */
+function renderDuelPlay() {
+  const root = document.getElementById("duelPlayView"), screen = document.getElementById("screen-duelplay");
+  if (!duelRun || !duelRun.active) { screen.classList.remove("walkout", "scroll-y"); setTimeout(() => { if (navStack[navStack.length - 1] === "duelplay") goBackTo("duels"); }, 0); return; }
+  const r = duelRun, d = profile.duels[r.id];
+  const key = r.phase + ":" + r.round;
+  if (r.view === key && root.firstChild) return; // laufende Runde nicht neu aufbauen
+  r.view = key;
+  const m = dailyMatchById(d.lineups[r.round]);
+  screen.classList.toggle("walkout", r.phase === "walkout");
+  screen.classList.toggle("scroll-y", r.phase === "play");
+  root.className = r.phase === "walkout" ? "wkroot" : "dl dplay";
+  if (r.phase === "walkout") {
+    root.innerHTML = walkoutHTML(d, m);
+    r.timers.forEach(clearTimeout); r.timers = [];
+    requestAnimationFrame(() => runWalkout(d));
+    return;
+  }
+  if (r.phase === "play") {
+    const o = d.opponent, i = duelMatchInfo(m);
+    root.innerHTML = `
+      <div class="hud">
+        <div class="side"><b>Du</b><span class="v" id="duelMyScore">0<small>/11</small></span></div>
+        <div class="clock2" id="duelClock">${duelClockHTML(r.limit)}</div>
+        <div class="side r"><b>${o ? duelEsc(o.name) : "Gegner"}</b><span class="lock">🔒 verdeckt</span></div>
+      </div>
+      <div class="series"><span class="rd">Runde ${r.round + 1} von ${d.settings.rounds}</span><span class="dots">${Array.from({ length: d.settings.rounds }, (_, k) => `<i class="${k === r.round ? "cur" : ""}"></i>`).join("")}</span><button type="button" class="cancel" id="duelCancelBtn">Abbrechen</button></div>
+      <div class="match"><b>${i.away ? duelEsc(i.home) + " – " + duelEsc(i.away) + " " + duelEsc(i.score.split(",")[0]) : duelEsc(m.teams)}</b><span>${duelEsc(i.league)} · ${duelEsc(i.date)} · ${duelEsc(m.side)}</span></div>
+      ${duelPitchHTML(m)}
+      <div class="givewrap"><button type="button" class="give" id="duelGive">⏹ Abgeben<small>Zeit stoppen und mit dem aktuellen Stand werten</small></button></div>`;
+    bindDuelPitch(root, m);
+    document.getElementById("duelGive").onclick = () => finishDuelRound("give");
+    document.getElementById("duelCancelBtn").onclick = confirmDuelAbort;
+    r.shown = -1; clearInterval(r.tick); r.tick = setInterval(duelTick, 250); duelTick();
+    return;
+  }
+  // Zwischenkarte
+  const last = d.mine[d.mine.length - 1];
+  root.innerHTML = `
+    <div class="between">
+      <div class="rb">Runde ${r.round + 1}: <span>${last.correct}/11</span> in ${fmtMS(last.seconds)}</div>
+      <div class="rs">Noch ${d.settings.rounds - d.mine.length} ${d.settings.rounds - d.mine.length === 1 ? "Aufstellung" : "Aufstellungen"}.</div>
+      <button type="button" class="startbtn" id="duelNextRound" style="max-width:340px">Weiter zu Runde ${r.round + 2} ›</button>
+      <button type="button" class="pastebtn" id="duelBetweenCancel">Duell abbrechen</button>
+    </div>`;
+  document.getElementById("duelNextRound").onclick = () => { r.round++; r.phase = "walkout"; r.view = null; renderDuelPlay(); };
+  document.getElementById("duelBetweenCancel").onclick = confirmDuelAbort;
+}
+
+/* ---- Bildschirm "duelresult" (Abpfiff) ---- */
+function shareDuelResult(id) {
+  const d = profile.duels[id];
+  if (!d || !d.opponent) return;
+  const me = duelMeInfo();
+  const url = duelBaseUrl() + "#duelr=" + encodeDuelCode("r", { id, name: me.name, deviceId: me.deviceId, rank: me.rank, level: me.level, results: d.mine });
+  const text = `✅ ${me.name} hat dein Duell bei Starting XI gespielt – hier ist das Ergebnis. Tippe auf den Link, um es zu sehen!`;
+  return (async () => {
+    if (navigator.share) { try { await navigator.share({ text, url }); return; } catch (e) { if (e && e.name === "AbortError") return; } }
+    await copyText(text + "\n" + url, "Link kopiert");
+  })();
+}
+function startRematch(id) {
+  const old = profile.duels[id];
+  if (!old) return;
+  ensureDuelName(() => {
+    const nid = createDuel({ rounds: old.settings.rounds, seconds: old.settings.seconds, difficulty: old.settings.difficulty });
+    if (old.opponent) profile.duels[nid].opponent = { ...old.opponent };
+    saveProfile(profile);
+    renderModeTiles();
+    startDuelRun(nid);
+  });
+}
+
+function renderDuelResult() {
+  const root = document.getElementById("duelResultView");
+  const d = activeResultId && profile.duels[activeResultId];
+  if (!d || !d.mine.length || d.mine.length < d.settings.rounds) { root.innerHTML = ""; setTimeout(() => { if (navStack[navStack.length - 1] === "duelresult") goBackTo("duels"); }, 0); return; }
+  const o = d.opponent, name = o ? duelEsc(o.name) : "dein Freund", nameDat = o ? duelEsc(o.name) : "deinem Freund";
+  const me = duelMeInfo();
+  const head = `<div class="topbar"><button class="back-btn" type="button" id="duelResBack"><span class="back-arrow">←</span>Duelle</button><div class="h1">Abpfiff</div></div>`;
+  const xpTile = (xp, detail) => `<div class="xpt"><span>Deine Belohnung<small>${detail}</small></span><b>+${xp} XP</b></div>`;
+  const played = d.playedRounds || d.mine.length;
+  const fairMe = d.mine.every(r => !r.left);
+  if (!d.result) { // Herausforderer wartet auf die Rueckmeldung
+    const rows = d.mine.map((r, i) => `<div class="r"><span class="n">Runde ${i + 1}</span><span class="v">${r.correct}/11<small>${fmtMS(r.seconds)}</small></span><span class="c"></span><span class="v b" style="color:var(--dim)">🔒</span></div>`).join("");
+    root.innerHTML = head + `
+      <div class="res2"><div class="k3">${duelFormatLabel(d.settings.rounds)}${o ? " gegen " + name : ""}</div><div class="big2"><span>Gespielt!</span></div>
+        <div class="why2">Das Ergebnis siehst du, sobald ${name} geantwortet hat.</div></div>
+      <div class="rr">${rows}</div>
+      ${xpTile(d.xp ? d.xp.rounds : 0, `${played} ${played === 1 ? "Spiel" : "Spiele"} · ${XP_RULES.duelRoundXP} XP`)}
+      <div class="note2"><i>${d.role === "challenger" ? "📤" : "⏳"}</i><p>${d.role === "challenger" ? `Schick <b>${nameDat}</b> den Link – er enthält deine Ergebnisse (verdeckt).` : `Schick <b>${nameDat}</b> dein Ergebnis zurück.`}</p></div>
+      <div class="spacer"></div>
+      <button type="button" class="send2" id="duelResSend">${d.role === "challenger" ? "📤 Link teilen" : "📤 Ergebnis senden"}</button>
+      <button type="button" class="ghost2 light" id="duelResOver">Zur Übersicht</button>`;
+    document.getElementById("duelResSend").onclick = () => d.role === "challenger" ? shareDuelLink(activeResultId) : shareDuelResult(activeResultId);
+  } else {
+    const res = d.result, won = res.outcome === "win";
+    const why = res.by === "rounds"
+      ? (won ? "Du hast mehr Aufstellungen gewonnen." : `${name} hat mehr Aufstellungen gewonnen.`)
+      : res.by === "correct" ? `Gleich viele Runden – ${won ? "du hast" : name + " hat"} insgesamt mehr Spieler gewusst.`
+      : res.by === "time" ? `Gleich viele Runden und Treffer – ${won ? "du warst" : name + " war"} insgesamt schneller.`
+      : "Auch bei Runden, Treffern und Zeit gleichauf.";
+    const rr = res.rounds.map((rd, i) => {
+      const a = d.mine[i], b = d.theirs[i], meWin = rd.w === "me", opWin = rd.w === "op";
+      const reason = rd.by === "correct" ? "mehr Spieler gewusst" : "schneller";
+      return `<div class="r"><span class="n">Runde ${i + 1}</span><span class="v ${meWin ? "w" : ""}">${a.correct}/11<small>${fmtMS(a.seconds)}</small></span><span class="c">${meWin ? "👑" : opWin ? "" : "="}</span><span class="v b ${opWin ? "w" : ""}">${opWin ? "👑 " : ""}${b.correct}/11<small>${fmtMS(b.seconds)}</small></span>
+        <span class="why3">${meWin ? "Du – " + reason : opWin ? name + " – " + reason : "unentschieden"}</span></div>`;
+    }).join("");
+    const fairOp = d.theirs.every(r => !r.left);
+    const rec = o && profile.duelStats.perOpponent[o.deviceId];
+    const xpTotal = (d.xp ? d.xp.rounds + d.xp.win : 0);
+    root.innerHTML = head + `
+      <div class="res2 ${won ? "" : "lost"}"><div class="k3">${duelFormatLabel(d.settings.rounds)} gegen ${name}</div>
+        <div class="big2">${won ? "<span>Sieg!</span>" : res.outcome === "loss" ? "Niederlage" : "Unentschieden"}</div>
+        <div class="sb"><div class="p">${duelCrest(me.name, "me")}<em>Du</em></div><div class="flip xl">${duelFlip(res.mw + ":" + res.ow)}</div><div class="p">${duelCrest(o ? o.name : "?")}<em>${name}</em></div></div>
+        <div class="why2">${why}</div></div>
+      <div class="rr">${rr}</div>
+      <div class="fpl"><span class="${fairMe ? "" : "warn"}">${fairMe ? "🤝 Du hast fair gespielt" : "Du hast die App verlassen"}</span><span class="${fairOp ? "" : "warn"}">${fairOp ? "🤝 " + name + " hat fair gespielt" : name + " hat die App verlassen"}</span></div>
+      ${xpTile(xpTotal, `${played} ${played === 1 ? "Spiel" : "Spiele"} · ${XP_RULES.duelRoundXP} XP${d.xp && d.xp.win ? ` + Siegbonus ${XP_RULES.duelWinXP} XP` : ""}`)}
+      ${rec ? `<div class="note2"><i>📊</i><p>Bilanz gegen ${name} jetzt <b>${rec.w} : ${rec.l}</b></p></div>` : ""}
+      <div class="spacer"></div>
+      ${d.role === "opponent" ? `<button type="button" class="send2" id="duelResSend">📤 Ergebnis an ${name} senden</button>` : ""}
+      <button type="button" class="ghost2 light" id="duelResRematch">🔁 Revanche</button>`;
+    const send = document.getElementById("duelResSend"); if (send) send.onclick = () => shareDuelResult(activeResultId);
+    document.getElementById("duelResRematch").onclick = () => startRematch(activeResultId);
+  }
+  document.getElementById("duelResBack").onclick = () => goBackTo("duels");
+  const over = document.getElementById("duelResOver"); if (over) over.onclick = () => goBackTo("duels");
 }
 
 /* ================= INIT ================= */
