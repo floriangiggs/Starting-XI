@@ -69,3 +69,14 @@ Wettbewerbe verteilt (keine Kategorie soll stark dominieren).
   Konsistenz prüfen (der Hook `.claude/hooks/check-lineups.ps1` läuft
   automatisch nach jedem Edit/Write auf dieser Datei) und das Ergebnis
   zeigen.
+
+## Pflicht vor dem Store-Release (Duell)
+
+- Das Duell ist der wichtigste Modus und muss vor dem App-Store-/Play-Store-
+  Release automatisch und fehlerfrei laufen: Ergebnis-Abgleich ohne Links
+  kopieren (Online-Speicher/Accounts), Push bei Herausforderung/Ergebnis,
+  Universal Links/App Links über eigene Domain, saubere Fehlerfälle.
+- Sobald an Capacitor (Prompt 8) oder am Store-Release gearbeitet wird:
+  Florian ZUERST daran erinnern und einen eigenen Plan dafür vorlegen –
+  nicht ohne diesen Punkt in den Store gehen. Details:
+  prompts_naechste_schritte.md, Hinweis bei Prompt 8.

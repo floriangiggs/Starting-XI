@@ -435,6 +435,24 @@ ausgeliefert wird.
 
 ## Prompt 8 – *Später:* Vorbereitung Capacitor
 
+> ⚠️ **PFLICHT VOR DEM STORE-RELEASE – Duell muss automatisch und fehlerfrei
+> laufen (Florian, 05.10.2026).** Das Duell wird der wichtigste Modus. Der
+> heutige Weg über Links/Codes kopieren ist nur eine Übergangslösung und darf
+> so NICHT in den Store. Vor dem Release müssen umgesetzt und mit echten
+> Geräten (iPhone + Android, zwei Accounts) getestet sein:
+> 1. **Automatischer Ergebnis-Abgleich** für beide Seiten über einen
+>    Online-Speicher bzw. Accounts (Stufe „Accounts“ im Fahrplan): Duell
+>    erscheint beim Gegner, Ergebnis kommt ohne Kopieren zurück, beide sehen
+>    sofort „Beendet“ mit Richtigen und Zeiten je Runde.
+> 2. **Push-Nachricht** bei neuer Herausforderung und bei Ergebnis.
+> 3. **Universal Links (iOS) / App Links (Android)** über eine eigene Domain:
+>    Einladungs-Links öffnen direkt die App, ohne App → Store-Seite.
+> 4. **Fehlerfälle** sauber abgedeckt (offline, doppeltes Öffnen, App neu
+>    installiert, Handywechsel) – nichts geht verloren, nichts zählt doppelt.
+> 5. „Code einfügen“ nur noch als Notfall-Weg.
+> Hochprofessionell und vollständig getestet umsetzen – dafür einen eigenen
+> Plan mit Prompts schreiben, BEVOR Prompt 8 ausgeführt wird.
+
 ```
 Bereite das Projekt für Capacitor vor, ohne schon Android/iOS hinzuzufügen:
 Web-Dateien nach www/ verschieben, startelf_check.html → index.html
@@ -2171,7 +2189,7 @@ erneutes Öffnen/Einfügen zählt nichts doppelt; keine Konsolenfehler.
    Kurzvideos), Fokus auf Wiederkehr (Tages-Challenge, Serie, Duell per Link).
 3. **Erst dann Monetarisierung** (siehe Ideen-Speicher), schrittweise und
    gemessen – Spielspaß vor Umsatz.
-4. **Accounts (nach Capacitor, mit Traffic):** eigene Konten über einen
+4. **Accounts – PFLICHT vor dem Store-Release (siehe Hinweis bei Prompt 8):** eigene Konten über einen
    Online-Dienst (z. B. Firebase oder Supabase) mit „Mit Apple / Google
    anmelden“, einzigartigen @Usernames, Freundesliste, Speicherstand in der
    Cloud und Push bei neuen Herausforderungen. Bestehende Daten werden über
