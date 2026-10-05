@@ -41,8 +41,9 @@ vorige umgesetzt, getestet und committet ist.
 | 27 | Duell-Einladung: „Hier im Browser spielen“ ohne Funktion, Fair-Play-Schritt klarer | – |
 | 28 | Duell: Ergebnis kommt sicher an, beendete Duelle (Richtige + Zeiten), Duelle entfernen | ⏸ zurückgestellt – kommt ins Online-Duell |
 | 29 | Duell: Zwischenstand nach jeder Runde, vorzeitige Entscheidung, Auflösung beim Abpfiff | ⏸ zurückgestellt – kommt ins Online-Duell |
+| 30 | Kampagne: direkt weiter zum nächsten Level, Level-Anzeige „Level n von N“ | – |
 
-**Empfohlene Reihenfolge ab jetzt:** 27 → weitere Offline-Feinschliffe → Planung Online-Duell → 8
+**Empfohlene Reihenfolge ab jetzt:** 27 → 30 → weitere Offline-Feinschliffe → Planung Online-Duell → 8
 
 Prompt 7 steht bewusst vor der Tages-Challenge: Nur mit der neuen
 Update-Strategie kommen neue Tages-Aufstellungen zuverlässig auf dem iPhone an.
@@ -2285,6 +2286,59 @@ Hinweis; Eingeladener sieht nach jeder Runde den richtigen Spielstand;
 vorzeitige Entscheidung (2 : 0) beendet korrekt; Rückmeldung beim
 Herausforderer zeigt dasselbe Ergebnis und dieselbe Auflösung; XP/Bilanz
 stimmen; keine Konsolenfehler.
+```
+
+---
+
+## Prompt 30 – Kampagne: direkt weiter zum nächsten Level + Level-Anzeige
+
+```
+Lies CLAUDE.md. Spielfluss in der Kampagne verbessern → kurz Plan zeigen,
+dann umsetzen. Keine neuen Bildschirme, keine Änderung an Sternen, XP,
+Vorgaben (Prompt 9) oder Freischaltlogik.
+
+Befund (Praxistest + Code): Nach dem Auswerten eines Kampagnen-Levels
+(Ergebnis-Block in evaluatePitch, currentLevelContext/hasNext) gibt es
+bestanden nur "← Zurück zum Pfad", nach dem letzten Level der Welt
+"🏆 Stufe geschafft! Zur Weltkarte", nicht bestanden "Zurück zum Pfad" +
+"Nochmal versuchen". Man muss nach jedem Level zurück zum Pfad – das
+bremst. Außerdem sieht man im Spiel nicht, im wievielten Level man ist
+(renderDiffBadge zeigt nur die Stufe).
+
+1. Knöpfe nach dem Auswerten (nur Kampagne), gleiche Zeile/Platz wie
+   heute, links klein (btn-outline), rechts Hauptknopf (btn-gold, breiter):
+   - Bestanden, es gibt ein nächstes Level in dieser Welt:
+     links "‹ Pfad", rechts "Level n+1 ›" → startet direkt die Einleitung
+     des nächsten Levels (currentLevelContext auf das nächste Level setzen,
+     startMatch). Der Navigations-Stack bleibt sauber: "Zurück" aus dem
+     neuen Level führt zum Pfad, nicht zum alten Ergebnis.
+   - Wurde ein bereits bestandenes Level wiederholt: "Level n+1 ›" führt
+     trotzdem zum direkt folgenden Level (ist es gesperrt, gibt es den
+     Knopf nicht).
+   - Bestanden, letztes Level der Welt: links "‹ Pfad", rechts
+     "🏆 Welt geschafft! Weiter ›" → Weltkarte (neue Welt ist frei).
+   - Nicht bestanden: links "‹ Pfad", rechts "Nochmal versuchen".
+   - Freispiel und Tages-Challenge bleiben unverändert.
+
+2. Level-Anzeige in Einleitung und Spielfeld (nur Kampagne)
+   - Das Abzeichen wird zu "<Weltname> · Level n von N" (Farbe der Welt
+     wie bisher). Darunter eine kleine Punktreihe der Welt: bestandene
+     Level gold gefüllt, aktuelles Level größer/umrandet, offene als leere
+     Kreise (Optik passend zur Welten-Kette der Kampagnen-Kachel).
+   - Freispiel/Tages-Challenge/Duell: Abzeichen wie bisher
+     ("Stufe n · Name").
+   - Schriften laut CLAUDE.md (Anton für "Level n von N" nicht nötig –
+     Oswald 600 reicht, keine gesperrten Versalien).
+
+3. Platz: Einleitung und Spielfeld dürfen dadurch nicht höher werden als
+   heute (Spielfeld nicht verkleinern); Ergebnis-Bereich bleibt ohne
+   zusätzliches Scrollen.
+
+sw.js CACHE_NAME erhöhen. Test: Level 1 bestehen → "Level 2 ›" startet
+Level 2 direkt, Zurück führt zum Pfad; letztes Level einer Welt → Weltkarte
+mit freigeschalteter Welt; nicht bestehen → Nochmal/Pfad; altes Level
+wiederholen → Knopf zum Folgelevel; Abzeichen + Punktreihe stimmen mit dem
+Pfad überein; Screenshots bei 375/402/430; keine Konsolenfehler.
 ```
 
 ---
