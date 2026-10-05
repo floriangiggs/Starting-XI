@@ -2059,7 +2059,16 @@ Konsolenfehler.
    Kurzvideos), Fokus auf Wiederkehr (Tages-Challenge, Serie, Duell per Link).
 3. **Erst dann Monetarisierung** (siehe Ideen-Speicher), schrittweise und
    gemessen – Spielspaß vor Umsatz.
-4. **Skalieren:** mehr Aufstellungen, Duell gegen Zufallsgegner, Ranking.
+4. **Accounts (nach Capacitor, mit Traffic):** eigene Konten über einen
+   Online-Dienst (z. B. Firebase oder Supabase) mit „Mit Apple / Google
+   anmelden“, einzigartigen @Usernames, Freundesliste, Speicherstand in der
+   Cloud und Push bei neuen Herausforderungen. Bestehende Daten werden über
+   profile.deviceId (aus Prompt 25) beim ersten Anmelden übernommen.
+   Pflichten: Konto in der App löschbar (Apple), datenschutzfreundliche
+   Login-Option, Username-Filter/Melden, Datenschutzerklärung/DSGVO.
+   Alternative ohne eigenen Server: Game Center / Google Play Games
+   (iPhone und Android getrennt).
+5. **Skalieren:** mehr Aufstellungen, Duell gegen Zufallsgegner, Ranking.
 
 Leitplanken Social-Media-Videos: KI-Inhalte als solche kennzeichnen
 (Plattformregeln), keine Deepfakes/Abbilder echter Spieler, keine
