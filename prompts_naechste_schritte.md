@@ -35,7 +35,7 @@ vorige umgesetzt, getestet und committet ist.
 | 21 | Ladescreen etwas langsamer (~4 s statt ~2,4 s) | ✅ erledigt |
 | 22 | Fehler aus dem Testlauf: Tages-Reihenfolge, Hilfe-Buttons, lange Namen u. a. | ✅ erledigt |
 | 23 | Daten: Ajax 1995 durch echtes Spiel ersetzen, fehlende Rückennummern/Nationalitäten | ✅ erledigt |
-| 24 | Tages-Challenge: Ticket-Einkerbung im gelösten Zustand | – |
+| 24 | Tages-Challenge: Ticket-Einkerbung, „Erledigt“ + Teilen als Bild | – |
 
 **Empfohlene Reihenfolge ab jetzt:** 24 → 8
 
@@ -49,7 +49,8 @@ Welten-Ausschmückung), `prototypes/ladescreen.html` (Prompt 11d) und
 `prototypes/tageskarte.html` (Prompt 16, nur Variante „Ticket – neu“) und
 `prototypes/scout-ausweis.html` (Prompt 17, nur Variante A) und
 `prototypes/modus-kacheln.html` (Prompt 18, nur „A · neu“) und
-`prototypes/regeln.html` (Prompt 19) und `prototypes/freispiel.html` (Prompt 20).
+`prototypes/regeln.html` (Prompt 19) und `prototypes/freispiel.html` (Prompt 20) und
+`prototypes/teilen.html` (Prompt 24).
 
 **Wichtig nach jeder Änderung:** Der Service Worker liefert die App aus dem
 Cache. Jeder Prompt erhöht deshalb `CACHE_NAME` in `sw.js` – sonst sieht die
@@ -1781,8 +1782,9 @@ sw.js CACHE_NAME erhöhen. Zum Schluss die Konsistenzprüfung zeigen.
 ## Prompt 24 – Tages-Challenge: Feinschliff
 
 ```
-Lies CLAUDE.md. Kleine Korrektur an der Tages-Karte (#dailyCard, Ticket
-.t1 aus Prompt 16) → Änderung kurz beschreiben, dann umsetzen.
+Lies CLAUDE.md. Zwei Änderungen an der Tages-Challenge (#dailyCard, Ticket
+.t1 aus Prompt 16) → kurz Plan zeigen, dann umsetzen. Optik für Punkt 2
+aus prototypes/teilen.html (Stub mit .done/.share-sm, Bild-Funktion draw).
 
 1. Untere Einkerbung sitzt im gelösten Zustand zu hoch
    Befund (gemessen): .t1 hat feste height: 148px, die untere Einkerbung
@@ -1809,6 +1811,38 @@ Lies CLAUDE.md. Kleine Korrektur an der Tages-Karte (#dailyCard, Ticket
    Unterkante .main == Unterkante .stub == Unterkante .t1 und Mittelpunkt
    von .notch.b == Unterkante .t1 (±0,5px); Screenshots offen/gelöst
    nebeneinander.
+
+2. Nach dem Spielen: "✓ Erledigt" + Teilen als Bild
+   Befund: Teilen schickt heute nur Text (shareDailyResult). WhatsApp
+   richtet jede Zeile links aus, die Formation aus Emoji-Kästchen fällt
+   zusammen – mit Leerzeichen lässt sich das nicht zuverlässig zentrieren.
+   a) Stub im gelösten Zustand: Statt des großen Buttons "TEILEN" steht
+      der Status "✓ ERLEDIGT" (Anton, dunkelgrün auf Gold, grüner Haken-
+      Kreis, kein Button). Darunter ein kleiner, dezenter Knopf
+      "📤 Teilen" (Oswald 600, ca. 12,5px, dunkler Rand, leicht hell
+      hinterlegt) – wie im Prototyp. Alles passt in die 148px aus Punkt 1.
+   b) Teilen erzeugt ein Ergebnisbild (Canvas 1080×1350, PNG) im
+      Starting-XI-Look wie im Prototyp: "TAGES-CHALLENGE · SPIELTAG n",
+      "STARTING XI" (XI gold), langes Datum, große Trefferzahl "x/11",
+      Tages-Sterne und 🔥-Serie, darunter das Spielfeld mit den 11
+      Positionen der echten Formation (PITCH_LAYOUTS) als Kreise:
+      grün = richtig, gold = mit Hilfe, grau = falsch, Kürzel im Kreis.
+      Fuß: "SCHAFFST DU MEHR?" + Legende. KEINE Spielernamen, keine
+      Partie/Mannschaft auf dem Bild (spoilerfrei für Freunde).
+      Schriften vor dem Zeichnen laden (document.fonts.load für Anton und
+      Oswald, lokale woff2), Titel per measureText mittig setzen.
+   c) Daten: Für das Bild wird je Position das Ergebnis gebraucht. In
+      evaluatePitch bei der Tages-Challenge zusätzlich
+      profile.daily[dateKey].cells = { abbr: "g" | "y" | "x" } speichern.
+      Für ältere Einträge ohne cells aus grid rekonstruieren (gleiche
+      Zeilen-Gruppierung wie shareGridForMatch).
+   d) Teilen: navigator.canShare({ files: [png] }) → navigator.share({
+      files: [png], text: "Schaffst du mehr? ⚽ Starting XI · Spieltag n" }).
+      Geht das nicht: bisheriges Text-Teilen bzw. Zwischenablage als
+      Fallback. Abbrechen durch den Nutzer ist kein Fehler (kein Toast).
+   Test: Bild für eine 4-3-3- und eine 4-2-3-1-Aufstellung erzeugen und als
+   PNG ablegen/anzeigen; Stub-Screenshots gelöst bei 375/402/430; prüfen,
+   dass auf dem Bild kein Spielername vorkommt.
 
 sw.js CACHE_NAME erhöhen.
 ```

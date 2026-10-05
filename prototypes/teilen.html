@@ -1,0 +1,159 @@
+<!doctype html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, viewport-fit=cover">
+<!-- Referenz-Prototyp für Prompt 24 Punkt 2: Tages-Karte gelöst mit "✓ Erledigt" + kleinem Teilen-Knopf (Stub), Ergebnisbild 1080x1350 per Canvas (Funktion draw). Beispielwerte. Nicht einbinden. -->
+<title>Tages-Ergebnis teilen</title>
+
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Anton&family=Oswald:wght@300;400;500;600;700&display=swap">
+<style>
+  :root {
+    --pitch: #1F4D36; --chalk: #F2EFE6; --gold: #E8B23D; --gold-2: #F4D58D;
+    --ink: #14202B; --ink-2: #1C2B38; --line: rgba(242,239,230,0.14);
+    --muted: rgba(242,239,230,0.7); --dim: rgba(242,239,230,0.45); --ok: #2ECC71;
+    --wa-bg: #0B141A; --wa-out: #005C4B; --wa-text: #E9EDEF; --wa-meta: rgba(233,237,239,0.6);
+    color-scheme: dark;
+  }
+  * { box-sizing: border-box; }
+  html, body { background: var(--ink); }
+  body { margin: 0; color: var(--chalk); font-family: Oswald, "Arial Narrow", system-ui, sans-serif; padding-inline: 16px; padding-block: 18px 32px; }
+  button { font-family: inherit; color: inherit; cursor: pointer; }
+  button:focus-visible { outline: 2px solid var(--gold-2); outline-offset: 2px; }
+  .wrap { max-width: 1060px; margin: 0 auto; display: flex; flex-direction: column; gap: 18px; }
+  h1 { font-family: Anton, Impact, sans-serif; font-weight: 400; font-size: 30px; text-transform: uppercase; margin: 0; }
+  h1 span { color: var(--gold); }
+  .lead { margin: 4px 0 0; font-weight: 300; font-size: 15px; color: var(--muted); max-width: 70ch; line-height: 1.5; }
+  .cols { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 16px; align-items: start; }
+  @media (max-width: 900px) { .cols { grid-template-columns: minmax(0, 1fr); } }
+  .col { display: flex; flex-direction: column; gap: 10px; min-width: 0; }
+  .k { font-weight: 600; font-size: 12px; text-transform: uppercase; letter-spacing: 0.1em; color: var(--gold-2); }
+  .k.bad { color: #F2A497; }
+  .cap { font-weight: 300; font-size: 13.5px; color: var(--muted); line-height: 1.45; margin: 0; }
+  .cap b { font-weight: 600; color: var(--chalk); }
+
+  /* Ticket (gelöst) */
+  .t1 { --stub: 100px; position: relative; height: 148px; display: grid; grid-template-columns: minmax(0, 1fr) var(--stub); filter: drop-shadow(0 8px 16px rgba(0,0,0,0.35)); max-width: 380px; }
+  .t1 .main, .t1 .stub { border: 1.5px solid rgba(232,178,61,0.75); }
+  .t1 .main { padding: 11px 12px 11px 16px; display: flex; flex-direction: column; justify-content: space-between; border-right: none; border-radius: 14px 0 0 14px; min-width: 0;
+    background: repeating-linear-gradient(90deg, rgba(255,255,255,0.035) 0 16px, transparent 16px 32px), linear-gradient(150deg, #27603F, #173F2B 85%); }
+  .t1 .stub { position: relative; border-left: none; border-radius: 0 14px 14px 0; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 7px; background: linear-gradient(160deg, #F6DA9C, #E8B23D 70%); color: var(--ink); }
+  .t1 .stub::before { content: ""; position: absolute; left: -1px; top: 12px; bottom: 12px; border-left: 3px dotted rgba(20,32,43,0.5); }
+  .t1 .notch { position: absolute; right: var(--stub); width: 20px; height: 20px; margin-right: -10px; border-radius: 50%; background: var(--ink); border: 1.5px solid rgba(232,178,61,0.75); z-index: 2; }
+  .t1 .notch.t { top: -11px; clip-path: inset(50% 0 0 0); } .t1 .notch.b { bottom: -11px; clip-path: inset(0 0 50% 0); }
+  .t1 .date { font-weight: 400; font-size: 13px; color: rgba(242,239,230,0.82); display: flex; gap: 7px; align-items: center; }
+  .t1 .date i { width: 7px; height: 7px; border-radius: 50%; background: var(--ok); }
+  .t1 .title { font-family: Anton, Impact, sans-serif; font-size: 27px; line-height: 0.95; text-transform: uppercase; white-space: nowrap; }
+  .t1 .title span { color: var(--gold); }
+  .t1 .res { display: flex; align-items: center; gap: 10px; }
+  .t1 .mini { display: flex; flex-direction: column; gap: 2px; align-items: center; } .t1 .mini .r { display: flex; gap: 2px; }
+  .t1 .sq { width: 7px; height: 7px; border-radius: 2px; } .sq.g { background: var(--ok); } .sq.y { background: var(--gold); } .sq.x { background: #3A4652; }
+  .t1 .sc { font-family: Anton, Impact, sans-serif; font-size: 26px; line-height: 1; } .t1 .sc small { font-size: 15px; color: var(--muted); }
+  .t1 .st { font-size: 13px; line-height: 1.2; color: var(--gold-2); } .t1 .st span { display: block; color: var(--muted); }
+  .t1 .tl { font-weight: 400; font-size: 12px; color: var(--muted); }
+  .t1 .fl b { font-family: Anton, Impact, sans-serif; font-weight: 400; font-size: 24px; line-height: 1; display: block; text-align: center; }
+  .t1 .fl span { font-weight: 500; font-size: 11px; display: block; text-align: center; }
+  .done { font-family: Anton, Impact, sans-serif; font-size: 15px; text-transform: uppercase; letter-spacing: 0.03em; display: inline-flex; align-items: center; gap: 4px; color: #17402B; }
+  .done i { font-style: normal; width: 18px; height: 18px; border-radius: 50%; background: #1F6B43; color: var(--gold-2); display: grid; place-items: center; font-size: 11px; }
+  .share-sm { border: 1.5px solid rgba(20,32,43,0.45); background: rgba(255,255,255,0.18); border-radius: 9px; padding: 4px 10px; font-weight: 600; font-size: 12.5px; color: var(--ink); }
+
+  /* WhatsApp-Attrappe */
+  .wa { border-radius: 16px; background: var(--wa-bg); padding: 14px 12px; border: 1px solid var(--line); display: flex; flex-direction: column; align-items: flex-end; gap: 6px; min-height: 120px;
+    font-family: -apple-system, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; }
+  .bub { max-width: 86%; background: var(--wa-out); color: var(--wa-text); border-radius: 10px 10px 2px 10px; padding: 6px 8px 4px; font-size: 15px; line-height: 1.32; white-space: pre-wrap; }
+  .bub .meta { display: block; text-align: right; font-size: 11px; color: var(--wa-meta); margin-top: 2px; }
+  .bub.img { padding: 4px; }
+  .bub.img canvas { display: block; width: 100%; height: auto; border-radius: 7px; }
+  .bub.img .txt { padding: 5px 4px 0; }
+  .note { margin: 0; font-weight: 300; font-size: 12.5px; color: var(--dim); line-height: 1.5; }
+</style>
+
+</head>
+<body>
+<div class="wrap">
+  <div>
+    <h1>Tages-Ergebnis <span>teilen</span></h1>
+    <p class="lead">Links das Problem von heute, in der Mitte die neue Karte nach dem Spielen, rechts das neue Teilen als Bild. Das Bild verrät keinen Spieler – nur farbige Punkte in der Formation.</p>
+  </div>
+  <div class="cols">
+    <div class="col">
+      <div class="k bad">Heute · Text in WhatsApp</div>
+      <div class="wa"><div class="bub" id="txtBub"></div></div>
+      <p class="cap">WhatsApp richtet jede Zeile <b>links</b> aus – die Formation fällt in sich zusammen. Mittig ausrichten geht in Chat-Nachrichten nicht zuverlässig, weil jedes Handy andere Schriften nutzt.</p>
+    </div>
+    <div class="col">
+      <div class="k">Neu · Karte nach dem Spielen</div>
+      <div class="t1">
+        <span class="notch t"></span><span class="notch b"></span>
+        <div class="main">
+          <div class="date"><i></i>Montag, 5. Oktober</div>
+          <div class="title">Tages-<span>Challenge</span></div>
+          <div class="res"><div class="mini" id="mini"></div><span class="sc">9<small>/11</small></span><span class="st">⭐⭐<span>Spieltag 8</span></span></div>
+          <div class="tl">Nächste in 12:09:44</div>
+        </div>
+        <div class="stub">
+          <div class="fl"><b>🔥3</b><span>Tage Serie</span></div>
+          <span class="done"><i>✓</i>Erledigt</span>
+          <button type="button" class="share-sm" id="shareBtn">📤 Teilen</button>
+        </div>
+      </div>
+      <p class="cap">Der große Knopf wird zum Status <b>„✓ Erledigt“</b> – das ist die Hauptinfo. Teilen bleibt als kleiner, dezenter Knopf darunter.</p>
+    </div>
+    <div class="col">
+      <div class="k">Neu · Teilen als Bild</div>
+      <div class="wa"><div class="bub img"><canvas id="cv" width="1080" height="1350" role="img" aria-label="Ergebnisbild Tages-Challenge"></canvas><div class="txt">Schaffst du mehr? ⚽ Starting XI · Spieltag 8</div><span class="meta">11:52 ✓✓</span></div></div>
+      <p class="cap">Das Bild sieht in jeder App gleich aus und macht <b>Werbung für die App</b> – genau das, was wir für Traffic brauchen. Kann ein Gerät keine Bilder teilen, wird wie bisher Text geschickt.</p>
+    </div>
+  </div>
+  <p class="note">Prototyp mit Beispielwerten (Formation 4-2-3-1, 9/11, ⭐⭐, Serie 3). Positionen aus PITCH_LAYOUTS der App.</p>
+</div>
+
+<script>
+(() => {
+  const L = [["TW",50,90],["RV",80,72],["RIV",60,76],["LIV",40,76],["LV",20,72],["RZM",62,58],["LZM",38,58],["ROM",75,32],["ZOM",50,32],["LOM",25,32],["ST",50,12]];
+  const RES = { TW:"g", RV:"g", RIV:"g", LIV:"x", LV:"g", RZM:"g", LZM:"y", ROM:"g", ZOM:"g", LOM:"x", ST:"g" };
+  // Raster wie shareGridForMatch: nach y in Zeilen, vorne (Sturm) zuerst
+  const rows = []; [...L].sort((a, b) => a[2] - b[2]).forEach(p => { let r = rows.find(r => Math.abs(r.y - p[2]) <= 8); if (!r) { r = { y: p[2], it: [] }; rows.push(r); } r.it.push(p); });
+  rows.forEach(r => r.it.sort((a, b) => b[1] - a[1]));
+  const EMO = { g: "🟩", y: "🟨", x: "⬛" };
+  document.getElementById("txtBub").innerHTML = "Starting XI · Tag 8 · 9/11 🔥3\n" + rows.map(r => r.it.map(p => EMO[RES[p[0]]]).join("")).join("\n") + '<span class="meta">11:52 ✓✓</span>';
+  document.getElementById("mini").innerHTML = rows.map(r => `<div class="r">${r.it.map(p => `<span class="sq ${RES[p[0]]}"></span>`).join("")}</div>`).join("");
+
+  async function draw() {
+    try { await Promise.all([document.fonts.load('400 80px Anton'), document.fonts.load('500 40px Oswald'), document.fonts.load('300 40px Oswald')]); } catch (e) {}
+    const c = document.getElementById("cv"), x = c.getContext("2d"), W = 1080, H = 1350;
+    x.fillStyle = "#14202B"; x.fillRect(0, 0, W, H);
+    for (let i = 0; i < W; i += 80) { x.fillStyle = "rgba(255,255,255,0.025)"; x.fillRect(i, 0, 4, H); }
+    // Kopf
+    x.textAlign = "center"; x.fillStyle = "#F4D58D"; x.font = "600 30px Oswald, sans-serif"; x.fillText("TAGES-CHALLENGE · SPIELTAG 8", W / 2, 92);
+    x.font = "400 96px Anton, Impact, sans-serif"; { const a = x.measureText("STARTING ").width, bw = x.measureText("XI").width, s0 = W / 2 - (a + bw) / 2; x.textAlign = "left"; x.fillStyle = "#F2EFE6"; x.fillText("STARTING ", s0, 196); x.fillStyle = "#E8B23D"; x.fillText("XI", s0 + a, 196); x.textAlign = "center"; }
+    x.fillStyle = "rgba(242,239,230,0.7)"; x.font = "300 32px Oswald, sans-serif"; x.fillText("Montag, 5. Oktober", W / 2, 248);
+    // Ergebniszeile
+    x.font = "400 150px Anton, Impact, sans-serif"; x.fillStyle = "#F2EFE6"; x.textAlign = "right"; x.fillText("9", W / 2 - 20, 420);
+    x.font = "400 70px Anton, Impact, sans-serif"; x.fillStyle = "rgba(242,239,230,0.6)"; x.textAlign = "left"; x.fillText("/11", W / 2 - 14, 420);
+    x.font = "52px sans-serif"; x.textAlign = "center"; x.fillText("⭐⭐", W / 2 + 230, 400); x.fillText("🔥3", W / 2 - 250, 400);
+    // Spielfeld
+    const px = 150, py = 470, pw = 780, ph = 700;
+    const g = x.createLinearGradient(0, py, 0, py + ph); g.addColorStop(0, "#24583D"); g.addColorStop(1, "#1A4430");
+    x.fillStyle = g; rr(x, px, py, pw, ph, 28); x.fill();
+    for (let i = 0; i < 8; i++) if (i % 2 === 0) { x.fillStyle = "rgba(255,255,255,0.035)"; x.fillRect(px, py + i * ph / 8, pw, ph / 8); }
+    x.strokeStyle = "rgba(242,239,230,0.35)"; x.lineWidth = 3; rr(x, px, py, pw, ph, 28); x.stroke();
+    x.beginPath(); x.moveTo(px, py + ph / 2); x.lineTo(px + pw, py + ph / 2); x.stroke();
+    x.beginPath(); x.arc(px + pw / 2, py + ph / 2, 80, 0, Math.PI * 2); x.stroke();
+    x.strokeRect(px + pw * 0.25, py + ph - 110, pw * 0.5, 110); x.strokeRect(px + pw * 0.25, py, pw * 0.5, 110);
+    const COL = { g: "#2ECC71", y: "#E8B23D", x: "#3A4652" };
+    L.forEach(([ab, lx, ly]) => { const cx = px + lx / 100 * pw, cy = py + ly / 100 * ph;
+      x.beginPath(); x.arc(cx, cy, 40, 0, Math.PI * 2); x.fillStyle = COL[RES[ab]]; x.fill(); x.lineWidth = 6; x.strokeStyle = "#14202B"; x.stroke();
+      x.fillStyle = RES[ab] === "x" ? "rgba(242,239,230,0.75)" : "#14202B"; x.font = "500 22px Oswald, sans-serif"; x.textAlign = "center"; x.fillText(ab, cx, cy + 8); });
+    // Fuß
+    x.textAlign = "center"; x.fillStyle = "#F2EFE6"; x.font = "400 52px Anton, Impact, sans-serif"; x.fillText("SCHAFFST DU MEHR?", W / 2, 1262);
+    x.fillStyle = "rgba(242,239,230,0.6)"; x.font = "300 28px Oswald, sans-serif"; x.fillText("🟩 richtig   🟨 mit Hilfe   ⬛ falsch", W / 2, 1310);
+  }
+  function rr(x, a, b, w, h, r) { x.beginPath(); x.moveTo(a + r, b); x.arcTo(a + w, b, a + w, b + h, r); x.arcTo(a + w, b + h, a, b + h, r); x.arcTo(a, b + h, a, b, r); x.arcTo(a, b, a + w, b, r); x.closePath(); }
+  draw(); if (document.fonts) document.fonts.ready.then(draw);
+  document.getElementById("shareBtn").onclick = () => document.getElementById("cv").scrollIntoView({ behavior: "smooth", block: "center" });
+})();
+</script>
+
+</body>
+</html>
