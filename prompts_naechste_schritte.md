@@ -33,10 +33,11 @@ vorige umgesetzt, getestet und committet ist.
 | 19 | „So geht's“ als Reiter-Blatt (4 Themen) + Texte mit Code abgeglichen | ✅ erledigt |
 | 20 | Frei spielen neu sortiert, Stufe 1–5, Tages-Archiv als eigene Karte | ✅ erledigt |
 | 21 | Ladescreen etwas langsamer (~4 s statt ~2,4 s) | ✅ erledigt |
-| 22 | Fehler aus dem Testlauf: Tages-Reihenfolge, Hilfe-Buttons, lange Namen u. a. | – |
-| 23 | Daten: Ajax 1995 durch echtes Spiel ersetzen, fehlende Rückennummern/Nationalitäten | 22 |
+| 22 | Fehler aus dem Testlauf: Tages-Reihenfolge, Hilfe-Buttons, lange Namen u. a. | ✅ erledigt |
+| 23 | Daten: Ajax 1995 durch echtes Spiel ersetzen, fehlende Rückennummern/Nationalitäten | ✅ erledigt |
+| 24 | Tages-Challenge: Ticket-Einkerbung im gelösten Zustand | – |
 
-**Empfohlene Reihenfolge ab jetzt:** 22 → 23 → 8
+**Empfohlene Reihenfolge ab jetzt:** 24 → 8
 
 Prompt 7 steht bewusst vor der Tages-Challenge: Nur mit der neuen
 Update-Strategie kommen neue Tages-Aufstellungen zuverlässig auf dem iPhone an.
@@ -1773,6 +1774,43 @@ zeigen, dann umsetzen; Hook-Ergebnis zeigen.
    blendet sie dort ohnehin aus).
 
 sw.js CACHE_NAME erhöhen. Zum Schluss die Konsistenzprüfung zeigen.
+```
+
+---
+
+## Prompt 24 – Tages-Challenge: Feinschliff
+
+```
+Lies CLAUDE.md. Kleine Korrektur an der Tages-Karte (#dailyCard, Ticket
+.t1 aus Prompt 16) → Änderung kurz beschreiben, dann umsetzen.
+
+1. Untere Einkerbung sitzt im gelösten Zustand zu hoch
+   Befund (gemessen): .t1 hat feste height: 148px, die untere Einkerbung
+   .notch.b hängt an dieser Höhe (bottom: -11px). Im GELÖSTEN Zustand ist
+   der Inhalt von .main/.stub höher als 148px – das Mini-Raster hat bei
+   Formationen mit 5 Reihen (4-2-3-1, 3-4-2-1, 4-1-4-1) 5×9px + 4×2px =
+   53px. Dadurch wachsen .main und .stub auf ca. 152px (402px Breite) bzw.
+   153,5px (430px), das Ticket wird unten länger, die Einkerbung bleibt bei
+   148px stehen und sitzt sichtbar ca. 4–5px oberhalb der Unterkante. Bei
+   375px tritt es nicht auf. Außerdem rückt das Raster dabei dicht an den
+   Titel heran.
+   Fix:
+   - Gelöster Zustand muss in dieselben 148px passen wie der offene
+     (Karte darf beim Lösen nicht springen): Mini-Raster kompakter, z. B.
+     Kästchen 7px, Abstand 2px (5 Reihen = 43px), oder Raster-Höhe auf die
+     Höhe der Zeile begrenzen und proportional skalieren.
+   - Zusätzlich robust machen: .main und .stub dürfen nie höher als .t1
+     werden (z. B. grid-template-rows: 100% bzw. height: 100% + min-height: 0
+     und overflow: hidden), damit die Einkerbungen immer exakt auf Ober-
+     und Unterkante sitzen – egal welcher Inhalt.
+   - Offener Zustand optisch unverändert.
+   Test: gelöster Zustand mit je einer 4- und einer 5-Reihen-Formation bei
+   375×667, 402×874 und 430×932 – per getBoundingClientRect prüfen:
+   Unterkante .main == Unterkante .stub == Unterkante .t1 und Mittelpunkt
+   von .notch.b == Unterkante .t1 (±0,5px); Screenshots offen/gelöst
+   nebeneinander.
+
+sw.js CACHE_NAME erhöhen.
 ```
 
 ---
