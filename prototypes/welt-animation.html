@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, viewport-fit=cover">
-<!-- Ideen-Prototyp "Welt geschafft"-Animation (noch KEIN Prompt): A Pokalübergabe, B Reise zur nächsten Welt, C Aufstieg (Tabelle, erfundene Teamnamen), D Tunnel, A+B kombiniert. Auswahl durch Florian steht aus. Nicht einbinden. -->
+<!-- Ideen-Prototyp "Welt geschafft"-Animation (noch KEIN Prompt): Favorit Florian = C + A (erst Aufstieg-Tabelle, dann Pokalübergabe). Weitere Varianten A, B, C, D, A+B zum Vergleich. Teamnamen in C erfunden. Nicht einbinden. -->
 <title>Welt geschafft</title>
 
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Anton&family=Oswald:wght@300;400;500;600;700&display=swap">
@@ -133,7 +133,8 @@
 <body>
 <div class="controls">
   <div class="seg" role="group" aria-label="Variante">
-    <button type="button" data-v="A" aria-pressed="true">A · Pokal</button>
+    <button type="button" data-v="CA" aria-pressed="true">C + A · Aufstieg + Pokal</button>
+    <button type="button" data-v="A" aria-pressed="false">A · Pokal</button>
     <button type="button" data-v="B" aria-pressed="false">B · Reise</button>
     <button type="button" data-v="C" aria-pressed="false">C · Aufstieg</button>
     <button type="button" data-v="D" aria-pressed="false">D · Tunnel</button>
@@ -148,7 +149,7 @@
 (() => {
   const $ = id => document.getElementById(id);
   const RM = matchMedia("(prefers-reduced-motion: reduce)").matches;
-  let T = [], raf = null, cur = "A", FAST = false;
+  let T = [], raf = null, cur = "CA", FAST = false;
   const at = (ms, fn) => T.push(setTimeout(fn, (RM || FAST) ? 0 : ms));
   function reset() { T.forEach(clearTimeout); T = []; cancelAnimationFrame(raf); $("stage").innerHTML = ""; }
 
@@ -227,7 +228,7 @@
     at(5600, () => { h.remove(); cta("Zur Regionalliga ›", () => play(cur)); });
   }
 
-  function playC() {
+  function playC(next) {
     const s = $("stage");
     const teams = [["SV Grünwiese", 68], ["FC Kreidestadt", 66], ["TSV Flutlicht", 63], ["Eintracht Anstoß", 61], ["SC Elfmeterpunkt", 58], ["VfB Abseits", 55], ["Union Nachspielzeit", 52]];
     s.insertAdjacentHTML("beforeend", `<div class="c-bg"></div>
@@ -251,7 +252,7 @@
       pos = newPos; if (pos === 0) { me.el.classList.add("top"); me.el.classList.remove("moving"); }
     }));
     at(900 + 7 * 560 + 300, () => { $("cBanner").classList.add("on"); confetti(["#E8B23D", "#F4D58D", "#7fd99a", "#2ECC71"]); });
-    at(900 + 7 * 560 + 1100, () => { h.remove(); cta("Weiter ›", () => play(cur)); });
+    at(900 + 7 * 560 + 1100, () => { h.remove(); if (next) at(700, next); else cta("Weiter ›", () => play(cur)); });
   }
 
   function playD() {
@@ -280,12 +281,14 @@
     B: "<b>B · Reise zur nächsten Welt:</b> Auf der Weltkarte springt der Ball vom geschafften Stadion los und hüpft den Weg entlang, der sich dabei gold nachzeichnet. Am nächsten Stadion wackelt das Schloss und bricht auseinander, die vier Flutlichter gehen nacheinander an, dann „Regionalliga“.",
     C: "<b>C · Aufstieg:</b> Die Abschlusstabelle der Kreisliga – dein Team klettert mit jedem Punkt einen Platz nach oben, bis es ganz oben steht. Dann das Banner „Aufstieg in die Regionalliga!“. Teamnamen frei erfunden.",
     D: "<b>D · Tunnel in die neue Liga:</b> Du gehst durch den dunklen Spielertunnel aufs Licht zu, das Licht öffnet sich zum neuen, größeren Stadion, die Flutlichtmasten gehen an, dann „Willkommen in Welt 2 – Regionalliga“.",
-    AB: "<b>A + B · meine Empfehlung:</b> Erst die Pokalübergabe als Belohnung für die geschaffte Welt, dann direkt die Reise auf der Karte als Ausblick auf die nächste. Zusammen ca. 9–10 Sekunden, jederzeit überspringbar."
+    CA: "<b>C + A · deine Kombination:</b> Erst die Abschlusstabelle – dein Team klettert bis auf Platz 1, Banner „Aufstieg in die Regionalliga!“. Dann wird es dunkel, der Flutlicht-Kegel geht an und der Kreisliga-Pokal steigt auf, dreht sich, Konfetti, Plakette mit deinen Sternen. Zusammen ca. 10 Sekunden; ein Tipp springt erst ans Ende der Tabelle, ein zweiter ans Ende des Pokals.",
+    AB: "<b>A + B:</b> Erst die Pokalübergabe als Belohnung für die geschaffte Welt, dann direkt die Reise auf der Karte als Ausblick auf die nächste. Zusammen ca. 9–10 Sekunden, jederzeit überspringbar."
   };
   let stageAB = "A";
   function play(v, fast = false) {
     reset(); FAST = fast; $("note").innerHTML = NOTES[v];
     if (v === "A") playA(); else if (v === "B") playB(); else if (v === "C") playC(); else if (v === "D") playD();
+    else if (v === "CA") { if (fast && stageAB === "A") playA(); else { stageAB = "C"; playC(() => { reset(); stageAB = "A"; playA(); }); } }
     else if (fast && stageAB === "B") playB();
     else { stageAB = "A"; playA(() => { reset(); stageAB = "B"; playB(); }); }
   }
@@ -294,8 +297,9 @@
   // Überspringen: zum Endzustand springen (bei A+B: erst ans Ende von A → weiter zu B, dann ans Ende von B)
   $("stage").addEventListener("click", (e) => { if (e.target.closest(".cta")) return; if (!$("stage").querySelector(".hint")) return;
     if (cur === "AB" && stageAB === "A") { reset(); stageAB = "B"; FAST = false; $("note").innerHTML = NOTES.AB; playB(); return; }
+    if (cur === "CA" && stageAB === "C") { reset(); stageAB = "A"; FAST = false; $("note").innerHTML = NOTES.CA; playA(); return; }
     play(cur, true); });
-  play("A");
+  play("CA");
 })();
 </script>
 
