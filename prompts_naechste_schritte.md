@@ -38,8 +38,9 @@ vorige umgesetzt, getestet und committet ist.
 | 24 | Tages-Challenge: Ticket-Einkerbung, „Erledigt“ + Teilen als Bild | ✅ erledigt |
 | 25 | Duell Teil 1: Hosting-Prüfung, Links, Startseite (Duell-Kachel), Duell-Bildschirme | ✅ erledigt |
 | 26 | Duell Teil 2: Spielen, Walkout, Ergebnis, XP, Bilanz, Trophäen | ✅ erledigt |
+| 27 | Duell-Einladung: „Hier im Browser spielen“ ohne Funktion, Fair-Play-Schritt klarer | – |
 
-**Empfohlene Reihenfolge ab jetzt:** 8 (Capacitor)
+**Empfohlene Reihenfolge ab jetzt:** 27 → 8
 
 Prompt 7 steht bewusst vor der Tages-Challenge: Nur mit der neuen
 Update-Strategie kommen neue Tages-Aufstellungen zuverlässig auf dem iPhone an.
@@ -2047,6 +2048,48 @@ gestellter Testzeit), Link → B spielt → B sieht Ergebnis → Rückmelde-Link
 → A sieht dasselbe Ergebnis; Bilanz, XP und Trophäen bei beiden korrekt;
 Walkout bei 375/402/430 ohne Umbruch-Sprung (Screenshot-Serie); keine
 Konsolenfehler.
+```
+
+---
+
+## Prompt 27 – Duell-Einladung: Weg zum Anpfiff klarer machen
+
+```
+Lies CLAUDE.md. Kleine Korrektur an der Duell-Einladung (renderDuelInvite)
+→ Änderung kurz beschreiben, dann umsetzen.
+
+Befund (Praxistest: Kollege öffnet Duell-Link auf seinem Handy, sieht die
+Einladung, kommt aber nicht ins Spiel; im Code bestätigt):
+- Der Knopf "Hier im Browser spielen" (#duelPathBrowser) hat KEINEN
+  Klick-Handler – Antippen bewirkt nichts, wirkt aber wie der Start-Knopf.
+- "Annehmen & Anpfiff" ist grau, bis der Schalter "Ich spiele fair"
+  angetippt wurde – das ist nirgends erklärt.
+- Das eigene Wappen zeigt "D" (aus "Du") statt des eigenen Anfangs-
+  buchstabens.
+
+Fix:
+1. Im Browser (nicht standalone) die Wahl klar machen:
+   - "Hier im Browser spielen" wählt den Browser-Weg (invitePath =
+     "browser", Knopf sichtbar aktiv), blendet den Hinweis-Kasten und den
+     Code-Knopf aus und scrollt zum Fair-Play-Schalter.
+   - "In der App spielen (Code kopieren)" bleibt wie bisher.
+   - Solange kein Weg gewählt ist, steht "Hier im Browser spielen" als
+     empfohlene Option vorausgewählt (Browser-Weg ist der Normalfall für
+     Freunde ohne installierte App).
+2. Fair-Play als klarer Schritt:
+   - Über dem Schalter klein "Schritt 1: Bestätigen" bzw. am deaktivierten
+     Knopf der Text "Erst „Ich spiele fair“ antippen" statt nur grau.
+   - Tippt man auf den grauen Knopf, kurzer Hinweis (Toast) und der
+     Schalter wird einmal dezent hervorgehoben (kein Blinken, einmalig).
+3. Eigenes Wappen: Anfangsbuchstabe aus profile.duelName; ist noch kein
+   Name gesetzt, "?" statt "D".
+4. Danach wie gehabt: Name abfragen (falls nötig) → Walkout → Spiel.
+
+sw.js CACHE_NAME erhöhen.
+Test: Link in einem frischen Browser-Profil (ohne App, nicht standalone)
+öffnen → mit höchstens 3 Taps (Browser-Weg ist vorgewählt, Fair-Play,
+Annehmen) + Name im Spiel landen; grauen Knopf antippen zeigt Hinweis;
+Screenshots bei 375/402.
 ```
 
 ---
