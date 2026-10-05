@@ -40,8 +40,9 @@ vorige umgesetzt, getestet und committet ist.
 | 26 | Duell Teil 2: Spielen, Walkout, Ergebnis, XP, Bilanz, Trophäen | ✅ erledigt |
 | 27 | Duell-Einladung: „Hier im Browser spielen“ ohne Funktion, Fair-Play-Schritt klarer | – |
 | 28 | Duell: Ergebnis kommt sicher an, beendete Duelle (Richtige + Zeiten), Duelle entfernen | 27 |
+| 29 | Duell: Zwischenstand nach jeder Runde, vorzeitige Entscheidung, Auflösung beim Abpfiff | 28 |
 
-**Empfohlene Reihenfolge ab jetzt:** 27 → 28 → 8
+**Empfohlene Reihenfolge ab jetzt:** 27 → 28 → 29 → 8
 
 Prompt 7 steht bewusst vor der Tages-Challenge: Nur mit der neuen
 Update-Strategie kommen neue Tages-Aufstellungen zuverlässig auf dem iPhone an.
@@ -2211,6 +2212,63 @@ erneutes Öffnen/Einfügen zählt nichts doppelt. Entfernen: je ein offenes
 entfernen → Liste aktualisiert, Bilanz/XP unverändert, Rückgängig stellt
 wieder her, spätere Rückmeldung zum entfernten Duell zeigt nur den
 Hinweis; keine Konsolenfehler.
+```
+
+---
+
+## Prompt 29 – Duell: Zwischenstand nach jeder Runde (Best of 3/5)
+
+```
+Lies CLAUDE.md. Erweiterung des Duell-Spielablaufs (Prompt 26, Bildschirm
+zwischen den Runden + Abpfiff) → kurz Plan zeigen, dann umsetzen. Optik in
+der Sprache von prototypes/duell.html (Wappen, Klappziffern, Anzeigetafel).
+
+Befund: Zwischen den Runden zeigt die App heute nur das eigene Ergebnis
+("Runde 1: 9/11 in 2:14 · Noch 2 Aufstellungen"), keinen Spielstand. Ziel:
+Man soll nach jeder Runde wissen, wie es steht.
+
+Wichtig – zwei Seiten, weil nacheinander gespielt wird:
+- Der EINGELADENE spielt als Zweiter, die Ergebnisse des Herausforderers
+  stehen schon im Link. Er bekommt den echten Zwischenstand.
+- Der HERAUSFORDERER spielt zuerst, der Gegner hat noch nicht gespielt –
+  für ihn gibt es noch keinen Spielstand (das kommt erst mit Accounts).
+
+1. Eingeladener – nach jeder Runde "Runden-Auflösung":
+   - Anzeigetafel: Wappen Du · Klappziffern Spielstand (z. B. 1 : 0) ·
+     Wappen Gegner, darüber "Nach Runde n von m".
+   - Die Runde im Vergleich: "Du 9/11 · 2:14" gegen "<Name> 8/11 · 2:41",
+     👑 beim Rundensieger + Grund ("mehr Spieler gewusst" / "schneller" /
+     "unentschieden"). Aufdecken als kurze einmalige Animation (erst deine
+     Zahl, dann die des Gegners, dann Krone + Spielstand) – kein Blinken,
+     prefers-reduced-motion beachten.
+   - Runden-Striche oben färben: gold = du, blau = Gegner, grau =
+     unentschieden, leer = offen.
+   - Ist das Duell vorzeitig entschieden (z. B. 2 : 0 im Best of 3, 3 : 0
+     oder 3 : 1 im Best of 5): Banner "Entschieden!" und direkt zum
+     Abpfiff – restliche Runden werden nicht gespielt (Wertung bleibt
+     korrekt, weil nur bei Runden-Gleichstand die Summen zählen). XP nur
+     für tatsächlich gespielte Aufstellungen.
+   - Sonst "Weiter zu Runde n+1 ›".
+2. Herausforderer – nach jeder Runde:
+   - Eigenes Ergebnis groß ("Runde 1: 9/11 in 2:14"), Runden-Striche nur
+     mit eigenen Zahlen, darunter: "<Name> spielt danach – den Spielstand
+     siehst du, sobald das Ergebnis zurückkommt." Dann "Weiter ›".
+3. Abpfiff (beide Seiten, auch beim späteren Öffnen über "Beendete
+   Duelle" aus Prompt 28): beim ERSTEN Ansehen die Runden nacheinander
+   auflösen (Runde 1 → Stand 1 : 0, Runde 2 → 1 : 1, Runde 3 → 2 : 1, je
+   ca. 0,8 s, Überspringen per Tipp), danach die bekannte Gesamtansicht.
+   Beim erneuten Öffnen sofort die Gesamtansicht.
+4. Daten: Für die vorzeitige Entscheidung beim Eingeladenen speichern,
+   wie viele Runden tatsächlich gespielt wurden; Rückmelde-Link (#duelr)
+   und Auswertung beim Herausforderer müssen damit umgehen (fehlende
+   Runden = nicht gespielt, nicht 0/11).
+
+sw.js CACHE_NAME erhöhen. Test mit zwei Browser-Profilen, Best of 3 und
+Best of 5: Herausforderer sieht nach jeder Runde nur sein Ergebnis +
+Hinweis; Eingeladener sieht nach jeder Runde den richtigen Spielstand;
+vorzeitige Entscheidung (2 : 0) beendet korrekt; Rückmeldung beim
+Herausforderer zeigt dasselbe Ergebnis und dieselbe Auflösung; XP/Bilanz
+stimmen; keine Konsolenfehler.
 ```
 
 ---
