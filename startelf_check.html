@@ -101,13 +101,11 @@
   .mode-tiles .mt.camp { background: linear-gradient(160deg, #f6da9c, var(--gold) 60%, #D49B26); color: var(--ink); border-color: var(--gold); box-shadow: 0 10px 22px rgba(232,178,61,0.35), inset 0 2px 0 rgba(255,255,255,0.35); }
   .mode-tiles .mt::after { content: ""; position: absolute; inset: 0; pointer-events: none; opacity: 0.5; }
   .mode-tiles .mt.camp::after { background: radial-gradient(circle at 50% 18%, rgba(255,255,255,0.45), transparent 38%); }
-  .mode-tiles .mt.free::after { background: radial-gradient(circle at 50% 50%, transparent 0 34px, rgba(242,239,230,0.07) 35px 36px, transparent 37px), linear-gradient(rgba(242,239,230,0.07), rgba(242,239,230,0.07)) 0 50% / 100% 1px no-repeat; }
   .mode-tiles .mt > * { position: relative; z-index: 1; }
   .mode-tiles .mt .ic { font-size: 30px; line-height: 1; }
   .mode-tiles .mt .nm { font-family: 'Anton', Impact, sans-serif; font-weight: 400; font-size: 22px; line-height: 1; text-transform: uppercase; letter-spacing: 0.01em; }
   .mode-tiles .mt .ft { justify-self: stretch; align-self: end; margin: 6px -10px 0; padding: 7px 10px; display: flex; justify-content: center; align-items: center; gap: 4px; font-family: 'Anton', Impact, sans-serif; font-weight: 400; font-size: 13px; letter-spacing: 0.04em; text-transform: uppercase; }
   .mode-tiles .mt.camp .ft { background: rgba(20,32,43,0.12); border-top: 1px solid rgba(20,32,43,0.18); color: var(--ink); }
-  .mode-tiles .mt.free .ft { background: rgba(0,0,0,0.2); border-top: 1px solid var(--line); color: var(--gold); }
   .mode-tiles .mt .ft svg { width: 12px; height: 12px; }
   .mode-tiles .wp { display: flex; align-items: center; }
   .mode-tiles .wp i { width: 14px; height: 14px; border-radius: 50%; display: grid; place-items: center; font-style: normal; font-family: 'Anton', Impact, sans-serif; font-size: 9px; border: 2px solid rgba(20,32,43,0.3); background: rgba(20,32,43,0.08); color: transparent; }
@@ -117,14 +115,6 @@
   .mode-tiles .wp b.done { background: var(--ink); }
   .mode-tiles .ln { font-family: 'Oswald', sans-serif; font-weight: 600; font-size: 13.5px; line-height: 1; white-space: nowrap; }
   .mode-tiles .ln em { font-style: normal; font-weight: 400; opacity: 0.72; }
-  .mode-tiles .mt.free .ln { color: rgba(242,239,230,0.9); }
-  .mode-tiles .mt.free .ln em { color: var(--muted); opacity: 1; }
-  .mode-tiles .mt.free .ln b { color: var(--gold-2); font-weight: 600; }
-  .mode-tiles .form { display: flex; gap: 4px; align-items: center; }
-  .mode-tiles .form i { width: 22px; height: 18px; border-radius: 4px; display: grid; place-items: center; font-style: normal; font-family: 'Anton', Impact, sans-serif; font-size: 11.5px; line-height: 1; color: var(--ink); }
-  .mode-tiles .form i.w { background: var(--ok); } .mode-tiles .form i.m { background: var(--gold); } .mode-tiles .form i.l { background: #4A5866; color: var(--chalk); }
-  .mode-tiles .form i.last { box-shadow: 0 0 0 2px var(--ink-2), 0 0 0 3.5px rgba(244,213,141,0.7); }
-  .mode-tiles .form i.e { background: rgba(255,255,255,0.08); border: 1px dashed rgba(255,255,255,0.25); }
   /* Kurze Displays (iPhone SE/8: 667px): Kacheln etwas dichter, sonst reicht der Platz mit Scout-Ausweis + Tages-Ticket nicht. */
   @media (max-height: 700px) {
     .mode-tiles .mt { grid-template-rows: 30px 26px 22px 20px auto; row-gap: 4px; padding-top: 10px; }
@@ -570,12 +560,12 @@
   .gs .chips span.tk { color: var(--token); border-color: rgba(125,184,255,0.35); }
   .gs .chips span.g { color: var(--gold-2); border-color: rgba(232,178,61,0.4); }
 
-  .gs .modes { display: grid; grid-template-columns: 78px repeat(3, minmax(0,1fr)); border-radius: 12px; border: 1px solid var(--line); overflow: hidden; background: var(--ink-2); }
+  .gs .modes { display: grid; grid-template-columns: 64px repeat(4, minmax(0,1fr)); border-radius: 12px; border: 1px solid var(--line); overflow: hidden; background: var(--ink-2); }
   .gs .modes > div { padding: 7px 5px; font-size: 13px; text-align: center; border-top: 1px solid var(--line); display: flex; align-items: center; justify-content: center; line-height: 1.25; }
   .gs .modes .rh { justify-content: flex-start; padding-left: 10px; font-weight: 500; font-size: 12px; color: var(--muted); text-align: left; }
   .gs .modes .ch { border-top: none; flex-direction: column; gap: 2px; padding: 9px 4px 8px; background: rgba(255,255,255,0.03); }
   .gs .modes .ch i { font-style: normal; font-size: 19px; }
-  .gs .modes .ch b { font-family: 'Anton', Impact, sans-serif; font-weight: 400; font-size: 13.5px; text-transform: uppercase; line-height: 1.05; }
+  .gs .modes .ch b { font-family: 'Anton', Impact, sans-serif; font-weight: 400; font-size: 12.5px; text-transform: uppercase; line-height: 1.05; }
   .gs .modes .c0 { border-top: none; background: rgba(255,255,255,0.03); }
   .gs .modes .y { color: var(--ok); font-weight: 600; }
   .gs .modes .no { color: var(--dim); }
@@ -664,6 +654,190 @@
     .fp .lab.sep { margin-top: 2px; }
     .fp .go { padding: 12px; }
   }
+
+  /* ---- Duell gegen Freunde (Prompt 25) - Optik 1:1 aus prototypes/duell.html, strikt gescoped ---- */
+  /* Startseiten-Kachel */
+  .mode-tiles .mt.duel { background: repeating-linear-gradient(90deg, rgba(255,255,255,0.035) 0 16px, transparent 16px 32px), linear-gradient(150deg, #27603F, #173F2B 85%); border-color: rgba(232,178,61,0.65); color: var(--chalk); }
+  .mode-tiles .mt.duel::after { background: radial-gradient(circle at 50% 50%, transparent 0 34px, rgba(242,239,230,0.07) 35px 36px, transparent 37px); }
+  .mode-tiles .mt.duel .ft { background: rgba(0,0,0,0.2); border-top: 1px solid var(--line); color: var(--gold); white-space: nowrap; letter-spacing: 0.02em; }
+  @media (max-width: 389px) { .mode-tiles .mt.duel .ft { font-size: 12px; letter-spacing: 0; gap: 3px; } }
+  .mode-tiles .mt.duel .ln { color: rgba(242,239,230,0.9); }
+  .mode-tiles .mt.duel .ln em { color: var(--muted); opacity: 1; }
+  .mode-tiles .duel .dcount { position: absolute; top: 8px; right: 8px; z-index: 2; min-width: 22px; height: 22px; border-radius: 11px; padding: 0 6px; display: grid; place-items: center; background: var(--gold); color: var(--ink); font-family: 'Anton', Impact, sans-serif; font-size: 13px; border: 1.5px solid rgba(20,32,43,0.55); }
+  .mode-tiles .duel .dpair { display: flex; align-items: center; justify-content: center; gap: 7px; }
+  .mode-tiles .duel .dpair .flip b { font-size: 15px; min-width: 14px; padding: 3px 2px 2px; }
+  .mode-tiles .duel .dpair .flip i { font-size: 14px; margin: 0; }
+  .solo-line { flex-shrink: 0; align-self: center; background: none; border: none; font-family: 'Oswald', sans-serif; font-weight: 400; font-size: 14px; color: var(--muted); cursor: pointer; padding: 2px 6px; }
+  .solo-line b { font-weight: 600; color: var(--gold); }
+  .solo-line:focus-visible { outline: 2px solid var(--gold-2); outline-offset: 2px; border-radius: 8px; }
+  @media (max-height: 700px) { #screen-start { gap: 6px; } .solo-line { font-size: 13px; line-height: 1; padding: 0 6px; } }
+  /* Formkurve oben auf dem Frei-spielen-Bildschirm */
+  #screen-freeplay .fpform { margin-left: auto; display: flex; align-items: center; gap: 4px; }
+  #screen-freeplay .fpform small { font-family: 'Oswald', sans-serif; font-weight: 500; font-size: 11px; color: rgba(242,239,230,0.55); margin-right: 3px; }
+  #screen-freeplay .fpform i { width: 20px; height: 16px; border-radius: 4px; display: grid; place-items: center; font-style: normal; font-family: 'Anton', Impact, sans-serif; font-size: 11px; color: var(--ink); background: #4A5663; }
+  #screen-freeplay .fpform i.e { background: transparent; border: 1px dashed rgba(242,239,230,0.3); }
+  #screen-freeplay .fpform i.w { background: var(--ok); } #screen-freeplay .fpform i.m { background: var(--gold); }
+  #screen-freeplay .fpform i.last { box-shadow: 0 0 0 2px var(--chalk); }
+  #screen-freeplay .topbar-title { white-space: nowrap; }
+  @media (max-width: 389px) { #screen-freeplay .fpform { gap: 3px; } #screen-freeplay .fpform small { display: none; } #screen-freeplay .fpform i { width: 17px; } }
+
+  /* Duell-Bildschirme: gemeinsame Wurzel .dl */
+  .dl { --bad: #E0705F; --muted: rgba(242,239,230,0.7); --dim: rgba(242,239,230,0.45); display: flex; flex-direction: column; gap: 14px; min-height: 0; }
+  .dl .h1 { font-family: 'Anton', Impact, sans-serif; font-weight: 400; font-size: 30px; line-height: 0.95; flex: 1; }
+  .dl .h1 span { color: var(--gold); text-shadow: 0 0 18px rgba(232,178,61,0.3); }
+  .dl .topbar { margin-bottom: 0; }
+  #screen-duelinvite .dl .h1 { font-size: 24px; line-height: 1; }
+  .dl .st { display: flex; align-items: center; gap: 8px; }
+  .dl .st b { font-family: 'Oswald', sans-serif; font-weight: 600; font-size: 16px; }
+  .dl .st .cnt { min-width: 20px; height: 20px; border-radius: 10px; padding: 0 6px; display: grid; place-items: center; background: var(--gold); color: var(--ink); font-family: 'Anton', Impact, sans-serif; font-size: 12px; }
+  .dl .st em { margin-left: auto; font-style: normal; font-weight: 300; font-size: 13px; color: var(--dim); }
+  .dl .st .num { width: 22px; height: 22px; border-radius: 50%; display: grid; place-items: center; background: var(--gold); color: var(--ink); font-family: 'Anton', Impact, sans-serif; font-size: 12px; }
+  .dl .small { font-family: 'Oswald', sans-serif; font-weight: 300; font-size: 12.5px; color: var(--muted); line-height: 1.4; }
+  /* Klappziffern wie Tages-Karte */
+  .dl .flip { display: inline-flex; gap: 3px; align-items: center; }
+  .dl .flip b { font-family: 'Anton', Impact, sans-serif; font-weight: 400; line-height: 1; text-align: center; border-radius: 5px; color: var(--gold-2); position: relative;
+    background: linear-gradient(180deg, #0d171f 0 49%, #0a1218 51% 100%); box-shadow: inset 0 0 0 1px rgba(255,255,255,0.06), 0 2px 0 rgba(0,0,0,0.35); }
+  .dl .flip b::after { content: ""; position: absolute; left: 0; right: 0; top: 50%; height: 1px; background: rgba(0,0,0,0.6); }
+  .dl .flip i { font-style: normal; font-family: 'Anton', Impact, sans-serif; color: rgba(244,213,141,0.55); }
+  .dl .flip.xl b { font-size: 40px; min-width: 34px; padding: 6px 4px 5px; } .dl .flip.xl i { font-size: 32px; margin: 0 3px; }
+  /* Anzeigetafel */
+  .dl .board { border-radius: 16px; padding: 14px 14px 12px; border: 1.5px solid rgba(232,178,61,0.6); position: relative; overflow: hidden;
+    background: repeating-linear-gradient(90deg, rgba(255,255,255,0.03) 0 16px, transparent 16px 32px), linear-gradient(150deg, #27603F, #173F2B 85%); }
+  .dl .board .top2 { display: flex; justify-content: space-between; align-items: baseline; }
+  .dl .board .top2 span { font-family: 'Oswald', sans-serif; font-weight: 400; font-size: 14px; color: rgba(242,239,230,0.85); }
+  .dl .board .top2 em { font-style: normal; font-family: 'Oswald', sans-serif; font-weight: 500; font-size: 13px; color: var(--gold-2); }
+  .dl .board .mid { display: grid; grid-template-columns: 1fr auto 1fr; align-items: center; margin-top: 8px; }
+  .dl .board .lbl { font-family: 'Oswald', sans-serif; font-weight: 400; font-size: 13px; color: rgba(242,239,230,0.8); }
+  .dl .board .lbl.r { text-align: right; }
+  .dl .board .lbl b { display: block; font-family: 'Anton', Impact, sans-serif; font-weight: 400; font-size: 17px; color: var(--chalk); }
+  .dl .startbtn { border: none; border-radius: 14px; padding: 13px; width: 100%; display: flex; align-items: center; justify-content: center; gap: 10px; flex-shrink: 0; cursor: pointer;
+    font-family: 'Anton', Impact, sans-serif; font-size: 21px; letter-spacing: 0.02em; color: var(--gold-2);
+    background: repeating-linear-gradient(90deg, rgba(255,255,255,0.04) 0 14px, transparent 14px 28px), linear-gradient(150deg, #2F7A50, #1B4A32); box-shadow: 0 4px 0 #0E2A1C, inset 0 0 0 1.5px rgba(232,178,61,0.45); }
+  .dl .startbtn:disabled { opacity: 0.4; cursor: default; }
+  .dl .startbtn:active:not(:disabled) { transform: translateY(2px); box-shadow: 0 2px 0 #0E2A1C, inset 0 0 0 1.5px rgba(232,178,61,0.45); }
+  .dl .ghost2 { border: 1px solid var(--line); background: transparent; border-radius: 12px; padding: 10px; width: 100%; font-family: 'Anton', Impact, sans-serif; font-size: 17px; color: var(--muted); flex-shrink: 0; cursor: pointer; }
+  .dl .spacer { flex: 1; }
+  /* Wappen */
+  .dl .crest { width: 38px; height: 42px; flex-shrink: 0; display: grid; place-items: center; font-family: 'Anton', Impact, sans-serif; font-size: 18px; color: var(--ink);
+    background: linear-gradient(160deg, #9CCBFF, #5E95D6); clip-path: path("M19 0 L38 6 L38 22 C38 33 29 39 19 42 C9 39 0 33 0 22 L0 6 Z"); }
+  .dl .crest.me, .mode-tiles .crest.me { background: linear-gradient(160deg, #F6DA9C, #E8B23D); }
+  .dl .crest.lg { width: 64px; height: 70px; font-size: 30px; clip-path: path("M32 0 L64 10 L64 37 C64 55 49 65 32 70 C15 65 0 55 0 37 L0 10 Z"); }
+  .mode-tiles .crest { width: 22px; height: 25px; flex-shrink: 0; display: grid; place-items: center; font-family: 'Anton', Impact, sans-serif; font-size: 12px; color: var(--ink); background: linear-gradient(160deg, #9CCBFF, #5E95D6);
+    clip-path: path("M11 0 L22 3.5 L22 12.5 C22 19 17 23 11 25 C5 23 0 19 0 12.5 L0 3.5 Z"); }
+  /* Mini-Tickets */
+  .dl .tk { --stub: 92px; position: relative; display: grid; grid-template-columns: minmax(0, 1fr) var(--stub); min-height: 66px; text-align: left; width: 100%; padding: 0; border: none; background: none; color: inherit; font-family: inherit; }
+  .dl button.tk { cursor: pointer; }
+  .dl .tk .m, .dl .tk .s { border: 1.5px solid var(--line); }
+  .dl .tk .m { border-right: none; border-radius: 12px 0 0 12px; background: var(--ink-2); padding: 9px 10px 9px 12px; display: flex; align-items: center; gap: 10px; min-width: 0; }
+  .dl .tk .s { border-left: none; border-radius: 0 12px 12px 0; position: relative; display: grid; place-items: center; text-align: center; background: var(--ink-3); }
+  .dl .tk .s::before { content: ""; position: absolute; left: -1px; top: 9px; bottom: 9px; border-left: 2.5px dotted rgba(242,239,230,0.25); }
+  .dl .tk .nt { position: absolute; right: var(--stub); width: 14px; height: 14px; margin-right: -7px; border-radius: 50%; background: var(--ink); border: 1.5px solid var(--line); z-index: 2; }
+  .dl .tk .nt.t { top: -7px; clip-path: inset(50% 0 0 0); } .dl .tk .nt.b { bottom: -7px; clip-path: inset(0 0 50% 0); }
+  .dl .tk.hot .m, .dl .tk.hot .s, .dl .tk.hot .nt { border-color: rgba(232,178,61,0.7); }
+  .dl .tk.hot .m { background: repeating-linear-gradient(90deg, rgba(255,255,255,0.03) 0 14px, transparent 14px 28px), linear-gradient(150deg, #27603F, #173F2B 85%); }
+  .dl .tk.hot .s { background: linear-gradient(160deg, #F6DA9C, #E8B23D 70%); }
+  .dl .tk.hot .s::before { border-left-color: rgba(20,32,43,0.45); }
+  .dl .tk .t2 { min-width: 0; display: flex; flex-direction: column; gap: 4px; }
+  .dl .tk .t2 b { font-family: 'Oswald', sans-serif; font-weight: 600; font-size: 15px; line-height: 1.1; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  .dl .tk .chips { display: flex; gap: 4px; flex-wrap: wrap; }
+  .dl .tk .chips span { font-family: 'Oswald', sans-serif; font-weight: 500; font-size: 11.5px; padding: 1px 7px; border-radius: 8px; background: rgba(0,0,0,0.22); color: rgba(242,239,230,0.85); white-space: nowrap; }
+  .dl .tk .s .play { font-family: 'Anton', Impact, sans-serif; font-size: 18px; color: var(--ink); line-height: 1; }
+  .dl .tk .s .play small { display: block; font-family: 'Oswald', sans-serif; font-weight: 500; font-size: 11px; color: rgba(20,32,43,0.75); margin-top: 3px; }
+  .dl .tk .s .wait { font-family: 'Oswald', sans-serif; font-weight: 400; font-size: 12px; line-height: 1.25; color: var(--muted); padding: 0 4px; }
+  .dl .tk .s .wait b { display: block; font-size: 16px; }
+  .dl .tk .s .remind { margin-top: 3px; border: 1px solid var(--line); background: transparent; color: var(--gold-2); border-radius: 8px; padding: 2px 8px; font-family: 'Oswald', sans-serif; font-weight: 600; font-size: 11.5px; cursor: pointer; }
+  /* Freunde-Bilanz */
+  .dl .fr { display: flex; flex-direction: column; gap: 6px; }
+  .dl .fr .r { display: grid; grid-template-columns: 30px 1fr auto; gap: 10px; align-items: center; }
+  .dl .fr .r .crest { width: 28px; height: 31px; font-size: 13px; clip-path: path("M14 0 L28 4.5 L28 16 C28 24 21 29 14 31 C7 29 0 24 0 16 L0 4.5 Z"); }
+  .dl .fr .nm2 { font-family: 'Oswald', sans-serif; font-weight: 500; font-size: 14.5px; display: flex; flex-direction: column; gap: 4px; min-width: 0; }
+  .dl .fr .bar { height: 5px; border-radius: 3px; background: rgba(242,239,230,0.12); overflow: hidden; display: flex; }
+  .dl .fr .bar i { background: var(--ok); } .dl .fr .bar u { background: rgba(224,112,95,0.55); }
+  .dl .fr .sc2 { font-family: 'Anton', Impact, sans-serif; font-size: 20px; } .dl .fr .sc2 em { font-style: normal; color: var(--dim); margin: 0 3px; }
+  /* Trophaeen-Regal */
+  .dl .dshelf { display: grid; grid-template-columns: repeat(4, minmax(0,1fr)); gap: 6px; padding-bottom: 6px; border-bottom: 4px solid #3A2A12; box-shadow: 0 6px 0 -2px rgba(0,0,0,0.3); }
+  .dl .dshelf div { text-align: center; display: flex; flex-direction: column; align-items: center; gap: 3px; }
+  .dl .dshelf i { font-style: normal; font-size: 26px; line-height: 1; filter: drop-shadow(0 3px 4px rgba(0,0,0,0.4)); }
+  .dl .dshelf span { font-family: 'Oswald', sans-serif; font-weight: 500; font-size: 12px; line-height: 1.15; }
+  .dl .dshelf .off i { filter: grayscale(1) brightness(0.45); } .dl .dshelf .off span { color: var(--dim); }
+  /* Leerzustand + Code einfuegen */
+  .dl .empty { border-radius: 12px; border: 1px dashed rgba(232,178,61,0.45); background: rgba(232,178,61,0.05); padding: 12px 14px; font-family: 'Oswald', sans-serif; font-weight: 300; font-size: 13.5px; line-height: 1.45; }
+  .dl .empty b { font-weight: 600; }
+  .dl .pastebtn { align-self: center; background: none; border: none; font-family: 'Oswald', sans-serif; font-weight: 500; font-size: 13px; color: var(--muted); text-decoration: underline; text-underline-offset: 3px; cursor: pointer; padding: 4px 8px; }
+  .dl [hidden] { display: none !important; }
+  .dl .paste { display: flex; flex-direction: column; gap: 6px; border-radius: 12px; border: 1px solid var(--line); background: var(--ink-2); padding: 10px 12px; }
+  .dl .paste input { width: 100%; border-radius: 9px; border: 1px solid var(--line); background: rgba(10,22,16,0.6); color: var(--chalk); font-family: 'Oswald', sans-serif; font-size: 14px; padding: 9px 10px; }
+  .dl .paste .row2 { display: flex; gap: 8px; }
+  .dl .paste button { flex: 1; border: 1px solid rgba(232,178,61,0.6); background: rgba(232,178,61,0.12); color: var(--gold-2); border-radius: 10px; padding: 8px; font-family: 'Oswald', sans-serif; font-weight: 600; font-size: 13.5px; cursor: pointer; }
+  .dl .paste .msg { font-family: 'Oswald', sans-serif; font-weight: 400; font-size: 12.5px; color: #F2A497; min-height: 0; }
+  /* Neues Duell */
+  .dl .fm { display: grid; grid-template-columns: repeat(3, minmax(0,1fr)); gap: 7px; }
+  .dl .fm button { border-radius: 12px; border: 1.5px solid var(--line); background: var(--ink-2); padding: 10px 4px 9px; display: flex; flex-direction: column; align-items: center; gap: 5px; color: inherit; cursor: pointer; font-family: inherit; }
+  .dl .fm b { font-family: 'Anton', Impact, sans-serif; font-weight: 400; font-size: 19px; line-height: 1; }
+  .dl .fm span { font-family: 'Oswald', sans-serif; font-weight: 300; font-size: 12px; color: var(--muted); }
+  .dl .fm button.on { border-color: rgba(232,178,61,0.8); background: linear-gradient(160deg, rgba(232,178,61,0.18), rgba(232,178,61,0.05)); }
+  .dl .fm button.on b { color: var(--gold-2); }
+  .dl .ring { width: 30px; height: 30px; }
+  .dl .ring circle { fill: none; stroke-width: 4; }
+  .dl .ring .bg { stroke: rgba(242,239,230,0.15); } .dl .ring .fg { stroke: rgba(242,239,230,0.45); stroke-linecap: round; transform: rotate(-90deg); transform-origin: 50% 50%; }
+  .dl .fm button.on .ring .fg { stroke: var(--gold); }
+  .dl .lvl2 { display: grid; grid-template-columns: repeat(6, minmax(0,1fr)); gap: 5px; }
+  .dl .lvl2 button { border-radius: 10px; border: 1.5px solid var(--line); background: var(--ink-2); padding: 7px 2px 6px; display: flex; flex-direction: column; align-items: center; gap: 4px; cursor: pointer; font-family: inherit; }
+  .dl .lvl2 .bars { display: flex; flex-direction: row; gap: 2px; height: 9px; align-items: center; } .dl .lvl2 .bars i { width: 4px; height: 9px; border-radius: 2px; background: rgba(255,255,255,0.15); } .dl .lvl2 .bars i.on { background: currentColor; }
+  .dl .lvl2 b { font-family: 'Oswald', sans-serif; font-weight: 600; font-size: 12.5px; line-height: 1; color: var(--chalk); }
+  .dl .lvl2 button.on { border-color: currentColor; background: color-mix(in srgb, currentColor 14%, transparent); }
+  .dl .rules2 { border-radius: 12px; border: 1px solid var(--line); padding: 10px 12px; display: flex; flex-direction: column; gap: 6px; }
+  .dl .rules2 p { margin: 0; font-family: 'Oswald', sans-serif; font-weight: 300; font-size: 13.5px; line-height: 1.4; display: flex; gap: 8px; } .dl .rules2 p b { font-weight: 600; }
+  .dl .rules2 p i { font-style: normal; width: 20px; flex-shrink: 0; text-align: center; }
+  .dl .fair { display: flex; gap: 11px; align-items: center; border-radius: 12px; padding: 9px 12px; border: 1px solid rgba(46,204,113,0.35); background: rgba(46,204,113,0.06); text-align: left; width: 100%; color: inherit; font-family: inherit; cursor: pointer; }
+  .dl .fair .sw { width: 38px; height: 22px; border-radius: 11px; background: rgba(242,239,230,0.2); position: relative; flex-shrink: 0; transition: background 0.2s; }
+  .dl .fair .sw::after { content: ""; position: absolute; top: 3px; left: 3px; width: 16px; height: 16px; border-radius: 50%; background: var(--chalk); transition: left 0.2s; }
+  .dl .fair.on .sw { background: var(--ok); } .dl .fair.on .sw::after { left: 19px; }
+  .dl .fair b { font-family: 'Oswald', sans-serif; font-weight: 600; font-size: 14px; display: block; }
+  .dl .fair span { font-family: 'Oswald', sans-serif; font-weight: 300; font-size: 12.5px; color: var(--muted); }
+  /* Einladung */
+  .dl .inv { border-radius: 16px; overflow: hidden; border: 1.5px solid rgba(232,178,61,0.65); }
+  .dl .inv .top3 { padding: 14px 14px 12px; text-align: center; position: relative;
+    background: repeating-linear-gradient(90deg, rgba(255,255,255,0.03) 0 16px, transparent 16px 32px), linear-gradient(150deg, #27603F, #173F2B 85%); }
+  .dl .inv .top3 .k2 { font-family: 'Oswald', sans-serif; font-weight: 400; font-size: 15px; color: rgba(242,239,230,0.9); }
+  .dl .inv .top3 .k2 b { font-weight: 600; color: var(--gold-2); }
+  .dl .inv .pair { display: grid; grid-template-columns: 1fr auto 1fr; align-items: center; margin-top: 12px; }
+  .dl .inv .pl { display: flex; flex-direction: column; align-items: center; gap: 5px; min-width: 0; }
+  .dl .inv .pl b { font-family: 'Anton', Impact, sans-serif; font-weight: 400; font-size: 22px; line-height: 1; max-width: 100%; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  .dl .inv .pl span { font-family: 'Oswald', sans-serif; font-weight: 300; font-size: 12.5px; color: rgba(242,239,230,0.8); }
+  .dl .inv .pl .crest { font-size: 30px; }
+  .dl .inv .vs2 { font-family: 'Anton', Impact, sans-serif; font-size: 30px; color: var(--gold); text-shadow: 0 0 18px rgba(232,178,61,0.5); padding: 0 8px; }
+  .dl .inv .strip { display: grid; grid-template-columns: repeat(3, 1fr); background: linear-gradient(160deg, #F6DA9C, #E8B23D 70%); color: var(--ink); border-top: 2.5px dotted rgba(20,32,43,0.4); }
+  .dl .inv .strip div { padding: 9px 4px; text-align: center; } .dl .inv .strip div + div { border-left: 1px solid rgba(20,32,43,0.18); }
+  .dl .inv .strip b { font-family: 'Anton', Impact, sans-serif; font-weight: 400; font-size: 18px; display: block; line-height: 1.1; }
+  .dl .inv .strip span { font-family: 'Oswald', sans-serif; font-weight: 500; font-size: 11.5px; color: rgba(20,32,43,0.75); }
+  .dl .note2 { display: flex; gap: 10px; align-items: center; border-radius: 12px; padding: 10px 12px; border: 1px solid var(--line); background: var(--ink-2); }
+  .dl .note2 i { font-style: normal; font-size: 20px; }
+  .dl .note2 p { margin: 0; font-family: 'Oswald', sans-serif; font-weight: 300; font-size: 13.5px; line-height: 1.4; } .dl .note2 p b { font-weight: 600; }
+  .dl .twoways { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+  .dl .twoways button { border: 1px solid rgba(232,178,61,0.6); background: rgba(232,178,61,0.1); color: var(--gold-2); border-radius: 12px; padding: 9px 6px; font-family: 'Oswald', sans-serif; font-weight: 600; font-size: 13px; line-height: 1.2; cursor: pointer; }
+  .dl .twoways button.on { background: rgba(232,178,61,0.28); }
+  /* Kurze Handys (375x667): "Neues Duell" und "Einladung" etwas dichter, damit sie ohne Scrollen passen */
+  @media (max-height: 700px) {
+    .dl { gap: 9px; }
+    .dl .h1 { font-size: 26px; }
+    #screen-duelinvite .dl .h1 { font-size: 22px; }
+    .dl .fm button { padding: 7px 4px 6px; gap: 3px; }
+    .dl .ring { width: 26px; height: 26px; }
+    .dl .rules2 { padding: 8px 10px; gap: 4px; }
+    .dl .rules2 p { font-size: 13px; line-height: 1.3; }
+    .dl .fair { padding: 7px 12px; }
+    .dl .startbtn { padding: 11px; font-size: 19px; }
+    .dl .inv .top3 { padding: 11px 12px 10px; }
+    .dl .inv .pair { margin-top: 8px; }
+    .dl .note2 { padding: 8px 12px; }
+  }
+  /* Duell-Name im Scout-Profil */
+  .duel-name-row { display: flex; align-items: center; gap: 10px; margin-top: 12px; border-radius: 10px; border: 1px solid var(--line); background: var(--ink-3); padding: 9px 12px; font-family: 'Oswald', sans-serif; font-size: 13.5px; }
+  .duel-name-row b { font-weight: 600; flex: 1; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  .duel-name-row button { border: 1px solid var(--line); background: transparent; color: var(--gold-2); border-radius: 14px; padding: 4px 12px; font-family: 'Oswald', sans-serif; font-weight: 600; font-size: 12px; cursor: pointer; }
+  .duel-name-box { display: flex; flex-direction: column; gap: 12px; }
+  .duel-name-box input { border-radius: 10px; border: 1px solid var(--line); background: rgba(10,22,16,0.6); color: var(--chalk); font-family: 'Oswald', sans-serif; font-size: 18px; padding: 10px 12px; width: 100%; }
 
   body.theme-flutlicht .pitch { background: linear-gradient(180deg, #1a2a5c, #0f1638); }
   body.theme-flutlicht .pitch .halfway, body.theme-flutlicht .pitch .center-circle, body.theme-flutlicht .pitch .box-top, body.theme-flutlicht .pitch .box-bottom { border-color: rgba(180,180,255,0.3); }
@@ -779,6 +953,7 @@
     <div id="dailyCard" class="t1"></div>
 
     <div class="mode-tiles" id="modeTiles"></div>
+    <button type="button" class="solo-line" id="soloLine">🎲 Lieber allein trainieren? <b>Frei spielen</b> ›</button>
   </section>
 
   <!-- WELTKARTE -->
@@ -804,9 +979,15 @@
     <div class="topbar">
       <button class="back-btn" type="button" id="backFromFreeplay"><span class="back-arrow">←</span>Start</button>
       <div class="topbar-title">Frei spielen</div>
+      <div class="fpform" id="fpForm" aria-label="Formkurve der letzten Freispiele"></div>
     </div>
     <div class="fp" id="freeplayBody"></div>
   </section>
+
+  <!-- DUELL (Prompt 25) -->
+  <section class="screen scroll-y" id="screen-duels" aria-label="Deine Duelle" hidden><div class="dl" id="duelsView"></div></section>
+  <section class="screen scroll-y" id="screen-duelnew" aria-label="Neues Duell" hidden><div class="dl" id="duelNewView"></div></section>
+  <section class="screen scroll-y" id="screen-duelinvite" aria-label="Einladung" hidden><div class="dl" id="duelInviteView"></div></section>
 
   <!-- SPIELFELD -->
   <section class="screen scroll-y" id="screen-game" aria-label="Spielfeld" hidden>
@@ -1730,6 +1911,9 @@ function refreshScreenContent(id) {
   if (id === "worldmap") renderCampaignWorlds();
   if (id === "levelpath") renderCampaignLevels();
   if (id === "freeplay") renderFreeplay();
+  if (id === "duels") renderDuels();
+  if (id === "duelnew") renderDuelNew();
+  if (id === "duelinvite") renderDuelInvite();
 }
 
 // Falls schon eine Übergangsanimation läuft (schnelles Wischen/Tippen kurz
@@ -1809,6 +1993,7 @@ window.addEventListener("popstate", (e) => {
   navStack = (e.state && e.state.stack) || ["start"];
   showScreen(navStack[navStack.length - 1], "back");
 });
+const INITIAL_HASH = location.hash; // Duell-Links (#duel= / #duelr=): VOR dem replaceState sichern, nach dem Init ausgewertet
 history.replaceState({ stack: navStack.slice() }, "", "#start");
 
 // Wischgeste vom linken Rand = zurück (wie prototypes/navigation.html)
@@ -1997,6 +2182,11 @@ const defaultProfile = {
   streak: { current: 0, best: 0, lastDayKey: null }, // NUR Tages-Challenge zaehlt, kein Serien-Schutz (Prompt 13)
   daily: {}, // dateKey ("YYYY-MM-DD") -> { id, correct, grid, stars }
   freeplayForm: [], // Trefferzahlen (0-11) der letzten 5 Freispiel-Ergebnisse, aelteste zuerst (Prompt 18)
+  deviceId: null, // Duell (Prompt 25): einmalig zufaellige Geraete-ID, wird in loadProfile() vergeben
+  duelName: null, // Anzeigename im Duell (max. 16 Zeichen), beim ersten Duell abgefragt
+  duels: {}, // duelId -> { role, opponent, settings, lineups, mine, theirs, status, created }
+  duelStats: { wins: 0, losses: 0, draws: 0, streak: 0, bestStreak: 0, sweeps: 0, perOpponent: {} },
+  duelRecent: [], // zuletzt in Duellen gespielte Aufstellungs-IDs (max. 40)
   stats: {
     lineupsPlayed: 0,
     lineupsPerfect: 0,
@@ -2111,6 +2301,13 @@ function loadProfile() {
     if (!profile.streak || typeof profile.streak !== "object") profile.streak = { current: 0, best: 0, lastDayKey: null };
     if (!profile.daily || typeof profile.daily !== "object") profile.daily = {};
     if (!Array.isArray(profile.freeplayForm)) profile.freeplayForm = [];
+    // Duell (Prompt 25): fehlende Felder bei bestehenden Profilen anlegen
+    if (typeof profile.deviceId !== "string" || !profile.deviceId) { profile.deviceId = randomHex(6); saveProfile(profile); }
+    if (typeof profile.duelName !== "string") profile.duelName = null;
+    if (!profile.duels || typeof profile.duels !== "object") profile.duels = {};
+    if (!profile.duelStats || typeof profile.duelStats !== "object") profile.duelStats = {};
+    { const ds = profile.duelStats; ["wins", "losses", "draws", "streak", "bestStreak", "sweeps"].forEach(k => { if (typeof ds[k] !== "number") ds[k] = 0; }); if (!ds.perOpponent || typeof ds.perOpponent !== "object") ds.perOpponent = {}; }
+    if (!Array.isArray(profile.duelRecent)) profile.duelRecent = [];
     if (typeof profile.stats.positionsCorrectFuzzy !== "number") profile.stats.positionsCorrectFuzzy = 0;
     // Fester Zufalls-Seed pro Profil (Prompt 9): macht die pro Kampagnen-Level geschenkten
     // Positionen deterministisch statt bei jedem Neustart neu auszuwuerfeln. Sofort
@@ -2429,14 +2626,16 @@ const GUIDE_TABS = [
       <div class="ch"><i>🌍</i><b>Kampagne</b></div>
       <div class="ch"><i>📅</i><b>Tages-<br>Challenge</b></div>
       <div class="ch"><i>🎲</i><b>Frei<br>spielen</b></div>
-      <div class="rh">Spiele</div><div class="v">5 Welten</div><div class="v">1 pro Tag</div><div class="v">frei wählbar</div>
-      <div class="rh">Versuche</div><div class="v">beliebig</div><div class="v">1</div><div class="v">beliebig</div>
-      <div class="rh">Sterne ⭐</div><div class="y">✓</div><div class="y">✓</div><div class="no">–</div>
-      <div class="rh">Serie 🔥</div><div class="no">–</div><div class="y">✓</div><div class="no">–</div>
+      <div class="ch"><i>⚔️</i><b>Duell</b></div>
+      <div class="rh">Spiele</div><div class="v">5 Welten</div><div class="v">1 pro Tag</div><div class="v">frei wählbar</div><div class="v">1, 3 oder 5</div>
+      <div class="rh">Versuche</div><div class="v">beliebig</div><div class="v">1</div><div class="v">beliebig</div><div class="v">1</div>
+      <div class="rh">Sterne ⭐</div><div class="y">✓</div><div class="y">✓</div><div class="no">–</div><div class="no">–</div>
+      <div class="rh">Serie 🔥</div><div class="no">–</div><div class="y">✓</div><div class="no">–</div><div class="no">–</div>
     </div>
     <div class="card">
       <div class="mline"><span class="ic">🌍</span><p><b>Kampagne:</b> Von Kreisliga bis Weltklasse. Ab <b>${PASS_THRESHOLD} von 11</b> ist ein Level bestanden – das nächste wird frei.</p></div>
       <div class="mline"><span class="ic">📅</span><p><b>Tages-Challenge:</b> Für alle dasselbe Spiel. <b>Jeden Tag ein anderes Spiel – keine Wiederholung, bis alle durch sind.</b> Täglich spielen baut deine 🔥-Serie auf – bis zu <b>+${Math.round(XP_RULES.dailyStreakBonusMax * 100)} % XP</b>. Ergebnis als Raster teilbar.</p></div>
+      <div class="mline"><span class="ic">⚔️</span><p><b>Duell:</b> Fordere einen Freund per Link heraus – gleiche Aufstellungen, jeder für sich mit Zeitlimit. Wer mehr Spieler kennt, gewinnt. Kein Scout-Rad, keine Hilfen.</p></div>
       <div class="mline"><span class="ic">🎲</span><p><b>Frei spielen:</b> Training ohne Druck. Mehrere Wettbewerbe oder Stufen antippen = mehr Spiele, beides kombiniert grenzt die Auswahl ein. Mit Tages-Archiv für verpasste Tage.</p></div>
     </div>` },
   { id: "belohnung", icon: "🏆", label: "Belohnung", render: () => `
@@ -2586,6 +2785,11 @@ function freeplayChipGroups() {
 }
 
 function renderFreeplay() {
+  // Formkurve (Prompt 18) bleibt sichtbar: klein oben rechts neben dem Titel (Duell-Kachel hat die Startseiten-Kachel abgeloest).
+  const form = profile.freeplayForm.slice(-5);
+  document.getElementById("fpForm").innerHTML = form.length
+    ? `<small>Form</small>` + Array.from({ length: 5 }, (_, i) => { const n = form[i - (5 - form.length)]; return i < 5 - form.length ? `<i class="e"></i>` : `<i class="${n >= 9 ? "w" : n >= 7 ? "m" : "l"}${i === 4 ? " last" : ""}">${n}</i>`; }).join("")
+    : "";
   const body = document.getElementById("freeplayBody");
   const groups = freeplayChipGroups();
   const pool = poolForActiveLeague();
@@ -3091,33 +3295,16 @@ function renderModeTiles() {
   const firstOpen = curMatches.findIndex(m => !profile.campaign.levelPassed[m.id]);
   const campLine = allDone ? "Alle Welten geschafft" : `${DIFF_LABEL[current]} <em>· Level ${firstOpen + 1}</em>`;
 
-  // Frei spielen: Formkurve der letzten 5 Freispiel-Ergebnisse (aelteste links, neueste rechts umrandet).
-  const form = profile.freeplayForm.slice(-5);
-  const cells = [];
-  for (let i = 0; i < 5; i++) {
-    const n = form[i - (5 - form.length)];
-    if (i < 5 - form.length) cells.push(`<i class="e"></i>`);
-    else cells.push(`<i class="${n >= 9 ? "w" : n >= 7 ? "m" : "l"}${i === 4 ? " last" : ""}">${n}</i>`);
-  }
-  const avg = form.length ? (form.reduce((a, b) => a + b, 0) / form.length).toFixed(1).replace(".", ",") : null;
-  const freeLine = avg ? `Formkurve <em>· Ø <b>${avg}</b> Treffer</em>` : "Noch keine Spiele";
-
   tiles.innerHTML = `
     <button type="button" class="mt camp" id="modeTileCampaign">
       <div class="ic">🌍</div><div class="nm">Kampagne</div>
       <div class="wp" aria-label="Welt ${allDone ? worlds.length : current} von ${worlds.length}">${chain}</div>
       <div class="ln">${campLine}</div>
       <div class="ft">Weiter spielen ${chev}</div>
-    </button>
-    <button type="button" class="mt free" id="modeTileFreeplay">
-      <div class="ic">🎲</div><div class="nm">Frei spielen</div>
-      <div class="form" aria-label="Formkurve der letzten 5 Spiele">${cells.join("")}</div>
-      <div class="ln">${freeLine}</div>
-      <div class="ft">Zufall oder Filter ${chev}</div>
-    </button>`;
+    </button>${duelTileHTML(chev)}`;
 
   document.getElementById("modeTileCampaign").onclick = () => navigate("worldmap");
-  document.getElementById("modeTileFreeplay").onclick = () => navigate("freeplay");
+  document.getElementById("modeTileDuel").onclick = () => navigate("duels");
 }
 
 function poolForActiveLeague() {
@@ -3301,7 +3488,8 @@ function profileOverviewHTML() {
     <div class="sheet-label">Letzte 7 Tage</div>
     <div class="week">${weekHtml}</div>
     <div class="sheet-label">Karriereleiter</div>
-    <div class="ladder">${ladderRows}</div>`;
+    <div class="ladder">${ladderRows}</div>
+    ${duelNameRowHTML()}`;
 }
 
 function profileTrophiesHTML() {
@@ -3424,6 +3612,7 @@ function renderProfileSheetPanel() {
   document.getElementById("profileTabOv").setAttribute("aria-selected", String(profileSheetTab === "ov"));
   document.getElementById("profileTabTr").setAttribute("aria-selected", String(profileSheetTab === "tr"));
   document.getElementById("profileTabKn").setAttribute("aria-selected", String(profileSheetTab === "kn"));
+  if (profileSheetTab === "ov") bindDuelNameRow();
   if (profileSheetTab === "tr") {
     panel.querySelectorAll(".trophy").forEach((btn) => {
       btn.onclick = () => { selectedTrophyId = btn.dataset.id; renderProfileSheetPanel(); };
@@ -6404,11 +6593,437 @@ function finishSplash() {
   }, SPLASH_TIMING.kickoffHoldMs);
 }
 
+/* ================= DUELL GEGEN FREUNDE (Prompt 25, Teil 1) =================
+   Ohne Server: Herausforderung und Rueckmeldung laufen als Links (#duel= / #duelr=).
+   Teil 1 legt Datenmodell, Link-Codec, Startseiten-Kachel und die Bildschirme Uebersicht /
+   Neues Duell / Einladung an. Das Spielen selbst (Walkout, Runden, Auswertung) baut Prompt 26 -
+   "Spielen" und "Annehmen & Anpfiff" sind hier bewusst nur Hinweis-Stubs. Optik aus
+   prototypes/duell.html. Alle Namen aus Links sind Fremdtext und werden vor dem Einsetzen in
+   HTML escaped. */
+const APP_URL = "https://floriangiggs.github.io/Starting-XI/startelf_check.html";
+const DUEL_CODE_VERSION = 1;
+const DUEL_FORMATS = [{ rounds: 1, label: "Einzel", sub: "1 Spiel" }, { rounds: 3, label: "Best of 3", sub: "3 Spiele" }, { rounds: 5, label: "Best of 5", sub: "5 Spiele" }];
+const DUEL_TIMES = [{ seconds: 120, label: "2 Min", sub: "Blitz" }, { seconds: 180, label: "3 Min", sub: "Standard" }, { seconds: 300, label: "5 Min", sub: "Entspannt" }];
+const DUEL_TROPHIES = [
+  { id: "first", icon: "⚔️", name: "Erster Sieg", check: s => s.wins >= 1 },
+  { id: "sweep", icon: "🧹", name: "Sweep", check: s => s.sweeps >= 1 },
+  { id: "ten", icon: "🏆", name: "10 Siege", check: s => s.wins >= 10 },
+  { id: "streak5", icon: "🔥", name: "5 in Folge", check: s => s.bestStreak >= 5 }
+];
+const DUEL_ERRORS = {
+  format: "Das ist kein gültiger Duell-Link oder -Code.",
+  checksum: "Der Link ist beschädigt oder unvollständig - bitte noch einmal vollständig kopieren.",
+  version: "Dieser Link stammt von einer neueren App-Version - bitte die App aktualisieren.",
+  own: "Das ist dein eigener Link - schick ihn an einen Freund.",
+  lineups: "Deine App-Version kennt diese Aufstellungen nicht - bitte die App aktualisieren.",
+  unknown: "Zu dieser Rückmeldung gibt es kein offenes Duell in dieser App."
+};
+
+const duelEsc = (s) => String(s).replace(/[&<>"']/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
+const duelFormatLabel = (r) => r === 1 ? "Einzel" : "Best of " + r;
+const duelLevelLabel = (d) => d ? "Stufe " + d : "Gemischt";
+const duelCrest = (name, cls = "") => `<span class="crest ${cls}">${duelEsc(((name || "?").trim()[0] || "?").toUpperCase())}</span>`;
+const duelFlip = (str) => [...str].map(ch => ch === ":" ? "<i>:</i>" : `<b>${ch}</b>`).join("");
+const pad2 = (n) => String(Math.min(99, n)).padStart(2, "0");
+
+// App-Adresse fuer Links: unter https die aktuelle Adresse, sonst (lokale Datei/http) die feste Pages-Adresse.
+function duelBaseUrl() {
+  return location.protocol === "https:" ? location.origin + location.pathname : APP_URL;
+}
+// Installierte Home-Bildschirm-App (iOS: navigator.standalone) - dort oeffnen sich Links NICHT, deshalb zwei Wege in der Einladung.
+function isStandalone() {
+  return !!((window.matchMedia && matchMedia("(display-mode: standalone)").matches) || navigator.standalone);
+}
+function randomHex(bytes) {
+  const a = new Uint8Array(bytes);
+  if (window.crypto && crypto.getRandomValues) crypto.getRandomValues(a); else a.forEach((_, i) => { a[i] = Math.floor(Math.random() * 256); });
+  return Array.from(a, b => b.toString(16).padStart(2, "0")).join("");
+}
+
+/* ---- Codec ----
+   code = base64url(JSON [version, kind, duelId, name, deviceId, rank, level, rounds, seconds,
+   difficulty, lineupIds, results, checksum]). kind "c" = Herausforderung, "r" = Rueckmeldung.
+   Die Ergebnisse sind per XOR mit einem Schluesselstrom aus der duelId verschleiert. ACHTUNG: Das
+   ist KEIN echter Schutz (Schluessel steckt im Code der App) - es verhindert nur, dass man die
+   Zahlen des Gegners zufaellig im Link mitliest. */
+function b64uEncode(str) {
+  const bytes = new TextEncoder().encode(str);
+  let bin = "";
+  bytes.forEach(b => { bin += String.fromCharCode(b); });
+  return btoa(bin).replace(/\+/g, "-").replace(/\//g, "_").replace(/=+$/, "");
+}
+function b64uDecode(text) {
+  let t = text.replace(/-/g, "+").replace(/_/g, "/");
+  while (t.length % 4) t += "=";
+  const bin = atob(t);
+  return new TextDecoder().decode(Uint8Array.from(bin, c => c.charCodeAt(0)));
+}
+function duelKeyStream(duelId) {
+  const rng = mulberry32(hashString("duel:" + duelId));
+  return () => Math.floor(rng() * 256);
+}
+function obfuscateResults(results, duelId) {
+  const s = (results || []).map(r => [r.correct, r.seconds, r.left].join(".")).join("-");
+  const next = duelKeyStream(duelId);
+  return [...s].map(c => (c.charCodeAt(0) ^ next()).toString(16).padStart(2, "0")).join("");
+}
+function deobfuscateResults(hex, duelId) {
+  if (!hex) return [];
+  if (typeof hex !== "string" || !/^([0-9a-f]{2})+$/.test(hex)) return null;
+  const next = duelKeyStream(duelId);
+  let s = "";
+  for (let i = 0; i < hex.length; i += 2) s += String.fromCharCode(parseInt(hex.slice(i, i + 2), 16) ^ next());
+  if (!/^[0-9.\-]+$/.test(s)) return null;
+  const rows = s.split("-").map(p => p.split(".").map(Number));
+  if (rows.some(r => r.length !== 3 || r.some(n => !Number.isFinite(n)))) return null;
+  return rows.map(([correct, seconds, left]) => ({ correct, seconds, left }));
+}
+function encodeDuelCode(kind, p) {
+  const arr = [DUEL_CODE_VERSION, kind, p.id, p.name, p.deviceId, p.rank, p.level, p.rounds || 0, p.seconds || 0, p.difficulty || 0, p.lineups || [], obfuscateResults(p.results, p.id)];
+  return b64uEncode(JSON.stringify([...arr, hashString(JSON.stringify(arr)).toString(36)]));
+}
+function decodeDuelCode(code) {
+  let arr;
+  try { arr = JSON.parse(b64uDecode(String(code).trim())); } catch (e) { return { error: "format" }; }
+  if (!Array.isArray(arr) || arr.length !== 13) return { error: "format" };
+  const sum = arr[12];
+  const body = arr.slice(0, 12);
+  if (hashString(JSON.stringify(body)).toString(36) !== sum) return { error: "checksum" };
+  const [v, kind, id, name, deviceId, rank, level, rounds, seconds, difficulty, lineups, resHex] = body;
+  if (v !== DUEL_CODE_VERSION) return { error: v > DUEL_CODE_VERSION ? "version" : "format" };
+  if (kind !== "c" && kind !== "r") return { error: "format" };
+  if (typeof id !== "string" || !/^[0-9a-f]{8,32}$/.test(id) || typeof name !== "string" || typeof deviceId !== "string" || typeof rank !== "string" || !Number.isInteger(level)) return { error: "format" };
+  if (!Array.isArray(lineups) || lineups.some(x => typeof x !== "string")) return { error: "format" };
+  const results = deobfuscateResults(resHex, id);
+  if (results === null) return { error: "format" };
+  if (kind === "c" && (![1, 3, 5].includes(rounds) || ![120, 180, 300].includes(seconds) || !Number.isInteger(difficulty) || difficulty < 0 || difficulty > 5 || lineups.length !== rounds)) return { error: "format" };
+  return { kind, id, name: name.trim().slice(0, 16), deviceId: deviceId.slice(0, 32), rank: rank.slice(0, 24), level, rounds, seconds, difficulty, lineups, results };
+}
+// Aus ganzem Link ("...#duel=CODE", "...#duelr=CODE") oder reinem Code den Code ziehen.
+function extractDuelCode(text) {
+  const t = String(text || "").trim();
+  const m = t.match(/#duelr?=([A-Za-z0-9_\-]+)/);
+  if (m) return m[1];
+  return /^[A-Za-z0-9_\-]{20,}$/.test(t) ? t : null;
+}
+
+/* ---- Duelle anlegen / Links bauen ---- */
+function duelsSorted() {
+  return Object.entries(profile.duels).sort((a, b) => b[1].created - a[1].created);
+}
+function pickDuelLineups(rounds, difficulty) {
+  const all = [...LINEUP_CHALLENGES, ...DAILY_CHALLENGES];
+  let pool = difficulty ? all.filter(m => m.difficulty === difficulty) : all;
+  const ids = [...new Set(pool.map(m => m.id))];
+  const fresh = shuffled(ids.filter(id => !profile.duelRecent.includes(id)));
+  const used = shuffled(ids.filter(id => profile.duelRecent.includes(id)));
+  return [...fresh, ...used].slice(0, rounds); // zuletzt gespielte nur, wenn sonst zu wenige da sind
+}
+function createDuel(draft) {
+  const id = randomHex(4);
+  profile.duels[id] = {
+    role: "challenger", opponent: null,
+    settings: { rounds: draft.rounds, seconds: draft.seconds, difficulty: draft.difficulty },
+    lineups: pickDuelLineups(draft.rounds, draft.difficulty),
+    mine: [], theirs: null, status: "todo", created: Date.now()
+  };
+  saveProfile(profile);
+  return id;
+}
+function duelMeInfo() {
+  return { name: profile.duelName || "Spieler", deviceId: profile.deviceId, rank: rankForLevel(profile.level).name, level: profile.level };
+}
+function duelChallengeCode(id) {
+  const d = profile.duels[id];
+  const sender = d.role === "challenger" ? duelMeInfo() : d.opponent; // fuer die "In der App spielen"-Kopie einer Einladung: Absender = Herausforderer
+  return encodeDuelCode("c", { id, name: sender.name, deviceId: sender.deviceId, rank: sender.rank, level: sender.level, ...d.settings, lineups: d.lineups, results: d.role === "challenger" ? d.mine : (d.theirs || []) });
+}
+function duelShareText(d) {
+  return `⚔️ ${profile.duelName || "Ein Freund"} fordert dich bei Starting XI heraus – ${duelFormatLabel(d.settings.rounds)}, ${d.settings.seconds / 60} Min pro Aufstellung. Traust du dich?`;
+}
+async function copyText(text, okMsg) {
+  try { await navigator.clipboard.writeText(text); showToast(okMsg); } catch (e) { showToast("Konnte nicht kopiert werden"); }
+}
+async function shareDuelLink(id) {
+  const d = profile.duels[id];
+  if (!d) return;
+  const url = duelBaseUrl() + "#duel=" + duelChallengeCode(id);
+  const text = duelShareText(d);
+  if (navigator.share) {
+    try { await navigator.share({ text, url }); return; } catch (e) { if (e && e.name === "AbortError") return; }
+  }
+  await copyText(text + "\n" + url, "Link kopiert");
+}
+
+/* ---- Eingehende Links / Codes ---- */
+function handleDuelInput(text) {
+  const code = extractDuelCode(text);
+  if (!code) return { error: "format" };
+  const d = decodeDuelCode(code);
+  if (d.error) return d;
+  if (d.deviceId === profile.deviceId) return { error: "own" };
+  const opp = { name: d.name || "Freund", deviceId: d.deviceId, rank: d.rank, level: d.level };
+  if (d.kind === "c") {
+    if (!d.lineups.every(id => dailyMatchById(id))) return { error: "lineups" };
+    if (!profile.duels[d.id]) {
+      profile.duels[d.id] = { role: "opponent", opponent: opp, settings: { rounds: d.rounds, seconds: d.seconds, difficulty: d.difficulty }, lineups: d.lineups, mine: [], theirs: d.results.length ? d.results : null, status: "todo", created: Date.now() };
+      saveProfile(profile);
+    }
+    return { ok: true, kind: "c", id: d.id };
+  }
+  const duel = profile.duels[d.id];
+  if (!duel || duel.role !== "challenger") return { error: "unknown" };
+  duel.opponent = opp;
+  duel.theirs = d.results;
+  duel.status = "done"; // Auswertung (Sieg/Niederlage, XP) baut Prompt 26
+  saveProfile(profile);
+  return { ok: true, kind: "r", id: d.id, name: opp.name };
+}
+let activeInviteId = null;
+// Verarbeitet Link/Code (Start-Hash, hashchange); bei Fehler steht ein freundlicher Hinweis im Toast.
+function openDuelFromInput(text) {
+  const res = handleDuelInput(text);
+  if (!res.ok) { showToast("⚠️ " + DUEL_ERRORS[res.error]); return res; }
+  finishDuelOpen(res);
+  return res;
+}
+function handleIncomingHash(hash) {
+  if (/^#duelr?=/.test(hash)) openDuelFromInput(hash);
+}
+window.addEventListener("hashchange", () => {
+  const h = location.hash;
+  if (!/^#duelr?=/.test(h)) return;
+  history.replaceState({ stack: navStack.slice() }, "", "#" + navStack[navStack.length - 1]); // Hash aus der Adresse entfernen
+  handleIncomingHash(h);
+});
+
+/* ---- Duell-Name (einmal abfragen, im Scout-Profil aenderbar) ---- */
+function askDuelName(onDone) {
+  const backdrop = document.createElement("div");
+  backdrop.className = "modal-backdrop";
+  backdrop.innerHTML = `<div class="modal-sheet"><div class="duel-name-box">
+      <div class="guide-name-title" style="font-family:'Anton',Impact,sans-serif;font-size:24px">Dein Duell-Name</div>
+      <div style="font-family:'Oswald',sans-serif;font-weight:300;font-size:14px;color:var(--muted)">So sehen dich deine Freunde im Duell (max. 16 Zeichen). Du kannst ihn später im Scout-Profil ändern.</div>
+      <input type="text" id="duelNameInput" maxlength="16" autocomplete="off" spellcheck="false" placeholder="z. B. Flo" value="${duelEsc(profile.duelName || "")}">
+      <div class="dl" style="gap:8px"><button type="button" class="startbtn" id="duelNameSave">Speichern</button><button type="button" class="ghost2" id="duelNameCancel">Abbrechen</button></div>
+    </div></div>`;
+  document.body.appendChild(backdrop);
+  const input = backdrop.querySelector("#duelNameInput");
+  input.focus();
+  const close = () => backdrop.remove();
+  const save = () => {
+    const name = input.value.trim().slice(0, 16);
+    if (!name) { input.focus(); return; }
+    profile.duelName = name;
+    saveProfile(profile);
+    close();
+    if (onDone) onDone();
+  };
+  backdrop.querySelector("#duelNameSave").onclick = save;
+  backdrop.querySelector("#duelNameCancel").onclick = close;
+  input.addEventListener("keydown", (e) => { if (e.key === "Enter") save(); });
+  backdrop.onclick = (e) => { if (e.target === backdrop) close(); };
+}
+function ensureDuelName(cb) { if (profile.duelName) cb(); else askDuelName(cb); }
+
+/* ---- Statistik / Trophaeen (Daten pflegt Prompt 26) ---- */
+function duelOpenTodo() { return Object.values(profile.duels).filter(d => d.status === "todo").length; }
+function duelTrophyStates() { return DUEL_TROPHIES.map(t => ({ ...t, won: t.check(profile.duelStats) })); }
+
+/* ---- Startseite: Duell-Kachel (renderModeTiles baut sie) ---- */
+function duelTileHTML(chev) {
+  const st = profile.duelStats;
+  const todo = duelOpenTodo();
+  const hasDuels = Object.keys(profile.duels).length > 0 || st.wins + st.losses + st.draws > 0;
+  const line = todo > 0 ? `Bilanz <em>· ${todo} Herausforderung${todo === 1 ? "" : "en"}</em>` : hasDuels ? "Bilanz" : "Noch keine Duelle";
+  return `
+    <button type="button" class="mt duel" id="modeTileDuel">
+      ${todo > 0 ? `<span class="dcount" aria-label="${todo} offen">${todo}</span>` : ""}
+      <div class="ic">⚔️</div><div class="nm">Duell</div>
+      <div class="dpair" aria-label="Bilanz ${st.wins} zu ${st.losses}">${duelCrest(profile.duelName || "Du", "me")}<span class="flip">${duelFlip(st.wins + ":" + st.losses)}</span>${duelCrest("?")}</div>
+      <div class="ln">${line}</div>
+      <div class="ft">Freund herausfordern ${chev}</div>
+    </button>`;
+}
+
+/* ---- Bildschirme ---- */
+let duelDraft = { rounds: 3, seconds: 180, difficulty: 3, fair: false };
+let inviteFair = false;
+let invitePath = "browser";
+
+function renderDuels() {
+  const root = document.getElementById("duelsView");
+  const st = profile.duelStats;
+  const open = duelsSorted().filter(([, d]) => d.status !== "done");
+  const todo = open.filter(([, d]) => d.status === "todo").length;
+  const friends = Object.values(st.perOpponent).filter(f => f.w + f.l + f.d > 0).sort((a, b) => (b.w + b.l + b.d) - (a.w + a.l + a.d));
+  const won = duelTrophyStates();
+  const ticket = ([id, d]) => {
+    const hot = d.status === "todo";
+    const who = d.opponent ? d.opponent.name : null;
+    const title = d.role === "opponent" ? `${duelEsc(who)} fordert dich heraus` : who ? `Du gegen ${duelEsc(who)}` : "Dein Duell";
+    const chips = `<span class="chips"><span>${duelFormatLabel(d.settings.rounds)}</span><span>${d.settings.seconds / 60} Min</span><span>${duelLevelLabel(d.settings.difficulty)}</span></span>`;
+    const main = `<span class="m">${duelCrest(who || "?")}<span class="t2"><b>${title}</b>${chips}</span></span>`;
+    if (hot) return `<button type="button" class="tk hot" data-id="${id}" data-act="play"><span class="nt t"></span><span class="nt b"></span>${main}<span class="s"><span class="play">Spielen<small>du bist dran</small></span></span></button>`;
+    return `<div class="tk"><span class="nt t"></span><span class="nt b"></span>${main}<span class="s"><span class="wait"><b>⏳</b>${who ? duelEsc(who) + " ist dran" : "Freund ist dran"}<br><button type="button" class="remind" data-id="${id}" data-act="remind">Erinnern</button></span></span></div>`;
+  };
+  root.innerHTML = `
+    <div class="topbar"><button class="back-btn" type="button" id="duelsBack"><span class="back-arrow">←</span>Start</button><div class="h1">Deine <span>Duelle</span></div></div>
+    <div class="board">
+      <div class="top2"><span>Deine Bilanz</span><em>${st.streak > 0 ? `🔥 ${st.streak} Sieg${st.streak === 1 ? "" : "e"} in Folge` : "Noch keine Serie"}</em></div>
+      <div class="mid">
+        <div class="lbl"><b>Siege</b>gewonnen</div>
+        <div class="flip xl" aria-label="${st.wins} Siege, ${st.losses} Niederlagen">${duelFlip(pad2(st.wins) + ":" + pad2(st.losses))}</div>
+        <div class="lbl r"><b>Niederl.</b>verloren</div>
+      </div>
+    </div>
+    <button type="button" class="startbtn" id="duelNewBtn">⚔️ Neues Duell</button>
+    ${open.length === 0 && friends.length === 0 ? `<div class="empty"><b>Noch keine Duelle.</b> Fordere einen Freund heraus: Ihr spielt dieselben Aufstellungen, jeder für sich und mit Zeitlimit – wer mehr Spieler kennt, gewinnt. Der Link zum Duell geht per WhatsApp, Nachricht oder was du magst.</div>` : ""}
+    ${open.length ? `<div class="st"><b>Offene Duelle</b>${todo ? `<span class="cnt">${todo}</span>` : ""}</div>${open.map(ticket).join("")}` : ""}
+    ${friends.length ? `<div class="st"><b>Gegen deine Freunde</b><em>Siege : Niederlagen</em></div><div class="fr">${friends.map(f => {
+      const t = f.w + f.l; const pw = t ? Math.round(f.w / t * 100) : 0;
+      return `<div class="r">${duelCrest(f.name)}<span class="nm2">${duelEsc(f.name)}<span class="bar"><i style="width:${pw}%"></i><u style="width:${t ? 100 - pw : 0}%"></u></span></span><span class="sc2">${f.w}<em>:</em>${f.l}</span></div>`;
+    }).join("")}</div>` : ""}
+    <div class="st"><b>Duell-Trophäen</b><em>${won.filter(t => t.won).length} von ${won.length}</em></div>
+    <div class="dshelf">${won.map(t => `<div class="${t.won ? "" : "off"}"><i>${t.icon}</i><span>${t.name}</span></div>`).join("")}</div>
+    <button type="button" class="pastebtn" id="duelPasteToggle">Code einfügen</button>
+    <div class="paste" id="duelPaste" hidden>
+      <input type="text" id="duelPasteInput" placeholder="Duell-Link oder Code hier einfügen" autocomplete="off" spellcheck="false" aria-label="Duell-Link oder Code">
+      <div class="msg" id="duelPasteMsg" role="status"></div>
+      <div class="row2"><button type="button" id="duelPasteClip">📋 Aus Zwischenablage</button><button type="button" id="duelPasteGo">Öffnen</button></div>
+    </div>`;
+
+  document.getElementById("duelsBack").onclick = goBack;
+  document.getElementById("duelNewBtn").onclick = () => navigate("duelnew");
+  root.querySelectorAll("[data-act='play']").forEach(b => b.onclick = () => {
+    const d = profile.duels[b.dataset.id];
+    if (d && d.role === "opponent") { activeInviteId = b.dataset.id; inviteFair = false; navigate("duelinvite"); }
+    else showToast("Das Spielen kommt mit dem nächsten Update.");
+  });
+  root.querySelectorAll("[data-act='remind']").forEach(b => b.onclick = () => shareDuelLink(b.dataset.id));
+  const paste = document.getElementById("duelPaste"), input = document.getElementById("duelPasteInput"), msg = document.getElementById("duelPasteMsg");
+  document.getElementById("duelPasteToggle").onclick = () => { paste.hidden = !paste.hidden; if (!paste.hidden) input.focus(); };
+  // Fehler stehen direkt im Feld, bei Erfolg oeffnet finishDuelOpen die Einladung bzw. meldet die Rueckmeldung.
+  document.getElementById("duelPasteGo").onclick = () => {
+    const text = input.value;
+    const res = handleDuelInput(text);
+    if (!res.ok) { msg.textContent = DUEL_ERRORS[res.error]; return; }
+    msg.textContent = ""; input.value = "";
+    finishDuelOpen(res);
+  };
+  document.getElementById("duelPasteClip").onclick = async () => {
+    try { input.value = await navigator.clipboard.readText(); document.getElementById("duelPasteGo").click(); }
+    catch (e) { msg.textContent = "Die Zwischenablage ist nicht lesbar - füge den Link bitte ins Feld ein."; }
+  };
+}
+// Gemeinsamer Abschluss nach erfolgreichem handleDuelInput (Feld "Code einfuegen"): Einladung oeffnen bzw. Rueckmeldung melden.
+function finishDuelOpen(res) {
+  renderModeTiles();
+  if (res.kind === "c") {
+    activeInviteId = res.id; inviteFair = false;
+    if (navStack[navStack.length - 1] === "duelinvite") renderDuelInvite(); else navigate("duelinvite");
+  } else {
+    showToast("✅ Ergebnis von " + res.name + " eingetragen");
+    renderDuels();
+  }
+}
+
+function renderDuelNew() {
+  const root = document.getElementById("duelNewView");
+  const ring = (frac) => `<svg class="ring" viewBox="0 0 30 30" aria-hidden="true"><circle class="bg" cx="15" cy="15" r="11"/><circle class="fg" cx="15" cy="15" r="11" stroke-dasharray="${(69.1 * frac).toFixed(1)} 69.1"/></svg>`;
+  const lv = [1, 2, 3, 4, 5].map(n => `<button type="button" class="${duelDraft.difficulty === n ? "on" : ""}" data-lv="${n}" style="color:${DIFF_COLOR[n]}"><span class="bars">${[1, 2, 3, 4, 5].map(j => `<i class="${j <= n ? "on" : ""}"></i>`).join("")}</span><b>Stufe ${n}</b></button>`).join("")
+    + `<button type="button" class="${duelDraft.difficulty === 0 ? "on" : ""}" data-lv="0" style="color:var(--chalk)"><span class="bars" style="font-size:12px;line-height:9px">🎲</span><b>Gemischt</b></button>`;
+  root.innerHTML = `
+    <div class="topbar"><button class="back-btn" type="button" id="duelNewBack"><span class="back-arrow">←</span>Duelle</button><div class="h1">Neues <span>Duell</span></div></div>
+    <div class="st"><span class="num">1</span><b>Wie viele Aufstellungen?</b></div>
+    <div class="fm">${DUEL_FORMATS.map(f => `<button type="button" class="${duelDraft.rounds === f.rounds ? "on" : ""}" data-rounds="${f.rounds}"><b>${f.label}</b><span>${f.sub}</span></button>`).join("")}</div>
+    <div class="st"><span class="num">2</span><b>Zeit pro Aufstellung</b></div>
+    <div class="fm">${DUEL_TIMES.map(t => `<button type="button" class="${duelDraft.seconds === t.seconds ? "on" : ""}" data-sec="${t.seconds}">${ring(t.seconds / 300)}<b>${t.label}</b><span>${t.sub}</span></button>`).join("")}</div>
+    <div class="st"><span class="num">3</span><b>Schwierigkeit</b></div>
+    <div class="lvl2">${lv}</div>
+    <div class="rules2">
+      <p><i>🎯</i><span>Pro Aufstellung gewinnt, wer <b>mehr Spieler</b> weiß – bei Gleichstand die <b>schnellere Zeit</b>.</span></p>
+      <p><i>🏆</i><span>Wer mehr Aufstellungen gewinnt, holt das Duell. <b>+XP</b> pro Spiel, <b>Bonus</b> für den Sieg.</span></p>
+    </div>
+    <button type="button" class="fair ${duelDraft.fair ? "on" : ""}" id="duelFair" aria-pressed="${duelDraft.fair}"><span class="sw"></span><span><b>Ich spiele fair</b><span>Ohne Google, KI oder Hilfe von außen.</span></span></button>
+    <div class="spacer"></div>
+    <button type="button" class="startbtn" id="duelStart" ${duelDraft.fair ? "" : "disabled"}>Anpfiff &amp; Link teilen</button>`;
+
+  document.getElementById("duelNewBack").onclick = goBack;
+  root.querySelectorAll("[data-rounds]").forEach(b => b.onclick = () => { duelDraft.rounds = +b.dataset.rounds; renderDuelNew(); });
+  root.querySelectorAll("[data-sec]").forEach(b => b.onclick = () => { duelDraft.seconds = +b.dataset.sec; renderDuelNew(); });
+  root.querySelectorAll("[data-lv]").forEach(b => b.onclick = () => { duelDraft.difficulty = +b.dataset.lv; renderDuelNew(); });
+  document.getElementById("duelFair").onclick = () => { duelDraft.fair = !duelDraft.fair; renderDuelNew(); };
+  document.getElementById("duelStart").onclick = () => {
+    if (!duelDraft.fair) return;
+    ensureDuelName(async () => {
+      const id = createDuel(duelDraft);
+      duelDraft.fair = false;
+      renderModeTiles();
+      await shareDuelLink(id);
+      goBack(); // zurueck zur Uebersicht - das Duell steht dort als "du bist dran"
+    });
+  };
+}
+
+function renderDuelInvite() {
+  const root = document.getElementById("duelInviteView");
+  const d = activeInviteId && profile.duels[activeInviteId];
+  const back = `<div class="topbar"><button class="back-btn" type="button" id="duelInvBack"><span class="back-arrow">←</span>Duelle</button><div class="h1">Neue <span>Herausforderung</span></div></div>`;
+  if (!d || d.role !== "opponent") {
+    root.innerHTML = back + `<div class="empty"><b>Keine Einladung geöffnet.</b> Öffne einen Duell-Link oder füge den Code in der Duell-Übersicht ein.</div>`;
+    document.getElementById("duelInvBack").onclick = goBack;
+    return;
+  }
+  const o = d.opponent, me = duelMeInfo();
+  const rec = profile.duelStats.perOpponent[o.deviceId];
+  const played = d.theirs && d.theirs.length;
+  const browser = !isStandalone();
+  root.innerHTML = back + `
+    <div class="inv">
+      <div class="top3">
+        <div class="k2"><b>${duelEsc(o.name)}</b> fordert dich zum Duell</div>
+        <div class="pair">
+          <div class="pl">${duelCrest(o.name, "lg")}<b>${duelEsc(o.name)}</b><span>${duelEsc(o.rank)} · Lvl ${o.level}</span></div>
+          <div class="vs2">VS</div>
+          <div class="pl">${duelCrest(profile.duelName || "Du", "lg me")}<b>Du</b><span>${duelEsc(me.rank)} · Lvl ${me.level}</span></div>
+        </div>
+      </div>
+      <div class="strip"><div><b>${duelFormatLabel(d.settings.rounds)}</b><span>Format</span></div><div><b>${d.settings.seconds / 60} Min</b><span>pro Spiel</span></div><div><b>${duelLevelLabel(d.settings.difficulty)}</b><span>Schwierigkeit</span></div></div>
+    </div>
+    <div class="note2"><i>🔒</i><p>${played ? `<b>${duelEsc(o.name)} hat schon gespielt.</b> Die Ergebnisse siehst du, wenn du alle ${d.settings.rounds === 1 ? "Aufstellungen" : d.settings.rounds + " Aufstellungen"} gespielt hast.` : `<b>Ihr spielt dieselben ${d.settings.rounds === 1 ? "Aufstellung" : d.settings.rounds + " Aufstellungen"}</b> – jeder für sich, die Ergebnisse siehst du nach deinem Spiel.`}</p></div>
+    ${rec && rec.w + rec.l + rec.d ? `<div class="note2"><i>📊</i><p>Eure Bilanz: <b>${rec.w} : ${rec.l}</b> für dich</p></div>` : ""}
+    ${browser ? `<div class="note2"><i>📱</i><p>Du bist im <b>Browser</b>. Spielst du mit der installierten App, öffne dort die Duell-Übersicht › <b>Code einfügen</b>.</p></div>
+      <div class="twoways"><button type="button" class="${invitePath === "browser" ? "on" : ""}" id="duelPathBrowser">Hier im Browser spielen</button><button type="button" id="duelCopyCode">In der App spielen<br>(Code kopieren)</button></div>` : ""}
+    <button type="button" class="fair ${inviteFair ? "on" : ""}" id="duelInvFair" aria-pressed="${inviteFair}"><span class="sw"></span><span><b>Ich spiele fair</b><span>Ohne Google, KI oder Hilfe von außen.</span></span></button>
+    <div class="spacer"></div>
+    <button type="button" class="startbtn" id="duelAccept" ${inviteFair ? "" : "disabled"}>Annehmen &amp; Anpfiff</button>
+    <button type="button" class="ghost2" id="duelDecline">Ablehnen</button>`;
+
+  document.getElementById("duelInvBack").onclick = goBack;
+  document.getElementById("duelInvFair").onclick = () => { inviteFair = !inviteFair; renderDuelInvite(); };
+  const copy = document.getElementById("duelCopyCode");
+  if (copy) copy.onclick = () => copyText(duelChallengeCode(activeInviteId), "Code kopiert - in der App unter Duelle › Code einfügen");
+  document.getElementById("duelAccept").onclick = () => { if (inviteFair) showToast("Das Spielen kommt mit dem nächsten Update."); };
+  document.getElementById("duelDecline").onclick = () => { delete profile.duels[activeInviteId]; saveProfile(profile); activeInviteId = null; renderModeTiles(); goBack(); };
+}
+
+// Duell-Name im Scout-Profil (Uebersicht)
+function duelNameRowHTML() {
+  return `<div class="duel-name-row"><span>⚔️ Duell-Name</span><b>${profile.duelName ? duelEsc(profile.duelName) : "noch nicht festgelegt"}</b><button type="button" id="duelNameEdit">${profile.duelName ? "ändern" : "festlegen"}</button></div>`;
+}
+function bindDuelNameRow() {
+  const b = document.getElementById("duelNameEdit");
+  if (b) b.onclick = () => askDuelName(() => renderProfileSheetPanel());
+}
+
 /* ================= INIT ================= */
 renderProfileBar();
 renderDailyCard();
 renderModeTiles();
 setInterval(tickDailyTimer, 1000);
+document.getElementById("soloLine").onclick = () => navigate("freeplay");
+handleIncomingHash(INITIAL_HASH); // Duell-Link beim App-Start
 if (profile.hasSeenGuide) document.getElementById("helpDot").classList.add("hidden");
 document.getElementById("backFromWorldmap").onclick = goBack;
 document.getElementById("backFromLevelpath").onclick = goBack;
