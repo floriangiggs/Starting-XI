@@ -457,15 +457,16 @@
 
   /* ---- Tages-Challenge-Karte im Ticket-Stil (Prompt 16, Optik 1:1 aus prototypes/tageskarte.html "Ticket - neu").
      Alle Regeln unter .t1 gescoped: Klassennamen wie .title/.go/.meter/.mini/.sep/.md existieren in der App schon. ---- */
-  .t1 { --stub: 100px; position: relative; height: 148px; flex-shrink: 0; display: grid; grid-template-columns: minmax(0, 1fr) var(--stub); filter: drop-shadow(0 8px 16px rgba(0,0,0,0.35)); }
-  .t1 .main, .t1 .stub { border: 1.5px solid rgba(232,178,61,0.75); }
+  .t1 { --stub: 100px; position: relative; height: 148px; flex-shrink: 0; display: grid; grid-template-columns: minmax(0, 1fr) var(--stub); grid-template-rows: minmax(0, 1fr); filter: drop-shadow(0 8px 16px rgba(0,0,0,0.35)); }
+  /* Prompt 24: Inhalt darf das Ticket nie hoeher als die festen 148px machen - sonst sitzt die untere Einkerbung zu hoch. */
+  .t1 .main, .t1 .stub { border: 1.5px solid rgba(232,178,61,0.75); min-height: 0; overflow: hidden; }
   .t1 .main { min-width: 0; position: relative; padding: 11px 12px 11px 16px; display: flex; flex-direction: column; justify-content: space-between; border-right: none; border-radius: 14px 0 0 14px;
     background: radial-gradient(circle at 0% 0%, rgba(232,178,61,0.22), transparent 45%), repeating-linear-gradient(90deg, rgba(255,255,255,0.035) 0 18px, transparent 18px 36px), linear-gradient(150deg, #27603F, #173F2B 80%); }
   .t1 .stub { position: relative; border-left: none; border-radius: 0 14px 14px 0; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 9px;
     background: radial-gradient(circle at 30% 0%, #FFF1C4, transparent 60%), linear-gradient(160deg, #f6da9c, var(--gold) 55%, #C8921F); color: var(--ink); }
   .t1 .stub::before { content: ""; position: absolute; left: -1px; top: 12px; bottom: 12px; border-left: 3px dotted rgba(20,32,43,0.5); }
   .t1 .notch { position: absolute; right: var(--stub); width: 20px; height: 20px; margin-right: -10px; border-radius: 50%; background: var(--ink); border: 1.5px solid rgba(232,178,61,0.75); z-index: 2; }
-  .t1 .notch.t { top: -11px; clip-path: inset(50% 0 0 0); } .t1 .notch.b { bottom: -11px; clip-path: inset(0 0 50% 0); }
+  .t1 .notch.t { top: -10px; clip-path: inset(50% 0 0 0); } .t1 .notch.b { bottom: -10px; clip-path: inset(0 0 50% 0); } /* Mittelpunkt exakt auf Ober-/Unterkante (Prompt 24) */
   .t1 .date { display: flex; align-items: center; gap: 7px; font-family: 'Oswald', sans-serif; font-weight: 400; font-size: 13.5px; color: rgba(242,239,230,0.82); }
   .t1 .date .live { width: 7px; height: 7px; border-radius: 50%; background: var(--ok); box-shadow: 0 0 0 3px rgba(46,204,113,0.18); }
   .t1 .title { font-family: 'Anton', Impact, sans-serif; font-weight: 400; font-size: clamp(24px, 7.4vw, 31px); overflow: hidden; line-height: 0.95; text-transform: uppercase; letter-spacing: 0.005em; white-space: nowrap; }
@@ -492,7 +493,14 @@
   .t1 .res .sc { font-family: 'Anton', Impact, sans-serif; font-size: 26px; line-height: 1; } .t1 .res .sc small { font-size: 15px; color: var(--muted); }
   .t1 .res .st { font-family: 'Oswald', sans-serif; font-weight: 400; font-size: 13px; line-height: 1.2; color: var(--gold-2); } .t1 .res .st span { display: block; color: var(--muted); }
   .t1 .mini { display: flex; flex-direction: column; gap: 2px; align-items: center; } .t1 .mini .r { display: flex; gap: 2px; }
-  .t1 .sq { width: 9px; height: 9px; border-radius: 2px; flex-shrink: 0; } .t1 .sq.g { background: var(--ok); } .t1 .sq.y { background: var(--gold); } .t1 .sq.x { background: #3A4652; }
+  .t1 .sq { width: 7px; height: 7px; border-radius: 2px; flex-shrink: 0; } .t1 .sq.g { background: var(--ok); } .t1 .sq.y { background: var(--gold); } .t1 .sq.x { background: #3A4652; }
+  /* Gelöster Zustand (Prompt 24): Status "Erledigt" + kleiner Teilen-Knopf (Prototyp teilen.html) */
+  .t1 .stub.solved { gap: 7px; }
+  .t1 .stub.solved .fl b { font-size: 24px; }
+  .t1 .done { font-family: 'Anton', Impact, sans-serif; font-weight: 400; font-size: 15px; text-transform: uppercase; letter-spacing: 0.03em; display: inline-flex; align-items: center; gap: 4px; color: #17402B; }
+  .t1 .done i { font-style: normal; width: 18px; height: 18px; border-radius: 50%; background: #1F6B43; color: var(--gold-2); display: grid; place-items: center; font-size: 11px; font-family: 'Oswald', sans-serif; font-weight: 600; }
+  .t1 .share-sm { border: 1.5px solid rgba(20,32,43,0.45); background: rgba(255,255,255,0.18); border-radius: 9px; padding: 4px 10px; font-family: 'Oswald', sans-serif; font-weight: 600; font-size: 12.5px; color: var(--ink); cursor: pointer; }
+  .t1 .share-sm:active { transform: translateY(1px); }
   /* Der Prototyp ist auf ~402px Breite ausgelegt; auf schmaleren Handys (375/360px) etwas kompakter, sonst bricht das Timer-Label um. */
   .t1 .tl .l { white-space: nowrap; }
   .t1 .meta.compact .meter { display: none; }
@@ -3024,13 +3032,17 @@ function renderDailyCard() {
       <div class="date"><span class="live"></span>${longDate}</div>
       <div class="title">Tages-<span>Challenge</span></div>${lower}
     </div>
-    <div class="stub">
+    <div class="stub${result ? " solved" : ""}">
       <div class="fl" aria-label="Serie ${streak} Tage"><b>🔥${streak}</b><span>Tage Serie</span></div>
-      <button class="go${result ? " ghost" : ""}" type="button" id="${result ? "dailyShareBtn" : "dailyPlayBtn"}">${result ? "Teilen" : "Starten"}</button>
+      ${result
+        ? `<span class="done"><i>✓</i>Erledigt</span><button class="share-sm" type="button" id="dailyShareBtn">📤 Teilen</button>`
+        : `<button class="go" type="button" id="dailyPlayBtn">Starten</button>`}
     </div>`;
 
-  if (result) document.getElementById("dailyShareBtn").onclick = () => shareDailyResult(dayNum, result.correct, result.grid, profile.streak.current);
-  else document.getElementById("dailyPlayBtn").onclick = startDailyChallenge;
+  if (result) {
+    document.getElementById("dailyShareBtn").onclick = () => shareDailyResult(dateKey);
+    prepareDailyShare(dateKey); // Bild vorab erzeugen, damit der Tipp sofort teilen kann (Nutzergeste)
+  } else document.getElementById("dailyPlayBtn").onclick = startDailyChallenge;
   fitDailyMeta();
   tickDailyTimer();
 }
@@ -5206,10 +5218,10 @@ function startDailyChallenge() {
   startMatch(m);
 }
 
-// Raster in Aufstellungsform fuers Teilen: Positionen nach y in Zeilen gruppiert
-// (kleine Toleranz, da eine Linie nicht exakt gleiches y hat), von vorne (kleines y,
-// Sturm) nach hinten (grosses y, TW). 🟩 direkt richtig, 🟨 mit Hilfe, ⬛ falsch.
-function shareGridForMatch(m, correctAbbrs, hintedAbbrs) {
+// Positionen nach y in Zeilen gruppiert (kleine Toleranz, da eine Linie nicht exakt gleiches y
+// hat), von vorne (kleines y, Sturm) nach hinten (grosses y, TW). Gemeinsame Grundlage fuer das
+// Emoji-Raster, die Mini-Ansicht auf der Karte und die Rekonstruktion der Zellen (Prompt 24).
+function shareRowsForMatch(m) {
   const positions = [...PITCH_LAYOUTS[m.formation]].sort((a, b) => a.y - b.y);
   const rows = [];
   const TOL = 8;
@@ -5218,13 +5230,132 @@ function shareGridForMatch(m, correctAbbrs, hintedAbbrs) {
     if (!row) { row = { y: p.y, items: [] }; rows.push(row); }
     row.items.push(p);
   });
-  return rows.map(r => r.items.map(p => {
+  return rows.map(r => r.items);
+}
+
+// Raster in Aufstellungsform fuers Teilen: 🟩 direkt richtig, 🟨 mit Hilfe, ⬛ falsch.
+function shareGridForMatch(m, correctAbbrs, hintedAbbrs) {
+  return shareRowsForMatch(m).map(items => items.map(p => {
     if (!correctAbbrs.includes(p.abbr)) return "⬛";
     return hintedAbbrs.has(p.abbr) ? "🟨" : "🟩";
   }));
 }
 
-async function shareDailyResult(dayNum, correct, grid, streak) {
+function dailyMatchById(id) {
+  return DAILY_CHALLENGES.find(c => c.id === id) || LINEUP_CHALLENGES.find(c => c.id === id) || null;
+}
+
+// Zellen { abbr: "g"|"y"|"x" } eines Tages-Ergebnisses; aeltere Eintraege ohne cells werden aus
+// dem Emoji-Raster rekonstruiert (gleiche Zeilen-Gruppierung wie shareGridForMatch).
+function dailyCellsFor(result) {
+  if (result.cells) return result.cells;
+  const m = dailyMatchById(result.id);
+  if (!m || !Array.isArray(result.grid)) return null;
+  const cells = {};
+  const rows = shareRowsForMatch(m);
+  for (let i = 0; i < rows.length; i++) {
+    for (let j = 0; j < rows[i].length; j++) {
+      const e = result.grid[i] && result.grid[i][j];
+      if (!e) return null;
+      cells[rows[i][j].abbr] = e === "🟩" ? "g" : e === "🟨" ? "y" : "x";
+    }
+  }
+  return cells;
+}
+
+// Ergebnisbild 1080x1350 (Prompt 24, Optik aus prototypes/teilen.html "draw"). Bekommt NUR
+// Zahlen, Datum, Formation und Zellen - keine Spielernamen, keine Partie/Mannschaft (spoilerfrei).
+async function drawDailyShareCanvas({ dayNum, dateKey, correct, stars, streak, formation, cells }) {
+  try {
+    await Promise.all([document.fonts.load('400 80px Anton'), document.fonts.load('500 40px Oswald'), document.fonts.load('300 40px Oswald'), document.fonts.load('600 40px Oswald')]);
+  } catch (e) { /* Schriften nicht ladbar: Fallback-Schriften genuegen */ }
+  const W = 1080, H = 1350;
+  const c = document.createElement("canvas"); c.width = W; c.height = H;
+  const x = c.getContext("2d");
+  const rr = (a, b, w, hh, r) => { x.beginPath(); x.moveTo(a + r, b); x.arcTo(a + w, b, a + w, b + hh, r); x.arcTo(a + w, b + hh, a, b + hh, r); x.arcTo(a, b + hh, a, b, r); x.arcTo(a, b, a + w, b, r); x.closePath(); };
+  x.fillStyle = "#14202B"; x.fillRect(0, 0, W, H);
+  for (let i = 0; i < W; i += 80) { x.fillStyle = "rgba(255,255,255,0.025)"; x.fillRect(i, 0, 4, H); }
+  // Kopf
+  const longDate = new Date(dateKey + "T00:00:00").toLocaleDateString("de-DE", { weekday: "long", day: "numeric", month: "long" });
+  x.textAlign = "center"; x.fillStyle = "#F4D58D"; x.font = "600 30px Oswald, sans-serif";
+  x.fillText("TAGES-CHALLENGE · SPIELTAG " + dayNum, W / 2, 92);
+  x.font = "400 96px Anton, Impact, sans-serif";
+  { const aw = x.measureText("STARTING ").width, bw = x.measureText("XI").width, s0 = W / 2 - (aw + bw) / 2;
+    x.textAlign = "left"; x.fillStyle = "#F2EFE6"; x.fillText("STARTING ", s0, 196); x.fillStyle = "#E8B23D"; x.fillText("XI", s0 + aw, 196); x.textAlign = "center"; }
+  x.fillStyle = "rgba(242,239,230,0.7)"; x.font = "300 32px Oswald, sans-serif"; x.fillText(longDate, W / 2, 248);
+  // Ergebniszeile: Trefferzahl mittig, Serie links, Sterne rechts
+  x.font = "400 150px Anton, Impact, sans-serif"; x.fillStyle = "#F2EFE6"; x.textAlign = "right"; x.fillText(String(correct), W / 2 - 20, 420);
+  x.font = "400 70px Anton, Impact, sans-serif"; x.fillStyle = "rgba(242,239,230,0.6)"; x.textAlign = "left"; x.fillText("/11", W / 2 - 14, 420);
+  x.font = "52px sans-serif"; x.textAlign = "center"; x.fillStyle = "#F2EFE6";
+  if (stars > 0) x.fillText("⭐".repeat(stars), W / 2 + 230, 400);
+  x.fillText("🔥" + streak, W / 2 - 250, 400);
+  // Spielfeld
+  const px = 150, py = 470, pw = 780, ph = 700;
+  const g = x.createLinearGradient(0, py, 0, py + ph); g.addColorStop(0, "#24583D"); g.addColorStop(1, "#1A4430");
+  x.fillStyle = g; rr(px, py, pw, ph, 28); x.fill();
+  for (let i = 0; i < 8; i++) if (i % 2 === 0) { x.fillStyle = "rgba(255,255,255,0.035)"; x.fillRect(px, py + i * ph / 8, pw, ph / 8); }
+  x.strokeStyle = "rgba(242,239,230,0.35)"; x.lineWidth = 3; rr(px, py, pw, ph, 28); x.stroke();
+  x.beginPath(); x.moveTo(px, py + ph / 2); x.lineTo(px + pw, py + ph / 2); x.stroke();
+  x.beginPath(); x.arc(px + pw / 2, py + ph / 2, 80, 0, Math.PI * 2); x.stroke();
+  x.strokeRect(px + pw * 0.25, py + ph - 110, pw * 0.5, 110); x.strokeRect(px + pw * 0.25, py, pw * 0.5, 110);
+  const COL = { g: "#2ECC71", y: "#E8B23D", x: "#3A4652" };
+  PITCH_LAYOUTS[formation].forEach(({ abbr, x: lx, y: ly }) => {
+    const cell = cells[abbr] || "x", cx = px + lx / 100 * pw, cy = py + ly / 100 * ph;
+    x.beginPath(); x.arc(cx, cy, 40, 0, Math.PI * 2); x.fillStyle = COL[cell]; x.fill(); x.lineWidth = 6; x.strokeStyle = "#14202B"; x.stroke();
+    x.fillStyle = cell === "x" ? "rgba(242,239,230,0.75)" : "#14202B"; x.font = "500 22px Oswald, sans-serif"; x.textAlign = "center"; x.fillText(abbr, cx, cy + 8);
+  });
+  // Fuss
+  x.textAlign = "center"; x.fillStyle = "#F2EFE6"; x.font = "400 52px Anton, Impact, sans-serif"; x.fillText("SCHAFFST DU MEHR?", W / 2, 1262);
+  x.fillStyle = "rgba(242,239,230,0.6)"; x.font = "300 28px Oswald, sans-serif"; x.fillText("🟩 richtig   🟨 mit Hilfe   ⬛ falsch", W / 2, 1310);
+  return c;
+}
+
+// Bild-Blob je Tag + Serienstand gecacht und schon beim Rendern der Karte vorbereitet: navigator.share
+// braucht eine frische Nutzergeste, ein erst beim Tipp gestartetes Rendern koennte sie verlieren.
+const dailyShareBlobs = {};
+function dailyShareInfo(dateKey) {
+  const result = profile.daily[dateKey];
+  if (!result) return null;
+  const m = dailyMatchById(result.id), cells = dailyCellsFor(result);
+  if (!m || !cells) return null;
+  return { dayNum: dayNumber(dateKey), dateKey, correct: result.correct, stars: result.stars || 0, streak: profile.streak.current, formation: m.formation, cells };
+}
+function prepareDailyShare(dateKey) {
+  const info = dailyShareInfo(dateKey);
+  if (!info) return null;
+  const key = dateKey + ":" + info.streak;
+  if (!dailyShareBlobs[key]) {
+    dailyShareBlobs[key] = drawDailyShareCanvas(info)
+      .then(cv => new Promise((resolve, reject) => cv.toBlob(b => b ? resolve(b) : reject(new Error("toBlob")), "image/png")))
+      .catch(e => { delete dailyShareBlobs[key]; throw e; });
+  }
+  return dailyShareBlobs[key];
+}
+
+// Teilen: Ergebnisbild (wo Datei-Teilen geht), sonst Text bzw. Zwischenablage. Abbruch durch den
+// Nutzer ist kein Fehler (kein Toast).
+async function shareDailyResult(dateKey) {
+  const result = profile.daily[dateKey];
+  if (!result) return;
+  const dayNum = dayNumber(dateKey);
+  const pending = navigator.canShare && typeof File === "function" ? prepareDailyShare(dateKey) : null;
+  if (pending) {
+    try {
+      const blob = await pending;
+      const file = new File([blob], "starting-xi-spieltag-" + dayNum + ".png", { type: "image/png" });
+      if (navigator.canShare({ files: [file] })) {
+        await navigator.share({ files: [file], text: "Schaffst du mehr? ⚽ Starting XI · Spieltag " + dayNum });
+        return;
+      }
+    } catch (e) {
+      if (e && e.name === "AbortError") return; // Nutzer hat abgebrochen
+      // sonst: weiter mit dem Text-Fallback
+    }
+  }
+  await shareDailyText(dayNum, result.correct, result.grid, profile.streak.current);
+}
+
+async function shareDailyText(dayNum, correct, grid, streak) {
   const text = "Starting XI · Tag " + dayNum + " · " + correct + "/11 🔥" + streak + "\n" + grid.map(row => row.join("")).join("\n");
   if (navigator.share) {
     try { await navigator.share({ text }); return; } catch (e) { return; } // Nutzer hat abgebrochen - kein zusaetzlicher Fallback noetig
@@ -6051,7 +6182,10 @@ function evaluatePitch() {
     const { dateKey } = currentDailyChallenge;
     const hintedAbbrs = new Set([...hintsUsed, ...tokenRevealed, ...fuzzyCorrected]);
     const grid = shareGridForMatch(m, correctAbbrs, hintedAbbrs);
-    profile.daily[dateKey] = { id: m.id, correct, grid, stars };
+    // Je Position das Ergebnis fuers Teilen-Bild (Prompt 24): g = richtig, y = mit Hilfe, x = falsch
+    const cells = {};
+    PITCH_LAYOUTS[m.formation].forEach(p => { cells[p.abbr] = !correctAbbrs.includes(p.abbr) ? "x" : hintedAbbrs.has(p.abbr) ? "y" : "g"; });
+    profile.daily[dateKey] = { id: m.id, correct, grid, stars, cells };
 
     const yesterday = localDateKey(new Date(new Date(dateKey + "T00:00:00").getTime() - 86400000));
     profile.streak.current = profile.streak.lastDayKey === yesterday ? profile.streak.current + 1 : 1;
@@ -6144,7 +6278,8 @@ function evaluatePitch() {
       <button class="action btn-gold" id="shareBtn">Teilen</button>`;
     panel.appendChild(row);
     document.getElementById("backBtn").onclick = () => goBack();
-    document.getElementById("shareBtn").onclick = () => shareDailyResult(dailyResult.dayNum, correct, dailyResult.grid, profile.streak.current);
+    document.getElementById("shareBtn").onclick = () => shareDailyResult(dailyResult.dateKey);
+    prepareDailyShare(dailyResult.dateKey); // Bild vorab, damit der Tipp die Nutzergeste behaelt
   } else {
     row.innerHTML = `
       <button class="action btn-outline" id="backBtn">Andere wählen</button>
