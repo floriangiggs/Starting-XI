@@ -1891,6 +1891,15 @@ TV-Bilder, Vereinslogos oder Original-Trikots – stattdessen App-Aufnahmen
   als schmale Leiste darunter (mit Mini-Formkurve). Später, mit genug Traffic,
   kann das Duell noch prominenter werden (z. B. breite Kachel). Umbau der
   Startseite erst zusammen mit dem Duell selbst.
+  Festgelegt 05.10.2026 (Prototyp aktualisiert): Formate Einzelduell,
+  Best of 3, Best of 5; Zeit pro Aufstellung 2/3/5 Min; Stufe 1–5 oder
+  gemischt. Rundensieg: mehr Richtige, sonst schnellere Zeit; Duellsieg: mehr
+  gewonnene Runden. Belohnung: XP je gespielter Aufstellung + Bonus für den
+  Duellsieg, KEINE Token. Bilanz gesamt und pro Freund (Übersicht, Einladung,
+  Scout-Profil). Duell-Trophäen (z. B. Erster Sieg, Sweep, 10 Siege, 5 Siege in
+  Folge). Aufstellungen aus allen Pools (Kampagne + Tag), innerhalb eines Duells
+  verschieden und nicht unmittelbar wiederholt (zuletzt in Duellen gespielte
+  zurückstellen). Ohne Server: Ergebnis wird per Link zurückgeschickt.
 - **Monetarisierung** (Prototyp `prototypes/werbung.html`, erst nach Capacitor
   und mit echten Nutzerzahlen): freiwillige Belohnungs-Werbung „Video ansehen →
   +1 🔍“ (max. 3/Tag), Einmalkauf „Werbefrei“ ohne Spielvorteil, später

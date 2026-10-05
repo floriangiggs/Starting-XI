@@ -3,8 +3,8 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, viewport-fit=cover">
-<!-- Ideen-Prototyp "Duell per Link" (noch KEIN Prompt): Herausfordern, Einladung, Walkout-Enthuellung (Wettbewerb > Datum > Partie > Mannschaft, Uhr erst ab Anpfiff), spielbares Duell (3:00, Abgeben, keine Hilfen), Ergebnis (mehr Richtige vor Zeit). Beispielaufstellung aus LINEUP_CHALLENGES "el-clasico-2009". Nicht einbinden. -->
-<title>Duell per Link</title>
+<!-- Ideen-Prototyp Duell (finale Form, noch KEIN Prompt): Übersicht (offene Duelle, Bilanz gesamt/pro Freund, Duell-Trophäen), Neues Duell (Format Einzel/Bo3/Bo5, Zeit 2/3/5 Min, Stufe 1-5/gemischt), Einladung, Walkout je Runde, spielbare Runde mit Rundenanzeige, Serien-Ergebnis mit XP-Quittung und "Ergebnis senden". Beispieldaten; Aufstellung aus LINEUP_CHALLENGES "el-clasico-2009". Nicht einbinden. -->
+<title>Duell gegen Freunde</title>
 
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Anton&family=Oswald:wght@300;400;500;600;700&display=swap">
 <style>
@@ -194,66 +194,130 @@
   .wo-foot { position: relative; z-index: 2; text-align: center; padding: 0 16px 22px; font-weight: 300; font-size: 12.5px; color: var(--dim); }
   .note { max-width: 402px; margin: -12px auto 0; padding: 0 16px 24px; font-weight: 300; font-size: 14px; line-height: 1.5; color: var(--muted); text-align: center; }
   .note b { color: var(--chalk); font-weight: 600; }
+
+  /* Hub */
+  .newbtn { border: none; border-radius: 14px; padding: 14px; width: 100%; display: flex; align-items: center; justify-content: center; gap: 8px; font-family: Anton, Impact, sans-serif; font-size: 19px; text-transform: uppercase; letter-spacing: 0.03em; color: var(--ink); background: linear-gradient(160deg, #f6da9c, var(--gold)); box-shadow: 0 4px 0 #9C7422; flex-shrink: 0; }
+  .sec { display: flex; justify-content: space-between; align-items: baseline; }
+  .sec span { font-weight: 300; font-size: 12px; color: var(--dim); }
+  .row { display: flex; align-items: center; gap: 10px; padding: 9px 11px; border-radius: 12px; border: 1px solid var(--line); background: var(--ink-2); text-align: left; width: 100%; }
+  .row .av2 { width: 34px; height: 34px; border-radius: 50%; display: grid; place-items: center; font-family: Anton, Impact, sans-serif; font-size: 15px; background: var(--ink); border: 2px solid #9CCBFF; flex-shrink: 0; }
+  .row .tx { flex: 1; min-width: 0; }
+  .row .tx b { font-weight: 600; font-size: 14px; display: block; }
+  .row .tx span { font-weight: 300; font-size: 12.5px; color: var(--muted); }
+  .row .act { font-family: Anton, Impact, sans-serif; font-size: 13px; text-transform: uppercase; padding: 6px 10px; border-radius: 9px; border: none; white-space: nowrap; }
+  .row .act.go2 { background: var(--gold); color: var(--ink); }
+  .row .act.wait { background: transparent; border: 1px solid var(--line); color: var(--muted); font-family: Oswald, sans-serif; font-weight: 500; font-size: 12px; text-transform: none; }
+  .row.hot { border-color: rgba(232,178,61,0.6); background: rgba(232,178,61,0.08); }
+  .bil { display: grid; grid-template-columns: repeat(3, minmax(0,1fr)); gap: 6px; }
+  .bil div { border-radius: 10px; border: 1px solid var(--line); background: var(--ink-2); padding: 7px 4px; text-align: center; }
+  .bil b { font-family: Anton, Impact, sans-serif; font-weight: 400; font-size: 20px; display: block; line-height: 1.1; }
+  .bil b em { font-style: normal; color: var(--dim); }
+  .bil span { font-weight: 400; font-size: 12px; color: var(--muted); }
+  .bil .tot { border-color: rgba(156,203,255,0.45); background: rgba(125,184,255,0.08); }
+  .tro { display: grid; grid-template-columns: repeat(4, minmax(0,1fr)); gap: 6px; }
+  .tro div { border-radius: 10px; border: 1px dashed var(--line); padding: 7px 3px; text-align: center; opacity: 0.55; }
+  .tro div.won { border-style: solid; border-color: rgba(232,178,61,0.6); background: rgba(232,178,61,0.08); opacity: 1; }
+  .tro i { font-style: normal; font-size: 20px; display: block; }
+  .tro span { font-weight: 500; font-size: 11px; line-height: 1.15; display: block; }
+  /* Optionen */
+  .optrow { display: grid; grid-template-columns: repeat(3, minmax(0,1fr)); gap: 6px; }
+  .opt { border-radius: 11px; border: 1px solid var(--line); background: var(--ink-2); padding: 8px 4px 7px; display: flex; flex-direction: column; align-items: center; gap: 2px; }
+  .opt b { font-family: Anton, Impact, sans-serif; font-weight: 400; font-size: 17px; text-transform: uppercase; line-height: 1.05; }
+  .opt span { font-weight: 300; font-size: 11.5px; color: var(--muted); }
+  .opt.on { border-color: rgba(232,178,61,0.75); background: rgba(232,178,61,0.12); }
+  .opt.on b { color: var(--gold-2); }
+  .pips { display: flex; gap: 3px; height: 8px; align-items: center; } .pips i { width: 8px; height: 8px; border-radius: 2px; background: rgba(242,239,230,0.3); } .opt.on .pips i { background: var(--gold); }
+  .levels.six { grid-template-columns: repeat(6, 1fr); }
+  .reward { display: flex; gap: 10px; align-items: center; border-radius: 12px; padding: 8px 12px; border: 1px solid rgba(46,204,113,0.3); background: rgba(46,204,113,0.06); }
+  .reward p { margin: 0; font-weight: 300; font-size: 13px; line-height: 1.35; } .reward p b { font-weight: 600; color: #8FE3B0; }
+  /* Serie im Spiel */
+  .series { display: flex; justify-content: center; align-items: center; gap: 10px; flex-shrink: 0; }
+  .series .rd { font-weight: 600; font-size: 12px; text-transform: uppercase; letter-spacing: 0.1em; color: var(--gold-2); }
+  .series .dots { display: flex; gap: 4px; } .series .dots i { width: 22px; height: 6px; border-radius: 3px; background: rgba(242,239,230,0.18); } .series .dots i.cur { background: var(--gold); }
+  /* Ergebnis Serie */
+  .rounds { display: grid; grid-template-columns: 54px 1fr auto 1fr; gap: 6px 8px; align-items: center; font-size: 13.5px; }
+  .rounds .h { font-weight: 600; font-size: 11.5px; text-transform: uppercase; letter-spacing: 0.08em; color: var(--muted); }
+  .rounds .r { font-family: Anton, Impact, sans-serif; font-size: 14px; color: var(--muted); }
+  .rounds .a { text-align: right; } .rounds .b { text-align: left; }
+  .rounds .w { color: var(--gold-2); font-weight: 600; }
+  .rounds .m { text-align: center; font-size: 14px; }
+  .rounds .x { color: var(--dim); font-weight: 300; font-size: 12px; }
+  .rcpt { display: flex; flex-direction: column; gap: 4px; }
+  .rcpt div { display: flex; justify-content: space-between; font-weight: 400; font-size: 13.5px; } .rcpt div b { font-family: Anton, Impact, sans-serif; font-weight: 400; color: var(--gold-2); }
+  .rcpt .sum { border-top: 1px solid var(--line); padding-top: 4px; font-weight: 600; }
+  .sendbtn { border: none; border-radius: 12px; padding: 12px; width: 100%; font-family: Anton, Impact, sans-serif; font-size: 17px; text-transform: uppercase; letter-spacing: 0.03em; color: var(--ink); background: linear-gradient(160deg, #f6da9c, var(--gold)); box-shadow: 0 3px 0 #9C7422; }
 </style>
 
 </head>
 <body>
 <div class="controls">
   <div class="seg" role="group" aria-label="Bildschirm">
-    <button type="button" data-s="s1" aria-pressed="true">1 · Herausfordern</button>
-    <button type="button" data-s="s2" aria-pressed="false">2 · Einladung</button>
-    <button type="button" data-s="sw" aria-pressed="false">3 · Walkout</button>
-    <button type="button" data-s="s3" aria-pressed="false">4 · Duell</button>
-    <button type="button" data-s="s4" aria-pressed="false">5 · Ergebnis</button>
+    <button type="button" data-s="s0" aria-pressed="true">1 · Übersicht</button>
+    <button type="button" data-s="s1" aria-pressed="false">2 · Neues Duell</button>
+    <button type="button" data-s="s2" aria-pressed="false">3 · Einladung</button>
+    <button type="button" data-s="sw" aria-pressed="false">4 · Walkout</button>
+    <button type="button" data-s="s3" aria-pressed="false">5 · Spiel</button>
+    <button type="button" data-s="s4" aria-pressed="false">6 · Ergebnis</button>
   </div>
 </div>
 
 <div class="phone">
-  <!-- 1 Herausfordern -->
-  <section class="scr" id="s1">
+  <!-- Übersicht -->
+  <section class="scr" id="s0">
     <div class="topbar"><button class="back" type="button"><i>←</i> Start</button><div class="tt">Duell</div></div>
-    <div class="lab">Gegner</div>
-    <div class="opp">
-      <button type="button" class="on"><i>🤝</i><b>Freund</b><span>Link per WhatsApp &amp; Co. schicken</span></button>
-      <button type="button" class="soon" aria-disabled="true"><i>🌍</i><b>Zufälliger Gegner</b><span>Gegen Spieler weltweit</span><span class="soon-tag">Bald</span></button>
+    <button type="button" class="newbtn" data-go="s1">⚔️ Neues Duell</button>
+    <div class="sec"><span class="lab">Offen</span><span>2 Duelle</span></div>
+    <button type="button" class="row hot" data-go="s2"><span class="av2">L</span><span class="tx"><b>Lisa fordert dich heraus</b><span>Best of 3 · 3 Min · Stufe 3</span></span><span class="act go2">Spielen</span></button>
+    <div class="row"><span class="av2" style="border-color:var(--gold)">M</span><span class="tx"><b>Du gegen Max</b><span>Einzelduell · 5 Min · du bist fertig</span></span><span class="act wait">⏳ wartet auf Max</span></div>
+    <div class="sec" style="margin-top:2px"><span class="lab">Bilanz</span><span>Siege : Niederlagen</span></div>
+    <div class="bil"><div class="tot"><b>7 <em>:</em> 4</b><span>Gesamt</span></div><div><b>5 <em>:</em> 3</b><span>gegen Max</span></div><div><b>2 <em>:</em> 1</b><span>gegen Lisa</span></div></div>
+    <div class="sec" style="margin-top:2px"><span class="lab">Duell-Trophäen</span><span>2 von 4</span></div>
+    <div class="tro"><div class="won"><i>⚔️</i><span>Erster Sieg</span></div><div class="won"><i>🧹</i><span>Sweep 2:0</span></div><div><i>🔟</i><span>10 Siege</span></div><div><i>🔥</i><span>5 Siege in Folge</span></div></div>
+    <div class="spacer"></div>
+    <div class="small" style="text-align:center">Freunde spielen über einen Link – kein Konto nötig.</div>
+  </section>
+
+  <!-- Neues Duell -->
+  <section class="scr" id="s1" hidden>
+    <div class="topbar"><button class="back" type="button" data-go="s0"><i>←</i> Duell</button><div class="tt">Neues <span>Duell</span></div></div>
+    <div class="lab">Format</div>
+    <div class="optrow" id="fmt">
+      <button type="button" class="opt" data-n="1"><span class="pips"><i></i></span><b>Einzel</b><span>1 Aufstellung</span></button>
+      <button type="button" class="opt on" data-n="3"><span class="pips"><i></i><i></i><i></i></span><b>Best of 3</b><span>3 Aufstellungen</span></button>
+      <button type="button" class="opt" data-n="5"><span class="pips"><i></i><i></i><i></i><i></i><i></i></span><b>Best of 5</b><span>5 Aufstellungen</span></button>
+    </div>
+    <div class="lab">Zeit pro Aufstellung</div>
+    <div class="optrow" id="time">
+      <button type="button" class="opt" data-t="120"><b>2 Min</b><span>Blitz</span></button>
+      <button type="button" class="opt on" data-t="180"><b>3 Min</b><span>Standard</span></button>
+      <button type="button" class="opt" data-t="300"><b>5 Min</b><span>Entspannt</span></button>
     </div>
     <div class="lab">Schwierigkeit</div>
-    <div class="levels" id="duelLv"></div>
+    <div class="levels six" id="duelLv"></div>
     <div class="card">
-      <div class="rules">
-        <div class="rule"><i>⏱️</i><b>3:00</b><span>Zeitlimit</span></div>
-        <div class="rule"><i>🚫</i><b>Ohne</b><span>Scout-Rad &amp; Aufdecken</span></div>
-        <div class="rule"><i>🎲</i><b>Geheim</b><span>Spiel erst beim Anpfiff</span></div>
-      </div>
-      <div style="margin-top:11px">
-        <div class="win"><span class="n">1</span><p>Wer <b>mehr Spieler</b> richtig hat, gewinnt – egal wie lange.</p></div>
-        <div class="win"><span class="n">2</span><p>Bei Gleichstand gewinnt die <b>schnellere Zeit</b>.</p></div>
-      </div>
+      <div class="win"><span class="n">1</span><p>Pro Aufstellung: <b>mehr Richtige</b> gewinnt, bei Gleichstand die <b>schnellere Zeit</b>.</p></div>
+      <div class="win"><span class="n">2</span><p>Wer <b>mehr Aufstellungen</b> gewinnt, gewinnt das Duell. Keine Hilfen.</p></div>
     </div>
+    <div class="reward"><span>🎁</span><p><b>XP</b> für jede gespielte Aufstellung, <b>Bonus</b> für den Duellsieg.</p></div>
     <button type="button" class="oath" id="oath1"><span class="box">✓</span><span><b>Fair-Play-Versprechen</b><span>Ich spiele ohne Google, KI und Hilfe von außen.</span></span></button>
     <div class="spacer"></div>
     <button type="button" class="go" id="startBtn" disabled>Anpfiff &amp; Link teilen</button>
-    <div class="small" style="text-align:center;margin-top:-4px">Du spielst zuerst, dein Freund danach dieselbe Aufstellung.</div>
   </section>
 
-  <!-- 2 Einladung -->
+  <!-- Einladung -->
   <section class="scr" id="s2" hidden>
-    <div class="topbar"><button class="back" type="button"><i>←</i> Start</button><div class="tt">Duell</div></div>
+    <div class="topbar"><button class="back" type="button" data-go="s0"><i>←</i> Duell</button><div class="tt">Duell</div></div>
     <div class="vs">
       <div class="k">Du wurdest herausgefordert</div>
-      <div class="row">
-        <div class="av"><div class="c">M</div><b>Max</b><span>Rang: Stammspieler</span></div>
+      <div class="row" style="background:none;border:none;padding:0;margin-top:12px;display:grid;grid-template-columns:1fr auto 1fr;position:relative;z-index:1">
+        <div class="av"><div class="c">L</div><b>Lisa</b><span>Rang: Stammspieler</span></div>
         <div class="x">VS</div>
         <div class="av"><div class="c me">F</div><b>Du</b><span>Rang: Scout</span></div>
       </div>
-      <div class="facts"><div><b>Stufe 2</b><span>Schwierigkeit</span></div><div><b>3:00</b><span>Zeitlimit</span></div><div><b>Keine</b><span>Hilfen</span></div></div>
+      <div class="facts"><div><b>Best of 3</b><span>Format</span></div><div><b>3:00</b><span>pro Aufstellung</span></div><div><b>Stufe 3</b><span>Schwierigkeit</span></div></div>
     </div>
-    <div class="card locked"><span class="ic">🔒</span><div><b>Max hat schon gespielt</b><span class="small">Sein Ergebnis siehst du erst nach deinem Spiel.</span></div></div>
-    <div class="card">
-      <div class="win"><span class="n">1</span><p>Wer <b>mehr Spieler</b> richtig hat, gewinnt.</p></div>
-      <div class="win"><span class="n">2</span><p>Bei Gleichstand gewinnt die <b>schnellere Zeit</b>.</p></div>
-      <div class="win"><span class="n">⏱</span><p>Du weißt nicht weiter? <b>Abgeben</b> stoppt deine Zeit.</p></div>
-    </div>
+    <div class="card locked"><span class="ic">🔒</span><div><b>Lisa hat schon gespielt</b><span class="small">Ihre Ergebnisse siehst du erst, wenn du alle 3 Aufstellungen gespielt hast.</span></div></div>
+    <div class="card"><div class="small" style="margin:0">Bilanz gegen Lisa: <b style="font-weight:600;color:var(--chalk)">2 : 1</b> für dich</div></div>
     <button type="button" class="oath" id="oath2"><span class="box">✓</span><span><b>Fair-Play-Versprechen</b><span>Ich spiele ohne Google, KI und Hilfe von außen.</span></span></button>
     <div class="spacer"></div>
     <button type="button" class="go" id="acceptBtn" disabled>Annehmen &amp; Anpfiff</button>
@@ -263,7 +327,7 @@
   <!-- Walkout -->
   <section class="scr" id="sw" hidden>
     <div class="beam l"></div><div class="beam r"></div><div class="tunnel"></div>
-    <div class="top"><span class="k">Duell gegen Max</span><button type="button" class="skip" id="skipWo">Überspringen ›</button></div>
+    <div class="top"><span class="k">Runde 1 von 3 · gegen Lisa</span><button type="button" class="skip" id="skipWo">Überspringen ›</button></div>
     <div class="wo">
       <div class="wr" data-i="0"><div class="flare"></div><div class="sweep"></div><div class="lb">Wettbewerb</div><div class="val">LaLiga</div><div class="sub">34. Spieltag</div></div>
       <div class="wr" data-i="1"><div class="flare"></div><div class="sweep"></div><div class="lb">Datum</div><div class="val">2. Mai 2009</div><div class="sub">Samstag</div></div>
@@ -274,35 +338,31 @@
     <div class="wo-foot">Die Zeit startet erst mit dem Anpfiff.</div>
   </section>
 
-  <!-- 3 Duell -->
+  <!-- Spiel -->
   <section class="scr" id="s3" hidden>
     <div class="hud">
       <div class="side"><b>Du</b><span class="v" id="myScore">0<small>/11</small></span></div>
       <div class="clock" id="clock">3:00</div>
-      <div class="side r"><b>Max</b><span class="lock">🔒 verdeckt</span></div>
+      <div class="side r"><b>Lisa</b><span class="lock">🔒 verdeckt</span></div>
     </div>
+    <div class="series"><span class="rd">Runde 1 von 3</span><span class="dots"><i class="cur"></i><i></i><i></i></span></div>
     <div class="match"><b>Real Madrid – FC Barcelona 2:6</b><span>LaLiga · 02.05.2009 · Aufstellung FC Barcelona</span></div>
     <div class="pitch" id="pitch">
       <div class="ln half"></div><div class="ln circ"></div><div class="ln box1"></div><div class="ln box2"></div>
     </div>
-    <div class="nohelp">🚫 Im Duell gibt es kein Scout-Rad und kein Aufdecken.</div>
     <button type="button" class="give" id="giveBtn">⏹ Abgeben<small>Zeit stoppen und mit dem aktuellen Stand werten</small></button>
   </section>
 
-  <!-- 4 Ergebnis -->
+  <!-- Ergebnis -->
   <section class="scr" id="s4" hidden>
-    <div class="topbar"><button class="back" type="button"><i>←</i> Start</button><div class="tt">Duell</div></div>
+    <div class="topbar"><button class="back" type="button" data-go="s0"><i>←</i> Duell</button><div class="tt">Ergebnis</div></div>
     <div class="banner" id="banner"><div class="big" id="bigTxt"></div><div class="why" id="whyTxt"></div></div>
-    <div class="cmp">
-      <div id="cMe"><span class="crown" id="crMe"></span><div class="who">Du</div><div class="sc" id="scMe"></div><div class="tm" id="tmMe"></div><span class="fp" id="fpMe">🤝 Fair Play</span></div>
-      <div id="cOp"><span class="crown" id="crOp"></span><div class="who">Max</div><div class="sc">8<small>/11</small></div><div class="tm">2:41</div><span class="fp">🤝 Fair Play</span></div>
-    </div>
-    <div class="card">
-      <div class="lab" style="font-size:13px;margin-bottom:7px">Position für Position</div>
-      <div class="grid2" id="pp"></div>
-    </div>
+    <div class="card"><div class="rounds" id="rounds"></div></div>
+    <div class="card"><div class="lab" style="font-size:13px;margin-bottom:6px">Belohnung</div><div class="rcpt" id="rcpt"></div></div>
+    <div class="card" style="display:flex;justify-content:space-between;align-items:center"><span class="small" style="margin:0">Bilanz gegen Lisa</span><b style="font-family:Anton,Impact,sans-serif;font-weight:400;font-size:20px" id="bilLisa">3 : 1</b></div>
     <div class="spacer"></div>
-    <div class="twobtn"><button type="button" class="go" style="font-size:17px">🔁 Revanche</button><button type="button" class="ghost" style="color:var(--chalk)">📤 Teilen</button></div>
+    <button type="button" class="sendbtn">📤 Ergebnis an Lisa senden</button>
+    <button type="button" class="ghost" style="color:var(--chalk)">🔁 Revanche</button>
   </section>
 </div>
 <p class="note" id="note"></p>
@@ -310,106 +370,91 @@
 <script>
 (() => {
   const $ = id => document.getElementById(id);
-  // Beispiel aus LINEUP_CHALLENGES (id "el-clasico-2009"), Layout aus PITCH_LAYOUTS["4-3-3"]
   const LAYOUT = [["TW",50,90],["RV",80,72],["RIV",60,76],["LIV",40,76],["LV",20,72],["RZM",68,50],["ZM",50,60],["LZM",32,50],["RA",80,18],["ST",50,12],["LA",20,18]];
   const XI = { TW:"Valdés", RV:"Alves", RIV:"Puyol", LIV:"Piqué", LV:"Abidal", RZM:"Xavi", ZM:"Touré", LZM:"Iniesta", RA:"Messi", ST:"Eto'o", LA:"Henry" };
-  const OPP = { TW:1, RV:1, RIV:1, LIV:1, LV:0, RZM:1, ZM:0, LZM:1, RA:1, ST:1, LA:0 }; // Max: 8/11 in 2:41
-  const OPP_N = 8, OPP_T = 161, LIMIT = 180;
   const norm = s => s.normalize("NFD").replace(/[̀-ͯ]/g, "").toLowerCase().replace(/[^a-z]/g, "");
-
-  // Stufen
+  let LIMIT = 180;
   const LV = [["1","#7fd99a"],["2","#a8d94a"],["3","#e8b23d"],["4","#e8863d"],["5","#e0705f"]];
-  $("duelLv").innerHTML = LV.map(([n,c], i) => `<button type="button" class="lvl ${i===1?"on":""}" style="color:${c}"><span class="bars">${[1,2,3,4,5].map(j=>`<i class="${j<=+n?"on":""}"></i>`).join("")}</span><b>Stufe ${n}</b></button>`).join("")
-    + `<button type="button" class="lvl rnd"><span class="dice">🎲</span><b>Zufall</b></button>`;
-  $("duelLv").querySelectorAll(".lvl").forEach(b => b.onclick = () => { $("duelLv").querySelectorAll(".lvl").forEach(x => x.classList.remove("on")); b.classList.add("on"); });
+  $("duelLv").innerHTML = LV.map(([n,c], i) => `<button type="button" class="lvl ${i===2?"on":""}" style="color:${c}"><span class="bars">${[1,2,3,4,5].map(j=>`<i class="${j<=+n?"on":""}"></i>`).join("")}</span><b>Stufe ${n}</b></button>`).join("")
+    + `<button type="button" class="lvl rnd"><span class="dice">🎲</span><b>Gemischt</b></button>`;
+  const pick = (box) => box.querySelectorAll("button").forEach(b => b.onclick = () => { box.querySelectorAll("button").forEach(x => x.classList.remove("on")); b.classList.add("on"); });
+  pick($("duelLv")); pick($("fmt")); pick($("time"));
   [["oath1","startBtn"],["oath2","acceptBtn"]].forEach(([o,btn]) => $(o).onclick = () => { $(o).classList.toggle("on"); $(btn).disabled = !$(o).classList.contains("on"); });
-  $("startBtn").onclick = () => show("s2");
+  $("startBtn").onclick = () => show("s0");
   $("acceptBtn").onclick = () => show("sw");
+  document.querySelectorAll("[data-go]").forEach(b => b.onclick = () => show(b.dataset.go));
 
-  // Spielfeld
   let left = LIMIT, timer = null, done = false;
   const fmt = s => Math.floor(s/60) + ":" + String(s%60).padStart(2,"0");
   function buildPitch() {
     $("pitch").querySelectorAll(".slot").forEach(e => e.remove());
-    LAYOUT.forEach(([ab,x,y]) => {
-      const d = document.createElement("div"); d.className = "slot"; d.style.left = x + "%"; d.style.top = y + "%";
-      d.innerHTML = `<span class="ab">${ab}</span><input type="text" autocomplete="off" autocapitalize="words" spellcheck="false" placeholder="Name" data-ab="${ab}" aria-label="${ab}">`;
-      $("pitch").appendChild(d);
-    });
+    LAYOUT.forEach(([ab,x,y]) => { const d = document.createElement("div"); d.className = "slot"; d.style.left = x + "%"; d.style.top = y + "%";
+      d.innerHTML = `<span class="ab">${ab}</span><input type="text" autocomplete="off" spellcheck="false" placeholder="Name" data-ab="${ab}" aria-label="${ab}">`; $("pitch").appendChild(d); });
     $("pitch").querySelectorAll("input").forEach(inp => inp.addEventListener("input", () => {
-      if (norm(inp.value) === norm(XI[inp.dataset.ab])) { inp.value = XI[inp.dataset.ab]; inp.classList.add("ok"); inp.disabled = true; score(); }
-    }));
+      if (norm(inp.value) === norm(XI[inp.dataset.ab])) { inp.value = XI[inp.dataset.ab]; inp.classList.add("ok"); inp.disabled = true; score(); } }));
   }
-  function score() {
-    const n = $("pitch").querySelectorAll("input.ok").length;
-    $("myScore").innerHTML = n + "<small>/11</small>";
-    if (n === 11) finish();
-  }
-  function startDuel() {
-    clearInterval(timer); done = false; left = LIMIT; $("clock").textContent = fmt(left); $("clock").classList.remove("low");
-    buildPitch(); score();
-    timer = setInterval(() => { left--; $("clock").textContent = fmt(Math.max(0,left)); $("clock").classList.toggle("low", left <= 30); if (left <= 0) finish(); }, 1000);
-  }
-  function finish() {
-    if (done) return; done = true; clearInterval(timer);
-    const got = {}; $("pitch").querySelectorAll("input").forEach(i => { got[i.dataset.ab] = i.classList.contains("ok"); if (!got[i.dataset.ab]) { i.value = XI[i.dataset.ab]; i.classList.add("miss"); i.disabled = true; } });
-    const n = Object.values(got).filter(Boolean).length, t = LIMIT - Math.max(0,left);
-    setTimeout(() => { result(n, t, got); show("s4", true); }, 700);
-  }
+  function score() { const n = $("pitch").querySelectorAll("input.ok").length; $("myScore").innerHTML = n + "<small>/11</small>"; if (n === 11) finish(); }
+  function startDuel() { clearInterval(timer); done = false; left = LIMIT; $("clock").textContent = fmt(left); $("clock").classList.remove("low"); buildPitch(); score();
+    timer = setInterval(() => { left--; $("clock").textContent = fmt(Math.max(0,left)); $("clock").classList.toggle("low", left <= 30); if (left <= 0) finish(); }, 1000); }
+  function finish() { if (done) return; done = true; clearInterval(timer);
+    $("pitch").querySelectorAll("input").forEach(i => { if (!i.classList.contains("ok")) { i.value = XI[i.dataset.ab]; i.classList.add("miss"); i.disabled = true; } });
+    const n = $("pitch").querySelectorAll("input.ok").length, t = LIMIT - Math.max(0,left);
+    setTimeout(() => { result(n, t); show("s4", true); }, 700); }
   $("giveBtn").onclick = finish;
 
-  function result(n, t, got) {
-    let state, why;
-    if (n > OPP_N) { state = "won"; why = `Du hattest ${n - OPP_N} ${n - OPP_N === 1 ? "Spieler" : "Spieler"} mehr – die Zeit spielt keine Rolle.`; }
-    else if (n < OPP_N) { state = "lost"; why = `Max wusste ${OPP_N - n} mehr – auch wenn ${t < OPP_T ? "du schneller warst" : "er länger gebraucht hat"}.`; }
-    else if (t < OPP_T) { state = "won"; why = `Gleich viele Richtige – du warst ${OPP_T - t} Sekunden schneller.`; }
-    else if (t > OPP_T) { state = "lost"; why = `Gleich viele Richtige – Max war ${t - OPP_T} Sekunden schneller.`; }
-    else { state = "draw"; why = "Gleich viele Richtige und exakt gleiche Zeit."; }
-    $("banner").className = "banner " + state;
-    $("bigTxt").textContent = state === "won" ? "Sieg! 🏆" : state === "lost" ? "Niederlage" : "Unentschieden";
-    $("whyTxt").textContent = why;
-    $("scMe").innerHTML = n + "<small>/11</small>"; $("tmMe").textContent = fmt(t);
-    $("cMe").classList.toggle("best", state === "won"); $("cOp").classList.toggle("best", state === "lost");
-    $("crMe").textContent = state === "won" ? "👑" : ""; $("crOp").textContent = state === "lost" ? "👑" : "";
-    $("pp").innerHTML = LAYOUT.map(([ab]) => `<span class="a ${got[ab]?"y":"nn"}">${got[ab]?"✓ ":"– "}${got[ab]?XI[ab]:""}</span><span class="p">${ab}</span><span class="b ${OPP[ab]?"y":"nn"}">${OPP[ab]?"✓":"–"}</span>`).join("");
+  // Runden 2 und 3 sind Beispielwerte; Runde 1 kommt aus deinem Spiel
+  function result(n1, t1) {
+    const R = [
+      { me: [n1, t1], op: [8, 161] },
+      { me: [7, 175], op: [9, 150] },
+      { me: [10, 132], op: [10, 158] }
+    ];
+    let w = 0, l = 0;
+    const rows = R.map((r, i) => { const meWin = r.me[0] > r.op[0] || (r.me[0] === r.op[0] && r.me[1] < r.op[1]); const opWin = r.op[0] > r.me[0] || (r.me[0] === r.op[0] && r.op[1] < r.me[1]);
+      if (meWin) w++; if (opWin) l++;
+      const why = r.me[0] !== r.op[0] ? "mehr Richtige" : "schneller";
+      return `<span class="r">R${i+1}</span><span class="a ${meWin?"w":""}">${r.me[0]}/11 · ${fmt(r.me[1])}</span><span class="m">${meWin?"👑":opWin?"":"="}</span><span class="b ${opWin?"w":""}">${r.op[0]}/11 · ${fmt(r.op[1])} ${opWin?"👑":""}</span>`
+        + `<span></span><span class="x" style="grid-column:2 / span 3">${meWin||opWin ? (meWin?"Du":"Lisa") + " – " + why : "unentschieden"}${i===0?" · dein echtes Spiel":" · Beispiel"}</span>`; }).join("");
+    $("rounds").innerHTML = `<span></span><span class="h a">Du</span><span></span><span class="h b">Lisa</span>` + rows;
+    const won = w > l;
+    $("banner").className = "banner " + (won ? "won" : w < l ? "lost" : "draw");
+    $("bigTxt").textContent = won ? `Sieg ${w} : ${l} 🏆` : w < l ? `Niederlage ${w} : ${l}` : `Unentschieden`;
+    $("whyTxt").textContent = won ? "Du hast mehr Aufstellungen gewonnen als Lisa." : w < l ? "Lisa hat mehr Aufstellungen gewonnen." : "Gleich viele Runden – entschieden hätten die Richtigen insgesamt.";
+    $("rcpt").innerHTML = `<div><span>3 Aufstellungen gespielt</span><b>+45 XP</b></div>` + (won ? `<div><span>Duellsieg</span><b>+40 XP</b></div>` : "") + `<div class="sum"><span>Summe</span><b>+${won?85:45} XP</b></div>`;
+    $("bilLisa").textContent = won ? "3 : 1" : "2 : 2";
   }
 
-
-  // Walkout: Wettbewerb > Datum > Partie > Mannschaft, dann 3-2-1-Anpfiff
   let woT = [];
   function clearWo() { woT.forEach(clearTimeout); woT = []; }
   function walkout() {
-    clearWo();
-    const sw = $("sw"), rows = [...sw.querySelectorAll(".wr")], n = $("cdN");
-    sw.classList.remove("lit", "dim"); rows.forEach(r => r.classList.remove("in", "cur")); n.className = ""; n.textContent = "";
-    void sw.offsetWidth;
-    const at = (ms, fn) => woT.push(setTimeout(fn, ms));
-    at(150, () => sw.classList.add("lit"));
-    const STEP = 1250;
-    rows.forEach((r, i) => at(700 + i * STEP, () => { rows.forEach(x => x.classList.remove("cur")); r.classList.add("in", "cur"); }));
-    const cdStart = 700 + rows.length * STEP + 600;
-    at(cdStart - 150, () => sw.classList.add("dim"));
+    clearWo(); const sw = $("sw"), rows = [...sw.querySelectorAll(".wr")], n = $("cdN");
+    sw.classList.remove("lit", "dim"); rows.forEach(r => r.classList.remove("in", "cur")); n.className = ""; n.textContent = ""; void sw.offsetWidth;
+    const at = (ms, fn) => woT.push(setTimeout(fn, ms)); at(150, () => sw.classList.add("lit"));
+    const STEP = 1250; rows.forEach((r, i) => at(700 + i * STEP, () => { rows.forEach(x => x.classList.remove("cur")); r.classList.add("in", "cur"); }));
+    const cdStart = 700 + rows.length * STEP + 600; at(cdStart - 150, () => sw.classList.add("dim"));
     ["3","2","1","Anpfiff!"].forEach((t, i) => at(cdStart + i * 650, () => { n.className = ""; void n.offsetWidth; n.textContent = t; n.className = "cdgo" + (i === 3 ? " ko" : ""); }));
     at(cdStart + 4 * 650 + 250, () => show("s3"));
   }
   $("skipWo").onclick = () => show("s3");
+
   const NOTES = {
-    s1: "<b>Herausfordern:</b> Gegner wählen (Freund per Link – Zufallsgegner erst später), Stufe wählen oder 🎲 Zufall. Die Regeln stehen kompakt auf einer Karte. Ohne Fair-Play-Versprechen kein Anpfiff.",
-    s2: "<b>Einladung:</b> Das öffnet sich beim Freund über den Link. Max hat schon gespielt, sein Ergebnis bleibt verdeckt, bis du fertig bist – so kann niemand auf ein Ergebnis hinspielen.",
-    sw: "<b>Walkout:</b> Erst nach „Annehmen &amp; Anpfiff“ erfährst du, um welches Spiel es geht – Schritt für Schritt wie beim FIFA-Walkout: Wettbewerb › Datum › Partie › deine Mannschaft. Jede Info leuchtet einmal auf und rückt dann nach oben, danach 3-2-1-Anpfiff. Die Uhr startet erst danach – beide Spieler bekommen exakt dieselbe Show. Überspringen geht jederzeit (startet nur die Uhr früher). Zum erneuten Ansehen oben auf „3 · Walkout“ tippen.",
-    s3: "<b>Duell – zum Ausprobieren:</b> Echte Aufstellung aus der App (El Clásico 2009, Barça). Tipp die Nachnamen ein, richtige Felder werden grün. 3:00 Minuten, keine Hilfen, ⏹ Abgeben stoppt die Zeit. Der Gegner bleibt verdeckt.",
-    s4: "<b>Ergebnis:</b> Erst zählt die Anzahl Richtige, bei Gleichstand die Zeit – die Begründung steht direkt im Banner. Darunter der Vergleich Position für Position und das 🤝 Fair-Play-Siegel (würde z. B. fehlen, wenn jemand die App während des Duells verlassen hat). Max hat hier im Beispiel 8/11 in 2:41."
+    s0: "<b>Duell-Übersicht</b> (öffnet sich über die Duell-Kachel): oben „Neues Duell“, darunter offene Duelle – Herausforderungen an dich (gold, „Spielen“) und Duelle, in denen du auf den Freund wartest. Dann deine Bilanz gesamt und pro Freund, unten die Duell-Trophäen.",
+    s1: "<b>Neues Duell:</b> Format (Einzel, Best of 3, Best of 5), Zeit pro Aufstellung (2, 3 oder 5 Minuten) und Schwierigkeit (Stufe 1–5 oder gemischt) frei kombinierbar. Darunter die Regeln in zwei Sätzen und die Belohnung: XP pro Aufstellung, Bonus für den Sieg, keine Token.",
+    s2: "<b>Einladung:</b> Das sieht dein Freund über den Link – Format, Zeit und Stufe, eure bisherige Bilanz. Lisas Ergebnisse bleiben verdeckt, bis alle Runden gespielt sind.",
+    sw: "<b>Walkout</b> vor jeder Runde, oben steht jetzt „Runde 1 von 3“. Die Uhr startet erst mit dem Anpfiff.",
+    s3: "<b>Spiel (spielbar):</b> Unter dem Timer zeigen drei Striche die Runde. Tipp Nachnamen ein, ⏹ Abgeben beendet die Runde. Danach geht's im Prototyp direkt zum Endergebnis (Runden 2 und 3 sind Beispielwerte).",
+    s4: "<b>Ergebnis:</b> Jede Runde mit Treffern und Zeit, die Krone zeigt den Rundensieger und warum (mehr Richtige oder schneller). Darunter die XP-Quittung, die neue Bilanz und „Ergebnis an Lisa senden“ – so erfährt Lisa ohne Server, wie es ausgegangen ist."
   };
   function show(id, keep) {
-    ["s1","s2","sw","s3","s4"].forEach(x => $(x).hidden = x !== id);
-    if (id === "sw") walkout(); else clearWo();
+    ["s0","s1","s2","sw","s3","s4"].forEach(x => $(x).hidden = x !== id);
     document.querySelectorAll("[data-s]").forEach(b => b.setAttribute("aria-pressed", String(b.dataset.s === id)));
     $("note").innerHTML = NOTES[id];
+    if (id === "sw") walkout(); else clearWo();
     if (id === "s3") startDuel(); else clearInterval(timer);
-    if (id === "s4" && !keep) { const got = {}; LAYOUT.forEach(([ab], i) => got[ab] = i !== 4 && i !== 10); result(9, 152, got); }
+    if (id === "s4" && !keep) result(9, 134);
   }
   document.querySelectorAll("[data-s]").forEach(b => b.onclick = () => show(b.dataset.s));
-  show("s1");
+  show("s0");
 })();
 </script>
 
