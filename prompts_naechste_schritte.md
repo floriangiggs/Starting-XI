@@ -2068,6 +2068,7 @@ Konsolenfehler.
    Login-Option, Username-Filter/Melden, Datenschutzerklärung/DSGVO.
    Alternative ohne eigenen Server: Game Center / Google Play Games
    (iPhone und Android getrennt).
+   Ausführlich: docs/Starting-XI_Duell_Namen-und-Accounts.docx.
 5. **Skalieren:** mehr Aufstellungen, Duell gegen Zufallsgegner, Ranking.
 
 Leitplanken Social-Media-Videos: KI-Inhalte als solche kennzeichnen
