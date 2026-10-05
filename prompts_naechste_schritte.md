@@ -42,8 +42,9 @@ vorige umgesetzt, getestet und committet ist.
 | 28 | Duell: Ergebnis kommt sicher an, beendete Duelle (Richtige + Zeiten), Duelle entfernen | ⏸ zurückgestellt – kommt ins Online-Duell |
 | 29 | Duell: Zwischenstand nach jeder Runde, vorzeitige Entscheidung, Auflösung beim Abpfiff | ⏸ zurückgestellt – kommt ins Online-Duell |
 | 30 | Kampagne: direkt weiter zum nächsten Level, Level-Anzeige „Level n von N“ | – |
+| 31 | Kampagne: Animation „Welt geschafft“ (Aufstieg + Pokal) | 30 |
 
-**Empfohlene Reihenfolge ab jetzt:** 27 → 30 → weitere Offline-Feinschliffe → Planung Online-Duell → 8
+**Empfohlene Reihenfolge ab jetzt:** 27 → 30 → 31 → weitere Offline-Feinschliffe → Planung Online-Duell → 8
 
 Prompt 7 steht bewusst vor der Tages-Challenge: Nur mit der neuen
 Update-Strategie kommen neue Tages-Aufstellungen zuverlässig auf dem iPhone an.
@@ -56,7 +57,8 @@ Welten-Ausschmückung), `prototypes/ladescreen.html` (Prompt 11d) und
 `prototypes/scout-ausweis.html` (Prompt 17, nur Variante A) und
 `prototypes/modus-kacheln.html` (Prompt 18, nur „A · neu“) und
 `prototypes/regeln.html` (Prompt 19) und `prototypes/freispiel.html` (Prompt 20) und
-`prototypes/teilen.html` (Prompt 24) und `prototypes/duell.html` (Prompts 25–26).
+`prototypes/teilen.html` (Prompt 24) und `prototypes/duell.html` (Prompts 25–26) und
+`prototypes/welt-animation.html` (Prompt 31, nur „C + A“).
 
 **Wichtig nach jeder Änderung:** Der Service Worker liefert die App aus dem
 Cache. Jeder Prompt erhöht deshalb `CACHE_NAME` in `sw.js` – sonst sieht die
@@ -2354,8 +2356,67 @@ Pfad überein; Screenshots bei 375/402/430; keine Konsolenfehler.
   Flutlichter gehen nacheinander an), C „Aufstieg“ (Tabelle, eigenes Team
   klettert auf Platz 1, Banner „Aufstieg in die Regionalliga!“), D
   „Tunnel in die neue Liga“ (Walkout-Stil, größeres Stadion, Name der
-  neuen Welt). Florians Favorit: C + A (erst Aufstieg, dann Pokal). Prototyp: prototypes/welt-animation.html.
+  neuen Welt). Entschieden: C + A → Prompt 31.
   Eigene Gestaltung, keine Figuren/Grafiken aus fremden Spielen.
+
+## Prompt 31 – Kampagne: Animation „Welt geschafft“ (Aufstieg + Pokal)
+
+```
+Lies CLAUDE.md. Neue Feier-Animation beim Abschluss einer Kampagnen-Welt →
+kurz Plan zeigen, dann umsetzen. Optik/Ablauf 1:1 aus
+prototypes/welt-animation.html, maßgeblich ist NUR die Variante "C + A"
+(Funktionen playC und playA, CSS .c-*/.a-*, Konfetti-Funktion). Prototyp nur
+lesen, nicht einbinden. Voraussetzung: Prompt 30 (Knopf "🏆 Welt geschafft!
+Weiter ›").
+
+1. Wann
+   - Genau einmal pro Welt: wenn durch das aktuelle Ergebnis zum ERSTEN
+     Mal alle Level einer Welt bestanden sind (gleiche Bedingung wie die
+     Trophäe "<Welt>-Pokal – Alle Level bestanden" aus CAMPAIGN_TROPHIES).
+     Merken in profile.worldCelebrated[tier] (Migration in loadProfile),
+     damit sie nie doppelt kommt.
+   - Startet direkt nach "Auswerten", VOR Level-Up-Overlay und Trophäen-
+     Toasts (die danach wie gewohnt folgen bzw. in einer Warteschlange
+     laufen – nichts darf sich überlagern).
+   - Vollbild-Overlay über dem Spielfeld, kein Navigations-Eintrag.
+
+2. Ablauf C → A (ca. 10 s)
+   C · Aufstieg: Kopf "<Weltname> · letzter Spieltag" / "Wer steigt auf?",
+     Tabelle mit 8 Teams: 7 erfundene Teamnamen (Liste je Welt im Code,
+     KEINE echten Vereine/Wappen) + eigenes Team (profile.duelName, sonst
+     "Dein Team") startet auf Platz 8 und klettert Platz für Platz auf 1
+     (Punkte zählen mit, grüner Pfeil ▲, Aufstiegszone links grün). Dann
+     Banner "Aufstieg in die <nächste Welt>!" + "Welt n+1 ist
+     freigeschaltet" + Konfetti in Gold und Weltfarbe (DIFF_COLOR).
+     Letzte Welt (Weltklasse): Kopf "Weltklasse · letzter Spieltag",
+     Banner "Du bist Weltklasse!" + "Alle Welten geschafft".
+   A · Pokal: Abblenden, Flutlicht-Kegel, Pokal steigt auf und dreht sich
+     einmal, "Welt geschafft!" ("geschafft" gold), Plakette
+     "<Weltname>-Pokal" + "⭐ x / y · kommt in deinen Trophäenschrank"
+     (x/y = Kampagnen-Sterne dieser Welt aus profile.campaign.stars). Auf
+     dem Pokal-Schild "WELT n". Danach Knopf "Weiter ›" → schließt das
+     Overlay, dann der Ergebnis-Bildschirm mit den Knöpfen aus Prompt 30.
+
+3. Regeln
+   - Überspringen: "Tippen zum Überspringen" unten; erster Tipp → Ende von
+     C bzw. direkt zu A, zweiter Tipp → Endzustand von A mit "Weiter ›".
+   - Nur einmalige Animationen, kein Blinken/Dauerschleife (CLAUDE.md);
+     prefers-reduced-motion: direkt Endzustände ohne Bewegung.
+   - Schriften laut CLAUDE.md (Anton für Titel/Zahlen, Oswald sonst).
+   - Pokal als eigenes SVG wie im Prototyp, Konfetti als Canvas, nach
+     Ende aufräumen (requestAnimationFrame stoppen, Canvas entfernen).
+   - Bonus (falls einfach): Im Trophäenschrank Tipp auf einen gewonnenen
+     <Welt>-Pokal → Animation erneut ansehen (nur A, ohne Belohnungen).
+
+sw.js CACHE_NAME erhöhen. Test: Testprofil mit 9/10 bestandenen Leveln in
+Welt 1 → letztes Level bestehen → C dann A laufen einmal, danach Ergebnis
+mit "🏆 Welt geschafft! Weiter ›"; dasselbe Level erneut bestehen → keine
+Animation; Überspringen mit 1 und 2 Tipps; Welt 5 zeigt "Du bist
+Weltklasse!"; reduced motion; Screenshot-Serie bei 375/402/430; keine
+Konsolenfehler.
+```
+
+---
 
 ## Fahrplan (Stand 04.10.2026)
 
