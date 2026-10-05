@@ -39,8 +39,9 @@ vorige umgesetzt, getestet und committet ist.
 | 25 | Duell Teil 1: Hosting-Prüfung, Links, Startseite (Duell-Kachel), Duell-Bildschirme | ✅ erledigt |
 | 26 | Duell Teil 2: Spielen, Walkout, Ergebnis, XP, Bilanz, Trophäen | ✅ erledigt |
 | 27 | Duell-Einladung: „Hier im Browser spielen“ ohne Funktion, Fair-Play-Schritt klarer | – |
+| 28 | Duell: Ergebnis kommt sicher an, beendete Duelle mit Richtigen und Zeiten | 27 |
 
-**Empfohlene Reihenfolge ab jetzt:** 27 → 8
+**Empfohlene Reihenfolge ab jetzt:** 27 → 28 → 8
 
 Prompt 7 steht bewusst vor der Tages-Challenge: Nur mit der neuen
 Update-Strategie kommen neue Tages-Aufstellungen zuverlässig auf dem iPhone an.
@@ -2090,6 +2091,74 @@ Test: Link in einem frischen Browser-Profil (ohne App, nicht standalone)
 öffnen → mit höchstens 3 Taps (Browser-Weg ist vorgewählt, Fair-Play,
 Annehmen) + Name im Spiel landen; grauen Knopf antippen zeigt Hinweis;
 Screenshots bei 375/402.
+```
+
+---
+
+## Prompt 28 – Duell: Ergebnis kommt sicher an + beendete Duelle
+
+```
+Lies CLAUDE.md. Änderungen am Duell (Prompts 25–27) → Plan Mode, Plan
+zeigen, dann umsetzen. Optik wie prototypes/duell.html.
+
+Befund (Praxistest): Freund hat über den Link gespielt, beim Herausforderer
+steht das Duell weiter unter "Offene Duelle" mit "<Name> ist dran". Ursache:
+Ohne Server erfährt die App das Ergebnis NUR über den Rückmelde-Link
+(#duelr). Der Freund muss ihn aktiv senden, und auf dem iPhone öffnet sich
+der Link in Safari – die installierte Home-Bildschirm-App hat aber einen
+getrennten Speicher, dort liegt das Duell. In Safari kommt dann "Zu dieser
+Rückmeldung gibt es kein offenes Duell" bzw. es passiert nichts sichtbar.
+Außerdem gibt es keine Liste beendeter Duelle – Ergebnisse sind nach dem
+Abpfiff nicht mehr abrufbar.
+
+1. Rückmeldung sicher machen
+   - Eingeladener, nach dem letzten Spiel: Abpfiff zeigt als Hauptknopf
+     "📤 Ergebnis an <Name> senden" mit Satz "Sonst sieht <Name> das
+     Ergebnis nicht". Merken, ob gesendet wurde (resultSent); solange nicht,
+     im Ticket des Duells "Ergebnis noch nicht gesendet ›".
+   - Herausforderer, Ticket mit status "waiting": statt nur "<Name> ist
+     dran" zusätzlich Knopf "Ergebnis eintragen" → öffnet direkt das
+     Einfügen-Feld (ganzer Link oder Code, auch "📋 Aus Zwischenablage").
+     Darunter klein: "Wenn <Name> gespielt hat, schickt er dir einen
+     Ergebnis-Link. Tippe ihn lange an → Kopieren → hier einfügen."
+   - Rückmelde-Link wird im Browser geöffnet (nicht standalone) und dort
+     gibt es das Duell nicht: KEIN Fehler-Toast, sondern eine kleine
+     Seite "Ergebnis von <Name>" mit den Zahlen (beide Spieler, soweit im
+     Link) und dem Knopf "Code kopieren – dann in der App unter Duelle ›
+     Ergebnis eintragen einfügen" (Code automatisch kopieren, wenn möglich).
+   - Gleiche Rückmeldung zweimal eingefügt → kein Fehler, einfach das
+     Ergebnis anzeigen (XP und Bilanz nicht doppelt zählen).
+
+2. Beendete Duelle
+   - In der Übersicht neuer Abschnitt "Beendete Duelle" (neueste zuerst,
+     die letzten 10, Rest über "Alle anzeigen"): Mini-Ticket mit Wappen,
+     "Du gegen <Name>", Format/Zeit/Stufe-Chips, Ergebnis als Klappziffern
+     (z. B. 2 : 1) und Markierung Sieg (gold) / Niederlage (grau) /
+     Unentschieden.
+   - Antippen öffnet den Abpfiff-Bildschirm im Lese-Modus – für BEIDE
+     Seiten gleich: pro Runde Aufstellung (Partie), eigene und gegnerische
+     Richtige UND Zeit (m:ss), 👑 + Grund, Gesamt-Richtige und Gesamtzeit,
+     Fair-Play-Siegel. Keine XP/Bilanz-Änderung beim erneuten Öffnen;
+     Knöpfe "🔁 Revanche" und (Eingeladener, falls nicht gesendet)
+     "Ergebnis senden".
+   - Herausforderer-Duelle ohne Rückmeldung bleiben "offen" (mit
+     "Ergebnis eintragen"), nach 14 Tagen optional "Duell entfernen".
+
+3. Aufräumen: Übersicht bleibt übersichtlich (offene oben, beendete
+   darunter, Freunde-Bilanz, Trophäen). Startseiten-Kachel: Zahl = Duelle,
+   bei denen ich etwas tun muss (spielen ODER Ergebnis senden).
+
+Hinweis für später (nicht in diesem Prompt): Wirklich automatisch für beide
+Seiten wird das erst mit einem kleinen Online-Speicher bzw. Accounts
+(siehe Fahrplan, Stufe Accounts) oder mit der Store-App (Links öffnen dann
+direkt die App).
+
+sw.js CACHE_NAME erhöhen. Test mit zwei Browser-Profilen: A fordert
+heraus, B spielt → B sieht Ergebnis + Senden-Hinweis → Rückmelde-Link in
+einem DRITTEN Profil ohne das Duell öffnen → Ergebnis-Seite mit Code
+kopieren → Code bei A einfügen → bei A und B steht das Duell unter
+"Beendete Duelle" mit identischen Zahlen (Richtige + Zeiten je Runde);
+erneutes Öffnen/Einfügen zählt nichts doppelt; keine Konsolenfehler.
 ```
 
 ---
