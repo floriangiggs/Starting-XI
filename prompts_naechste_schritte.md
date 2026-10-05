@@ -2343,6 +2343,20 @@ Pfad überein; Screenshots bei 375/402/430; keine Konsolenfehler.
 
 ---
 
+## Merkzettel (Florian möchte daran erinnert werden)
+
+- **Welt-geschafft-Animation** (05.10.2026, noch nicht entschieden): nach
+  dem letzten Level einer Welt eine besondere Animation (≈ 5–7 s,
+  überspringbar, einmalig, kein Blinken, reduced motion beachten). Ideen:
+  A „Pokalübergabe“ (Pokal steigt auf, Gravur mit Weltname, Konfetti in
+  Weltfarbe), B „Reise zur nächsten Welt“ (Ball/Maskottchen rollt auf der
+  Weltkarte über den Pfad zum nächsten Stadion, Schloss bricht auf,
+  Flutlichter gehen nacheinander an), C „Aufstieg“ (Tabelle, eigenes Team
+  klettert auf Platz 1, Banner „Aufstieg in die Regionalliga!“), D
+  „Tunnel in die neue Liga“ (Walkout-Stil, größeres Stadion, Name der
+  neuen Welt). Empfehlung: A + B kombiniert. Vor Umsetzung Prototyp zeigen.
+  Eigene Gestaltung, keine Figuren/Grafiken aus fremden Spielen.
+
 ## Fahrplan (Stand 04.10.2026)
 
 1. **App fertig machen:** Feinschliff nach Beobachtungen, dann Prompt 8
