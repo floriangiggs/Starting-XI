@@ -34,12 +34,12 @@ vorige umgesetzt, getestet und committet ist.
 | 20 | Frei spielen neu sortiert, Stufe 1–5, Tages-Archiv als eigene Karte | ✅ erledigt |
 | 21 | Ladescreen etwas langsamer (~4 s statt ~2,4 s) | ✅ erledigt |
 | 22 | Fehler aus dem Testlauf: Tages-Reihenfolge, Hilfe-Buttons, lange Namen u. a. | ✅ erledigt |
-| 23 | Daten: Ajax 1995 durch echtes Spiel ersetzen, fehlende Rückennummern/Nationalitäten | ✅ erledigt |
-| 24 | Tages-Challenge: Ticket-Einkerbung, „Erledigt“ + Teilen als Bild | – |
-| 25 | Duell Teil 1: Hosting-Prüfung, Links, Startseite (Duell-Kachel), Duell-Bildschirme | 24 |
-| 26 | Duell Teil 2: Spielen, Walkout, Ergebnis, XP, Bilanz, Trophäen | 25 |
+| 23 | Daten: Ajax 1995 durch echtes Spiel ersetzen, fehlende Rückennummern/Nationalitäten | ✅ erledigt (Ajax-Eintrag gestrichen, 59 Aufstellungen) |
+| 24 | Tages-Challenge: Ticket-Einkerbung, „Erledigt“ + Teilen als Bild | ✅ erledigt |
+| 25 | Duell Teil 1: Hosting-Prüfung, Links, Startseite (Duell-Kachel), Duell-Bildschirme | ✅ erledigt |
+| 26 | Duell Teil 2: Spielen, Walkout, Ergebnis, XP, Bilanz, Trophäen | ✅ erledigt |
 
-**Empfohlene Reihenfolge ab jetzt:** 24 → 25 → 26 → 8
+**Empfohlene Reihenfolge ab jetzt:** 8 (Capacitor)
 
 Prompt 7 steht bewusst vor der Tages-Challenge: Nur mit der neuen
 Update-Strategie kommen neue Tages-Aufstellungen zuverlässig auf dem iPhone an.
