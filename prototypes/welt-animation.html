@@ -1,0 +1,303 @@
+<!doctype html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, viewport-fit=cover">
+<!-- Ideen-Prototyp "Welt geschafft"-Animation (noch KEIN Prompt): A Pokalübergabe, B Reise zur nächsten Welt, C Aufstieg (Tabelle, erfundene Teamnamen), D Tunnel, A+B kombiniert. Auswahl durch Florian steht aus. Nicht einbinden. -->
+<title>Welt geschafft</title>
+
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Anton&family=Oswald:wght@300;400;500;600;700&display=swap">
+<style>
+  :root {
+    --ink: #14202B; --ink-2: #1C2B38; --line: rgba(242,239,230,0.14); --chalk: #F2EFE6; --muted: rgba(242,239,230,0.72); --dim: rgba(242,239,230,0.45);
+    --gold: #E8B23D; --gold-2: #F4D58D; --pitch: #1F4D36; --w1: #7fd99a; --w2: #a8d94a; --ok: #2ECC71;
+    color-scheme: dark;
+  }
+  * { box-sizing: border-box; }
+  html, body { background: var(--ink); }
+  body { margin: 0; color: var(--chalk); font-family: Oswald, "Arial Narrow", system-ui, sans-serif; -webkit-tap-highlight-color: transparent; }
+  button { font-family: inherit; color: inherit; cursor: pointer; }
+  button:focus-visible { outline: 2px solid var(--gold-2); outline-offset: 2px; }
+  .controls { position: sticky; top: 0; z-index: 30; background: rgba(20,32,43,0.95); border-bottom: 1px solid var(--line); padding: 10px 12px; display: flex; justify-content: center; gap: 8px; flex-wrap: wrap; }
+  .seg { display: inline-flex; flex-wrap: wrap; justify-content: center; border: 1px solid var(--line); border-radius: 20px; padding: 3px; gap: 3px; }
+  .seg button { font-weight: 600; font-size: 13px; background: transparent; color: var(--muted); border: none; border-radius: 16px; padding: 6px 11px; }
+  .seg button[aria-pressed="true"] { background: linear-gradient(160deg, #f6da9c, var(--gold)); color: var(--ink); }
+  .replay { border: 1px solid rgba(232,178,61,0.5); background: rgba(232,178,61,0.12); color: var(--gold-2); border-radius: 18px; padding: 6px 12px; font-weight: 600; font-size: 13px; }
+
+  .phone { width: min(402px, 100%); height: 800px; margin: 16px auto 24px; position: relative; overflow: hidden; border-radius: 28px; border: 1px solid var(--line); background: #0B1218; }
+  .stage { position: absolute; inset: 0; overflow: hidden; }
+  canvas.fx { position: absolute; inset: 0; width: 100%; height: 100%; pointer-events: none; z-index: 5; }
+  .hint { position: absolute; bottom: 14px; left: 0; right: 0; text-align: center; font-weight: 300; font-size: 12px; color: var(--dim); z-index: 6; }
+  .cta { position: absolute; left: 24px; right: 24px; bottom: 44px; z-index: 6; border: none; border-radius: 14px; padding: 14px; font-family: Anton, Impact, sans-serif; font-size: 20px; letter-spacing: 0.02em; color: var(--ink);
+    background: linear-gradient(160deg, #f6da9c, var(--gold)); box-shadow: 0 4px 0 #9C7422; opacity: 0; transform: translateY(14px); transition: opacity 0.5s, transform 0.5s; }
+  .cta.on { opacity: 1; transform: none; }
+  .note { max-width: 560px; margin: 0 auto; padding: 0 16px 28px; font-weight: 300; font-size: 14.5px; line-height: 1.55; color: var(--muted); text-align: center; }
+  .note b { color: var(--chalk); font-weight: 600; }
+  .fade { opacity: 0; transition: opacity 0.6s ease; } .fade.on { opacity: 1; }
+
+  /* ---------- A Pokal ---------- */
+  .a-bg { position: absolute; inset: 0; background: radial-gradient(120% 70% at 50% 110%, #1E4A33, #0B1218 60%); }
+  .a-cone { position: absolute; left: 50%; top: -40px; width: 520px; height: 700px; transform: translateX(-50%); opacity: 0; transition: opacity 1s ease;
+    background: conic-gradient(from 180deg at 50% 0%, transparent 43%, rgba(244,213,141,0.20) 50%, transparent 57%); -webkit-mask-image: linear-gradient(180deg, #000 40%, transparent 95%); mask-image: linear-gradient(180deg, #000 40%, transparent 95%); }
+  .a-cone.on { opacity: 1; }
+  .a-floor { position: absolute; left: 50%; bottom: 210px; width: 260px; height: 40px; transform: translateX(-50%); border-radius: 50%; background: radial-gradient(closest-side, rgba(244,213,141,0.35), transparent); opacity: 0; transition: opacity 1s 0.4s; }
+  .a-floor.on { opacity: 1; }
+  .a-cup { position: absolute; left: 50%; bottom: 220px; width: 190px; transform: translate(-50%, 380px) scale(0.6); transition: transform 1.4s cubic-bezier(.2,1.1,.3,1); }
+  .a-cup.up { transform: translate(-50%, 0) scale(1); }
+  .a-cup svg { width: 100%; height: auto; display: block; filter: drop-shadow(0 18px 24px rgba(0,0,0,0.5)); }
+  .a-cup.spin svg { animation: aSpin 1.1s ease-in-out 1; }
+  @keyframes aSpin { 0% { transform: scaleX(1); } 25% { transform: scaleX(0.08); } 50% { transform: scaleX(-1); } 75% { transform: scaleX(-0.08); } 100% { transform: scaleX(1); } }
+  .a-shine { position: absolute; inset: 0; overflow: hidden; border-radius: 40%; pointer-events: none; }
+  .a-title { position: absolute; top: 78px; left: 0; right: 0; text-align: center; }
+  .a-title .k { font-weight: 500; font-size: 15px; color: var(--gold-2); }
+  .a-title .t { font-family: Anton, Impact, sans-serif; font-size: 46px; line-height: 1; margin-top: 4px; }
+  .a-title .t span { color: var(--gold); text-shadow: 0 0 22px rgba(232,178,61,0.5); }
+  .a-plate { position: absolute; left: 50%; bottom: 150px; transform: translateX(-50%); text-align: center; }
+  .a-plate b { display: block; font-family: Anton, Impact, sans-serif; font-weight: 400; font-size: 24px; color: var(--chalk); }
+  .a-plate span { font-weight: 400; font-size: 14px; color: var(--muted); }
+
+  /* ---------- B Reise ---------- */
+  .b-map { position: absolute; inset: 0; background: repeating-linear-gradient(90deg, rgba(255,255,255,0.02) 0 2px, transparent 2px 40px), radial-gradient(120% 80% at 50% 40%, #16303F, #0B1218 70%); }
+  .b-map svg { position: absolute; inset: 0; width: 100%; height: 100%; }
+  .b-path-bg { fill: none; stroke: rgba(242,239,230,0.22); stroke-width: 3; stroke-dasharray: 2 9; stroke-linecap: round; }
+  .b-path-gold { fill: none; stroke: var(--gold); stroke-width: 4; stroke-linecap: round; filter: drop-shadow(0 0 6px rgba(232,178,61,0.6)); }
+  .b-st circle.ring { fill: #13222E; stroke: rgba(242,239,230,0.25); stroke-width: 3; }
+  .b-st circle.pitch { fill: #1F4D36; }
+  .b-st.done circle.ring { stroke: var(--w1); }
+  .b-st.next circle.ring { transition: stroke 0.6s; }
+  .b-st.next.open circle.ring { stroke: var(--w2); }
+  .b-st text { font-family: Anton, Impact, sans-serif; fill: rgba(242,239,230,0.55); font-size: 15px; text-anchor: middle; }
+  .b-st.done text, .b-st.next.open text { fill: var(--chalk); }
+  .b-light { fill: #F4D58D; opacity: 0.12; transition: opacity 0.25s; }
+  .b-light.on { opacity: 1; filter: drop-shadow(0 0 8px #F4D58D); }
+  .b-beam { fill: url(#beamG); opacity: 0; transition: opacity 0.4s; }
+  .b-beam.on { opacity: 0.55; }
+  .b-lock { transition: transform 0.6s cubic-bezier(.3,1.4,.5,1), opacity 0.6s; transform-box: fill-box; transform-origin: center; }
+  .b-lock.l.off { transform: translate(-26px, 40px) rotate(-40deg); opacity: 0; }
+  .b-lock.r.off { transform: translate(26px, 40px) rotate(40deg); opacity: 0; }
+  .b-lock-g.shake { animation: bShake 0.45s ease-in-out 1; }
+  @keyframes bShake { 0%,100% { transform: translateX(0); } 25% { transform: translateX(-4px); } 75% { transform: translateX(4px); } }
+  .b-ball { font-size: 26px; }
+  .b-banner { position: absolute; left: 20px; right: 20px; top: 66px; text-align: center; }
+  .b-banner .k { font-weight: 500; font-size: 15px; color: var(--w2); }
+  .b-banner .t { font-family: Anton, Impact, sans-serif; font-size: 40px; line-height: 1; margin-top: 4px; }
+
+  /* ---------- C Aufstieg ---------- */
+  .c-bg { position: absolute; inset: 0; background: radial-gradient(120% 70% at 50% 0%, #1A3A2A, #0B1218 65%); }
+  .c-head { position: absolute; top: 60px; left: 0; right: 0; text-align: center; }
+  .c-head .k { font-weight: 500; font-size: 15px; color: var(--w1); }
+  .c-head .t { font-family: Anton, Impact, sans-serif; font-size: 30px; line-height: 1.05; margin-top: 4px; }
+  .c-table { position: absolute; left: 22px; right: 22px; top: 150px; border-radius: 14px; border: 1px solid var(--line); background: rgba(28,43,56,0.9); padding: 6px 0; }
+  .c-hd { display: grid; grid-template-columns: 34px 1fr 40px 44px; padding: 4px 12px 6px; font-weight: 600; font-size: 12px; color: var(--dim); border-bottom: 1px solid var(--line); }
+  .c-rows { position: relative; height: 352px; }
+  .c-row { position: absolute; left: 0; right: 0; height: 44px; display: grid; grid-template-columns: 34px 1fr 40px 44px; align-items: center; padding: 0 12px; font-size: 15px; transition: transform 0.55s cubic-bezier(.3,1.2,.4,1); }
+  .c-row + .c-row { border-top: 1px solid rgba(242,239,230,0.06); }
+  .c-row .pl { font-family: Anton, Impact, sans-serif; color: var(--muted); }
+  .c-row .nm { font-weight: 500; }
+  .c-row .sp { color: var(--dim); text-align: center; }
+  .c-row .pt { font-family: Anton, Impact, sans-serif; text-align: right; }
+  .c-row.me { z-index: 2; background: linear-gradient(90deg, rgba(232,178,61,0.28), rgba(232,178,61,0.10)); border-radius: 10px; box-shadow: 0 0 0 1.5px rgba(232,178,61,0.7); }
+  .c-row.me .nm, .c-row.me .pt { color: var(--gold-2); }
+  .c-row.me.top { background: linear-gradient(90deg, rgba(232,178,61,0.55), rgba(232,178,61,0.25)); }
+  .c-row .up { color: var(--ok); font-size: 12px; margin-left: 6px; opacity: 0; transition: opacity 0.3s; }
+  .c-row.me.moving .up { opacity: 1; }
+  .c-zone { position: absolute; left: 0; right: 0; top: 0; height: 44px; border-left: 4px solid var(--ok); border-radius: 0; pointer-events: none; }
+  .c-banner { position: absolute; left: 14px; right: 14px; top: 556px; text-align: center; border-radius: 16px; padding: 14px 12px; border: 1.5px solid rgba(232,178,61,0.75);
+    background: repeating-linear-gradient(90deg, rgba(255,255,255,0.03) 0 16px, transparent 16px 32px), linear-gradient(150deg, #27603F, #173F2B 85%);
+    opacity: 0; transform: scale(0.85); transition: opacity 0.5s, transform 0.6s cubic-bezier(.2,1.4,.4,1); }
+  .c-banner.on { opacity: 1; transform: none; }
+  .c-banner b { font-family: Anton, Impact, sans-serif; font-weight: 400; font-size: 30px; display: block; line-height: 1.05; }
+  .c-banner b span { color: var(--gold); }
+  .c-banner small { font-weight: 400; font-size: 14px; color: rgba(242,239,230,0.85); }
+
+  /* ---------- D Tunnel ---------- */
+  .d-bg { position: absolute; inset: 0; background: #06090C; overflow: hidden; }
+  .d-ring { position: absolute; left: 50%; top: 46%; border: 3px solid rgba(242,239,230,0.08); border-radius: 46% 46% 8% 8% / 60% 60% 8% 8%; transform: translate(-50%, -50%); }
+  .d-end { position: absolute; left: 50%; top: 46%; width: 70px; height: 90px; transform: translate(-50%, -50%); border-radius: 46% 46% 6% 6% / 60% 60% 6% 6%;
+    background: radial-gradient(circle at 50% 70%, #fff6dc, #F4D58D 40%, #2B6F47 85%); box-shadow: 0 0 60px 20px rgba(244,213,141,0.35); transition: transform 2.6s cubic-bezier(.6,0,.2,1), border-radius 2.6s; }
+  .d-end.go { transform: translate(-50%, -50%) scale(16); border-radius: 0; }
+  .d-stadium { position: absolute; inset: 0; opacity: 0; transition: opacity 0.8s; background: radial-gradient(130% 70% at 50% 100%, #2E7D50, #173F2B 50%, #0B1218 90%); }
+  .d-stadium.on { opacity: 1; }
+  .d-stadium canvas { position: absolute; inset: 0; width: 100%; height: 100%; }
+  .d-lights { position: absolute; top: 40px; left: 0; right: 0; display: flex; justify-content: space-between; padding: 0 26px; }
+  .d-lights i { width: 46px; height: 16px; border-radius: 4px; background: #2a2a2a; display: grid; grid-template-columns: repeat(4, 1fr); gap: 2px; padding: 3px; transition: box-shadow 0.3s; }
+  .d-lights i.on { background: #F4E7C0; box-shadow: 0 0 22px 8px rgba(255,240,200,0.6); }
+  .d-text { position: absolute; left: 0; right: 0; top: 40%; text-align: center; opacity: 0; transform: translateY(12px); transition: opacity 0.7s, transform 0.7s; }
+  .d-text.on { opacity: 1; transform: none; }
+  .d-text .k { font-weight: 500; font-size: 16px; color: rgba(242,239,230,0.9); }
+  .d-text .t { font-family: Anton, Impact, sans-serif; font-size: 50px; line-height: 1; margin-top: 4px; color: var(--w2); text-shadow: 0 0 24px rgba(168,217,74,0.45); }
+  .d-text .s { font-weight: 300; font-size: 14px; color: rgba(242,239,230,0.8); margin-top: 8px; }
+</style>
+
+</head>
+<body>
+<div class="controls">
+  <div class="seg" role="group" aria-label="Variante">
+    <button type="button" data-v="A" aria-pressed="true">A · Pokal</button>
+    <button type="button" data-v="B" aria-pressed="false">B · Reise</button>
+    <button type="button" data-v="C" aria-pressed="false">C · Aufstieg</button>
+    <button type="button" data-v="D" aria-pressed="false">D · Tunnel</button>
+    <button type="button" data-v="AB" aria-pressed="false">A + B</button>
+  </div>
+  <button type="button" class="replay" id="replay">↻ Nochmal</button>
+</div>
+<div class="phone"><div class="stage" id="stage"></div></div>
+<p class="note" id="note"></p>
+
+<script>
+(() => {
+  const $ = id => document.getElementById(id);
+  const RM = matchMedia("(prefers-reduced-motion: reduce)").matches;
+  let T = [], raf = null, cur = "A", FAST = false;
+  const at = (ms, fn) => T.push(setTimeout(fn, (RM || FAST) ? 0 : ms));
+  function reset() { T.forEach(clearTimeout); T = []; cancelAnimationFrame(raf); $("stage").innerHTML = ""; }
+
+  // Konfetti (Canvas, einmalig)
+  function confetti(colors, n = 140, from = "top") {
+    const c = document.createElement("canvas"); c.className = "fx"; $("stage").appendChild(c);
+    const W = c.width = $("stage").clientWidth * 2, H = c.height = $("stage").clientHeight * 2, x = c.getContext("2d");
+    const P = Array.from({ length: n }, () => ({ x: Math.random() * W, y: from === "top" ? -Math.random() * H * 0.5 : H * 0.55, vx: (Math.random() - 0.5) * (from === "top" ? 3 : 16), vy: from === "top" ? 3 + Math.random() * 5 : -(14 + Math.random() * 14), r: Math.random() * 6.28, vr: (Math.random() - 0.5) * 0.3, w: 8 + Math.random() * 10, h: 5 + Math.random() * 6, c: colors[Math.floor(Math.random() * colors.length)] }));
+    const t0 = performance.now();
+    (function step(now) { const t = now - t0; x.clearRect(0, 0, W, H);
+      P.forEach(p => { p.vy += 0.28; p.vx *= 0.99; p.x += p.vx; p.y += p.vy; p.r += p.vr; x.save(); x.translate(p.x, p.y); x.rotate(p.r); x.globalAlpha = Math.max(0, 1 - t / 4200); x.fillStyle = p.c; x.fillRect(-p.w / 2, -p.h / 2, p.w, p.h); x.restore(); });
+      if (t < 4200) raf = requestAnimationFrame(step); else c.remove(); })(t0);
+  }
+  function cta(label, onClick) { const b = document.createElement("button"); b.type = "button"; b.className = "cta"; b.textContent = label; b.onclick = onClick; $("stage").appendChild(b); at(60, () => b.classList.add("on")); return b; }
+  function hint() { const h = document.createElement("div"); h.className = "hint"; h.textContent = "Tippen zum Überspringen"; $("stage").appendChild(h); return h; }
+
+  const CUP = `<svg viewBox="0 0 200 240" aria-hidden="true">
+    <defs><linearGradient id="cg" x1="0" x2="1"><stop offset="0" stop-color="#9C7422"/><stop offset=".35" stop-color="#F6DA9C"/><stop offset=".55" stop-color="#E8B23D"/><stop offset="1" stop-color="#8A6418"/></linearGradient>
+      <linearGradient id="cb" x1="0" x2="1"><stop offset="0" stop-color="#1B3A2A"/><stop offset=".5" stop-color="#2B6647"/><stop offset="1" stop-color="#173F2B"/></linearGradient></defs>
+    <path d="M52 30 C 10 30, 8 92, 58 104" fill="none" stroke="url(#cg)" stroke-width="10" stroke-linecap="round"/>
+    <path d="M148 30 C 190 30, 192 92, 142 104" fill="none" stroke="url(#cg)" stroke-width="10" stroke-linecap="round"/>
+    <path d="M44 18 H156 C156 88 132 128 100 134 C68 128 44 88 44 18 Z" fill="url(#cg)"/>
+    <ellipse cx="100" cy="18" rx="56" ry="9" fill="#F6DA9C"/><ellipse cx="100" cy="18" rx="48" ry="6" fill="#B98522"/>
+    <path d="M60 30 C 62 70, 74 100, 88 112" fill="none" stroke="rgba(255,255,255,0.55)" stroke-width="5" stroke-linecap="round"/>
+    <rect x="90" y="132" width="20" height="30" fill="url(#cg)"/><path d="M70 162 H130 L136 176 H64 Z" fill="url(#cg)"/>
+    <rect x="56" y="176" width="88" height="44" rx="4" fill="url(#cb)" stroke="#E8B23D" stroke-width="2"/>
+    <rect x="70" y="188" width="60" height="20" rx="2" fill="#E8B23D"/><text x="100" y="203" text-anchor="middle" font-family="Anton, Impact, sans-serif" font-size="12" fill="#14202B">WELT 1</text>
+    <text x="100" y="78" text-anchor="middle" font-size="34">⚽</text></svg>`;
+
+  function playA(next) {
+    const s = $("stage");
+    s.insertAdjacentHTML("beforeend", `<div class="a-bg"></div><div class="a-cone" id="aCone"></div><div class="a-floor" id="aFloor"></div>
+      <div class="a-title fade" id="aTitle"><div class="k">Kreisliga · alle 10 Level bestanden</div><div class="t">Welt <span>geschafft!</span></div></div>
+      <div class="a-cup" id="aCup">${CUP}</div>
+      <div class="a-plate fade" id="aPlate"><b>Kreisliga-Pokal</b><span>⭐ 27 / 30 · kommt in deinen Trophäenschrank</span></div>`);
+    const h = hint();
+    at(200, () => $("aCone").classList.add("on"));
+    at(500, () => { $("aCup").classList.add("up"); $("aFloor").classList.add("on"); });
+    at(1900, () => $("aCup").classList.add("spin"));
+    at(2100, () => { $("aTitle").classList.add("on"); confetti(["#E8B23D", "#F4D58D", "#7fd99a", "#2ECC71", "#F2EFE6"]); });
+    at(3000, () => $("aPlate").classList.add("on"));
+    at(3700, () => { h.remove(); if (next) at(400, next); else cta("Weiter ›", () => play(cur)); });
+  }
+
+  function playB() {
+    const s = $("stage");
+    const P = [[70, 640], [300, 520], [110, 380], [300, 250], [150, 120]];
+    const d = `M${P[0][0]} ${P[0][1]} C 190 640, 300 600, ${P[1][0]} ${P[1][1]} C 300 440, 110 470, ${P[2][0]} ${P[2][1]} C 110 290, 300 330, ${P[3][0]} ${P[3][1]} C 300 160, 150 200, ${P[4][0]} ${P[4][1]}`;
+    const names = ["Kreisliga", "Regionalliga", "Bundesliga", "Champ. League", "Weltklasse"];
+    const lights = (cx, cy) => [[-34, -34], [34, -34], [-34, 34], [34, 34]].map(([dx, dy], i) => `<path class="b-beam" data-i="${i}" d="M${cx + dx} ${cy + dy} L${cx + dx * 0.2} ${cy + dy * 0.2 - 4} L${cx + dx * 0.2 + 8} ${cy + dy * 0.2 + 4} Z"/><circle class="b-light" data-i="${i}" cx="${cx + dx}" cy="${cy + dy}" r="5"/>`).join("");
+    s.insertAdjacentHTML("beforeend", `<div class="b-map"><svg viewBox="0 0 402 800" preserveAspectRatio="xMidYMid slice" aria-hidden="true">
+      <defs><linearGradient id="beamG" x1="0" x2="1"><stop offset="0" stop-color="#F4D58D"/><stop offset="1" stop-color="#F4D58D" stop-opacity="0"/></linearGradient></defs>
+      <path class="b-path-bg" d="${d}"/><path class="b-path-gold" id="bGold" d="${d}"/>
+      ${P.map(([x, y], i) => `<g class="b-st ${i === 0 ? "done" : i === 1 ? "next" : ""}" id="bSt${i}"><circle class="ring" cx="${x}" cy="${y}" r="30"/><circle class="pitch" cx="${x}" cy="${y}" r="20"/><rect x="${x - 12}" y="${y - 1}" width="24" height="2" fill="rgba(242,239,230,0.35)"/><text x="${x}" y="${y + 52}">${names[i]}</text>${i === 1 ? lights(x, y) : ""}</g>`).join("")}
+      <g class="b-lock-g" id="bLockG" transform="translate(${P[1][0]} ${P[1][1]})"><path class="b-lock l" d="M-11 -2 h11 v18 h-11 a3 3 0 0 1 -3 -3 v-12 a3 3 0 0 1 3 -3z" fill="#9AA6B2"/><path class="b-lock r" d="M0 -2 h11 a3 3 0 0 1 3 3 v12 a3 3 0 0 1 -3 3 h-11z" fill="#7E8A96"/><path class="b-lock l" d="M-8 -2 v-6 a8 8 0 0 1 16 0 v6" fill="none" stroke="#9AA6B2" stroke-width="4"/></g>
+      <text class="b-ball" id="bBall" x="${P[0][0]}" y="${P[0][1]}" text-anchor="middle" dominant-baseline="central">⚽</text>
+    </svg></div>
+    <div class="b-banner fade" id="bBanner"><div class="k">Welt 2 freigeschaltet</div><div class="t">Regionalliga</div></div>`);
+    const h = hint();
+    const gold = $("bGold"), full = gold.getTotalLength(), seg = (() => { // Länge bis Stadion 2
+      let lo = 0, hi = full; for (let k = 0; k < 30; k++) { const m = (lo + hi) / 2, p = gold.getPointAtLength(m); if (p.y > P[1][1] + 1 || (Math.abs(p.y - P[1][1]) < 1 && p.x < P[1][0] - 1)) lo = m; else hi = m; } return hi; })();
+    gold.style.strokeDasharray = full; gold.style.strokeDashoffset = full;
+    const ball = $("bBall");
+    at(500, () => {
+      if (RM || FAST) { gold.style.strokeDashoffset = full - seg; ball.setAttribute("x", P[1][0]); ball.setAttribute("y", P[1][1] - 40); return; }
+      const t0 = performance.now(), D = 2200;
+      (function step(now) { const t = Math.min(1, (now - t0) / D), e = t < 0.5 ? 2 * t * t : 1 - Math.pow(-2 * t + 2, 2) / 2, L = e * seg, p = gold.getPointAtLength(L);
+        const hop = Math.abs(Math.sin(e * Math.PI * 5)) * 10 * (1 - e * 0.6);
+        ball.setAttribute("x", p.x); ball.setAttribute("y", p.y - 6 - hop); ball.setAttribute("transform", `rotate(${e * 720} ${p.x} ${p.y - 6 - hop})`);
+        gold.style.strokeDashoffset = full - L; if (t < 1) raf = requestAnimationFrame(step); })(t0);
+    });
+    at(2800, () => { ball.setAttribute("transform", ""); ball.setAttribute("y", P[1][1] - 44); $("bLockG").classList.add("shake"); });
+    at(3300, () => { document.querySelectorAll(".b-lock").forEach(l => l.classList.add("off")); $("bSt1").classList.add("open"); });
+    [0, 1, 2, 3].forEach(i => at(3700 + i * 260, () => document.querySelectorAll(`#bSt1 [data-i="${i}"]`).forEach(e => e.classList.add("on"))));
+    at(4900, () => { $("bBanner").classList.add("on"); confetti(["#a8d94a", "#E8B23D", "#F4D58D"], 70, "burst"); });
+    at(5600, () => { h.remove(); cta("Zur Regionalliga ›", () => play(cur)); });
+  }
+
+  function playC() {
+    const s = $("stage");
+    const teams = [["SV Grünwiese", 68], ["FC Kreidestadt", 66], ["TSV Flutlicht", 63], ["Eintracht Anstoß", 61], ["SC Elfmeterpunkt", 58], ["VfB Abseits", 55], ["Union Nachspielzeit", 52]];
+    s.insertAdjacentHTML("beforeend", `<div class="c-bg"></div>
+      <div class="c-head fade" id="cHead"><div class="k">Kreisliga · letzter Spieltag</div><div class="t">Wer steigt auf?</div></div>
+      <div class="c-table"><div class="c-hd"><span>Pl.</span><span>Team</span><span style="text-align:center">Sp.</span><span style="text-align:right">Pkt.</span></div>
+        <div class="c-rows" id="cRows"><div class="c-zone"></div></div></div>
+      <div class="c-banner" id="cBanner"><b>Aufstieg in die <span>Regionalliga!</span></b><small>Welt 2 ist freigeschaltet</small></div>`);
+    const rows = $("cRows");
+    const all = [...teams.map(([n, p]) => ({ n, p })), { n: "Dein Team", p: 50, me: true }];
+    all.forEach((t, i) => { const r = document.createElement("div"); r.className = "c-row" + (t.me ? " me" : ""); r.innerHTML = `<span class="pl">${i + 1}.</span><span class="nm">${t.n}${t.me ? '<span class="up">▲</span>' : ""}</span><span class="sp">30</span><span class="pt">${t.p}</span>`; r.style.transform = `translateY(${i * 44}px)`; t.el = r; rows.appendChild(r); });
+    const h = hint();
+    at(200, () => $("cHead").classList.add("on"));
+    const me = all[7]; let pos = 7, pts = 50;
+    const steps = [56, 59, 62, 64, 67, 69, 71];
+    steps.forEach((np, k) => at(900 + k * 560, () => {
+      pts = np; me.el.classList.add("moving"); me.el.querySelector(".pt").textContent = pts;
+      const above = all.filter(t => !t.me).find((t, i) => true);
+      // eine Position nach oben tauschen
+      const order = all.filter(t => t !== me).slice(); const newPos = pos - 1;
+      order.splice(newPos, 0, me); order.forEach((t, i) => { t.el.style.transform = `translateY(${i * 44}px)`; t.el.querySelector(".pl").textContent = (i + 1) + "."; });
+      pos = newPos; if (pos === 0) { me.el.classList.add("top"); me.el.classList.remove("moving"); }
+    }));
+    at(900 + 7 * 560 + 300, () => { $("cBanner").classList.add("on"); confetti(["#E8B23D", "#F4D58D", "#7fd99a", "#2ECC71"]); });
+    at(900 + 7 * 560 + 1100, () => { h.remove(); cta("Weiter ›", () => play(cur)); });
+  }
+
+  function playD() {
+    const s = $("stage");
+    const rings = Array.from({ length: 9 }, (_, i) => { const sc = 1 + i * 0.55; return `<div class="d-ring" style="width:${80 * sc}px;height:${100 * sc}px;border-color:rgba(242,239,230,${0.03 + i * 0.012})"></div>`; }).join("");
+    s.insertAdjacentHTML("beforeend", `<div class="d-bg">${rings}<div class="d-end" id="dEnd"></div></div>
+      <div class="d-stadium" id="dStad"><canvas id="dCrowd"></canvas><div class="d-lights">${"<i></i>".repeat(4)}</div></div>
+      <div class="d-text" id="dText"><div class="k">Willkommen in Welt 2</div><div class="t">Regionalliga</div><div class="s">Größere Stadien · schwerere Spiele · 13 Level</div></div>`);
+    const h = hint();
+    at(300, () => $("dEnd").classList.add("go"));
+    at(2400, () => {
+      $("dStad").classList.add("on");
+      const c = $("dCrowd"), W = c.width = c.clientWidth * 2, H = c.height = c.clientHeight * 2, x = c.getContext("2d");
+      // Tribüne: Ränge als dunkle Bänder, Zuschauer als kleine helle Punkte, nach unten dichter
+      for (let row = 0; row < 14; row++) { const y = H * 0.14 + row * (H * 0.022); x.fillStyle = row % 2 ? "rgba(8,14,10,0.55)" : "rgba(14,24,18,0.55)"; x.fillRect(0, y, W, H * 0.022);
+        for (let i = 0; i < 90; i++) { const xx = (i + Math.random()) * W / 90, yy = y + H * 0.011 + (Math.random() - 0.5) * 6; const c = Math.random(); x.fillStyle = c < 0.12 ? "rgba(168,217,74,0.7)" : c < 0.2 ? "rgba(232,178,61,0.6)" : `rgba(230,225,210,${0.18 + Math.random() * 0.25})`; x.beginPath(); x.arc(xx, yy, 2.2 + Math.random() * 1.6, 0, 6.28); x.fill(); } }
+      x.fillStyle = "rgba(242,239,230,0.25)"; x.fillRect(W * 0.1, H * 0.62, W * 0.8, 3); x.beginPath(); x.arc(W / 2, H * 0.72, 70, 0, 6.28); x.strokeStyle = "rgba(242,239,230,0.25)"; x.lineWidth = 3; x.stroke();
+    });
+    [0, 1, 2, 3].forEach(i => at(2800 + i * 280, () => $("dStad").querySelectorAll(".d-lights i")[i].classList.add("on")));
+    at(4000, () => { $("dText").classList.add("on"); });
+    at(4900, () => { h.remove(); cta("Anpfiff in der Regionalliga ›", () => play(cur)); });
+  }
+
+  const NOTES = {
+    A: "<b>A · Pokalübergabe:</b> Flutlicht-Kegel geht an, der Welt-Pokal steigt aus dem Dunkel auf, dreht sich einmal, Konfetti in Gold und Weltfarbe, darunter die Plakette mit deinen Sternen. Ruhig und feierlich – der Pokal landet danach im Trophäenschrank.",
+    B: "<b>B · Reise zur nächsten Welt:</b> Auf der Weltkarte springt der Ball vom geschafften Stadion los und hüpft den Weg entlang, der sich dabei gold nachzeichnet. Am nächsten Stadion wackelt das Schloss und bricht auseinander, die vier Flutlichter gehen nacheinander an, dann „Regionalliga“.",
+    C: "<b>C · Aufstieg:</b> Die Abschlusstabelle der Kreisliga – dein Team klettert mit jedem Punkt einen Platz nach oben, bis es ganz oben steht. Dann das Banner „Aufstieg in die Regionalliga!“. Teamnamen frei erfunden.",
+    D: "<b>D · Tunnel in die neue Liga:</b> Du gehst durch den dunklen Spielertunnel aufs Licht zu, das Licht öffnet sich zum neuen, größeren Stadion, die Flutlichtmasten gehen an, dann „Willkommen in Welt 2 – Regionalliga“.",
+    AB: "<b>A + B · meine Empfehlung:</b> Erst die Pokalübergabe als Belohnung für die geschaffte Welt, dann direkt die Reise auf der Karte als Ausblick auf die nächste. Zusammen ca. 9–10 Sekunden, jederzeit überspringbar."
+  };
+  let stageAB = "A";
+  function play(v, fast = false) {
+    reset(); FAST = fast; $("note").innerHTML = NOTES[v];
+    if (v === "A") playA(); else if (v === "B") playB(); else if (v === "C") playC(); else if (v === "D") playD();
+    else if (fast && stageAB === "B") playB();
+    else { stageAB = "A"; playA(() => { reset(); stageAB = "B"; playB(); }); }
+  }
+  document.querySelectorAll("[data-v]").forEach(b => b.onclick = () => { cur = b.dataset.v; document.querySelectorAll("[data-v]").forEach(x => x.setAttribute("aria-pressed", String(x === b))); play(cur); });
+  $("replay").onclick = () => { stageAB = "A"; play(cur); };
+  // Überspringen: zum Endzustand springen (bei A+B: erst ans Ende von A → weiter zu B, dann ans Ende von B)
+  $("stage").addEventListener("click", (e) => { if (e.target.closest(".cta")) return; if (!$("stage").querySelector(".hint")) return;
+    if (cur === "AB" && stageAB === "A") { reset(); stageAB = "B"; FAST = false; $("note").innerHTML = NOTES.AB; playB(); return; }
+    play(cur, true); });
+  play("A");
+})();
+</script>
+
+</body>
+</html>

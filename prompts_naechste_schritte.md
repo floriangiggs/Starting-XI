@@ -2354,7 +2354,7 @@ Pfad überein; Screenshots bei 375/402/430; keine Konsolenfehler.
   Flutlichter gehen nacheinander an), C „Aufstieg“ (Tabelle, eigenes Team
   klettert auf Platz 1, Banner „Aufstieg in die Regionalliga!“), D
   „Tunnel in die neue Liga“ (Walkout-Stil, größeres Stadion, Name der
-  neuen Welt). Empfehlung: A + B kombiniert. Vor Umsetzung Prototyp zeigen.
+  neuen Welt). Empfehlung: A + B kombiniert. Prototyp: prototypes/welt-animation.html (Auswahl steht aus).
   Eigene Gestaltung, keine Figuren/Grafiken aus fremden Spielen.
 
 ## Fahrplan (Stand 04.10.2026)
