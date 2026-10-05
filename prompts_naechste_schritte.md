@@ -36,8 +36,10 @@ vorige umgesetzt, getestet und committet ist.
 | 22 | Fehler aus dem Testlauf: Tages-Reihenfolge, Hilfe-Buttons, lange Namen u. a. | ✅ erledigt |
 | 23 | Daten: Ajax 1995 durch echtes Spiel ersetzen, fehlende Rückennummern/Nationalitäten | ✅ erledigt |
 | 24 | Tages-Challenge: Ticket-Einkerbung, „Erledigt“ + Teilen als Bild | – |
+| 25 | Duell Teil 1: Hosting-Prüfung, Links, Startseite (Duell-Kachel), Duell-Bildschirme | 24 |
+| 26 | Duell Teil 2: Spielen, Walkout, Ergebnis, XP, Bilanz, Trophäen | 25 |
 
-**Empfohlene Reihenfolge ab jetzt:** 24 → 8
+**Empfohlene Reihenfolge ab jetzt:** 24 → 25 → 26 → 8
 
 Prompt 7 steht bewusst vor der Tages-Challenge: Nur mit der neuen
 Update-Strategie kommen neue Tages-Aufstellungen zuverlässig auf dem iPhone an.
@@ -50,7 +52,7 @@ Welten-Ausschmückung), `prototypes/ladescreen.html` (Prompt 11d) und
 `prototypes/scout-ausweis.html` (Prompt 17, nur Variante A) und
 `prototypes/modus-kacheln.html` (Prompt 18, nur „A · neu“) und
 `prototypes/regeln.html` (Prompt 19) und `prototypes/freispiel.html` (Prompt 20) und
-`prototypes/teilen.html` (Prompt 24).
+`prototypes/teilen.html` (Prompt 24) und `prototypes/duell.html` (Prompts 25–26).
 
 **Wichtig nach jeder Änderung:** Der Service Worker liefert die App aus dem
 Cache. Jeder Prompt erhöht deshalb `CACHE_NAME` in `sw.js` – sonst sieht die
@@ -1845,6 +1847,206 @@ aus prototypes/teilen.html (Stub mit .done/.share-sm, Bild-Funktion draw).
    dass auf dem Bild kein Spielername vorkommt.
 
 sw.js CACHE_NAME erhöhen.
+```
+
+---
+
+## Prompt 25 – Duell, Teil 1: Hosting, Links, Startseite, Duell-Bildschirme
+
+```
+Lies CLAUDE.md. Großes neues Feature "Duell gegen Freunde" → Plan Mode,
+Plan zeigen und erst nach Freigabe umsetzen. Optik 1:1 aus
+prototypes/duell.html (Bildschirme 0–3: Startseite, Übersicht, Neues Duell,
+Einladung; CSS u. a. .board/.flip/.tk/.crest/.fr/.shelf/.fm/.lvl2/.rules2/
+.fair/.inv/.startbtn). Prototyp nur lesen, nicht einbinden. Teil 2
+(Spielablauf, Ergebnis, Belohnung) folgt in Prompt 26 – hier noch kein
+Spielen, aber alle Daten und Links so anlegen, dass Prompt 26 darauf
+aufbaut.
+
+0. ZUERST prüfen: Wie ist die App erreichbar?
+   Duelle laufen ohne Server über Links. Dafür braucht die App eine feste
+   https-Adresse.
+   - Prüfe git remote, ob GitHub Pages für das Repo aktiv ist (z. B. per
+     curl auf https://<owner>.github.io/<repo>/startelf_check.html bzw. die
+     in README/Settings genannte Adresse) und ob dort der aktuelle Stand
+     ausgeliefert wird.
+   - Ergebnis im Plan nennen. Ist Pages NICHT aktiv: anhalten und mir
+     Schritt für Schritt erklären, wie ich es einschalte (Settings → Pages
+     → Branch main, Ordner /root), dann weitermachen.
+   - Adresse als Konstante APP_URL anlegen. Zur Laufzeit gilt: läuft die
+     App über https, wird location.origin + location.pathname benutzt,
+     sonst APP_URL (z. B. bei lokaler Datei).
+   - Prüfe, dass sw.js Links mit #-Anhang normal ausliefert.
+
+1. Datenmodell (in loadProfile mit Defaults, alte Profile migrieren)
+   - profile.deviceId: einmalig zufällige ID.
+   - profile.duelName: Anzeigename im Duell, beim ersten Duell einmal
+     abfragen (max. 16 Zeichen, später im Scout-Profil änderbar).
+   - profile.duels: { [duelId]: { role: "challenger"|"opponent",
+     opponent: { name, deviceId, rank, level }, settings: { rounds: 1|3|5,
+     seconds: 120|180|300, difficulty: 1–5|0 (gemischt) }, lineups: [ids],
+     mine: [{ correct, seconds, left }] | [], theirs: [...] | null,
+     status: "todo"|"waiting"|"done", created } }.
+   - profile.duelStats: { wins, losses, draws, streak, bestStreak, sweeps,
+     perOpponent: { [deviceId]: { name, w, l, d } } }.
+   - profile.duelRecent: zuletzt in Duellen gespielte Aufstellungs-IDs
+     (max. 40).
+
+2. Aufstellungen fürs Duell
+   - Pool: LINEUP_CHALLENGES + DAILY_CHALLENGES, gefiltert nach Stufe
+     (bei "gemischt" alle).
+   - Innerhalb eines Duells jede Aufstellung nur einmal; IDs aus
+     profile.duelRecent zurückstellen (nur nehmen, wenn sonst zu wenig da
+     sind), zufällig ziehen.
+
+3. Links (ohne Server)
+   - Herausforderung: <App-Adresse>#duel=<code>, Rückmeldung:
+     <App-Adresse>#duelr=<code>. Immer # statt ?-Parameter.
+   - code = base64url aus kompaktem JSON mit Versionsnummer und
+     Prüfsumme. Inhalt Herausforderung: duelId, Absender (Name, deviceId,
+     Rang, Level), settings, lineups, Ergebnisse des Absenders. Die
+     Ergebnisse leicht verschleiern (z. B. XOR mit Schlüssel aus duelId),
+     damit man sie nicht einfach aus dem Link lesen kann – im Code
+     kommentieren, dass das kein echter Schutz ist.
+   - Rückmeldung: duelId, Antwortender (Name, deviceId), seine Ergebnisse.
+   - Beim App-Start (und bei hashchange) #duel / #duelr auswerten:
+     #duel → Duell als "todo" anlegen (falls noch nicht vorhanden) und die
+     Einladung öffnen; #duelr → passendes Duell finden, Ergebnis eintragen,
+     Status "done" (Auswertung baut Prompt 26). Danach den # aus der
+     Adresse entfernen (history.replaceState). Ungültiger oder eigener
+     Link → freundlicher Hinweis, kein Absturz.
+   - Teilen per navigator.share({ text, url }), sonst Zwischenablage.
+     Text z. B. "⚔️ Lisa fordert dich bei Starting XI heraus – Best of 3,
+     3 Min pro Aufstellung. Traust du dich?".
+   - iPhone-Besonderheit: Links öffnen sich in Safari, NICHT in der
+     installierten Home-Bildschirm-App, und beide haben getrennten
+     Speicher. Deshalb zusätzlich: Wird ein Duell-Link im Browser (nicht
+     standalone, matchMedia "(display-mode: standalone)") geöffnet, zeigt
+     die Einladung zwei Wege: "Hier im Browser spielen" oder "In der App
+     spielen" (Code kopieren). In der Duell-Übersicht gibt es dafür klein
+     "Code einfügen" (Textfeld + Einfügen, akzeptiert ganzen Link oder
+     nur den Code). Gleiches für Rückmeldungen.
+
+4. Startseite
+   - Die Kachel "Frei spielen" wird durch die Kachel "Duell" ersetzt
+     (gleiches Raster wie Kampagne aus Prompt 18, grüner Rasen-Look wie im
+     Prototyp): ⚔️, "Duell", Bildzeile = Wappen-du · Bilanz als
+     Klappziffern (Siege : Niederlagen) · Wappen-?, Textzeile "Bilanz ·
+     n Herausforderung(en)" bzw. "Bilanz" / ohne Duelle "Noch keine
+     Duelle", Aktionsleiste "Freund herausfordern ›". Goldene Zahl oben
+     rechts = Anzahl Duelle mit status "todo".
+   - Frei spielen nur noch als kleine Textzeile unter den Kacheln:
+     "🎲 Lieber allein trainieren? Frei spielen ›" (Oswald 400, gedimmt,
+     "Frei spielen ›" gold, Oswald 600). Führt wie bisher zum
+     Freispiel-Bildschirm.
+   - Die Formkurve (profile.freeplayForm) nicht verlieren: klein oben auf
+     dem Frei-spielen-Bildschirm anzeigen.
+   - Startseite weiter ohne Scrollen auf 375×667 bis 430×932 (bei 375×667
+     fehlen laut Prototyp ca. 17px → aus Abständen nehmen).
+
+5. Neue Bildschirme (im Navigations-Stack aus Prompt 11b)
+   - Übersicht "Deine Duelle": Anzeigetafel (Bilanz als Klappziffern,
+     🔥-Siegesserie), großer grüner Knopf "⚔️ Neues Duell", "Offene
+     Duelle" als Mini-Tickets (gold = du bist dran → Einladung/Spielen;
+     dunkel = Gegner ist dran, mit "Erinnern" = Link erneut teilen),
+     "Gegen deine Freunde" (Wappen, Name, Sieg-Balken, Stand), Regal mit
+     den 4 Duell-Trophäen (Daten aus Prompt 26, bis dahin alle grau),
+     klein "Code einfügen". Leerer Zustand freundlich erklären.
+   - "Neues Duell": drei nummerierte Fragen – Wie viele Aufstellungen?
+     (Einzel / Best of 3 / Best of 5, KEINE Ball-Symbole), Zeit pro
+     Aufstellung (2 / 3 / 5 Min mit Stoppuhr-Ring), Schwierigkeit (Stufe
+     1–5 oder Gemischt). Darunter Regeln in zwei Sätzen, Fair-Play-
+     Schalter "Ich spiele fair", Knopf "Anpfiff & Link teilen" (erst aktiv
+     mit Schalter). In Teil 1 legt der Knopf das Duell an (status "todo"
+     für mich) – das Spielen selbst baut Prompt 26.
+   - Einladung (Ticket-Optik): "<Name> fordert dich zum Duell", große
+     Wappen + VS, goldener Abriss mit Format/Zeit/Stufe, Hinweis "hat schon
+     gespielt – Ergebnisse siehst du nach deinem Spiel", eure Bilanz,
+     Fair-Play-Schalter, "Annehmen & Anpfiff" und "Ablehnen".
+   - Wappen: Schild-Form mit Anfangsbuchstaben, eigenes Wappen gold,
+     Gegner blau.
+   - Typografie laut CLAUDE.md, KEINE gesperrten Versalien-Überschriften
+     (Prototyp: gemischte Schreibweise, Anton für Titel/Zahlen).
+
+6. So geht's: Im Reiter MODI das Duell ergänzen (Spalte/Zeile in der
+   Vergleichstabelle + ein Satz), Frei spielen bleibt erklärt.
+
+sw.js CACHE_NAME erhöhen. Test: Startseite bei 375×667/402×874/430×932
+ohne Scrollen; Duell anlegen → Link erzeugen → Link in einem zweiten
+Browser-Profil öffnen → Einladung erscheint mit richtigen Daten; Code
+einfügen funktioniert; ungültiger Link zeigt Hinweis; keine
+Konsolenfehler. Hosting-Ergebnis aus Schritt 0 berichten.
+```
+
+---
+
+## Prompt 26 – Duell, Teil 2: Spielen, Ergebnis, Belohnung
+
+```
+Lies CLAUDE.md. Fortsetzung von Prompt 25 → Plan Mode, Plan zeigen, dann
+umsetzen. Optik aus prototypes/duell.html (Bildschirme 4–6: Walkout,
+Spiel, Abpfiff; CSS u. a. .wr/.cd/.clock2/.series/.res2/.rr/.xp/.send2).
+
+1. Spielablauf
+   - Nach "Anpfiff & Link teilen" (Herausforderer) bzw. "Annehmen &
+     Anpfiff" (Eingeladener) werden alle Runden nacheinander gespielt.
+   - Vor jeder Runde der Walkout: Wettbewerb › Datum › Partie ›
+     "Du stellst auf <Mannschaft>", dann 3-2-1-Anpfiff. Oben "Runde n von
+     m · gegen <Name>", "Überspringen ›" jederzeit. KEIN Kontext-Satz.
+     WICHTIG (Glitch aus dem Test): Die Partie steht fest auf zwei Zeilen
+     (Heim / "gegen" Gast) und die Schriftgröße jeder Zeile wird vorher so
+     berechnet, dass sie in eine Zeile passt (nowrap) – beim Verkleinern
+     darf nichts umbrechen oder springen. Einmalige Animationen,
+     prefers-reduced-motion beachten.
+   - Spiel: bestehendes Spielfeld wiederverwenden, aber im Duell-Modus:
+     keine Vorgaben, kein Scout-Rad, kein Aufdecken, kein Korrigieren
+     (Aliase/Schreibvarianten aus Prompt 3 gelten weiter). Oben: eigener
+     Stand x/11, Uhr als Klappziffern (Countdown der gewählten Zeit, ab
+     0:30 rötlich, kein Blinken), Gegner "🔒 verdeckt", darunter "Runde n
+     von m" mit Strichen. Unten "⏹ Abgeben – Zeit stoppen und werten".
+   - Runde endet bei 11/11, Abgeben oder Zeitablauf. Gespeichert: correct,
+     seconds (verbrauchte Zeit), left (wie oft die App während der Runde
+     verlassen wurde, über visibilitychange).
+   - Zwischen den Runden kurz "Runde n: x/11 in m:ss" + "Weiter zu Runde
+     n+1 ›". Abbrechen mitten im Duell: Rückfrage; abgebrochene Runden
+     zählen mit dem bis dahin erreichten Stand.
+
+2. Auswertung
+   - Runde: mehr Richtige gewinnt, sonst weniger Zeit, sonst
+     unentschieden.
+   - Duell: mehr gewonnene Runden; bei Gleichstand mehr Richtige
+     insgesamt, dann weniger Gesamtzeit, sonst unentschieden.
+   - Herausforderer: nach seinem Spiel status "waiting", Ergebnis erst
+     nach Rückmelde-Link. Eingeladener: sieht sofort das Endergebnis und
+     bekommt "📤 Ergebnis an <Name> senden" (#duelr-Link aus Prompt 25).
+   - Abpfiff-Bildschirm wie im Prototyp: "Sieg!" / "Niederlage" /
+     "Unentschieden", Stand der Runden als Klappziffern zwischen den
+     Wappen, Begründungssatz, jede Runde als Zeile mit 👑 und Grund ("mehr
+     Spieler gewusst" / "schneller"), XP-Kachel, neue Bilanz gegen den
+     Gegner, "Ergebnis senden" bzw. "🔁 Revanche" (neues Duell mit
+     gleichen Einstellungen gegen denselben Freund).
+   - Fair Play: 🤝-Siegel je Spieler nur, wenn in keiner Runde die App
+     verlassen wurde; sonst neutraler Hinweis "hat die App verlassen".
+
+3. Belohnung (keine Token!)
+   - XP_RULES.duelRoundXP = 15 je gespielter Aufstellung (direkt nach dem
+     eigenen Spiel), XP_RULES.duelWinXP = 40 für den Duellsieg (sobald das
+     Ergebnis feststeht). Über awardXP, ohne Serien-Bonus. Duelle geben
+     keine Scout-Token und keine Sterne.
+   - duelStats und perOpponent aktualisieren (Sieg/Niederlage/
+     Unentschieden, Siegesserie, Sweeps), duelRecent fortschreiben.
+
+4. Duell-Trophäen (neue Kategorie im Trophäenschrank + Regal in der
+   Übersicht, ohne Token-Belohnung): "Erster Sieg" (1. Duellsieg),
+   "Sweep" (Best of 3/5 ohne Rundenverlust gewonnen), "10 Siege",
+   "5 Siege in Folge". Scout-Profil › Übersicht: Duell-Bilanz ergänzen.
+
+sw.js CACHE_NAME erhöhen. Test mit zwei Browser-Profilen: Best of 3,
+3 Min – A spielt (eine Runde mit Abgeben, eine per Zeitablauf mit kurz
+gestellter Testzeit), Link → B spielt → B sieht Ergebnis → Rückmelde-Link
+→ A sieht dasselbe Ergebnis; Bilanz, XP und Trophäen bei beiden korrekt;
+Walkout bei 375/402/430 ohne Umbruch-Sprung (Screenshot-Serie); keine
+Konsolenfehler.
 ```
 
 ---
