@@ -451,6 +451,14 @@ ausgeliefert wird.
 > 4. **Fehlerfälle** sauber abgedeckt (offline, doppeltes Öffnen, App neu
 >    installiert, Handywechsel) – nichts geht verloren, nichts zählt doppelt.
 > 5. „Code einfügen“ nur noch als Notfall-Weg.
+> 6. **Duell-Ablauf wie bei Quizduell (Florian, 05.10.2026):** Runden im
+>    Wechsel – wer Runde 1 beginnt, spielt sie zuerst, der Gegner spielt
+>    dieselbe Aufstellung nach und sieht danach beide Ergebnisse; Runde 2
+>    beginnt der andere usw. Beginner einer Runde wählt aus 3 zufälligen
+>    Vorschlägen den Wettbewerb/die Stufe (wie die Kategorie-Wahl).
+>    Zwischenstand nach jeder Runde für BEIDE, Push „Du bist dran“, Frist
+>    pro Zug (z. B. 48 h, sonst Sieg für den Gegner). Ersetzt dann das
+>    heutige „erst alles A, dann alles B“ aus Prompt 25/26/29.
 > Hochprofessionell und vollständig getestet umsetzen – dafür einen eigenen
 > Plan mit Prompts schreiben, BEVOR Prompt 8 ausgeführt wird.
 
