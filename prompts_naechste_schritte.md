@@ -45,8 +45,9 @@ vorige umgesetzt, getestet und committet ist.
 | 31 | Kampagne: Animation „Welt geschafft“ (Aufstieg + Pokal) | 30 |
 | 32 | iPhone: Hinweise unter der Kamera, Token-Anzeige im Spiel, Spielstand sichern (Export/Import) | – |
 | 33 | Kampagne: Auswerten verrät keine Lösungen mehr, „Lösung anzeigen“ friert Sterne ein | – |
+| 34 | Angefangene Aufstellungen merken und fortsetzen (Kampagne, Freispiel, Tag) | – |
 
-**Empfohlene Reihenfolge ab jetzt:** 27 → 32 → 33 → 30 → 31 → weitere Offline-Feinschliffe → Planung Online-Duell → 8
+**Empfohlene Reihenfolge ab jetzt:** 27 → 32 → 33 → 34 → 30 → 31 → weitere Offline-Feinschliffe → Planung Online-Duell → 8
 
 Prompt 7 steht bewusst vor der Tages-Challenge: Nur mit der neuen
 Update-Strategie kommen neue Tages-Aufstellungen zuverlässig auf dem iPhone an.
@@ -2536,6 +2537,62 @@ sw.js CACHE_NAME erhöhen. Test: Kampagnen-Level mit 3 Richtigen auswerten
 "?" + Lösung anzeigen → Hinweis → aufdecken → Level 👁, Wiederholen gibt
 keinen neuen Stern; ⭐⭐⭐ bestehen → Lösung direkt; Freispiel/Tag
 unverändert; Leere-Felder-Hinweis erscheint; keine Konsolenfehler.
+```
+
+---
+
+## Prompt 34 – Angefangene Aufstellungen merken und fortsetzen
+
+```
+Lies CLAUDE.md. Neues Verhalten beim Verlassen eines laufenden Spiels →
+Plan Mode, Plan zeigen, dann umsetzen.
+
+Befund (Praxistest): Wer eine Aufstellung anfängt und auf "← Abbrechen"/
+Zurück geht (oder die App schließt), verliert alle Eingaben. Beim erneuten
+Öffnen ist alles leer. Nebeneffekt heute: Wer Scout-Rad/Aufdecken benutzt
+hat, verlässt das Level und startet neu, hat wieder "keine Hilfe benutzt"
+→ ⭐⭐⭐ trotz Hilfe möglich.
+
+1. Entwurf speichern (Kampagne, Freispiel, Tages-Challenge – NICHT Duell)
+   - profile.drafts[matchId] = { entries: { abbr: { value, state } }
+     (state: ok/near/revealed/korrigiert), hintsUsed, tokenRevealed,
+     fuzzyCorrected, Scout-Rad-Tipps je Position, combo, updated }.
+     Vorgaben (prefilled) nicht speichern – die ergeben sich aus Prompt 9.
+   - Speichern bei jeder Änderung (entprellt), bei "Abbrechen", Zurück-
+     Geste/popstate und bei visibilitychange/pagehide (App wird
+     geschlossen).
+   - Beim Auswerten wird der Entwurf gelöscht. Max. 20 Entwürfe, älteste
+     zuerst verwerfen; Entwürfe älter als 30 Tage verwerfen.
+   - Lösungen werden nie im Entwurf gespeichert (Prompt 33 beachten:
+     verdeckte Namen bleiben verdeckt).
+
+2. Fortsetzen
+   - Startet man eine Aufstellung mit Entwurf, werden alle Eingaben,
+     Zustände (grün/gold/aufgedeckt), Scout-Rad-Tipps und Hilfe-Markierungen
+     wiederhergestellt; Kombo wie gespeichert. Kurzer Hinweis (Toast):
+     "Weiter, wo du aufgehört hast".
+   - Hilfe-Markierungen bleiben bis zum Auswerten bestehen – Verlassen und
+     neu starten setzt sie NICHT mehr zurück (kein ⭐⭐⭐ nach Hilfe).
+     Verbrauchte Token werden nicht erstattet.
+   - Optional im Spiel klein "Felder leeren" (mit Bestätigung im
+     Aktionsblatt): leert Eingaben, Hilfe-Markierungen bleiben.
+
+3. Sichtbar machen
+   - Kampagnen-Pfad: Level mit Entwurf bekommt ein kleines ✏️ und den
+     Hinweis "angefangen". Die Kampagnen-Kachel "Weiter spielen" startet –
+     wenn vorhanden – das angefangene Level der aktuellen Welt.
+   - Tages-Karte: Ist die heutige Challenge angefangen, statt "STARTEN"
+     "WEITER" (gleiche Optik).
+   - Frei spielen: Gibt es einen Freispiel-Entwurf, oben eine kleine Karte
+     "Angefangen: <Partie> · Weiterspielen ›" (neuester Entwurf, schließbar
+     = Entwurf verwerfen mit Bestätigung).
+
+sw.js CACHE_NAME erhöhen. Test: Kampagnen-Level, 4 Namen + 1 Scout-Rad-
+Tipp eingeben, Abbrechen → Pfad zeigt ✏️ → Level öffnen → alles wieder da,
+Hilfe zählt weiter (kein ⭐⭐⭐ möglich); App neu laden (pagehide) →
+Entwurf bleibt; Auswerten löscht Entwurf; Tages-Karte zeigt WEITER;
+Freispiel-Karte erscheint; Duell bleibt unverändert; keine
+Konsolenfehler.
 ```
 
 ---
