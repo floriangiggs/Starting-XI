@@ -43,8 +43,9 @@ vorige umgesetzt, getestet und committet ist.
 | 29 | Duell: Zwischenstand nach jeder Runde, vorzeitige Entscheidung, Auflösung beim Abpfiff | ⏸ zurückgestellt – kommt ins Online-Duell |
 | 30 | Kampagne: direkt weiter zum nächsten Level, Level-Anzeige „Level n von N“ | – |
 | 31 | Kampagne: Animation „Welt geschafft“ (Aufstieg + Pokal) | 30 |
+| 32 | iPhone: Hinweise unter der Kamera, Token-Anzeige im Spiel, Spielstand sichern (Export/Import) | – |
 
-**Empfohlene Reihenfolge ab jetzt:** 27 → 30 → 31 → weitere Offline-Feinschliffe → Planung Online-Duell → 8
+**Empfohlene Reihenfolge ab jetzt:** 27 → 32 → 30 → 31 → weitere Offline-Feinschliffe → Planung Online-Duell → 8
 
 Prompt 7 steht bewusst vor der Tages-Challenge: Nur mit der neuen
 Update-Strategie kommen neue Tages-Aufstellungen zuverlässig auf dem iPhone an.
@@ -2414,6 +2415,70 @@ mit "🏆 Welt geschafft! Weiter ›"; dasselbe Level erneut bestehen → keine
 Animation; Überspringen mit 1 und 2 Tipps; Welt 5 zeigt "Du bist
 Weltklasse!"; reduced motion; Screenshot-Serie bei 375/402/430; keine
 Konsolenfehler.
+```
+
+---
+
+## Prompt 32 – iPhone-Feinschliff: Hinweise unter der Kamera, Token im Spiel, Spielstand sichern
+
+```
+Lies CLAUDE.md. Drei Korrekturen nach Praxistest auf dem iPhone → kurz Plan
+zeigen, dann umsetzen.
+
+1. Hinweise (XP-Boni, Trophäen, Token …) verschwinden hinter der Kamera
+   Befund: .toast-stack ist position: fixed; top: 16px. Die App läuft mit
+   viewport-fit=cover und Statusleiste "black-translucent" – auf iPhones mit
+   Dynamic Island/Notch liegen die Hinweise damit genau unter der Kamera und
+   sind abgeschnitten.
+   Fix: top: calc(env(safe-area-inset-top, 0px) + 10px) (bzw. max(16px, …)).
+   Alle weiteren fixierten Elemente am oberen Rand prüfen (grep "position:
+   fixed", Overlays, Bottom-Sheets oben, Konfetti ist egal) und genauso an
+   die sichere Zone anpassen. Test per Screenshot mit simuliertem
+   safe-area-inset-top von 59px (iPhone 16 Pro) – Hinweise vollständig
+   sichtbar, nichts überlappt die Kopfzeile des Spielfelds unschön.
+
+2. Scout-Token im Spiel sichtbar machen
+   Befund: Auf dem Spielfeld sieht man nirgends, wie viele 🔍 man hat.
+   Fix: In der Kopfzeile des Spielfelds (Zeile mit "← Abbrechen" und
+   "ℹ️ Regeln") ein kleiner Token-Chip "🔍 n" im Stil des Chips der
+   Scout-Ausweis-Kachel (Prompt 17), dezent, rechts neben bzw. vor
+   "Regeln". Aktualisiert sich sofort bei Scout-Rad, Aufdecken und neuen
+   Token. Nur in Kampagne, Freispiel und Tages-Challenge – im Duell NICHT
+   (dort gibt es keine Hilfen). Kopfzeile darf nicht höher werden, Spielfeld
+   nicht kleiner.
+
+3. Spielstand geht verloren
+   Befund (Kollege, iPhone): Nach dem Schließen der App ist der Spielstand
+   weg. Der Code speichert korrekt in localStorage; saveProfile fängt
+   Fehler aber still ab. Typische Ursachen auf dem iPhone: Privates Surfen
+   (Speicher wird beim Schließen gelöscht), Öffnen in einem In-App-Browser
+   (z. B. aus WhatsApp), "Alle Cookies blockieren" (localStorage wirft
+   Fehler) oder Safari vs. Home-Bildschirm-App (getrennte Speicher).
+   Fix:
+   - Beim Start testen, ob localStorage wirklich schreib-/lesbar ist
+     (Testwert schreiben, lesen, löschen). Wenn nicht, oder wenn
+     saveProfile fehlschlägt: einmal pro Sitzung ein gut sichtbarer, aber
+     ruhiger Hinweis (Bottom-Sheet, kein Blinken): "Dein Spielstand kann
+     hier nicht gespeichert werden. Öffne Starting XI in Safari (nicht im
+     privaten Modus) und füge es über Teilen → „Zum Home-Bildschirm“ hinzu."
+   - navigator.storage.persist() anfragen, wenn verfügbar (verhindert
+     automatisches Löschen durch den Browser), Ergebnis ignorieren, wenn
+     nicht unterstützt.
+   - Läuft die App im Browser (nicht standalone) und es gibt schon
+     Fortschritt: einmalig dezenter Tipp "Tipp: Zum Home-Bildschirm
+     hinzufügen, dann bleibt dein Spielstand sicher und die App startet im
+     Vollbild." (schließbar, merken in profile).
+   - Spielstand-Export/-Import (war für Prompt 8 geplant) JETZT
+     vorziehen: Scout-Profil → "Spielstand sichern" (Code kopieren bzw. als
+     Datei teilen) und "Spielstand laden" (Code einfügen, mit Bestätigung).
+     Damit lässt sich ein Stand auch von Safari in die Home-Bildschirm-App
+     umziehen.
+
+sw.js CACHE_NAME erhöhen. Test: Toasts mit simulierter Safe-Area;
+Token-Chip ändert sich beim Drehen/Aufdecken, im Duell unsichtbar;
+localStorage gesperrt simulieren (setItem wirft) → Hinweis erscheint,
+App läuft weiter; Export → neues Profil → Import stellt alles wieder her;
+keine Konsolenfehler.
 ```
 
 ---
