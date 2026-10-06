@@ -44,8 +44,9 @@ vorige umgesetzt, getestet und committet ist.
 | 30 | Kampagne: direkt weiter zum nächsten Level, Level-Anzeige „Level n von N“ | – |
 | 31 | Kampagne: Animation „Welt geschafft“ (Aufstieg + Pokal) | 30 |
 | 32 | iPhone: Hinweise unter der Kamera, Token-Anzeige im Spiel, Spielstand sichern (Export/Import) | – |
+| 33 | Kampagne: Auswerten verrät keine Lösungen mehr, „Lösung anzeigen“ friert Sterne ein | – |
 
-**Empfohlene Reihenfolge ab jetzt:** 27 → 32 → 30 → 31 → weitere Offline-Feinschliffe → Planung Online-Duell → 8
+**Empfohlene Reihenfolge ab jetzt:** 27 → 32 → 33 → 30 → 31 → weitere Offline-Feinschliffe → Planung Online-Duell → 8
 
 Prompt 7 steht bewusst vor der Tages-Challenge: Nur mit der neuen
 Update-Strategie kommen neue Tages-Aufstellungen zuverlässig auf dem iPhone an.
@@ -2479,6 +2480,62 @@ Token-Chip ändert sich beim Drehen/Aufdecken, im Duell unsichtbar;
 localStorage gesperrt simulieren (setItem wirft) → Hinweis erscheint,
 App läuft weiter; Export → neues Profil → Import stellt alles wieder her;
 keine Konsolenfehler.
+```
+
+---
+
+## Prompt 33 – Auswerten verrät die Lösung (Kampagne)
+
+```
+Lies CLAUDE.md. Spiellogik-Korrektur beim Auswerten → Plan Mode, Plan
+zeigen, dann umsetzen.
+
+Befund (Praxistest + Code): evaluatePitch() schreibt bei jeder falschen
+oder leeren Position den richtigen Namen ins Feld (if (!isCorrect)
+input.value = target). Wer in der Kampagne früh auf "Auswerten" drückt –
+auch mit leeren Feldern –, sieht alle Lösungen, tippt bei "Nochmal
+versuchen" einfach ab und besteht (7/11) bzw. holt sich ⭐⭐⭐. Das
+untergräbt die Kampagne.
+
+1. Kampagne – nicht bestanden (< PASS_THRESHOLD):
+   - Richtige Positionen grün wie bisher. Falsche/leere Positionen rot bzw.
+     leer markiert, aber OHNE Namen (Feld zeigt "?").
+   - Hinweis im Ergebnis: "Die Lösung siehst du, sobald du das Level
+     bestanden hast." + "Nochmal versuchen" (Prompt 30) / "‹ Pfad".
+   - Beim erneuten Versuch bleiben die schon richtigen Namen NICHT stehen
+     (Level startet normal mit den festen Vorgaben aus Prompt 9).
+
+2. Kampagne – bestanden:
+   - Fehlende Namen zunächst ebenfalls verdeckt ("?"). Darunter Knopf
+     "👁 Lösung anzeigen". Antippen deckt alle fehlenden Namen auf (wie
+     heute), ABER: für dieses Level gilt danach "Lösung angesehen" –
+     die Kampagnen-Sterne dieses Levels sind auf dem aktuellen Stand
+     eingefroren (kein weiterer Stern durch Wiederholen).
+     Vor dem Aufdecken kurzer Hinweis im Aktionsblatt: "Wenn du die
+     Lösung ansiehst, kannst du in diesem Level keine weiteren Sterne mehr
+     holen." [Lösung anzeigen] [Lieber nochmal probieren]. Bei bereits
+     ⭐⭐⭐ ohne Hinweis direkt aufdecken.
+   - Speichern in profile.campaign.solutionSeen[levelId] (Migration).
+   - Auf dem Pfad zeigt ein Level mit eingefrorenen Sternen ein kleines 👁.
+
+3. Positions-XP fair halten (Kampagne + Freispiel): Positionen, deren
+   Lösung angezeigt wurde, zählen später nicht mehr als "neu gelöst"
+   (nur noch Trainings-XP). Merken je Aufstellung (z. B. in profile.best
+   als seenAbbrs).
+
+4. Unverändert: Tages-Challenge (nur 1 Versuch) und Freispiel (Training)
+   zeigen nach dem Auswerten weiterhin sofort alle Lösungen. Duell
+   unverändert.
+
+5. Auswerten mit leeren Feldern (alle Modi außer Duell): Sind noch
+   Positionen leer, vorher kurzes Aktionsblatt "Noch n Positionen leer.
+   Trotzdem auswerten?" [Weiter tippen] [Auswerten] – kein confirm().
+
+sw.js CACHE_NAME erhöhen. Test: Kampagnen-Level mit 3 Richtigen auswerten
+→ keine Namen der übrigen 8 sichtbar, Retry startet leer; mit 8 bestehen →
+"?" + Lösung anzeigen → Hinweis → aufdecken → Level 👁, Wiederholen gibt
+keinen neuen Stern; ⭐⭐⭐ bestehen → Lösung direkt; Freispiel/Tag
+unverändert; Leere-Felder-Hinweis erscheint; keine Konsolenfehler.
 ```
 
 ---
