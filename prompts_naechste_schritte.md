@@ -2662,7 +2662,7 @@ Regeln (Florian, verbindlich):
    - Kolumbien – Uruguay 2:0, WM-Achtelfinale 28.06.2014 (Kolumbien) – Stufe 4
    - Sevilla – Liverpool 3:1, EL-Finale 18.05.2016 (Sevilla) – Stufe 4
    - Chile – Spanien 2:0, WM 18.06.2014 (Chile) – Stufe 5
-   - Ungarn – Portugal 3:3, EM 22.06.2016 (Ungarn) – Stufe 5
+   - Real Madrid – Juventus 4:1, CL-Finale 03.06.2017 Cardiff (Juventus) – Stufe 4
    Tages-Pool – zusätzlich NEU (Pool wächst, schließt die Lücke bei Stufe 4/5):
    - Atlético – Bayern 1:0, CL-Halbfinale Hinspiel 27.04.2016 (Atlético) – Stufe 4
    - BVB – Liverpool 3:4, EL-Viertelfinale Rückspiel 14.04.2016 (Liverpool) – Stufe 4
@@ -2747,9 +2747,9 @@ TV-Bilder, Vereinslogos oder Original-Trikots – stattdessen App-Aufnahmen
 - **Jahres-Lücken im Blick behalten** (Stand nach Prompt 35, geplant,
   Kampagne + Tag zusammen, 104 Aufstellungen):
   2008: 3 · 2009: 3 · 2010: 3 · 2011: 1 · 2012: 5 · 2013: 1 · 2014: 12 ·
-  2015: 1 · 2016: 14 · 2017: 2 · 2018: 7 · 2019: 4 · 2020: 3 · 2021: 9 ·
+  2015: 1 · 2016: 13 · 2017: 3 · 2018: 7 · 2019: 4 · 2020: 3 · 2021: 9 ·
   2022: 12 · 2023: 3 · 2024: 13 · 2025: 4 · 2026: 4
-  Dünn: 2011, 2013, 2015, 2017, dann 2008–2010, 2020, 2023.
+  Dünn: 2011, 2013, 2015, 2017 (3), dann 2008–2010, 2020, 2023.
   Florian (09.10.2026): Bei der nächsten Erweiterung zuerst 2015, 2017,
   2020 und 2023 auffüllen, damit die Jahre in der Waage bleiben. Neue
   Aufstellungen künftig bevorzugt aus diesen Jahren nehmen; 2014, 2016,
