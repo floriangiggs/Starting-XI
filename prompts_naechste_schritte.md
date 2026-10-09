@@ -2749,7 +2749,9 @@ TV-Bilder, Vereinslogos oder Original-Trikots – stattdessen App-Aufnahmen
   2008: 3 · 2009: 3 · 2010: 3 · 2011: 1 · 2012: 5 · 2013: 1 · 2014: 12 ·
   2015: 1 · 2016: 14 · 2017: 2 · 2018: 7 · 2019: 4 · 2020: 3 · 2021: 9 ·
   2022: 12 · 2023: 3 · 2024: 13 · 2025: 4 · 2026: 4
-  Dünn: 2011, 2013, 2015, 2017, dann 2008–2010, 2020, 2023. Neue
+  Dünn: 2011, 2013, 2015, 2017, dann 2008–2010, 2020, 2023.
+  Florian (09.10.2026): Bei der nächsten Erweiterung zuerst 2015, 2017,
+  2020 und 2023 auffüllen, damit die Jahre in der Waage bleiben. Neue
   Aufstellungen künftig bevorzugt aus diesen Jahren nehmen; 2014, 2016,
   2022 und 2024 erst einmal nicht weiter aufstocken. Immer: bekannte
   Teams, lösbar gestalten – lieber Mittelklasse als Exoten.
