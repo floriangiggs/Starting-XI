@@ -2704,7 +2704,8 @@ Regeln (Florian, verbindlich):
 4. CLAUDE.md: Regeln sind bereits eingetragen – beachten.
 
 sw.js CACHE_NAME erhöhen. Test: Prüfskript – kein Eintrag (Kampagne + Tag)
-vor 2008, Anzahl je Welt unverändert, kein Team in zwei aufeinander-
+vor 2008, Anzahl je Welt unverändert, Verteilung nach Jahr ausgeben
+(Kampagne, Tag, gesamt), kein Team in zwei aufeinander-
 folgenden Levels (inkl. Weltwechsel), in 120 simulierten Tagen nie ein
 Team zwei Tage hintereinander, Verteilung je Stufe im Tages-Pool
 ausgeben, Pflichtfelder vollständig, Formation passt, keine doppelten
@@ -2743,6 +2744,15 @@ TV-Bilder, Vereinslogos oder Original-Trikots – stattdessen App-Aufnahmen
 
 ## Ideen-Speicher (noch nicht ausgearbeitet)
 
+- **Jahres-Lücken im Blick behalten** (Stand nach Prompt 35, geplant,
+  Kampagne + Tag zusammen, 104 Aufstellungen):
+  2008: 3 · 2009: 3 · 2010: 3 · 2011: 1 · 2012: 5 · 2013: 1 · 2014: 12 ·
+  2015: 1 · 2016: 14 · 2017: 2 · 2018: 7 · 2019: 4 · 2020: 3 · 2021: 9 ·
+  2022: 12 · 2023: 3 · 2024: 13 · 2025: 4 · 2026: 4
+  Dünn: 2011, 2013, 2015, 2017, dann 2008–2010, 2020, 2023. Neue
+  Aufstellungen künftig bevorzugt aus diesen Jahren nehmen; 2014, 2016,
+  2022 und 2024 erst einmal nicht weiter aufstocken. Immer: bekannte
+  Teams, lösbar gestalten – lieber Mittelklasse als Exoten.
 - **Themen-Pakete**: Legendäre Finals, Underdogs, Dramen, Pfalz-Paket (FCK)
 - **Retro-Welt** 80er/90er mit neuem Layout 3-5-2 mit Libero
 - **Beide Seiten eines Spiels** als verknüpfte Challenges

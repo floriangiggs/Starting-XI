@@ -21,6 +21,11 @@ auf einem visuellen Spielfeld an die richtige Position setzen.
 - Gleiche Mannschaften nie direkt hintereinander: gilt für beide Teams einer
   Partie, in der ganzen Kampagne (auch über Weltwechsel) und in der
   Tages-Challenge (kein Team vom Vortag).
+- Vor neuen Aufstellungen die Verteilung nach Jahr ausgeben (Kampagne +
+  Tag) und bevorzugt aus dünn besetzten Jahren wählen; aktuelle Lücken:
+  prompts_naechste_schritte.md, Ideen-Speicher "Jahres-Lücken".
+- Jede Aufstellung muss lösbar sein: bekannte Teams/Spieler, nicht zu
+  unbekannt – auch in Welt 5 lieber Mittelklasse als Exoten.
 
 ## Pflichtfelder pro Aufstellung
 
