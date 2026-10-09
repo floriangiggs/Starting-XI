@@ -2757,6 +2757,35 @@ TV-Bilder, Vereinslogos oder Original-Trikots – stattdessen App-Aufnahmen
   Teams, lösbar gestalten – lieber Mittelklasse als Exoten.
   Je älter das Jahr, desto bekannter die Teams; bei aktuellen Spielen
   minimal unbekannter erlaubt, aber nie zu unbekannt.
+- **Vorrat für die nächste Erweiterung** (mit Florian besprochen
+  09.10.2026; nur Spiel-Ideen, Aufstellungen beim Umsetzen mit Quelle
+  belegen; abgefragte Seite in Klammern). Bayern nur noch selten.
+  Fest ausgewählt:
+  - PSG – Barcelona 4:0, CL-Achtelfinale Hinspiel 2017 (PSG) – eher Tages-
+    Pool, da das Rückspiel 6:1 in Welt 4 liegt
+  - PSG – BVB 2:0, CL-Achtelfinale Rückspiel März 2020, Geisterspiel (PSG)
+  Kandidaten, noch nicht entschieden:
+  - 2011: Barcelona – ManUtd 3:1 CL-Finale (Barcelona); Inter – Schalke 2:5
+    CL-VF (Schalke); BVB – Nürnberg 2:0 Meisterschaft (BVB);
+    ManUtd – ManCity 1:6 (ManCity); ManUtd – Arsenal 8:2 (ManUtd)
+  - 2013: Bayern – Barcelona 4:0 CL-HF (Bayern); Brasilien – Spanien 3:0
+    Confed-Finale (Brasilien); West Brom – ManUtd 5:5, Fergusons letztes
+    Spiel (ManUtd); Chelsea – Benfica 2:1 EL-Finale (Chelsea)
+  - 2015: Bayern – Wolfsburg 5:1, Lewandowski (Bayern); Barcelona – Juventus
+    3:1 CL-Finale (Barcelona); Wolfsburg – BVB 3:1 Pokalfinale (BVB);
+    Chelsea – Crystal Palace 1:0 Meisterschaft (Chelsea); Arsenal – Aston
+    Villa 4:0 FA-Cup-Finale (Arsenal)
+  - 2017: Deutschland – Chile 1:0 Confed-Finale (Deutschland); BVB –
+    Frankfurt 2:1 Pokalfinale (BVB); ManUtd – Ajax 2:0 EL-Finale (ManUtd);
+    Arsenal – Chelsea 2:1 FA-Cup-Finale (Arsenal)
+  - 2020: BVB – Schalke 4:0 Geisterderby (BVB); Leipzig – Atlético 2:1
+    CL-VF (Leipzig); Spanien – Deutschland 6:0 (Deutschland); Liverpool –
+    Crystal Palace 4:0 vor dem Titel (Liverpool); Arsenal – Chelsea 2:1
+    FA-Cup-Finale (Arsenal)
+  - 2023: BVB – Mainz 2:2 (BVB); Inter – Milan CL-HF (Milan); West Ham –
+    Fiorentina 2:1 Conference-League-Finale (West Ham); Liverpool – ManUtd
+    7:0 (Liverpool); ManCity – Real 4:0 CL-HF (ManCity); Newcastle – PSG
+    4:1 (Newcastle)
 - **Themen-Pakete**: Legendäre Finals, Underdogs, Dramen, Pfalz-Paket (FCK)
 - **Retro-Welt** 80er/90er mit neuem Layout 3-5-2 mit Libero
 - **Beide Seiten eines Spiels** als verknüpfte Challenges
