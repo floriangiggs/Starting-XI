@@ -2769,6 +2769,31 @@ TV-Bilder, Vereinslogos oder Original-Trikots – stattdessen App-Aufnahmen
   - Chelsea – Crystal Palace 1:0, Mai 2015, Meisterschaft (Chelsea)
   - Arsenal – Chelsea 2:1, FA-Cup-Finale 2017 (Arsenal)
   - Liverpool – ManUtd 7:0, März 2023 (Liverpool)
+  - ManUtd – Chelsea 1:1 n. V., 6:5 i. E., CL-Finale 2008 Moskau (ManUtd)
+  - Deutschland – Portugal 3:2, EM-Viertelfinale 2008 (Deutschland)
+  - Barcelona – ManUtd 2:0, CL-Finale 2009 Rom (Barcelona)
+  - Werder – Leverkusen 1:0, DFB-Pokal-Finale 2009 (Werder)
+  - Deutschland – England 4:1, WM-Achtelfinale 2010 (Deutschland)
+  - Deutschland – Argentinien 4:0, WM-Viertelfinale 2010 (Deutschland)
+  - Spanien – Niederlande 1:0 n. V., WM-Finale 2010 (Spanien)
+  - Real – Barcelona 1:0 n. V., Copa-del-Rey-Finale 2011 (Real)
+  - Atlético – Real 2:1 n. V., Copa-del-Rey-Finale 2013 (Atlético)
+  - Chile – Argentinien 0:0, 4:1 i. E., Copa-América-Finale 2015 (Chile)
+  - Real – Barcelona 2:3, April 2017 (Barcelona)
+  - Tottenham – Real 3:1, CL-Gruppenphase November 2017 (Tottenham)
+  - ManCity – Liverpool 5:0, September 2017 (ManCity)
+  - ManCity – Liverpool 4:0, Juli 2020, Spalier für Meister Liverpool (ManCity)
+  - Sevilla – Inter 3:2, EL-Finale 2020 (Inter)
+  - Lyon – ManCity 3:1, CL-Viertelfinale 2020 (Lyon)
+  - Real – ManCity 1:2, CL-Achtelfinale Hinspiel Februar 2020 (ManCity)
+  - Barcelona – Real 1:2, Oktober 2023, Bellingham-Doppelpack (Real)
+  - Liverpool – Real 2:5, CL-Achtelfinale Hinspiel Februar 2023 (Real)
+  - Leverkusen – AS Rom, EL-Halbfinale 2023 (Leverkusen; Hin- oder
+    Rückspiel nach Quellenlage)
+  - ManCity – Arsenal 4:1, April 2023 (Arsenal)
+  Hinweis: ManCity, Real und Deutschland kommen mehrfach vor – beim
+  Einbauen über Welten/Tages-Pool verteilen (Reihenfolge-Regel), ggf. nicht
+  alle auf einmal einbauen, damit keine Kategorie dominiert.
   Kandidaten, noch nicht entschieden:
   - 2011: Barcelona – ManUtd 3:1 CL-Finale (Barcelona); Inter – Schalke 2:5
     CL-VF (Schalke); BVB – Nürnberg 2:0 Meisterschaft (BVB);
