@@ -2755,6 +2755,8 @@ TV-Bilder, Vereinslogos oder Original-Trikots – stattdessen App-Aufnahmen
   Aufstellungen künftig bevorzugt aus diesen Jahren nehmen; 2014, 2016,
   2022 und 2024 erst einmal nicht weiter aufstocken. Immer: bekannte
   Teams, lösbar gestalten – lieber Mittelklasse als Exoten.
+  Je älter das Jahr, desto bekannter die Teams; bei aktuellen Spielen
+  minimal unbekannter erlaubt, aber nie zu unbekannt.
 - **Themen-Pakete**: Legendäre Finals, Underdogs, Dramen, Pfalz-Paket (FCK)
 - **Retro-Welt** 80er/90er mit neuem Layout 3-5-2 mit Libero
 - **Beide Seiten eines Spiels** als verknüpfte Challenges

@@ -26,6 +26,9 @@ auf einem visuellen Spielfeld an die richtige Position setzen.
   prompts_naechste_schritte.md, Ideen-Speicher "Jahres-Lücken".
 - Jede Aufstellung muss lösbar sein: bekannte Teams/Spieler, nicht zu
   unbekannt – auch in Welt 5 lieber Mittelklasse als Exoten.
+- Je älter das Spiel, desto bekannter müssen die Teams sein (ältere Jahre
+  nur große Clubs/Nationalteams mit Stars). Bei aktuellen Spielen darf es
+  minimal unbekannter sein, aber nie zu unbekannt – machbar bleibt Pflicht.
 
 ## Pflichtfelder pro Aufstellung
 
