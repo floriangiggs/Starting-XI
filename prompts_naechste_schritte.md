@@ -2630,22 +2630,64 @@ Regeln (Florian, verbindlich):
    frankreich, cl-finale-istanbul-2005-milan, CL-Finale 2007 (AC Mailand),
    cl-finale-porto-2004, em-finale-2004-griechenland
 
-2. Ersatz – Ideen zum Prüfen (nur nehmen, wenn sauber belegt):
-   Welt 2 (Regionalliga, bekannt aber nicht ganz leicht) bewusst mit
-   deutschen Top-Clubs: z. B. FC Bayern im CL-Finale 2020, BVB im
-   CL-Finale 2024, Deutschland bei der EM 2024, Bayer Leverkusen in der
-   Meistersaison 2023/24 bzw. EL-Finale 2024 (nicht dieselbe Partie wie in
-   Welt 1). Welten 3–5 passend schwerer, z. B. RB Leipzig DFB-Pokal
-   2022/2023, VfB Stuttgart DFB-Pokal-Finale 2025, Union Berlin in der CL
-   2023/24, Bayern–BVB-Klassiker, Liverpool–Barcelona 4:0 (2019),
-   Barcelona–PSG 6:1 (2017), Real Madrid CL-Finale 2022; Welt 5 exotischer
-   (z. B. Marokko WM 2022, Überraschungsteams ab 2015).
-   - Tages-Pool: Ersatz so auf die Stufen legen, dass der Pool
-     ausgeglichener wird (heute 3/17/16/4/1 → vor allem Stufe 1, 4, 5).
+2. Ersatz – mit Florian ausgewählt (09.10.2026). Nur nehmen, wenn sauber
+   belegt; ist ein Spiel nicht belegbar, ersatzlos melden und mich fragen,
+   nicht selbst ein anderes wählen. Abgefragte Seite in Klammern.
+   Welt 2 (3):
+   - BVB – Real Madrid 0:2, CL-Finale 01.06.2024 Wembley (Dortmund)
+   - Deutschland – Schottland 5:1, EM-Eröffnung 14.06.2024 (Deutschland)
+   - Bayer Leverkusen – Werder Bremen 5:0, 14.04.2024, Meistertitel
+     (Leverkusen)
+   Welt 3 (2):
+   - BVB – Real Madrid 4:1, CL-Halbfinale Hinspiel 24.04.2013,
+     Lewandowski 4 Tore (Dortmund)
+   - Spanien – Deutschland 2:1 n. V., EM-Viertelfinale 05.07.2024
+     (Deutschland)
+   Welt 4 (4):
+   - VfB Stuttgart – Arminia Bielefeld 4:2, DFB-Pokal-Finale 24.05.2025
+     (Stuttgart)
+   - Atalanta – Bayer Leverkusen 3:0, EL-Finale 22.05.2024 Dublin
+     (Atalanta)
+   - Barcelona – PSG 6:1, CL-Achtelfinale Rückspiel 08.03.2017 (Barcelona)
+   - VfL Wolfsburg – Werder Bremen 5:1, 23.05.2009, Meistertitel
+     (Wolfsburg)
+   Welt 5 (3) – bekannte Mittelklasse, nicht zu exotisch:
+   - AS Rom – Barcelona 3:0, CL-Viertelfinale Rückspiel 10.04.2018 (Rom)
+   - FC Porto – Bayern 3:1, CL-Viertelfinale Hinspiel 15.04.2015 (Porto)
+   - Kroatien – Argentinien 3:0, WM 21.06.2018 (Kroatien)
+   Tages-Pool – Ersatz für die 6 alten:
+   - Real Madrid – BVB 2:0, CL-Finale 2024 (Real) – Stufe 1; bewusst die
+     andere Seite des Welt-2-Spiels, nicht doppelt
+   - Bayern – Barcelona 8:2, CL-Viertelfinale 14.08.2020 (Barcelona) – Stufe 4
+   - Kolumbien – Uruguay 2:0, WM-Achtelfinale 28.06.2014 (Kolumbien) – Stufe 4
+   - Sevilla – Liverpool 3:1, EL-Finale 18.05.2016 (Sevilla) – Stufe 4
+   - Chile – Spanien 2:0, WM 18.06.2014 (Chile) – Stufe 5
+   - Ungarn – Portugal 3:3, EM 22.06.2016 (Ungarn) – Stufe 5
+   Tages-Pool – zusätzlich NEU (Pool wächst, schließt die Lücke bei Stufe 4/5):
+   - Atlético – Bayern 1:0, CL-Halbfinale Hinspiel 27.04.2016 (Atlético) – Stufe 4
+   - BVB – Liverpool 3:4, EL-Viertelfinale Rückspiel 14.04.2016 (Liverpool) – Stufe 4
+   - Belgien – Brasilien 2:1, WM-Viertelfinale 06.07.2018 (Belgien) – Stufe 4
+   - Niederlande – Spanien 5:1, WM 13.06.2014 (Niederlande) – Stufe 4
+   Stufen sind Richtwerte – mit Begründung anpassen, wenn die Verteilung es
+   erfordert. Termine/Ergebnisse oben aus der Planung: per Quelle bestätigen.
+
+   Reihenfolge-Regel (Florian, verbindlich, auch in CLAUDE.md eintragen):
+   - Gleiche Mannschaften dürfen nicht direkt hintereinander kommen. Gilt
+     für BEIDE Teams einer Partie (nicht nur die abgefragte Seite), in der
+     ganzen Kampagne inkl. Weltwechsel (letztes Level Welt n → erstes Level
+     Welt n+1). Komplette Reihenfolge per Skript prüfen – auch bestehende
+     Levels – und bei Verstoß umsortieren (innerhalb der Welt; Stufe/Welt
+     der Einträge nicht ändern). Ergebnis als Liste zeigen.
+   - Tages-Challenge: Die Auswahl eines Tages darf kein Team der Partie vom
+     Vortag enthalten (bei der Ziehung überspringen; Regel „zufällig, keine
+     Wiederholung bis alle durch“ aus Prompt 22 bleibt). Deterministisch,
+     damit alle am selben Tag dieselbe Aufstellung haben.
+
+   Weitere Regeln:
    - Anzahl je Welt bleibt gleich; Ausgewogenheit laut CLAUDE.md – nach dem
-     Tausch Verteilung je Welt nach Wettbewerb/Land ausgeben; Deutschland-
-     Anteil spürbar höher, aber nicht alles.
-   - Keine Partie/Seite doppelt (Kampagne und Tages-Pool zusammen).
+     Tausch Verteilung je Welt nach Wettbewerb/Land ausgeben.
+   - Keine Partie/Seite doppelt (Kampagne und Tages-Pool zusammen; dieselbe
+     Partie mit der anderen Seite ist erlaubt).
    - Jeder Eintrag vollständig (Pflichtfelder) inkl. details
      (Rückennummer, Nationalität – bei Nationalteams ohne nat) und
      context-Satz. Einheitlich side: "Aufstellung von <Team>".
@@ -2662,7 +2704,9 @@ Regeln (Florian, verbindlich):
 4. CLAUDE.md: Regeln sind bereits eingetragen – beachten.
 
 sw.js CACHE_NAME erhöhen. Test: Prüfskript – kein Eintrag (Kampagne + Tag)
-vor 2008, Anzahl je Welt unverändert, Verteilung je Stufe im Tages-Pool
+vor 2008, Anzahl je Welt unverändert, kein Team in zwei aufeinander-
+folgenden Levels (inkl. Weltwechsel), in 120 simulierten Tagen nie ein
+Team zwei Tage hintereinander, Verteilung je Stufe im Tages-Pool
 ausgeben, Pflichtfelder vollständig, Formation passt, keine doppelten
 ids/Partien; 120 Tage Tages-Challenge simulieren; altes Profil lädt
 fehlerfrei, ersetzte Level bleiben bestanden; keine Konsolenfehler.

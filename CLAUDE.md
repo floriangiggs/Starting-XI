@@ -18,6 +18,9 @@ auf einem visuellen Spielfeld an die richtige Position setzen.
   heute. Bekanntheit vor Exotik: bevorzugt große Vereine (Schwerpunkt
   deutsche Top-Clubs/DFB-Team) und Nationalteams; Welt 5 darf exotischer
   sein, aber ebenfalls ab 2008.
+- Gleiche Mannschaften nie direkt hintereinander: gilt für beide Teams einer
+  Partie, in der ganzen Kampagne (auch über Weltwechsel) und in der
+  Tages-Challenge (kein Team vom Vortag).
 
 ## Pflichtfelder pro Aufstellung
 
