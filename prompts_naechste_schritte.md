@@ -46,9 +46,10 @@ vorige umgesetzt, getestet und committet ist.
 | 32 | iPhone: Hinweise unter der Kamera, Token-Anzeige im Spiel, Spielstand sichern (Export/Import) | – |
 | 33 | Kampagne: Auswerten verrät keine Lösungen mehr, „Lösung anzeigen“ friert Sterne ein | – |
 | 34 | Angefangene Aufstellungen merken und fortsetzen (Kampagne, Freispiel, Tag) | – |
-| 35 | Aufstellungen: nur Spiele ab 2006, Welt 2 mit deutschen Top-Clubs, 15 Einträge ersetzen | – |
+| 35 | Aufstellungen 2015–2026, Teil 1: Kampagne (24 Einträge ersetzen, Schwerpunkt Deutschland) | – |
+| 36 | Aufstellungen 2015–2026, Teil 2: Tages-Pool (17 Einträge ersetzen, Stufen ausgleichen) | 35 |
 
-**Empfohlene Reihenfolge ab jetzt:** 27 → 32 → 33 → 34 → 35 → 30 → 31 → weitere Offline-Feinschliffe → Planung Online-Duell → 8
+**Empfohlene Reihenfolge ab jetzt:** 27 → 32 → 33 → 34 → 35 → 36 → 30 → 31 → weitere Offline-Feinschliffe → Planung Online-Duell → 8
 
 Prompt 7 steht bewusst vor der Tages-Challenge: Nur mit der neuen
 Update-Strategie kommen neue Tages-Aufstellungen zuverlässig auf dem iPhone an.
@@ -2598,76 +2599,106 @@ Konsolenfehler.
 
 ---
 
-## Prompt 35 – Aufstellungen: nur Spiele ab 2006, mehr deutsche Top-Clubs
+## Prompt 35 – Aufstellungen: nur Spiele von 2015 bis 2026 (Teil 1: Kampagne)
 
 ```
 Lies CLAUDE.md (Datengenauigkeit: jede neue Aufstellung nur mit mindestens
 einer verlässlichen Quelle, nie aus dem Gedächtnis; Quellen im Commit
-nennen). Datenpflege in LINEUP_CHALLENGES und DAILY_CHALLENGES → Plan Mode:
-erst die Ersatz-Liste (Spiel, Datum, Seite, Stufe, Quelle) zeigen und von
-mir freigeben lassen, DANN eintragen. Hook-Ergebnis zeigen.
+nennen). Datenpflege in LINEUP_CHALLENGES → Plan Mode: erst die
+Ersatz-Liste (Spiel, Datum, Seite, Welt/Stufe, Quelle) zeigen und von mir
+freigeben lassen, DANN eintragen – gern in 2–3 Paketen (je Welt).
+Hook-Ergebnis zeigen.
 
-Regel (Florian, verbindlich): Es kommen nur Spiele ab dem 01.01.2006 in
-die App. Bekanntheit geht vor: lieber Spiele großer Vereine und
-Nationalteams, die Fans kennen.
+Regel (Florian, verbindlich): Nur Spiele vom 01.01.2015 bis heute.
+Bekanntheit geht vor: Spiele großer Vereine und Nationalteams, die Fans
+kennen – Schwerpunkt Deutschland (Bundesliga-Top-Clubs, DFB-Team,
+deutsche Clubs im Europapokal), dazu große europäische Spiele.
+Welt 5 darf exotischer sein, aber ebenfalls ab 2015.
 
-1. Zu ersetzen (Stand Prompt 23, per Code geprüft)
-   Kampagne – vor 2006:
-   - Welt 2: manutd-treble-1999, arsenal-invincibles-2004
-   - Welt 3: cl-finale-istanbul-2005
+1. Zu ersetzen – Kampagne (Stand Prompt 23, per Code geprüft, 24 Einträge)
+   - Welt 1: wm-finale-2014
+   - Welt 2: manutd-treble-1999, arsenal-invincibles-2004,
+     el-clasico-2009, inter-scudetto-2010, cl-finale-la-decima-2014,
+     st-pauli-osnabrueck-2024 (2. Bundesliga, zu unbekannt)
+   - Welt 3: cl-finale-istanbul-2005, wm-finale-2006, em-finale-2008,
+     spanien-schweiz-2010, juventus-inter-derby-2014
    - Welt 4: brasilien-wm-finale-1994, dortmund-meister-1996,
-     schalke-meister-der-herzen-2001, werder-double-2004
+     schalke-meister-der-herzen-2001, werder-double-2004,
+     mancity-qpr-2012, chelsea-bayern-cl-finale-2012, atletico-titel-2014
    - Welt 5: barcelona-dreamteam-1994, deportivo-liga-2000,
-     senegal-frankreich-2002
-   Kampagne – zu unbekannt:
-   - Welt 2: st-pauli-osnabrueck-2024 (2. Bundesliga, kaum bekannt)
-   Tages-Pool – vor 2006:
-   - cl-finale-istanbul-2005-milan, senegal-frankreich-2002-frankreich,
-     cl-finale-porto-2004, em-finale-2004-griechenland
+     senegal-frankreich-2002, basel-manutd-2011, costarica-uruguay-2014
+   Vorher per Skript gegenprüfen, dass danach KEIN Kampagnen-Eintrag mehr
+   vor 2015 liegt (falls die Liste nicht vollständig ist, ergänzen).
 
-2. Ersatz – Schwerpunkt Deutschland
-   - Welt 2 (Regionalliga) bekommt 3 neue Aufstellungen deutscher
-     Top-Clubs / der Nationalmannschaft, ab 2006, bekannt aber nicht
-     ganz leicht. Ideen zum Prüfen (nur nehmen, wenn sauber belegt):
-     FC Bayern im CL-Finale 2013 oder 2020, Borussia Dortmund im
-     DFB-Pokal-Finale 2012 oder CL-Finale 2013, Deutschland im
-     WM-Halbfinale 2014 (7:1), Bayer Leverkusen in der Meistersaison
-     2023/24 (nicht dieselbe Partie wie in Welt 1).
-   - Welten 3–5: Ersatz in passender Schwierigkeit, bevorzugt deutsch
-     bzw. bekannte europäische Top-Spiele ab 2006 (z. B. VfB Stuttgart
-     Meister 2007, VfL Wolfsburg Meister 2009, Schalke 04 bei Inter 5:2
-     im CL-Viertelfinale 2011, Werder Bremen im UEFA-Cup-Finale 2009) –
-     Welt 5 darf „exotischer“ sein, aber ebenfalls ab 2006.
-   - Tages-Pool: 4 Ersatz-Aufstellungen ab 2006, Stufen so wählen, dass
-     der Pool ausgeglichener wird (heute 3/17/16/4/1 je Stufe →
-     bevorzugt Stufe 1, 4, 5).
-   - Anzahl je Welt bleibt gleich, Ausgewogenheit laut CLAUDE.md beachten
-     (keine Kategorie dominiert; nach dem Tausch kurz die Verteilung je
-     Welt nach Wettbewerb/Land ausgeben).
+2. Ersatz – Ideen zum Prüfen (nur nehmen, wenn sauber belegt):
+   FC Bayern CL-Finale 2020; Deutschland bei der EM 2024 (z. B. gegen
+   Schottland oder Spanien); BVB im CL-Finale 2024; Bayer Leverkusen
+   Meistersaison 2023/24 (andere Partie als in Welt 1) bzw. EL-Finale
+   2024; Eintracht Frankfurt EL-Finale 2022 ist schon drin – nicht
+   doppeln; RB Leipzig DFB-Pokal-Sieg 2022/2023; VfB Stuttgart
+   DFB-Pokal-Finale 2025; Union Berlin in der CL 2023/24; Bayern–BVB
+   Klassiker ab 2015; Deutschland WM 2018/2022 (Gegenseite der schon
+   vorhandenen Spiele nicht doppeln); große Europa-Spiele 2015–2026
+   (z. B. Liverpool–Barcelona 4:0 2019, Real Madrid CL-Finale 2022,
+   Barcelona–PSG 6:1 2017). Welt 5: exotischer, z. B. Marokko WM 2022,
+   Island/Wales-ähnliche Überraschungen ab 2015.
+   - Schwierigkeit passend zur Welt (Welt 1 = sehr bekannt/aktuell …
+     Welt 5 = obskur). Anzahl je Welt bleibt gleich. Ausgewogenheit laut
+     CLAUDE.md – nach dem Tausch Verteilung je Welt nach Wettbewerb/Land
+     ausgeben; Deutschland-Anteil spürbar höher, aber nicht alles.
+   - Keine Partie doppelt (auch nicht gegenüber dem Tages-Pool, außer als
+     bewusst andere Seite).
    - Jeder Eintrag vollständig (Pflichtfelder) inkl. details
-     (Rückennummer, Nationalität – bei Nationalteams ohne nat) und einem
-     kurzen context-Satz. Einheitlich side: "Aufstellung von <Team>".
+     (Rückennummer, Nationalität – bei Nationalteams ohne nat) und
+     context-Satz. Einheitlich side: "Aufstellung von <Team>".
 
 3. Spielstände
-   - Neue Einträge an derselben Stelle im Kampagnenpfad wie die alten.
-     Alte ids sind weg: Fortschritt/Sterne zu diesen Leveln dürfen
-     verfallen, aber nichts darf abstürzen (levelPassed/stars/best/drafts
-     mit unbekannter id ignorieren). Damit niemand durch den Tausch
-     zurückfällt: ein Level, dessen alte Aufstellung bestanden war, gilt
-     auch mit der neuen als bestanden (Sterne neu sammeln).
-   - Tages-Pool: neue Einträge mit since = heutiges Datum (Prompt 22), damit
-     vergangene Tage/Archiv unverändert bleiben; die alten 4 Einträge im
-     Archiv dürfen wegfallen.
+   - Neue Einträge an dieselbe Stelle im Kampagnenpfad wie die alten.
+     Unbekannte alte ids nirgends abstürzen lassen (levelPassed/stars/
+     best/drafts ignorieren). Ein Level, dessen alte Aufstellung bestanden
+     war, bleibt bestanden (Sterne neu sammeln).
 
-4. CLAUDE.md ergänzen: unter "Datengenauigkeit" die Regel "Nur Spiele ab
-   01.01.2006; Bekanntheit vor Exotik (Ausnahme: Welt 5 darf exotisch
-   sein, aber auch ab 2006)".
+4. CLAUDE.md: Regel ist bereits eingetragen ("Nur Spiele vom 01.01.2015
+   bis heute …") – beachten.
 
-sw.js CACHE_NAME erhöhen. Test: Konsistenz-Hook + Prüfskript: keine
-Aufstellung (Kampagne + Tag) vor 2006, Anzahl je Welt unverändert, alle
-Pflichtfelder, Formation passt, keine doppelten ids; altes Profil mit
-bestandenem Level einer ersetzten Aufstellung lädt ohne Fehler und das
-Level bleibt bestanden; keine Konsolenfehler.
+sw.js CACHE_NAME erhöhen. Test: Prüfskript – kein Kampagnen-Eintrag vor
+2015, Anzahl je Welt unverändert, Pflichtfelder vollständig, Formation
+passt, keine doppelten ids/Partien; altes Profil mit bestandenen
+ersetzten Leveln lädt fehlerfrei, Level bleiben bestanden; keine
+Konsolenfehler.
+```
+
+---
+
+## Prompt 36 – Aufstellungen: nur Spiele von 2015 bis 2026 (Teil 2: Tages-Pool)
+
+```
+Lies CLAUDE.md (Datengenauigkeit, Quellen). Wie Prompt 35, aber für
+DAILY_CHALLENGES → Plan Mode, Ersatz-Liste zeigen und freigeben lassen.
+
+1. Zu ersetzen (17 Einträge vor 2015, per Code geprüft – vorher per
+   Skript gegenprüfen): wm-finale-2014 (Argentinien),
+   wm-finale-2006 (Frankreich), em-finale-2008 (Deutschland), CL-Finale
+   2008 (Manchester United), Clásico 2009 (Real Madrid), Spanien–Schweiz
+   2010 (Spanien), CL-Finale 2014 (Atlético), Frankreich–Senegal 2002
+   (Frankreich), CL-Finale 2005 (AC Mailand), CL-Finale 2007 (AC Mailand),
+   DFB-Pokal-Finale 2012 (Dortmund), EM-Finale 2012 (Italien), Barcelona–
+   Atlético 2014 (Barcelona), Uruguay–Costa Rica 2014 (Uruguay),
+   CL-Finale 2004 (Porto), ManCity–QPR 2012 (QPR), EM-Finale 2004
+   (Griechenland).
+2. Ersatz ab 2015, bekannt, Schwerpunkt Deutschland/Top-Europa wie in
+   Prompt 35. Dabei den Pool ausgleichen: heute 3/17/16/4/1 je Stufe →
+   Ersatz vor allem auf Stufe 1, 4 und 5 legen. Wo sinnvoll die Gegenseite
+   einer Kampagnen-Aufstellung (pairedWith), aber keine doppelte Seite.
+3. Neue Einträge mit since = Datum der Umsetzung (Prompt 22), damit
+   vergangene Tage/Archiv stabil bleiben; die alten Einträge dürfen aus dem
+   Archiv verschwinden, ohne Fehler (profile.daily mit unbekannter id
+   zeigt weiter das gespeicherte Ergebnis).
+
+sw.js CACHE_NAME erhöhen. Test: kein Tages-Eintrag vor 2015; Verteilung je
+Stufe ausgeben; 120 Tage simulieren (keine Wiederholung innerhalb einer
+Runde); Archiv/alte Tagesergebnisse laden fehlerfrei; keine
+Konsolenfehler.
 ```
 
 ---
