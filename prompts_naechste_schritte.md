@@ -46,8 +46,9 @@ vorige umgesetzt, getestet und committet ist.
 | 32 | iPhone: Hinweise unter der Kamera, Token-Anzeige im Spiel, Spielstand sichern (Export/Import) | – |
 | 33 | Kampagne: Auswerten verrät keine Lösungen mehr, „Lösung anzeigen“ friert Sterne ein | – |
 | 34 | Angefangene Aufstellungen merken und fortsetzen (Kampagne, Freispiel, Tag) | – |
+| 35 | Aufstellungen: nur Spiele ab 2006, Welt 2 mit deutschen Top-Clubs, 15 Einträge ersetzen | – |
 
-**Empfohlene Reihenfolge ab jetzt:** 27 → 32 → 33 → 34 → 30 → 31 → weitere Offline-Feinschliffe → Planung Online-Duell → 8
+**Empfohlene Reihenfolge ab jetzt:** 27 → 32 → 33 → 34 → 35 → 30 → 31 → weitere Offline-Feinschliffe → Planung Online-Duell → 8
 
 Prompt 7 steht bewusst vor der Tages-Challenge: Nur mit der neuen
 Update-Strategie kommen neue Tages-Aufstellungen zuverlässig auf dem iPhone an.
@@ -2593,6 +2594,80 @@ Hilfe zählt weiter (kein ⭐⭐⭐ möglich); App neu laden (pagehide) →
 Entwurf bleibt; Auswerten löscht Entwurf; Tages-Karte zeigt WEITER;
 Freispiel-Karte erscheint; Duell bleibt unverändert; keine
 Konsolenfehler.
+```
+
+---
+
+## Prompt 35 – Aufstellungen: nur Spiele ab 2006, mehr deutsche Top-Clubs
+
+```
+Lies CLAUDE.md (Datengenauigkeit: jede neue Aufstellung nur mit mindestens
+einer verlässlichen Quelle, nie aus dem Gedächtnis; Quellen im Commit
+nennen). Datenpflege in LINEUP_CHALLENGES und DAILY_CHALLENGES → Plan Mode:
+erst die Ersatz-Liste (Spiel, Datum, Seite, Stufe, Quelle) zeigen und von
+mir freigeben lassen, DANN eintragen. Hook-Ergebnis zeigen.
+
+Regel (Florian, verbindlich): Es kommen nur Spiele ab dem 01.01.2006 in
+die App. Bekanntheit geht vor: lieber Spiele großer Vereine und
+Nationalteams, die Fans kennen.
+
+1. Zu ersetzen (Stand Prompt 23, per Code geprüft)
+   Kampagne – vor 2006:
+   - Welt 2: manutd-treble-1999, arsenal-invincibles-2004
+   - Welt 3: cl-finale-istanbul-2005
+   - Welt 4: brasilien-wm-finale-1994, dortmund-meister-1996,
+     schalke-meister-der-herzen-2001, werder-double-2004
+   - Welt 5: barcelona-dreamteam-1994, deportivo-liga-2000,
+     senegal-frankreich-2002
+   Kampagne – zu unbekannt:
+   - Welt 2: st-pauli-osnabrueck-2024 (2. Bundesliga, kaum bekannt)
+   Tages-Pool – vor 2006:
+   - cl-finale-istanbul-2005-milan, senegal-frankreich-2002-frankreich,
+     cl-finale-porto-2004, em-finale-2004-griechenland
+
+2. Ersatz – Schwerpunkt Deutschland
+   - Welt 2 (Regionalliga) bekommt 3 neue Aufstellungen deutscher
+     Top-Clubs / der Nationalmannschaft, ab 2006, bekannt aber nicht
+     ganz leicht. Ideen zum Prüfen (nur nehmen, wenn sauber belegt):
+     FC Bayern im CL-Finale 2013 oder 2020, Borussia Dortmund im
+     DFB-Pokal-Finale 2012 oder CL-Finale 2013, Deutschland im
+     WM-Halbfinale 2014 (7:1), Bayer Leverkusen in der Meistersaison
+     2023/24 (nicht dieselbe Partie wie in Welt 1).
+   - Welten 3–5: Ersatz in passender Schwierigkeit, bevorzugt deutsch
+     bzw. bekannte europäische Top-Spiele ab 2006 (z. B. VfB Stuttgart
+     Meister 2007, VfL Wolfsburg Meister 2009, Schalke 04 bei Inter 5:2
+     im CL-Viertelfinale 2011, Werder Bremen im UEFA-Cup-Finale 2009) –
+     Welt 5 darf „exotischer“ sein, aber ebenfalls ab 2006.
+   - Tages-Pool: 4 Ersatz-Aufstellungen ab 2006, Stufen so wählen, dass
+     der Pool ausgeglichener wird (heute 3/17/16/4/1 je Stufe →
+     bevorzugt Stufe 1, 4, 5).
+   - Anzahl je Welt bleibt gleich, Ausgewogenheit laut CLAUDE.md beachten
+     (keine Kategorie dominiert; nach dem Tausch kurz die Verteilung je
+     Welt nach Wettbewerb/Land ausgeben).
+   - Jeder Eintrag vollständig (Pflichtfelder) inkl. details
+     (Rückennummer, Nationalität – bei Nationalteams ohne nat) und einem
+     kurzen context-Satz. Einheitlich side: "Aufstellung von <Team>".
+
+3. Spielstände
+   - Neue Einträge an derselben Stelle im Kampagnenpfad wie die alten.
+     Alte ids sind weg: Fortschritt/Sterne zu diesen Leveln dürfen
+     verfallen, aber nichts darf abstürzen (levelPassed/stars/best/drafts
+     mit unbekannter id ignorieren). Damit niemand durch den Tausch
+     zurückfällt: ein Level, dessen alte Aufstellung bestanden war, gilt
+     auch mit der neuen als bestanden (Sterne neu sammeln).
+   - Tages-Pool: neue Einträge mit since = heutiges Datum (Prompt 22), damit
+     vergangene Tage/Archiv unverändert bleiben; die alten 4 Einträge im
+     Archiv dürfen wegfallen.
+
+4. CLAUDE.md ergänzen: unter "Datengenauigkeit" die Regel "Nur Spiele ab
+   01.01.2006; Bekanntheit vor Exotik (Ausnahme: Welt 5 darf exotisch
+   sein, aber auch ab 2006)".
+
+sw.js CACHE_NAME erhöhen. Test: Konsistenz-Hook + Prüfskript: keine
+Aufstellung (Kampagne + Tag) vor 2006, Anzahl je Welt unverändert, alle
+Pflichtfelder, Formation passt, keine doppelten ids; altes Profil mit
+bestandenem Level einer ersetzten Aufstellung lädt ohne Fehler und das
+Level bleibt bestanden; keine Konsolenfehler.
 ```
 
 ---

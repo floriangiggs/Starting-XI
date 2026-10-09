@@ -14,6 +14,9 @@ auf einem visuellen Spielfeld an die richtige Position setzen.
   Verbandsseiten).
 - Nie raten oder Aufstellungen aus Trainingsdaten "erinnern" – im Zweifel
   recherchieren oder den Eintrag weglassen.
+- Nur Spiele ab dem 01.01.2006. Bekanntheit vor Exotik: bevorzugt große
+  Vereine (gern deutsche Top-Clubs) und Nationalteams; Welt 5 darf exotisch
+  sein, aber ebenfalls ab 2006.
 
 ## Pflichtfelder pro Aufstellung
 
