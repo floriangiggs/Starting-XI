@@ -2777,8 +2777,7 @@ TV-Bilder, Vereinslogos oder Original-Trikots – stattdessen App-Aufnahmen
     Confed-Finale (Brasilien); Chelsea – Benfica 2:1 EL-Finale (Chelsea)
   - 2015: Bayern – Wolfsburg 5:1, Lewandowski (Bayern); Barcelona – Juventus
     3:1 CL-Finale (Barcelona); Wolfsburg – BVB 3:1 Pokalfinale (BVB);
-    Arsenal – Aston
-    Villa 4:0 FA-Cup-Finale (Arsenal)
+    Arsenal – Aston Villa 4:0 FA-Cup-Finale (Arsenal)
   - 2017: Deutschland – Chile 1:0 Confed-Finale (Deutschland); BVB –
     Frankfurt 2:1 Pokalfinale (BVB); ManUtd – Ajax 2:0 EL-Finale (ManUtd)
   - 2020: BVB – Schalke 4:0 Geisterderby (BVB); Leipzig – Atlético 2:1
@@ -2786,8 +2785,8 @@ TV-Bilder, Vereinslogos oder Original-Trikots – stattdessen App-Aufnahmen
     Crystal Palace 4:0 vor dem Titel (Liverpool); Arsenal – Chelsea 2:1
     FA-Cup-Finale (Arsenal)
   - 2023: BVB – Mainz 2:2 (BVB); Inter – Milan CL-HF (Milan); West Ham –
-    Fiorentina 2:1 Conference-League-Finale (West Ham); ManCity – Real 4:0 CL-HF (ManCity); Newcastle – PSG
-    4:1 (Newcastle)
+    Fiorentina 2:1 Conference-League-Finale (West Ham); ManCity – Real
+    4:0 CL-HF (ManCity); Newcastle – PSG 4:1 (Newcastle)
 - **Themen-Pakete**: Legendäre Finals, Underdogs, Dramen, Pfalz-Paket (FCK)
 - **Retro-Welt** 80er/90er mit neuem Layout 3-5-2 mit Libero
 - **Beide Seiten eines Spiels** als verknüpfte Challenges
