@@ -683,6 +683,7 @@
 
   /* Duell-Bildschirme: gemeinsame Wurzel .dl */
   .dl { --bad: #E0705F; --muted: rgba(242,239,230,0.7); --dim: rgba(242,239,230,0.45); display: flex; flex-direction: column; gap: 14px; min-height: 0; }
+  .dl > * { flex-shrink: 0; } /* Inhalte werden nie unter ihre Hoehe gequetscht (sonst ueberlappen hohe Tickets die naechsten Abschnitte) */
   .dl .h1 { font-family: 'Anton', Impact, sans-serif; font-weight: 400; font-size: 30px; line-height: 0.95; flex: 1; }
   .dl .h1 span { color: var(--gold); text-shadow: 0 0 18px rgba(232,178,61,0.3); }
   .dl .topbar { margin-bottom: 0; }
@@ -738,6 +739,22 @@
   .dl .tk.hot .s { background: linear-gradient(160deg, #F6DA9C, #E8B23D 70%); }
   .dl .tk.hot .s::before { border-left-color: rgba(20,32,43,0.45); }
   .dl .tk .t2 { min-width: 0; display: flex; flex-direction: column; gap: 4px; }
+  .dl .tk .trow { display: flex; align-items: center; gap: 6px; min-width: 0; }
+  .dl .tk .edit { flex-shrink: 0; border: 1px solid var(--line); background: rgba(255,255,255,0.05); border-radius: 8px; width: 22px; height: 20px; font-size: 11px; line-height: 1; cursor: pointer; padding: 0; }
+  .dl .tk .when { font-family: 'Oswald', sans-serif; font-weight: 300; font-size: 11.5px; color: rgba(242,239,230,0.6); }
+  .dl .rounds { display: flex; flex-wrap: wrap; gap: 4px; }
+  .dl .rounds span { font-family: 'Oswald', sans-serif; font-weight: 500; font-size: 11px; padding: 1px 7px; border-radius: 8px; background: rgba(0,0,0,0.25); border: 1px solid rgba(242,239,230,0.14); color: rgba(242,239,230,0.9); max-width: 100%; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  .dl .rounds span b { font-family: 'Anton', Impact, sans-serif; font-weight: 400; font-size: 12px; color: var(--gold-2); }
+  .dl .lastlist { display: flex; flex-direction: column; gap: 6px; }
+  .dl .last { display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 8px; align-items: center; text-align: left; width: 100%; padding: 9px 11px; border-radius: 12px; border: 1px solid var(--line); background: var(--ink-2); color: inherit; font-family: inherit; cursor: pointer; }
+  .dl .last .m2 { display: flex; align-items: center; gap: 10px; min-width: 0; }
+  .dl .last .m2 .crest { width: 28px; height: 31px; font-size: 13px; clip-path: path("M14 0 L28 4.5 L28 16 C28 24 21 29 14 31 C7 29 0 24 0 16 L0 4.5 Z"); }
+  .dl .last .lt { display: flex; flex-direction: column; gap: 3px; min-width: 0; }
+  .dl .last .lt b { font-family: 'Oswald', sans-serif; font-weight: 600; font-size: 14px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  .dl .last .lt em { font-style: normal; font-family: 'Oswald', sans-serif; font-weight: 300; font-size: 12px; color: var(--muted); }
+  .dl .last .lr { text-align: center; font-family: 'Oswald', sans-serif; font-weight: 600; font-size: 12px; color: var(--muted); line-height: 1.15; }
+  .dl .last .lr b { display: block; font-family: 'Anton', Impact, sans-serif; font-weight: 400; font-size: 20px; }
+  .dl .last .lr.win { color: #8FE3B0; } .dl .last .lr.loss { color: #F2A497; }
   .dl .tk .t2 b { font-family: 'Oswald', sans-serif; font-weight: 600; font-size: 15px; line-height: 1.1; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
   .dl .tk .chips { display: flex; gap: 4px; flex-wrap: wrap; }
   .dl .tk .chips span { font-family: 'Oswald', sans-serif; font-weight: 500; font-size: 11.5px; padding: 1px 7px; border-radius: 8px; background: rgba(0,0,0,0.22); color: rgba(242,239,230,0.85); white-space: nowrap; }
@@ -6972,6 +6989,41 @@ let duelDraft = { rounds: 3, seconds: 180, difficulty: 3, fair: false };
 let inviteFair = false;
 let invitePath = "browser";
 
+// Spiele in der Duell-Uebersicht wiedererkennbar machen: Mannschaft - Wettbewerbskuerzel Jahr
+const DUEL_LEAGUE_SHORT = { "Champions League": "CL", "Europa League": "EL", "Weltmeisterschaft": "WM", "Europameisterschaft": "EM", "Bundesliga": "BL", "2. Bundesliga": "2. BL", "Bundesliga / DFB-Pokal": "BL/DFB", "Premier League": "PL", "DFB-Pokal": "DFB", "Copa América": "Copa", "Afrika-Cup": "AFCON" };
+function duelRoundTag(lineupId) {
+  const m = dailyMatchById(lineupId);
+  if (!m) return null;
+  const y = (m.comp.match(/\d{1,2}\.\d{1,2}\.(\d{4})/) || m.comp.match(/(\d{4})/) || [])[1] || "";
+  return `${duelEsc(m.side.replace(/^Aufstellung (?:von|des|der)\s+/i, ""))} · ${duelEsc(DUEL_LEAGUE_SHORT[m.league] || m.league)} ${y}`.trim();
+}
+function duelWhen(ts, withTime = true) {
+  const d = new Date(ts);
+  return d.toLocaleDateString("de-DE", { weekday: "short", day: "numeric", month: "short" }) + (withTime ? ", " + d.toLocaleTimeString("de-DE", { hour: "2-digit", minute: "2-digit" }) : "");
+}
+// Eigener Name fuer ein verschicktes Duell (z. B. "Lisa") - hilft beim Zuordnen, solange der Gegner noch unbekannt ist
+function askDuelLabel(id) {
+  const d = profile.duels[id];
+  if (!d) return;
+  const backdrop = document.createElement("div");
+  backdrop.className = "modal-backdrop";
+  backdrop.innerHTML = `<div class="modal-sheet"><div class="duel-name-box">
+      <div style="font-family:'Anton',Impact,sans-serif;font-size:24px">Für wen ist das Duell?</div>
+      <div style="font-family:'Oswald',sans-serif;font-weight:300;font-size:14px;color:var(--muted)">Gib dem Duell einen Namen (z. B. den deines Freundes), dann erkennst du es in der Übersicht wieder. Nur für dich sichtbar.</div>
+      <input type="text" id="duelLabelInput" maxlength="16" autocomplete="off" spellcheck="false" placeholder="z. B. Lisa" value="${duelEsc(d.label || "")}">
+      <div class="dl" style="gap:8px"><button type="button" class="startbtn" id="duelLabelSave">Speichern</button><button type="button" class="ghost2" id="duelLabelCancel">Abbrechen</button></div>
+    </div></div>`;
+  document.body.appendChild(backdrop);
+  const input = backdrop.querySelector("#duelLabelInput");
+  input.focus();
+  const close = () => backdrop.remove();
+  const save = () => { const v = input.value.trim().slice(0, 16); if (v) d.label = v; else delete d.label; saveProfile(profile); close(); renderDuels(); };
+  backdrop.querySelector("#duelLabelSave").onclick = save;
+  backdrop.querySelector("#duelLabelCancel").onclick = close;
+  input.addEventListener("keydown", (e) => { if (e.key === "Enter") save(); });
+  backdrop.onclick = (e) => { if (e.target === backdrop) close(); };
+}
+
 function renderDuels() {
   const root = document.getElementById("duelsView");
   const st = profile.duelStats;
@@ -6979,14 +7031,23 @@ function renderDuels() {
   const todo = open.filter(([, d]) => d.status === "todo").length;
   const friends = Object.values(st.perOpponent).filter(f => f.w + f.l + f.d > 0).sort((a, b) => (b.w + b.l + b.d) - (a.w + a.l + a.d));
   const won = duelTrophyStates();
+  const done = duelsSorted().filter(([, d]) => d.status === "done" && d.result).slice(0, 5);
+  const roundChips = (d, theirs) => `<span class="rounds">${d.mine.map((r, i) => { const tag = duelRoundTag(d.lineups[i]); return tag ? `<span>${tag} · <b>${r.correct}${theirs && d.theirs && d.theirs[i] ? ":" + d.theirs[i].correct : ""}/11</b></span>` : ""; }).join("")}</span>`;
   const ticket = ([id, d]) => {
     const hot = d.status === "todo";
     const who = d.opponent ? d.opponent.name : null;
-    const title = d.role === "opponent" ? `${duelEsc(who)} fordert dich heraus` : who ? `Du gegen ${duelEsc(who)}` : "Dein Duell";
+    // Wartende Duelle: eigener Name, sonst Gegner, sonst Datum - "Dein Duell" allein war nicht zuzuordnen
+    const title = d.role === "opponent" ? `${duelEsc(who)} fordert dich heraus`
+      : hot ? "Dein Duell"
+      : who ? `Du gegen ${duelEsc(who)}` : d.label ? `Duell an ${duelEsc(d.label)}` : `Duell vom ${duelWhen(d.created)}`;
     const chips = `<span class="chips"><span>${duelFormatLabel(d.settings.rounds)}</span><span>${d.settings.seconds / 60} Min</span><span>${duelLevelLabel(d.settings.difficulty)}</span></span>`;
-    const main = `<span class="m">${duelCrest(who || "?")}<span class="t2"><b>${title}</b>${chips}</span></span>`;
+    // Spiele-Info nur, wenn DU die Aufstellungen schon gespielt hast (Spoiler-Schutz fuer ungespielte Duelle)
+    const games = !hot && d.mine.length ? roundChips(d, false) : "";
+    const when = hot ? `<span class="when">${d.role === "opponent" ? "eingegangen" : "angelegt"} ${duelWhen(d.created)}</span>` : "";
+    const edit = !hot && !who ? `<button type="button" class="edit" data-id="${id}" data-act="label" aria-label="Duell benennen">✏️</button>` : "";
+    const main = `<span class="m">${duelCrest(who || d.label || "?")}<span class="t2"><span class="trow"><b>${title}</b>${edit}</span>${chips}${games}${when}</span></span>`;
     if (hot) return `<button type="button" class="tk hot" data-id="${id}" data-act="play"><span class="nt t"></span><span class="nt b"></span>${main}<span class="s"><span class="play">Spielen<small>du bist dran</small></span></span></button>`;
-    return `<div class="tk"><span class="nt t"></span><span class="nt b"></span>${main}<span class="s"><span class="wait"><b>⏳</b>${who ? duelEsc(who) + " ist dran" : "Freund ist dran"}<br><button type="button" class="remind" data-id="${id}" data-act="remind">Erinnern</button></span></span></div>`;
+    return `<div class="tk"><span class="nt t"></span><span class="nt b"></span>${main}<span class="s"><span class="wait"><b>⏳</b>${who ? duelEsc(who) + " ist dran" : "wartet"}<br><button type="button" class="remind" data-id="${id}" data-act="remind">Erinnern</button></span></span></div>`;
   };
   root.innerHTML = `
     <div class="topbar"><button class="back-btn" type="button" id="duelsBack"><span class="back-arrow">←</span>Start</button><div class="h1">Deine <span>Duelle</span></div></div>
@@ -7001,6 +7062,11 @@ function renderDuels() {
     <button type="button" class="startbtn" id="duelNewBtn">⚔️ Neues Duell</button>
     ${open.length === 0 && friends.length === 0 ? `<div class="empty"><b>Noch keine Duelle.</b> Fordere einen Freund heraus: Ihr spielt dieselben Aufstellungen, jeder für sich und mit Zeitlimit – wer mehr Spieler kennt, gewinnt. Der Link zum Duell geht per WhatsApp, Nachricht oder was du magst.</div>` : ""}
     ${open.length ? `<div class="st"><b>Offene Duelle</b>${todo ? `<span class="cnt">${todo}</span>` : ""}</div>${open.map(ticket).join("")}` : ""}
+    ${done.length ? `<div class="st"><b>Letzte Duelle</b><em>${done.length === 5 ? "die letzten 5" : ""}</em></div><div class="lastlist">${done.map(([id, d]) => {
+      const res = d.result, cls = res.outcome === "win" ? "win" : res.outcome === "loss" ? "loss" : "draw";
+      const label = res.outcome === "win" ? "Sieg" : res.outcome === "loss" ? "Niederlage" : "Remis";
+      return `<button type="button" class="last" data-id="${id}" data-act="result"><span class="m2">${duelCrest(d.opponent ? d.opponent.name : "?")}<span class="lt"><b>Gegen ${duelEsc(d.opponent ? d.opponent.name : "Freund")}</b><em>${duelWhen(d.created, false)} · ${duelFormatLabel(d.settings.rounds)}</em>${roundChips(d, true)}</span></span><span class="lr ${cls}">${label}<b>${res.mw} : ${res.ow}</b></span></button>`;
+    }).join("")}</div>` : ""}
     ${friends.length ? `<div class="st"><b>Gegen deine Freunde</b><em>Siege : Niederlagen</em></div><div class="fr">${friends.map(f => {
       const t = f.w + f.l; const pw = t ? Math.round(f.w / t * 100) : 0;
       return `<div class="r">${duelCrest(f.name)}<span class="nm2">${duelEsc(f.name)}<span class="bar"><i style="width:${pw}%"></i><u style="width:${t ? 100 - pw : 0}%"></u></span></span><span class="sc2">${f.w}<em>:</em>${f.l}</span></div>`;
@@ -7021,6 +7087,8 @@ function renderDuels() {
     if (d && d.role === "opponent") { activeInviteId = b.dataset.id; inviteFair = false; navigate("duelinvite"); }
     else startDuelRun(b.dataset.id);
   });
+  root.querySelectorAll("[data-act='label']").forEach(b => b.onclick = () => askDuelLabel(b.dataset.id));
+  root.querySelectorAll("[data-act='result']").forEach(b => b.onclick = () => { activeResultId = b.dataset.id; navigate("duelresult"); });
   root.querySelectorAll("[data-act='remind']").forEach(b => b.onclick = () => profile.duels[b.dataset.id].role === "challenger" ? shareDuelLink(b.dataset.id) : shareDuelResult(b.dataset.id));
   const paste = document.getElementById("duelPaste"), input = document.getElementById("duelPasteInput"), msg = document.getElementById("duelPasteMsg");
   document.getElementById("duelPasteToggle").onclick = () => { paste.hidden = !paste.hidden; if (!paste.hidden) input.focus(); };
@@ -7252,7 +7320,7 @@ function duelMatchInfo(m) {
     date: dt ? dt.toLocaleDateString("de-DE", { day: "numeric", month: "long", year: "numeric" }) : m.comp,
     weekday: dt ? dt.toLocaleDateString("de-DE", { weekday: "long" }) : "",
     home: tm ? tm[1].trim() : m.teams, away: tm ? tm[2].trim() : "", score: tm ? (tm[3] + tm[4]).trim() : "",
-    side: m.side.replace(/^Aufstellung von\s+/i, "")
+    side: m.side.replace(/^Aufstellung (?:von|des|der)\s+/i, "")
   };
 }
 
