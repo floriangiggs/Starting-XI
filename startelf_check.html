@@ -714,7 +714,12 @@
   .dl .startbtn { border: none; border-radius: 14px; padding: 13px; width: 100%; display: flex; align-items: center; justify-content: center; gap: 10px; flex-shrink: 0; cursor: pointer;
     font-family: 'Anton', Impact, sans-serif; font-size: 21px; letter-spacing: 0.02em; color: var(--gold-2);
     background: repeating-linear-gradient(90deg, rgba(255,255,255,0.04) 0 14px, transparent 14px 28px), linear-gradient(150deg, #2F7A50, #1B4A32); box-shadow: 0 4px 0 #0E2A1C, inset 0 0 0 1.5px rgba(232,178,61,0.45); }
-  .dl .startbtn:disabled { opacity: 0.4; cursor: default; }
+  .dl .startbtn:disabled, .dl .startbtn.off { opacity: 0.55; cursor: default; filter: saturate(0.5); }
+  .dl .startbtn.off:active { transform: none; }
+  .dl .step1 { font-family: 'Oswald', sans-serif; font-weight: 600; font-size: 12px; letter-spacing: 0.08em; text-transform: uppercase; color: var(--gold-2); margin-bottom: -4px; flex-shrink: 0; }
+  .dl .fair.nudge { animation: fairNudge 0.9s ease-out 1; }
+  @keyframes fairNudge { 0% { box-shadow: 0 0 0 0 rgba(232,178,61,0.9); border-color: var(--gold); } 100% { box-shadow: 0 0 0 9px rgba(232,178,61,0); border-color: rgba(46,204,113,0.35); } }
+  @media (prefers-reduced-motion: reduce) { .dl .fair.nudge { animation: none; border-color: var(--gold); } }
   .dl .startbtn:active:not(:disabled) { transform: translateY(2px); box-shadow: 0 2px 0 #0E2A1C, inset 0 0 0 1.5px rgba(232,178,61,0.45); }
   .dl .ghost2 { border: 1px solid var(--line); background: transparent; border-radius: 12px; padding: 10px; width: 100%; font-family: 'Anton', Impact, sans-serif; font-size: 17px; color: var(--muted); flex-shrink: 0; cursor: pointer; }
   .dl .spacer { flex: 1; }
@@ -6978,7 +6983,7 @@ function duelTileHTML(chev) {
     <button type="button" class="mt duel" id="modeTileDuel">
       ${todo > 0 ? `<span class="dcount" aria-label="${todo} offen">${todo}</span>` : ""}
       <div class="ic">⚔️</div><div class="nm">Duell</div>
-      <div class="dpair" aria-label="Bilanz ${st.wins} zu ${st.losses}">${duelCrest(profile.duelName || "Du", "me")}<span class="flip">${duelFlip(st.wins + ":" + st.losses)}</span>${duelCrest("?")}</div>
+      <div class="dpair" aria-label="Bilanz ${st.wins} zu ${st.losses}">${duelCrest(profile.duelName || "?", "me")}<span class="flip">${duelFlip(st.wins + ":" + st.losses)}</span>${duelCrest("?")}</div>
       <div class="ln">${line}</div>
       <div class="ft">Freund herausfordern ${chev}</div>
     </button>`;
@@ -7084,7 +7089,7 @@ function renderDuels() {
   document.getElementById("duelNewBtn").onclick = () => navigate("duelnew");
   root.querySelectorAll("[data-act='play']").forEach(b => b.onclick = () => {
     const d = profile.duels[b.dataset.id];
-    if (d && d.role === "opponent") { activeInviteId = b.dataset.id; inviteFair = false; navigate("duelinvite"); }
+    if (d && d.role === "opponent") { activeInviteId = b.dataset.id; inviteFair = false; invitePath = "browser"; navigate("duelinvite"); }
     else startDuelRun(b.dataset.id);
   });
   root.querySelectorAll("[data-act='label']").forEach(b => b.onclick = () => askDuelLabel(b.dataset.id));
@@ -7109,7 +7114,7 @@ function renderDuels() {
 function finishDuelOpen(res) {
   renderModeTiles();
   if (res.kind === "c") {
-    activeInviteId = res.id; inviteFair = false;
+    activeInviteId = res.id; inviteFair = false; invitePath = "browser";
     if (navStack[navStack.length - 1] === "duelinvite") renderDuelInvite(); else navigate("duelinvite");
   } else {
     showToast("✅ Ergebnis von " + res.name + " eingetragen");
@@ -7169,6 +7174,9 @@ function renderDuelInvite() {
   const rec = profile.duelStats.perOpponent[o.deviceId];
   const played = d.theirs && d.theirs.length;
   const browser = !isStandalone();
+  const onApp = browser && invitePath === "app";
+  const screen = document.getElementById("screen-duelinvite");
+  const keepScroll = screen ? screen.scrollTop : null;
   root.innerHTML = back + `
     <div class="inv">
       <div class="top3">
@@ -7176,25 +7184,39 @@ function renderDuelInvite() {
         <div class="pair">
           <div class="pl">${duelCrest(o.name, "lg")}<b>${duelEsc(o.name)}</b><span>${duelEsc(o.rank)} · Lvl ${o.level}</span></div>
           <div class="vs2">VS</div>
-          <div class="pl">${duelCrest(profile.duelName || "Du", "lg me")}<b>Du</b><span>${duelEsc(me.rank)} · Lvl ${me.level}</span></div>
+          <div class="pl">${duelCrest(profile.duelName || "?", "lg me")}<b>Du</b><span>${duelEsc(me.rank)} · Lvl ${me.level}</span></div>
         </div>
       </div>
       <div class="strip"><div><b>${duelFormatLabel(d.settings.rounds)}</b><span>Format</span></div><div><b>${d.settings.seconds / 60} Min</b><span>pro Spiel</span></div><div><b>${duelLevelLabel(d.settings.difficulty)}</b><span>Schwierigkeit</span></div></div>
     </div>
     <div class="note2"><i>🔒</i><p>${played ? `<b>${duelEsc(o.name)} hat schon gespielt.</b> Die Ergebnisse siehst du, wenn du alle ${d.settings.rounds === 1 ? "Aufstellungen" : d.settings.rounds + " Aufstellungen"} gespielt hast.` : `<b>Ihr spielt dieselben ${d.settings.rounds === 1 ? "Aufstellung" : d.settings.rounds + " Aufstellungen"}</b> – jeder für sich, die Ergebnisse siehst du nach deinem Spiel.`}</p></div>
     ${rec && rec.w + rec.l + rec.d ? `<div class="note2"><i>📊</i><p>Eure Bilanz: <b>${rec.w} : ${rec.l}</b> für dich</p></div>` : ""}
-    ${browser ? `<div class="note2"><i>📱</i><p>Du bist im <b>Browser</b>. Spielst du mit der installierten App, öffne dort die Duell-Übersicht › <b>Code einfügen</b>.</p></div>
-      <div class="twoways"><button type="button" class="${invitePath === "browser" ? "on" : ""}" id="duelPathBrowser">Hier im Browser spielen</button><button type="button" id="duelCopyCode">In der App spielen<br>(Code kopieren)</button></div>` : ""}
+    ${browser ? `<div class="twoways" role="group" aria-label="Wo möchtest du spielen?"><button type="button" class="${onApp ? "" : "on"}" id="duelPathBrowser" aria-pressed="${!onApp}">Hier im Browser spielen</button><button type="button" class="${onApp ? "on" : ""}" id="duelCopyCode" aria-pressed="${onApp}">In der App spielen<br>(Code kopieren)</button></div>` : ""}
+    ${onApp ? `<div class="note2"><i>📱</i><p>Code kopiert. Öffne die <b>App</b> › Duelle › <b>Code einfügen</b>. Zum Spielen hier im Browser tippe oben auf „Hier im Browser spielen“.</p></div><div class="spacer"></div>` : `
+    <div class="step1">Schritt 1: Bestätigen</div>
     <button type="button" class="fair ${inviteFair ? "on" : ""}" id="duelInvFair" aria-pressed="${inviteFair}"><span class="sw"></span><span><b>Ich spiele fair</b><span>Ohne Google, KI oder Hilfe von außen.</span></span></button>
     <div class="spacer"></div>
-    <button type="button" class="startbtn" id="duelAccept" ${inviteFair ? "" : "disabled"}>Annehmen &amp; Anpfiff</button>
+    <button type="button" class="startbtn ${inviteFair ? "" : "off"}" id="duelAccept" aria-disabled="${!inviteFair}">${inviteFair ? "Annehmen &amp; Anpfiff" : "Erst „Ich spiele fair“ antippen"}</button>`}
     <button type="button" class="ghost2" id="duelDecline">Ablehnen</button>`;
+  if (keepScroll != null) screen.scrollTop = keepScroll;
 
   document.getElementById("duelInvBack").onclick = goBack;
-  document.getElementById("duelInvFair").onclick = () => { inviteFair = !inviteFair; renderDuelInvite(); };
+  const fairBtn = document.getElementById("duelInvFair");
+  if (fairBtn) fairBtn.onclick = () => { inviteFair = !inviteFair; renderDuelInvite(); };
+  const pickBrowser = document.getElementById("duelPathBrowser");
+  if (pickBrowser) pickBrowser.onclick = () => {
+    invitePath = "browser"; renderDuelInvite();
+    const f = document.getElementById("duelInvFair");
+    if (f) f.scrollIntoView({ block: "center", behavior: window.matchMedia("(prefers-reduced-motion: reduce)").matches ? "auto" : "smooth" });
+  };
   const copy = document.getElementById("duelCopyCode");
-  if (copy) copy.onclick = () => copyText(duelChallengeCode(activeInviteId), "Code kopiert - in der App unter Duelle › Code einfügen");
-  document.getElementById("duelAccept").onclick = () => { if (inviteFair) ensureDuelName(() => startDuelRun(activeInviteId)); };
+  if (copy) copy.onclick = () => { invitePath = "app"; copyText(duelChallengeCode(activeInviteId), "Code kopiert - in der App unter Duelle › Code einfügen"); renderDuelInvite(); };
+  const accept = document.getElementById("duelAccept");
+  if (accept) accept.onclick = () => {
+    if (inviteFair) { ensureDuelName(() => startDuelRun(activeInviteId)); return; }
+    showToast("Erst „Ich spiele fair“ antippen");
+    if (fairBtn) { fairBtn.classList.remove("nudge"); void fairBtn.offsetWidth; fairBtn.classList.add("nudge"); }
+  };
   document.getElementById("duelDecline").onclick = () => { delete profile.duels[activeInviteId]; saveProfile(profile); activeInviteId = null; renderModeTiles(); goBack(); };
 }
 
