@@ -234,6 +234,9 @@
   .save-btn { border: 1px solid rgba(232,178,61,0.6); background: rgba(232,178,61,0.1); color: var(--gold-2); border-radius: 12px; padding: 10px 8px; font-family: 'Oswald', sans-serif; font-weight: 600; font-size: 14px; cursor: pointer; }
   .save-btn.main { background: linear-gradient(180deg, var(--gold-2), var(--gold)); color: var(--ink); border-color: transparent; }
   .save-btn.quiet { border-color: var(--line); background: transparent; color: var(--muted); }
+  .seen-note { text-align: center; font-family: 'Oswald', sans-serif; font-weight: 300; font-size: 13.5px; color: var(--muted); margin: -2px 0 10px; }
+  .reveal-row { margin-bottom: 10px; }
+  .level-node .seen-eye { position: absolute; top: -6px; right: -8px; font-size: 13px; line-height: 1; z-index: 3; pointer-events: none; }
   .data-row { display: flex; gap: 8px; margin-top: 4px; }
   .data-row button { flex: 1; border: 1px solid var(--line); background: var(--ink-2); color: var(--chalk); border-radius: 10px; padding: 9px 6px; font-family: 'Oswald', sans-serif; font-weight: 500; font-size: 13px; cursor: pointer; }
   .install-tip { position: fixed; z-index: 30; left: 50%; transform: translateX(-50%); top: max(8px, calc(env(safe-area-inset-top, 0px) + 6px)); width: calc(100% - 24px); max-width: 520px; display: flex; gap: 10px; align-items: center; background: var(--ink-2); border: 1px solid rgba(232,178,61,0.55); border-radius: 12px; padding: 9px 10px 9px 12px; box-shadow: 0 6px 20px rgba(0,0,0,0.45); }
@@ -2336,7 +2339,7 @@ const defaultProfile = {
   economyVersion: 2,
   prefillSeed: null, // wird in loadProfile() einmalig zufaellig vergeben und persistiert
   perfectRewarded: {}, // match.id -> true; einmaliger Perfekt-Token-Bonus pro Aufstellung
-  best: {}, // match.id -> { stars: 0-3, correct, solvedAbbrs: string[] }; immer das beste Ergebnis (Prompt 11)
+  best: {}, // match.id -> { correct, solvedAbbrs: string[], seenAbbrs?: string[] (Loesung gezeigt, Prompt 33) }; immer das beste Ergebnis (Prompt 11)
   hasSeenGuide: false,
   hasSeenPitchRules: false,
   hasSeenInstallTip: false,
@@ -2366,7 +2369,8 @@ const defaultProfile = {
   unlockedFeatures: [],
   campaign: {
     levelPassed: {}, // match.id -> true; alles andere (freigeschaltete Level/Welten) wird daraus abgeleitet
-    stars: {} // match.id -> 0-3, NUR Kampagnen-Sterne (Prompt 13b, getrennt von Tages-/Freispiel-Ergebnissen)
+    stars: {}, // match.id -> 0-3, NUR Kampagnen-Sterne (Prompt 13b, getrennt von Tages-/Freispiel-Ergebnissen)
+    solutionSeen: {} // match.id -> true: Loesung angesehen, Sterne dieses Levels eingefroren (Prompt 33)
   }
 };
 
@@ -2448,6 +2452,7 @@ function loadProfile() {
     if (!profile.campaign || typeof profile.campaign !== "object") profile.campaign = { levelPassed: {} };
     if (!profile.campaign.levelPassed || typeof profile.campaign.levelPassed !== "object") profile.campaign.levelPassed = {};
     if (!profile.campaign.stars || typeof profile.campaign.stars !== "object") profile.campaign.stars = {};
+    if (!profile.campaign.solutionSeen || typeof profile.campaign.solutionSeen !== "object") profile.campaign.solutionSeen = {};
     // Einmalige Wirtschafts-Migration (Prompt 6): zwei Waehrungen (Scout-Token +
     // Hinweis-Punkte) werden zu einer zusammengefuehrt - altes 3:1-Wertverhaeltnis
     // (ein Scout-Token kostete/gab etwa 3x soviel wie ein Hinweis-Punkt).
@@ -3332,6 +3337,7 @@ function renderCampaignLevels() {
           ${isCurrent ? '<div class="level-badge">' + renderMascotHTML("small") + '</div>' : ""}
         </div>
         <div class="level-stars">${isUnlocked ? starsRowHTML(levelStars) : ""}</div>
+        ${isUnlocked && profile.campaign.solutionSeen[m.id] && levelStars < 3 ? '<span class="seen-eye" title="Lösung angesehen – Sterne eingefroren" aria-label="Lösung angesehen">👁</span>' : ""}
         <div class="level-label">Level ${idx + 1}</div>
       </div>`;
   });
@@ -5883,7 +5889,8 @@ function renderPitch() {
   // schon einmal korrekt gefuellt wurden, geben live kein Positions-XP mehr (bleiben aber
   // weiterhin gruen) - Wiederholen einer auswendig gelernten Aufstellung soll nicht die
   // beste XP-Quelle sein.
-  const knownAbbrs = new Set((profile.best[m.id] && profile.best[m.id].solvedAbbrs) || []);
+  // Prompt 33: Positionen, deren Loesung schon gezeigt wurde (seenAbbrs), zaehlen ebenfalls als bekannt.
+  const knownAbbrs = new Set([...((profile.best[m.id] && profile.best[m.id].solvedAbbrs) || []), ...((profile.best[m.id] && profile.best[m.id].seenAbbrs) || [])]);
   let combo = 0;
   const positions = PITCH_LAYOUTS[m.formation];
   const pitchView = document.getElementById("pitchView");
@@ -6448,7 +6455,15 @@ function renderPitch() {
     });
   });
 
-  document.getElementById("checkBtn").onclick = evaluatePitch;
+  document.getElementById("checkBtn").onclick = () => {
+    // Leere Felder (Prompt 33): vor dem Auswerten kurz nachfragen - kein confirm()
+    const empty = positions.filter(p => !pitchView.querySelector('input[data-abbr="' + p.abbr + '"]').value.trim()).length;
+    if (!empty) { evaluatePitch(); return; }
+    askSheet(`<div class="t">Noch ${empty} ${empty === 1 ? "Position" : "Positionen"} leer</div><p>Trotzdem auswerten?</p>`, [
+      { label: "Weiter tippen", cls: "main" },
+      { label: "Auswerten", cls: "quiet", fn: evaluatePitch }
+    ]);
+  };
   document.getElementById("exitMatchBtn").onclick = exitMatch;
   document.getElementById("rulesBtn").onclick = openRulesModal;
 }
@@ -6460,6 +6475,7 @@ function evaluatePitch() {
   const pitchView = document.getElementById("pitchView");
   let correct = 0;
   const correctAbbrs = [];
+  const hideSolution = !!currentLevelContext;
   positions.forEach(p => {
     const input = pitchView.querySelector('input[data-abbr="' + p.abbr + '"]');
     const target = m.players[p.abbr];
@@ -6467,10 +6483,12 @@ function evaluatePitch() {
     input.classList.remove("ok", "bad");
     input.classList.add(isCorrect ? "ok" : "bad");
     input.disabled = true;
-    if (!isCorrect) input.value = target;
+    // Kampagne (Prompt 33): Loesung bleibt verdeckt - leere Felder zeigen "?", eigene falsche Eingaben bleiben stehen.
+    if (!isCorrect) { if (!hideSolution) input.value = target; else if (!input.value.trim()) input.value = "?"; }
     applyNameFit(input); // nach Auswertung (Klasse + ggf. eingeblendeter Name)
     if (isCorrect) { correct++; correctAbbrs.push(p.abbr); }
   });
+  const wrongAbbrs = positions.map(p => p.abbr).filter(a => !correctAbbrs.includes(a));
   pitchView.querySelectorAll("#srSpinBtn, #srRevealBtn, .sr-hub").forEach(btn => btn.disabled = true);
   const total = positions.length;
   const noHintsUsed = hintsUsed.size === 0 && tokenRevealed.size === 0;
@@ -6489,11 +6507,16 @@ function evaluatePitch() {
   // Eintippen vergeben (siehe renderPitch) - hier geht es nur noch um den Trainings-XP-
   // Fallback bei Wiederholung und (modusabhaengig) die Sternen-Boni weiter unten.
   const prevBest = profile.best[m.id] || { correct: 0, solvedAbbrs: [] };
+  const prevSeen = prevBest.seenAbbrs || [];
   const solvedNowAbbrs = correctAbbrs.filter(a => !prefilledAbbrs.has(a));
-  const newlySolvedAbbrs = solvedNowAbbrs.filter(a => !prevBest.solvedAbbrs.includes(a));
+  // Prompt 33: Positionen, deren Loesung vorher gezeigt wurde, zaehlen nicht mehr als "neu geloest"
+  const newlySolvedAbbrs = solvedNowAbbrs.filter(a => !prevBest.solvedAbbrs.includes(a) && !prevSeen.includes(a));
   profile.best[m.id] = {
     correct: Math.max(prevBest.correct, correct),
-    solvedAbbrs: Array.from(new Set([...prevBest.solvedAbbrs, ...solvedNowAbbrs]))
+    solvedAbbrs: Array.from(new Set([...prevBest.solvedAbbrs, ...solvedNowAbbrs])),
+    // Freispiel/Tages-Challenge zeigen die Loesung sofort -> alle nicht gewussten Positionen sind "gesehen";
+    // in der Kampagne erst beim "Loesung anzeigen" (siehe unten)
+    seenAbbrs: Array.from(new Set([...prevSeen, ...(hideSolution ? [] : wrongAbbrs)]))
   };
 
   const receipt = []; // Token-Quittung: {label, amount}, wird nur angezeigt wenn Summe > 0
@@ -6524,13 +6547,16 @@ function evaluatePitch() {
   const STAR_LABELS = { 1: "⭐ Erster Stern", 2: "⭐⭐ Zweiter Stern", 3: "⭐⭐⭐ Dritter Stern" };
   let improved = newlySolvedAbbrs.length > 0;
   let prevCampStars = 0; // nur fuer die Sterne-Anzeige im Ergebnis-Panel unten relevant
+  const starsFrozen = !!(currentLevelContext && profile.campaign.solutionSeen[m.id]); // Loesung angesehen (Prompt 33)
   if (currentLevelContext) {
     prevCampStars = profile.campaign.stars[m.id] || 0;
-    profile.campaign.stars[m.id] = Math.max(prevCampStars, stars);
-    for (let s = prevCampStars + 1; s <= stars; s++) {
-      bonusXP += XP_RULES.starBonus[s];
-      bonusReasons.push(STAR_LABELS[s]);
-      improved = true;
+    if (!starsFrozen) {
+      profile.campaign.stars[m.id] = Math.max(prevCampStars, stars);
+      for (let s = prevCampStars + 1; s <= stars; s++) {
+        bonusXP += XP_RULES.starBonus[s];
+        bonusReasons.push(STAR_LABELS[s]);
+        improved = true;
+      }
     }
   } else if (currentDailyChallenge) {
     for (let s = 1; s <= stars; s++) {
@@ -6621,6 +6647,12 @@ function evaluatePitch() {
       ? "✅ Bestanden! (mind. " + PASS_THRESHOLD + "/" + total + " nötig)"
       : "❌ Noch nicht geschafft - mind. " + PASS_THRESHOLD + "/" + total + " nötig, nochmal versuchen!";
     panel.appendChild(banner);
+    if (!campaignResult.passed) {
+      const hint = document.createElement("div");
+      hint.className = "seen-note";
+      hint.textContent = "Die Lösung siehst du, sobald du das Level bestanden hast.";
+      panel.appendChild(hint);
+    }
   }
 
   const scoreDiv = document.createElement("div");
@@ -6633,7 +6665,7 @@ function evaluatePitch() {
   const starsDiv = document.createElement("div");
   starsDiv.className = "result-stars";
   if (campaignResult) {
-    starsDiv.innerHTML = starsRowHTML(stars, prevCampStars);
+    starsDiv.innerHTML = starsFrozen ? starsRowHTML(prevCampStars) : starsRowHTML(stars, prevCampStars);
   } else if (dailyResult) {
     starsDiv.innerHTML = starsRowHTML(stars);
   } else {
@@ -6652,6 +6684,43 @@ function evaluatePitch() {
       receipt.map(r => `<div class="token-receipt-line"><span>${r.label}</span><span>+${r.amount}</span></div>`).join("") +
       `<div class="token-receipt-line token-receipt-sum"><span>Summe</span><span>+${receiptTotal}</span></div>`;
     panel.appendChild(receiptDiv);
+  }
+
+  if (campaignResult && starsFrozen) {
+    const note = document.createElement("div");
+    note.className = "seen-note";
+    note.textContent = "👁 Lösung angesehen – in diesem Level gibt es keine weiteren Sterne.";
+    panel.appendChild(note);
+  }
+  // Kampagne bestanden, aber Positionen fehlen: Loesung erst auf Wunsch (Prompt 33)
+  if (campaignResult && campaignResult.passed && wrongAbbrs.length > 0) {
+    const revealRow = document.createElement("div");
+    revealRow.className = "reveal-row";
+    revealRow.innerHTML = `<button type="button" class="action btn-outline" id="revealSolutionBtn" style="width:100%">👁 Lösung anzeigen</button>`;
+    panel.appendChild(revealRow);
+    const doReveal = () => {
+      wrongAbbrs.forEach(abbr => {
+        const inp = pitchView.querySelector('input[data-abbr="' + abbr + '"]');
+        inp.value = m.players[abbr];
+        applyNameFit(inp);
+      });
+      profile.campaign.solutionSeen[m.id] = true;
+      const b = profile.best[m.id];
+      b.seenAbbrs = Array.from(new Set([...(b.seenAbbrs || []), ...wrongAbbrs]));
+      saveProfile(profile);
+      revealRow.remove();
+      const seen = document.createElement("div");
+      seen.className = "seen-note";
+      seen.textContent = (profile.campaign.stars[m.id] || 0) >= 3 ? "👁 Lösung angezeigt." : "👁 Lösung angesehen – in diesem Level gibt es keine weiteren Sterne.";
+      scoreDiv.after(seen);
+    };
+    revealRow.querySelector("#revealSolutionBtn").onclick = () => {
+      if ((profile.campaign.stars[m.id] || 0) >= 3 || starsFrozen) { doReveal(); return; }
+      askSheet(`<div class="t">Lösung ansehen?</div><p>Wenn du die Lösung ansiehst, kannst du in diesem Level <b>keine weiteren Sterne</b> mehr holen.</p>`, [
+        { label: "Lösung anzeigen", cls: "main", fn: doReveal },
+        { label: "Lieber nochmal probieren", cls: "quiet", fn: () => startMatch(m) }
+      ]);
+    };
   }
 
   const row = document.createElement("div");
@@ -7311,6 +7380,14 @@ function parseSaveCode(text) {
   if (!obj || typeof obj !== "object" || typeof obj.totalXP !== "number" || typeof obj.level !== "number") return { error: "Der Code enthält keinen gültigen Spielstand." };
   if (typeof obj.version === "number" && obj.version > defaultProfile.version) return { error: "Dieser Spielstand stammt aus einer neueren App-Version. Bitte zuerst die App aktualisieren." };
   return { obj };
+}
+// Aktionsblatt (Bottom-Sheet) mit Text und Knoepfen - ersetzt confirm(); buttons: [{ label, cls: "main"|"quiet"|"", fn }]
+function askSheet(innerHTML, buttons) {
+  const b = openSaveModal(innerHTML + buttons.map((x, i) => `<button type="button" class="save-btn ${x.cls || ""}" data-i="${i}">${x.label}</button>`).join(""));
+  b.querySelectorAll("button[data-i]").forEach(btn => {
+    btn.onclick = () => { b.remove(); const fn = buttons[+btn.dataset.i].fn; if (fn) fn(); };
+  });
+  return b;
 }
 function openSaveModal(inner) {
   const b = document.createElement("div");
