@@ -2,306 +2,692 @@
 <html lang="de">
 <head>
 <meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, viewport-fit=cover">
-<!-- Ideen-Prototyp "Welt geschafft"-Animation (noch KEIN Prompt): Favorit Florian = C + A (erst Aufstieg-Tabelle, dann Pokalübergabe). Weitere Varianten A, B, C, D, A+B zum Vergleich. Teamnamen in C erfunden. Nicht einbinden. -->
-<title>Welt geschafft</title>
-
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Anton&family=Oswald:wght@300;400;500;600;700&display=swap">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<!-- Prototyp "Welt geschafft" v2 (10.10.2026, von Florian freigegeben) – Vorlage für Prompt 31.
+     Maßgeblich ist NUR die Bühne (#stage und alles darin, Funktion render(t), drawTrophy, buildFx/drawFx).
+     Das Regie-Pult (.desk, Zeitleiste, Tempo, Weltauswahl) ist nur zum Begutachten und kommt NICHT in die App.
+     Teamnamen erfunden. Nicht einbinden. -->
+<title>Aufstieg – Welt geschafft</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Anton&family=Oswald:wght@300;400;500;600&display=swap">
 <style>
+  /* Layout: Bühne (Handy 390×844) als einziges Objekt, Regie-Pult daneben bzw. darunter. Eine Welt: Flutlicht-Abend in Ink-Blau. */
   :root {
-    --ink: #14202B; --ink-2: #1C2B38; --line: rgba(242,239,230,0.14); --chalk: #F2EFE6; --muted: rgba(242,239,230,0.72); --dim: rgba(242,239,230,0.45);
-    --gold: #E8B23D; --gold-2: #F4D58D; --pitch: #1F4D36; --w1: #7fd99a; --w2: #a8d94a; --ok: #2ECC71;
+    --ink: #14202B; --ink-deep: #0A1118; --ink-2: #1C2B38;
+    --pitch: #1F4D36; --chalk: #F2EFE6; --gold: #E8B23D; --gold-hi: #F6D88E; --ok: #2ECC71;
+    --line: rgba(242,239,230,0.14); --muted: rgba(242,239,230,0.72); --dim: rgba(242,239,230,0.46);
+    --f-display: Anton, Impact, "Arial Narrow", sans-serif;
+    --f-text: Oswald, "Arial Narrow", system-ui, sans-serif;
     color-scheme: dark;
   }
   * { box-sizing: border-box; }
-  html, body { background: var(--ink); }
-  body { margin: 0; color: var(--chalk); font-family: Oswald, "Arial Narrow", system-ui, sans-serif; -webkit-tap-highlight-color: transparent; }
-  button { font-family: inherit; color: inherit; cursor: pointer; }
-  button:focus-visible { outline: 2px solid var(--gold-2); outline-offset: 2px; }
-  .controls { position: sticky; top: 0; z-index: 30; background: rgba(20,32,43,0.95); border-bottom: 1px solid var(--line); padding: 10px 12px; display: flex; justify-content: center; gap: 8px; flex-wrap: wrap; }
-  .seg { display: inline-flex; flex-wrap: wrap; justify-content: center; border: 1px solid var(--line); border-radius: 20px; padding: 3px; gap: 3px; }
-  .seg button { font-weight: 600; font-size: 13px; background: transparent; color: var(--muted); border: none; border-radius: 16px; padding: 6px 11px; }
-  .seg button[aria-pressed="true"] { background: linear-gradient(160deg, #f6da9c, var(--gold)); color: var(--ink); }
-  .replay { border: 1px solid rgba(232,178,61,0.5); background: rgba(232,178,61,0.12); color: var(--gold-2); border-radius: 18px; padding: 6px 12px; font-weight: 600; font-size: 13px; }
+  html, body { background: var(--ink-deep); }
+  body { color: var(--chalk); font-family: var(--f-text); -webkit-tap-highlight-color: transparent; }
+  button, input { font-family: inherit; color: inherit; }
+  button { cursor: pointer; }
+  :focus-visible { outline: 2px solid var(--gold-hi); outline-offset: 2px; }
 
-  .phone { width: min(402px, 100%); height: 800px; margin: 16px auto 24px; position: relative; overflow: hidden; border-radius: 28px; border: 1px solid var(--line); background: #0B1218; }
-  .stage { position: absolute; inset: 0; overflow: hidden; }
-  canvas.fx { position: absolute; inset: 0; width: 100%; height: 100%; pointer-events: none; z-index: 5; }
-  .hint { position: absolute; bottom: 14px; left: 0; right: 0; text-align: center; font-weight: 300; font-size: 12px; color: var(--dim); z-index: 6; }
-  .cta { position: absolute; left: 24px; right: 24px; bottom: 44px; z-index: 6; border: none; border-radius: 14px; padding: 14px; font-family: Anton, Impact, sans-serif; font-size: 20px; letter-spacing: 0.02em; color: var(--ink);
-    background: linear-gradient(160deg, #f6da9c, var(--gold)); box-shadow: 0 4px 0 #9C7422; opacity: 0; transform: translateY(14px); transition: opacity 0.5s, transform 0.5s; }
-  .cta.on { opacity: 1; transform: none; }
-  .note { max-width: 560px; margin: 0 auto; padding: 0 16px 28px; font-weight: 300; font-size: 14.5px; line-height: 1.55; color: var(--muted); text-align: center; }
-  .note b { color: var(--chalk); font-weight: 600; }
-  .fade { opacity: 0; transition: opacity 0.6s ease; } .fade.on { opacity: 1; }
+  .wrap { max-width: 1060px; margin: 0 auto; padding-inline: 16px; padding-block: 20px 40px; display: grid; gap: 28px; grid-template-columns: 1fr; justify-items: center; }
+  @media (min-width: 900px) { .wrap { grid-template-columns: auto minmax(0, 1fr); align-items: start; justify-items: start; } }
 
-  /* ---------- A Pokal ---------- */
-  .a-bg { position: absolute; inset: 0; background: radial-gradient(120% 70% at 50% 110%, #1E4A33, #0B1218 60%); }
-  .a-cone { position: absolute; left: 50%; top: -40px; width: 520px; height: 700px; transform: translateX(-50%); opacity: 0; transition: opacity 1s ease;
-    background: conic-gradient(from 180deg at 50% 0%, transparent 43%, rgba(244,213,141,0.20) 50%, transparent 57%); -webkit-mask-image: linear-gradient(180deg, #000 40%, transparent 95%); mask-image: linear-gradient(180deg, #000 40%, transparent 95%); }
-  .a-cone.on { opacity: 1; }
-  .a-floor { position: absolute; left: 50%; bottom: 210px; width: 260px; height: 40px; transform: translateX(-50%); border-radius: 50%; background: radial-gradient(closest-side, rgba(244,213,141,0.35), transparent); opacity: 0; transition: opacity 1s 0.4s; }
-  .a-floor.on { opacity: 1; }
-  .a-cup { position: absolute; left: 50%; bottom: 220px; width: 190px; transform: translate(-50%, 380px) scale(0.6); transition: transform 1.4s cubic-bezier(.2,1.1,.3,1); }
-  .a-cup.up { transform: translate(-50%, 0) scale(1); }
-  .a-cup svg { width: 100%; height: auto; display: block; filter: drop-shadow(0 18px 24px rgba(0,0,0,0.5)); }
-  .a-cup.spin svg { animation: aSpin 1.1s ease-in-out 1; }
-  @keyframes aSpin { 0% { transform: scaleX(1); } 25% { transform: scaleX(0.08); } 50% { transform: scaleX(-1); } 75% { transform: scaleX(-0.08); } 100% { transform: scaleX(1); } }
-  .a-shine { position: absolute; inset: 0; overflow: hidden; border-radius: 40%; pointer-events: none; }
-  .a-title { position: absolute; top: 78px; left: 0; right: 0; text-align: center; }
-  .a-title .k { font-weight: 500; font-size: 15px; color: var(--gold-2); }
-  .a-title .t { font-family: Anton, Impact, sans-serif; font-size: 46px; line-height: 1; margin-top: 4px; }
-  .a-title .t span { color: var(--gold); text-shadow: 0 0 22px rgba(232,178,61,0.5); }
-  .a-plate { position: absolute; left: 50%; bottom: 150px; transform: translateX(-50%); text-align: center; }
-  .a-plate b { display: block; font-family: Anton, Impact, sans-serif; font-weight: 400; font-size: 24px; color: var(--chalk); }
-  .a-plate span { font-weight: 400; font-size: 14px; color: var(--muted); }
+  /* ---------- Bühne ---------- */
+  .phone-box { position: relative; }
+  .phone { position: absolute; left: 0; top: 0; width: 390px; height: 844px; transform-origin: 0 0; border-radius: 34px; overflow: hidden; background: var(--ink-deep);
+    box-shadow: 0 0 0 1px var(--line), 0 30px 80px rgba(0,0,0,0.55); }
+  .stage { position: absolute; inset: 0; overflow: hidden; cursor: pointer; }
+  .layer { position: absolute; inset: 0; pointer-events: none; }
+  .bg { background: radial-gradient(130% 70% at 50% 108%, rgba(31,77,54,0.9), transparent 62%), radial-gradient(90% 50% at 50% -10%, #1C2B38, transparent 70%), var(--ink-deep); }
+  .stripes { background: repeating-linear-gradient(180deg, rgba(31,77,54,0.22) 0 52px, rgba(31,77,54,0.08) 52px 104px); -webkit-mask-image: linear-gradient(180deg, transparent 5%, #000 40%, #000 80%, transparent); mask-image: linear-gradient(180deg, transparent 5%, #000 40%, #000 80%, transparent); }
+  svg.chalk { position: absolute; inset: 0; width: 100%; height: 100%; }
+  .ring { position: absolute; left: 195px; top: 422px; width: 140px; height: 140px; margin: -70px 0 0 -70px; border-radius: 50%; border: 2px solid var(--chalk); opacity: 0; }
 
-  /* ---------- B Reise ---------- */
-  .b-map { position: absolute; inset: 0; background: repeating-linear-gradient(90deg, rgba(255,255,255,0.02) 0 2px, transparent 2px 40px), radial-gradient(120% 80% at 50% 40%, #16303F, #0B1218 70%); }
-  .b-map svg { position: absolute; inset: 0; width: 100%; height: 100%; }
-  .b-path-bg { fill: none; stroke: rgba(242,239,230,0.22); stroke-width: 3; stroke-dasharray: 2 9; stroke-linecap: round; }
-  .b-path-gold { fill: none; stroke: var(--gold); stroke-width: 4; stroke-linecap: round; filter: drop-shadow(0 0 6px rgba(232,178,61,0.6)); }
-  .b-st circle.ring { fill: #13222E; stroke: rgba(242,239,230,0.25); stroke-width: 3; }
-  .b-st circle.pitch { fill: #1F4D36; }
-  .b-st.done circle.ring { stroke: var(--w1); }
-  .b-st.next circle.ring { transition: stroke 0.6s; }
-  .b-st.next.open circle.ring { stroke: var(--w2); }
-  .b-st text { font-family: Anton, Impact, sans-serif; fill: rgba(242,239,230,0.55); font-size: 15px; text-anchor: middle; }
-  .b-st.done text, .b-st.next.open text { fill: var(--chalk); }
-  .b-light { fill: #F4D58D; opacity: 0.12; transition: opacity 0.25s; }
-  .b-light.on { opacity: 1; filter: drop-shadow(0 0 8px #F4D58D); }
-  .b-beam { fill: url(#beamG); opacity: 0; transition: opacity 0.4s; }
-  .b-beam.on { opacity: 0.55; }
-  .b-lock { transition: transform 0.6s cubic-bezier(.3,1.4,.5,1), opacity 0.6s; transform-box: fill-box; transform-origin: center; }
-  .b-lock.l.off { transform: translate(-26px, 40px) rotate(-40deg); opacity: 0; }
-  .b-lock.r.off { transform: translate(26px, 40px) rotate(40deg); opacity: 0; }
-  .b-lock-g.shake { animation: bShake 0.45s ease-in-out 1; }
-  @keyframes bShake { 0%,100% { transform: translateX(0); } 25% { transform: translateX(-4px); } 75% { transform: translateX(4px); } }
-  .b-ball { font-size: 26px; }
-  .b-banner { position: absolute; left: 20px; right: 20px; top: 66px; text-align: center; }
-  .b-banner .k { font-weight: 500; font-size: 15px; color: var(--w2); }
-  .b-banner .t { font-family: Anton, Impact, sans-serif; font-size: 40px; line-height: 1; margin-top: 4px; }
+  .hdr { position: absolute; left: 16px; right: 16px; top: 66px; }
+  .kicker { font-weight: 600; font-size: 12px; letter-spacing: 0.12em; text-transform: uppercase; color: var(--gold-hi); }
+  .h-title { font-family: var(--f-display); font-size: 38px; line-height: 1.05; margin-top: 4px; overflow: hidden; }
+  .h-title span { display: inline-block; }
+  .md { position: absolute; right: 0; top: -2px; text-align: right; }
+  .md small { display: block; font-weight: 500; font-size: 10px; letter-spacing: 0.12em; color: var(--dim); }
+  .md b { display: block; font-family: var(--f-display); font-weight: 400; font-size: 44px; line-height: 1; font-variant-numeric: tabular-nums; }
 
-  /* ---------- C Aufstieg ---------- */
-  .c-bg { position: absolute; inset: 0; background: radial-gradient(120% 70% at 50% 0%, #1A3A2A, #0B1218 65%); }
-  .c-head { position: absolute; top: 60px; left: 0; right: 0; text-align: center; }
-  .c-head .k { font-weight: 500; font-size: 15px; color: var(--w1); }
-  .c-head .t { font-family: Anton, Impact, sans-serif; font-size: 30px; line-height: 1.05; margin-top: 4px; }
-  .c-table { position: absolute; left: 22px; right: 22px; top: 150px; border-radius: 14px; border: 1px solid var(--line); background: rgba(28,43,56,0.9); padding: 6px 0; }
-  .c-hd { display: grid; grid-template-columns: 34px 1fr 40px 44px; padding: 4px 12px 6px; font-weight: 600; font-size: 12px; color: var(--dim); border-bottom: 1px solid var(--line); }
-  .c-rows { position: relative; height: 352px; }
-  .c-row { position: absolute; left: 0; right: 0; height: 44px; display: grid; grid-template-columns: 34px 1fr 40px 44px; align-items: center; padding: 0 12px; font-size: 15px; transition: transform 0.55s cubic-bezier(.3,1.2,.4,1); }
-  .c-row + .c-row { border-top: 1px solid rgba(242,239,230,0.06); }
-  .c-row .pl { font-family: Anton, Impact, sans-serif; color: var(--muted); }
-  .c-row .nm { font-weight: 500; }
-  .c-row .sp { color: var(--dim); text-align: center; }
-  .c-row .pt { font-family: Anton, Impact, sans-serif; text-align: right; }
-  .c-row.me { z-index: 2; background: linear-gradient(90deg, rgba(232,178,61,0.28), rgba(232,178,61,0.10)); border-radius: 10px; box-shadow: 0 0 0 1.5px rgba(232,178,61,0.7); }
-  .c-row.me .nm, .c-row.me .pt { color: var(--gold-2); }
-  .c-row.me.top { background: linear-gradient(90deg, rgba(232,178,61,0.55), rgba(232,178,61,0.25)); }
-  .c-row .up { color: var(--ok); font-size: 12px; margin-left: 6px; opacity: 0; transition: opacity 0.3s; }
-  .c-row.me.moving .up { opacity: 1; }
-  .c-zone { position: absolute; left: 0; right: 0; top: 0; height: 44px; border-left: 4px solid var(--ok); border-radius: 0; pointer-events: none; }
-  .c-banner { position: absolute; left: 14px; right: 14px; top: 556px; text-align: center; border-radius: 16px; padding: 14px 12px; border: 1.5px solid rgba(232,178,61,0.75);
-    background: repeating-linear-gradient(90deg, rgba(255,255,255,0.03) 0 16px, transparent 16px 32px), linear-gradient(150deg, #27603F, #173F2B 85%);
-    opacity: 0; transform: scale(0.85); transition: opacity 0.5s, transform 0.6s cubic-bezier(.2,1.4,.4,1); }
-  .c-banner.on { opacity: 1; transform: none; }
-  .c-banner b { font-family: Anton, Impact, sans-serif; font-weight: 400; font-size: 30px; display: block; line-height: 1.05; }
-  .c-banner b span { color: var(--gold); }
-  .c-banner small { font-weight: 400; font-size: 14px; color: rgba(242,239,230,0.85); }
+  .tbl-head { position: absolute; left: 16px; right: 16px; top: 168px; height: 20px; font-weight: 500; font-size: 10px; letter-spacing: 0.1em; color: var(--dim); text-transform: uppercase; }
+  .tbl-head span { position: absolute; top: 0; }
+  .slot { position: absolute; left: 16px; width: 32px; height: 42px; display: grid; place-items: center; font-family: var(--f-display); font-size: 20px; color: var(--muted); font-variant-numeric: tabular-nums; }
+  .slot i { position: absolute; left: 0; top: 6px; bottom: 6px; width: 3px; border-radius: 2px; background: var(--ok); }
+  .row { position: absolute; top: 0; left: 54px; width: 320px; height: 42px; border-radius: 8px; display: flex; align-items: center; padding: 0 12px; gap: 10px; background: rgba(28,43,56,0.92); box-shadow: inset 0 -1px 0 rgba(242,239,230,0.06); overflow: hidden; will-change: transform; z-index: 1; }
+  .row .nm { flex: 1; min-width: 0; font-weight: 400; font-size: 15px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .row .sp, .row .pk { font-variant-numeric: tabular-nums; text-align: right; }
+  .row .sp { width: 26px; font-weight: 300; font-size: 14px; color: var(--muted); }
+  .row .pk { width: 34px; font-family: var(--f-display); font-size: 19px; }
+  .row.me { z-index: 2; background: #3A3622; box-shadow: inset 0 0 0 1.5px var(--gold); }
+  .row.me .nm { font-weight: 600; color: var(--gold-hi); }
+  .row .up { color: var(--ok); font-size: 11px; width: 10px; opacity: 0; }
+  .row .shine { position: absolute; top: 0; bottom: 0; width: 60%; left: 0; background: linear-gradient(100deg, transparent, rgba(255,240,200,0.55), transparent); transform: translateX(-120%); }
+  .foot { position: absolute; left: 16px; right: 16px; top: 548px; font-weight: 300; font-size: 12px; color: var(--dim); display: flex; align-items: center; gap: 8px; }
+  .foot i { width: 3px; height: 14px; border-radius: 2px; background: var(--ok); }
 
-  /* ---------- D Tunnel ---------- */
-  .d-bg { position: absolute; inset: 0; background: #06090C; overflow: hidden; }
-  .d-ring { position: absolute; left: 50%; top: 46%; border: 3px solid rgba(242,239,230,0.08); border-radius: 46% 46% 8% 8% / 60% 60% 8% 8%; transform: translate(-50%, -50%); }
-  .d-end { position: absolute; left: 50%; top: 46%; width: 70px; height: 90px; transform: translate(-50%, -50%); border-radius: 46% 46% 6% 6% / 60% 60% 6% 6%;
-    background: radial-gradient(circle at 50% 70%, #fff6dc, #F4D58D 40%, #2B6F47 85%); box-shadow: 0 0 60px 20px rgba(244,213,141,0.35); transition: transform 2.6s cubic-bezier(.6,0,.2,1), border-radius 2.6s; }
-  .d-end.go { transform: translate(-50%, -50%) scale(16); border-radius: 0; }
-  .d-stadium { position: absolute; inset: 0; opacity: 0; transition: opacity 0.8s; background: radial-gradient(130% 70% at 50% 100%, #2E7D50, #173F2B 50%, #0B1218 90%); }
-  .d-stadium.on { opacity: 1; }
-  .d-stadium canvas { position: absolute; inset: 0; width: 100%; height: 100%; }
-  .d-lights { position: absolute; top: 40px; left: 0; right: 0; display: flex; justify-content: space-between; padding: 0 26px; }
-  .d-lights i { width: 46px; height: 16px; border-radius: 4px; background: #2a2a2a; display: grid; grid-template-columns: repeat(4, 1fr); gap: 2px; padding: 3px; transition: box-shadow 0.3s; }
-  .d-lights i.on { background: #F4E7C0; box-shadow: 0 0 22px 8px rgba(255,240,200,0.6); }
-  .d-text { position: absolute; left: 0; right: 0; top: 40%; text-align: center; opacity: 0; transform: translateY(12px); transition: opacity 0.7s, transform 0.7s; }
-  .d-text.on { opacity: 1; transform: none; }
-  .d-text .k { font-weight: 500; font-size: 16px; color: rgba(242,239,230,0.9); }
-  .d-text .t { font-family: Anton, Impact, sans-serif; font-size: 50px; line-height: 1; margin-top: 4px; color: var(--w2); text-shadow: 0 0 24px rgba(168,217,74,0.45); }
-  .d-text .s { font-weight: 300; font-size: 14px; color: rgba(242,239,230,0.8); margin-top: 8px; }
+  .mast { position: absolute; top: 0; width: 190px; height: 640px; opacity: 0; mix-blend-mode: screen; }
+  .mast::before { content: ""; position: absolute; inset: 0; background: linear-gradient(180deg, rgba(255,246,220,0.55), rgba(255,240,200,0.12) 45%, transparent 85%); clip-path: polygon(46% 0, 54% 0, 100% 100%, 0 100%); filter: blur(6px); }
+  .mast::after { content: ""; position: absolute; left: 50%; top: 6px; width: 22px; height: 10px; margin-left: -11px; border-radius: 4px; background: #fffbe9; box-shadow: 0 0 18px 8px rgba(255,240,200,0.7), 0 0 60px 24px rgba(255,230,170,0.25); }
+
+  .beam { position: absolute; left: 0; top: 0; background: var(--gold); border-radius: 3px; box-shadow: 0 0 24px 6px rgba(232,178,61,0.55); opacity: 0; will-change: transform, width, height; }
+
+  .league { position: absolute; left: 0; right: 0; top: 236px; text-align: center; transform-origin: 50% 0; }
+  .league .kicker { opacity: 0; }
+  .word { margin-top: 6px; font-family: var(--f-display); line-height: 0.98; color: var(--chalk); }
+  .word .ln { display: block; white-space: nowrap; }
+  .word .ch { display: inline-block; will-change: transform; }
+  .uline { height: 4px; margin: 10px auto 0; border-radius: 2px; width: 0; }
+  .sub { margin-top: 14px; font-weight: 400; font-size: 17px; color: var(--muted); opacity: 0; }
+  .sub b { font-weight: 600; color: var(--chalk); }
+
+  .spot { position: absolute; left: 50%; top: -20px; width: 560px; height: 680px; margin-left: -280px; opacity: 0; mix-blend-mode: screen;
+    background: linear-gradient(180deg, rgba(255,244,214,0.42), rgba(255,236,190,0.10) 60%, transparent 92%); clip-path: polygon(44% 0, 56% 0, 86% 100%, 14% 100%); filter: blur(10px); }
+  .floor { position: absolute; left: 50%; top: 520px; width: 300px; height: 56px; margin-left: -150px; border-radius: 50%; background: radial-gradient(closest-side, rgba(246,216,142,0.42), transparent); opacity: 0; }
+
+  .trophy { position: absolute; left: 95px; top: 262px; width: 200px; height: 270px; overflow: visible; will-change: transform; filter: drop-shadow(0 16px 22px rgba(0,0,0,0.55)); }
+
+  .wg { position: absolute; left: 0; right: 0; top: 548px; text-align: center; font-family: var(--f-display); font-size: 46px; line-height: 1.1; overflow: hidden; padding-bottom: 4px; }
+  .wg span { display: inline-block; }
+  .wg em { font-style: normal; color: var(--gold); text-shadow: 0 0 24px rgba(232,178,61,0.45); }
+  .plaque { position: absolute; left: 50%; top: 622px; width: 300px; margin-left: -150px; text-align: center; padding: 10px 14px 11px; border-radius: 12px; border: 1px solid rgba(232,178,61,0.55); background: rgba(232,178,61,0.08); opacity: 0; }
+  .plaque b { display: block; font-weight: 600; font-size: 17px; }
+  .plaque span { display: block; margin-top: 2px; font-weight: 300; font-size: 13.5px; color: var(--muted); font-variant-numeric: tabular-nums; }
+  .plaque .st { color: var(--gold); font-weight: 500; }
+  .btn { position: absolute; left: 32px; right: 32px; top: 724px; height: 54px; border: none; border-radius: 14px; font-family: var(--f-display); font-size: 21px; letter-spacing: 0.02em; color: var(--ink);
+    background: linear-gradient(160deg, var(--gold-hi), var(--gold)); box-shadow: 0 4px 0 #9C7422; opacity: 0; pointer-events: none; }
+  .btn.live { pointer-events: auto; }
+  .hint { position: absolute; left: 0; right: 0; bottom: 22px; text-align: center; font-weight: 300; font-size: 12.5px; color: var(--dim); }
+  canvas.fx { position: absolute; inset: 0; width: 100%; height: 100%; pointer-events: none; }
+  .after { position: absolute; inset: 0; display: grid; place-content: center; gap: 14px; text-align: center; padding: 24px; background: var(--ink); opacity: 0; pointer-events: none; transition: opacity 0.45s ease; }
+  .after.on { opacity: 1; pointer-events: auto; }
+  .after p { margin: 0; font-weight: 300; font-size: 15px; color: var(--muted); max-width: 280px; line-height: 1.5; }
+  .after .t { font-family: var(--f-display); font-size: 30px; color: var(--chalk); }
+  .after button { justify-self: center; border: 1px solid rgba(232,178,61,0.55); background: rgba(232,178,61,0.12); color: var(--gold-hi); border-radius: 22px; padding: 9px 18px; font-weight: 600; font-size: 14px; }
+
+  /* ---------- Regie-Pult ---------- */
+  .desk { width: 100%; max-width: 560px; display: grid; gap: 22px; min-width: 0; }
+  .desk h1 { margin: 0; font-family: var(--f-display); font-weight: 400; font-size: 40px; line-height: 1.05; text-wrap: balance; }
+  .desk h1 em { font-style: normal; color: var(--gold); }
+  .lead { margin: 8px 0 0; font-weight: 300; font-size: 16px; line-height: 1.55; color: var(--muted); max-width: 62ch; }
+  .lbl { font-weight: 600; font-size: 11.5px; letter-spacing: 0.12em; text-transform: uppercase; color: var(--dim); margin-bottom: 8px; }
+  .chips { display: flex; flex-wrap: wrap; gap: 6px; }
+  .chip { border: 1px solid var(--line); background: transparent; border-radius: 20px; padding: 7px 12px; font-weight: 500; font-size: 13.5px; color: var(--muted); display: inline-flex; align-items: center; gap: 7px; }
+  .chip i { width: 9px; height: 9px; border-radius: 50%; }
+  .chip[aria-pressed="true"] { border-color: var(--gold); color: var(--chalk); background: rgba(232,178,61,0.12); }
+  .transport { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; }
+  .tb { border: 1px solid rgba(232,178,61,0.55); background: rgba(232,178,61,0.12); color: var(--gold-hi); border-radius: 22px; padding: 8px 16px; font-weight: 600; font-size: 14px; }
+  .tb.solid { background: linear-gradient(160deg, var(--gold-hi), var(--gold)); color: var(--ink); border-color: transparent; }
+  .speed { display: inline-flex; border: 1px solid var(--line); border-radius: 22px; padding: 3px; gap: 2px; }
+  .speed button { border: none; background: transparent; border-radius: 18px; padding: 5px 11px; font-weight: 500; font-size: 13px; color: var(--muted); font-variant-numeric: tabular-nums; }
+  .speed button[aria-pressed="true"] { background: rgba(242,239,230,0.12); color: var(--chalk); }
+  .scrub { position: relative; padding-top: 4px; }
+  .scrub input[type=range] { width: 100%; accent-color: var(--gold); }
+  .marks { position: relative; height: 34px; margin-top: 2px; }
+  .marks button { position: absolute; top: 0; transform: translateX(-50%); border: none; background: none; padding: 2px 0; font-weight: 500; font-size: 11.5px; color: var(--dim); white-space: nowrap; }
+  .marks button::before { content: ""; display: block; width: 1px; height: 6px; margin: 0 auto 3px; background: var(--dim); }
+  .marks button.on { color: var(--gold-hi); }
+  .clock { font-family: var(--f-display); font-size: 18px; color: var(--muted); font-variant-numeric: tabular-nums; min-width: 64px; }
+  .row2 { display: flex; flex-wrap: wrap; gap: 16px 22px; align-items: end; }
+  .field input[type=text] { background: rgba(242,239,230,0.06); border: 1px solid var(--line); border-radius: 10px; padding: 8px 12px; font-size: 15px; width: 210px; max-width: 100%; }
+  .check { display: inline-flex; align-items: center; gap: 8px; font-weight: 400; font-size: 14px; color: var(--muted); }
+  .check input { accent-color: var(--gold); width: 16px; height: 16px; }
+  .beats { list-style: none; margin: 0; padding: 0; display: grid; gap: 0; border-top: 1px solid var(--line); }
+  .beats li { display: grid; grid-template-columns: 74px minmax(0,1fr); gap: 12px; padding: 11px 0; border-bottom: 1px solid var(--line); }
+  .beats .tc { font-family: var(--f-display); font-size: 15px; color: var(--gold); font-variant-numeric: tabular-nums; padding-top: 1px; }
+  .beats b { display: block; font-weight: 600; font-size: 15px; }
+  .beats span { display: block; font-weight: 300; font-size: 14px; line-height: 1.5; color: var(--muted); }
+  .note { font-weight: 300; font-size: 13.5px; line-height: 1.55; color: var(--dim); margin: 0; }
 </style>
-
 </head>
 <body>
-<div class="controls">
-  <div class="seg" role="group" aria-label="Variante">
-    <button type="button" data-v="CA" aria-pressed="true">C + A · Aufstieg + Pokal</button>
-    <button type="button" data-v="A" aria-pressed="false">A · Pokal</button>
-    <button type="button" data-v="B" aria-pressed="false">B · Reise</button>
-    <button type="button" data-v="C" aria-pressed="false">C · Aufstieg</button>
-    <button type="button" data-v="D" aria-pressed="false">D · Tunnel</button>
-    <button type="button" data-v="AB" aria-pressed="false">A + B</button>
+<div class="wrap">
+  <div class="phone-box" id="phoneBox">
+    <div class="phone" id="phone">
+      <div class="stage" id="stage" role="button" tabindex="0" aria-label="Animation: tippen zum Überspringen">
+        <div class="layer" id="cam">
+          <div class="layer bg"></div>
+          <div class="layer stripes" id="stripes"></div>
+          <svg class="chalk" viewBox="0 0 390 844" aria-hidden="true">
+            <line id="cLine" x1="0" y1="422" x2="390" y2="422" stroke="#F2EFE6" stroke-width="2" stroke-dasharray="390" stroke-dashoffset="390"/>
+            <circle id="cCirc" cx="195" cy="422" r="70" fill="none" stroke="#F2EFE6" stroke-width="2" stroke-dasharray="440" stroke-dashoffset="440" transform="rotate(-90 195 422)"/>
+            <circle id="cDot" cx="195" cy="422" r="3.5" fill="#F2EFE6" opacity="0"/>
+          </svg>
+          <div class="ring" id="ring"></div>
+
+          <div class="mast" id="m0" style="left:-70px; transform-origin:50% 0; transform:rotate(-24deg)"></div>
+          <div class="mast" id="m1" style="left:10px; transform-origin:50% 0; transform:rotate(-12deg)"></div>
+          <div class="mast" id="m2" style="left:190px; transform-origin:50% 0; transform:rotate(12deg)"></div>
+          <div class="mast" id="m3" style="left:270px; transform-origin:50% 0; transform:rotate(24deg)"></div>
+          <div class="spot" id="spot"></div>
+          <div class="floor" id="floor"></div>
+
+          <div class="hdr" id="hdr">
+            <div class="kicker" id="hKick"></div>
+            <div class="h-title"><span id="hTitle"></span></div>
+            <div class="md"><small>SPIELTAG</small><b id="md">10</b></div>
+          </div>
+          <div class="tbl-head" id="tHead"><span style="left:4px">Pl.</span><span style="left:50px">Verein</span><span style="right:46px">Sp.</span><span style="right:12px">Pkt.</span></div>
+          <div id="slots"></div>
+          <div id="rows"></div>
+          <div class="foot" id="foot"><i></i><span id="footTxt">Platz 1–2: Aufstieg</span></div>
+
+          <div class="beam" id="beam"></div>
+
+          <div class="league" id="league">
+            <div class="kicker" id="lKick"></div>
+            <div class="word" id="word"></div>
+            <div class="uline" id="uline"></div>
+            <div class="sub" id="sub"></div>
+          </div>
+
+          <svg class="trophy" id="trophy" viewBox="0 0 200 270" aria-hidden="true">
+            <defs>
+              <linearGradient id="metal" x1="0" x2="1" y1="0" y2="0">
+                <stop offset="0" stop-color="#7A4C0C"/><stop offset="0.22" stop-color="#C98F23"/><stop offset="0.38" stop-color="#FFF1C2"/>
+                <stop offset="0.5" stop-color="#E8B23D"/><stop offset="0.78" stop-color="#B07A18"/><stop offset="1" stop-color="#5E3A08"/>
+              </linearGradient>
+              <linearGradient id="metalV" x1="0" x2="0" y1="0" y2="1">
+                <stop offset="0" stop-color="#FFF1C2" stop-opacity="0.35"/><stop offset="0.5" stop-color="#E8B23D" stop-opacity="0"/><stop offset="1" stop-color="#3D2605" stop-opacity="0.45"/>
+              </linearGradient>
+              <linearGradient id="plinth" x1="0" x2="0" y1="0" y2="1"><stop offset="0" stop-color="#22313F"/><stop offset="1" stop-color="#0E171F"/></linearGradient>
+              <clipPath id="bowlClip"><path d="M40 22 C40 96 64 136 100 146 C136 136 160 96 160 22 Z"/></clipPath>
+              <radialGradient id="sparkG"><stop offset="0" stop-color="#fff"/><stop offset="1" stop-color="#fff" stop-opacity="0"/></radialGradient>
+            </defs>
+            <g id="cup">
+              <g id="hBack" stroke="#9A6614" stroke-width="8" fill="none" stroke-linecap="round"></g>
+              <path d="M40 22 C40 96 64 136 100 146 C136 136 160 96 160 22 Z" fill="url(#metal)"/>
+              <g clip-path="url(#bowlClip)">
+                <path d="M40 22 C40 96 64 136 100 146 C136 136 160 96 160 22 Z" fill="url(#metalV)"/>
+                <g id="flutes" stroke="#5E3A08" stroke-width="1.2" fill="none"></g>
+                <g id="emblem"><circle r="17" fill="#C98F23" stroke="#FFF1C2" stroke-opacity="0.6" stroke-width="1.5"/><path d="M0 -10 L2.9 -3.1 L10 -3.1 L4.3 1.4 L6.4 8.5 L0 4.2 L-6.4 8.5 L-4.3 1.4 L-10 -3.1 L-2.9 -3.1 Z" fill="#FFF1C2"/></g>
+              </g>
+              <ellipse cx="100" cy="22" rx="60" ry="8" fill="#5E3A08"/>
+              <ellipse cx="100" cy="21" rx="57" ry="6" fill="#3D2605"/>
+              <path d="M40 22 A60 8 0 0 0 160 22" fill="none" stroke="#FFF1C2" stroke-opacity="0.7" stroke-width="1.5"/>
+              <path d="M90 146 H110 L106 186 H94 Z" fill="url(#metal)"/>
+              <ellipse cx="100" cy="166" rx="12" ry="5" fill="url(#metal)"/>
+              <path d="M68 186 H132 L140 214 H60 Z" fill="url(#metal)"/>
+              <g id="hFront" stroke="url(#metal)" stroke-width="8" fill="none" stroke-linecap="round"></g>
+            </g>
+            <rect x="52" y="214" width="96" height="44" rx="5" fill="url(#plinth)" stroke="#E8B23D" stroke-opacity="0.65"/>
+            <text id="shield" x="100" y="244" text-anchor="middle" font-family="Anton, Impact, sans-serif" font-size="19" fill="#E8B23D" letter-spacing="1">WELT 1</text>
+            <g id="spark" transform="translate(150 20)" opacity="0">
+              <circle r="14" fill="url(#sparkG)" opacity="0.7"/>
+              <path d="M0 -18 L2.2 -2.2 L18 0 L2.2 2.2 L0 18 L-2.2 2.2 L-18 0 L-2.2 -2.2 Z" fill="#fff"/>
+            </g>
+          </svg>
+
+          <div class="wg" id="wg"><span id="wgIn">Welt <em>geschafft!</em></span></div>
+          <div class="plaque" id="plaque"><b id="pName">Kreisliga-Pokal</b><span><span class="st" id="pStars">★ 0 / 30</span> · kommt in deinen Trophäenschrank</span></div>
+        </div>
+        <canvas class="fx" id="fx" width="390" height="844"></canvas>
+        <div class="hint" id="hint">Tippen zum Überspringen</div>
+        <button class="btn" id="btn" type="button">Weiter ›</button>
+        <div class="after" id="after">
+          <div class="t">Ergebnis-Bildschirm</div>
+          <p>Hier geht es in der App mit dem Ergebnis und dem Knopf aus Prompt 30 weiter.</p>
+          <button type="button" id="again">Nochmal abspielen</button>
+        </div>
+      </div>
+    </div>
   </div>
-  <button type="button" class="replay" id="replay">↻ Nochmal</button>
+
+  <div class="desk">
+    <div>
+      <h1>Aufstieg – <em>Welt geschafft</em></h1>
+      <p class="lead">Neue Fassung der Feier am Ende einer Welt. Eine durchgehende Kamerafahrt statt zwei getrennter Clips: Die Saison läuft durch, dein Team klettert, die Zeile wird zum Lichtstrahl, die neue Liga fällt ins Bild und der Pokal dreht sich auf seinem Sockel ins Flutlicht.</p>
+    </div>
+
+    <div>
+      <div class="lbl">Welt</div>
+      <div class="chips" id="worlds"></div>
+    </div>
+
+    <div>
+      <div class="lbl">Regie</div>
+      <div class="transport">
+        <button class="tb solid" id="play" type="button">Von vorn</button>
+        <button class="tb" id="pause" type="button">Pause</button>
+        <div class="speed" id="speed" role="group" aria-label="Tempo">
+          <button type="button" data-s="1" aria-pressed="true">1×</button>
+          <button type="button" data-s="0.5" aria-pressed="false">½×</button>
+          <button type="button" data-s="0.25" aria-pressed="false">¼×</button>
+        </div>
+        <span class="clock" id="clock">0,0 s</span>
+      </div>
+      <div class="scrub">
+        <input type="range" id="scrub" min="0" max="9600" step="10" value="0" aria-label="Zeitleiste">
+        <div class="marks" id="marks"></div>
+      </div>
+    </div>
+
+    <div class="row2">
+      <label class="field"><div class="lbl">Dein Teamname</div><input type="text" id="team" value="Dein Team" maxlength="22"></label>
+      <label class="check"><input type="checkbox" id="rm"> Reduzierte Bewegung</label>
+    </div>
+
+    <div>
+      <div class="lbl">Ablauf (ca. 9 Sekunden)</div>
+      <ol class="beats">
+        <li><span class="tc">0,0 s</span><div><b>Abpfiff</b><span>Mittellinie und Mittelkreis werden mit Kreide gezogen, ein Pfiff-Ring läuft einmal nach außen.</span></div></li>
+        <li><span class="tc">0,6 s</span><div><b>Saisonverlauf</b><span>Spieltag 10 bis 30 läuft durch. Die Tabelle sortiert sich live, dein Team überholt Platz für Platz. Auf Platz 1 zieht ein Lichtschimmer durch die Zeile.</span></div></li>
+        <li><span class="tc">3,7 s</span><div><b>Aufstieg</b><span>Die anderen Teams fallen aus dem Bild, deine Zeile wird zum goldenen Strahl. Vier Flutlichtmasten gehen an, die neue Liga fällt Buchstabe für Buchstabe ein, kurzer Kamera-Ruck beim Aufprall.</span></div></li>
+        <li><span class="tc">5,4 s</span><div><b>Pokal</b><span>Der Pokal steigt ins Spotlicht und dreht sich einmal auf dem Sockel – Henkel, Rillen und Emblem drehen echt mit. Konfetti-Kanonen links und rechts, ein Funkeln am Rand, Sterne zählen hoch.</span></div></li>
+        <li><span class="tc">8,4 s</span><div><b>Weiter</b><span>Der Knopf erscheint, das Konfetti fällt aus und das Bild steht still. Nichts läuft in Schleife.</span></div></li>
+      </ol>
+    </div>
+    <p class="note">Erster Tipp auf das Handy springt zum Pokal, zweiter Tipp zum Endbild. Teamnamen sind erfunden. Mit „Reduzierte Bewegung“ erscheint direkt das Endbild ohne Konfetti.</p>
+  </div>
 </div>
-<div class="phone"><div class="stage" id="stage"></div></div>
-<p class="note" id="note"></p>
 
 <script>
 (() => {
-  const $ = id => document.getElementById(id);
-  const RM = matchMedia("(prefers-reduced-motion: reduce)").matches;
-  let T = [], raf = null, cur = "CA", FAST = false;
-  const at = (ms, fn) => T.push(setTimeout(fn, (RM || FAST) ? 0 : ms));
-  function reset() { T.forEach(clearTimeout); T = []; cancelAnimationFrame(raf); $("stage").innerHTML = ""; }
-
-  // Konfetti (Canvas, einmalig)
-  function confetti(colors, n = 140, from = "top") {
-    const c = document.createElement("canvas"); c.className = "fx"; $("stage").appendChild(c);
-    const W = c.width = $("stage").clientWidth * 2, H = c.height = $("stage").clientHeight * 2, x = c.getContext("2d");
-    const P = Array.from({ length: n }, () => ({ x: Math.random() * W, y: from === "top" ? -Math.random() * H * 0.5 : H * 0.55, vx: (Math.random() - 0.5) * (from === "top" ? 3 : 16), vy: from === "top" ? 3 + Math.random() * 5 : -(14 + Math.random() * 14), r: Math.random() * 6.28, vr: (Math.random() - 0.5) * 0.3, w: 8 + Math.random() * 10, h: 5 + Math.random() * 6, c: colors[Math.floor(Math.random() * colors.length)] }));
-    const t0 = performance.now();
-    (function step(now) { const t = now - t0; x.clearRect(0, 0, W, H);
-      P.forEach(p => { p.vy += 0.28; p.vx *= 0.99; p.x += p.vx; p.y += p.vy; p.r += p.vr; x.save(); x.translate(p.x, p.y); x.rotate(p.r); x.globalAlpha = Math.max(0, 1 - t / 4200); x.fillStyle = p.c; x.fillRect(-p.w / 2, -p.h / 2, p.w, p.h); x.restore(); });
-      if (t < 4200) raf = requestAnimationFrame(step); else c.remove(); })(t0);
-  }
-  function cta(label, onClick) { const b = document.createElement("button"); b.type = "button"; b.className = "cta"; b.textContent = label; b.onclick = onClick; $("stage").appendChild(b); at(60, () => b.classList.add("on")); return b; }
-  function hint() { const h = document.createElement("div"); h.className = "hint"; h.textContent = "Tippen zum Überspringen"; $("stage").appendChild(h); return h; }
-
-  const CUP = `<svg viewBox="0 0 200 240" aria-hidden="true">
-    <defs><linearGradient id="cg" x1="0" x2="1"><stop offset="0" stop-color="#9C7422"/><stop offset=".35" stop-color="#F6DA9C"/><stop offset=".55" stop-color="#E8B23D"/><stop offset="1" stop-color="#8A6418"/></linearGradient>
-      <linearGradient id="cb" x1="0" x2="1"><stop offset="0" stop-color="#1B3A2A"/><stop offset=".5" stop-color="#2B6647"/><stop offset="1" stop-color="#173F2B"/></linearGradient></defs>
-    <path d="M52 30 C 10 30, 8 92, 58 104" fill="none" stroke="url(#cg)" stroke-width="10" stroke-linecap="round"/>
-    <path d="M148 30 C 190 30, 192 92, 142 104" fill="none" stroke="url(#cg)" stroke-width="10" stroke-linecap="round"/>
-    <path d="M44 18 H156 C156 88 132 128 100 134 C68 128 44 88 44 18 Z" fill="url(#cg)"/>
-    <ellipse cx="100" cy="18" rx="56" ry="9" fill="#F6DA9C"/><ellipse cx="100" cy="18" rx="48" ry="6" fill="#B98522"/>
-    <path d="M60 30 C 62 70, 74 100, 88 112" fill="none" stroke="rgba(255,255,255,0.55)" stroke-width="5" stroke-linecap="round"/>
-    <rect x="90" y="132" width="20" height="30" fill="url(#cg)"/><path d="M70 162 H130 L136 176 H64 Z" fill="url(#cg)"/>
-    <rect x="56" y="176" width="88" height="44" rx="4" fill="url(#cb)" stroke="#E8B23D" stroke-width="2"/>
-    <rect x="70" y="188" width="60" height="20" rx="2" fill="#E8B23D"/><text x="100" y="203" text-anchor="middle" font-family="Anton, Impact, sans-serif" font-size="12" fill="#14202B">WELT 1</text>
-    <text x="100" y="78" text-anchor="middle" font-size="34">⚽</text></svg>`;
-
-  function playA(next) {
-    const s = $("stage");
-    s.insertAdjacentHTML("beforeend", `<div class="a-bg"></div><div class="a-cone" id="aCone"></div><div class="a-floor" id="aFloor"></div>
-      <div class="a-title fade" id="aTitle"><div class="k">Kreisliga · alle 10 Level bestanden</div><div class="t">Welt <span>geschafft!</span></div></div>
-      <div class="a-cup" id="aCup">${CUP}</div>
-      <div class="a-plate fade" id="aPlate"><b>Kreisliga-Pokal</b><span>⭐ 27 / 30 · kommt in deinen Trophäenschrank</span></div>`);
-    const h = hint();
-    at(200, () => $("aCone").classList.add("on"));
-    at(500, () => { $("aCup").classList.add("up"); $("aFloor").classList.add("on"); });
-    at(1900, () => $("aCup").classList.add("spin"));
-    at(2100, () => { $("aTitle").classList.add("on"); confetti(["#E8B23D", "#F4D58D", "#7fd99a", "#2ECC71", "#F2EFE6"]); });
-    at(3000, () => $("aPlate").classList.add("on"));
-    at(3700, () => { h.remove(); if (next) at(400, next); else cta("Weiter ›", () => play(cur)); });
-  }
-
-  function playB() {
-    const s = $("stage");
-    const P = [[70, 640], [300, 520], [110, 380], [300, 250], [150, 120]];
-    const d = `M${P[0][0]} ${P[0][1]} C 190 640, 300 600, ${P[1][0]} ${P[1][1]} C 300 440, 110 470, ${P[2][0]} ${P[2][1]} C 110 290, 300 330, ${P[3][0]} ${P[3][1]} C 300 160, 150 200, ${P[4][0]} ${P[4][1]}`;
-    const names = ["Kreisliga", "Regionalliga", "Bundesliga", "Champ. League", "Weltklasse"];
-    const lights = (cx, cy) => [[-34, -34], [34, -34], [-34, 34], [34, 34]].map(([dx, dy], i) => `<path class="b-beam" data-i="${i}" d="M${cx + dx} ${cy + dy} L${cx + dx * 0.2} ${cy + dy * 0.2 - 4} L${cx + dx * 0.2 + 8} ${cy + dy * 0.2 + 4} Z"/><circle class="b-light" data-i="${i}" cx="${cx + dx}" cy="${cy + dy}" r="5"/>`).join("");
-    s.insertAdjacentHTML("beforeend", `<div class="b-map"><svg viewBox="0 0 402 800" preserveAspectRatio="xMidYMid slice" aria-hidden="true">
-      <defs><linearGradient id="beamG" x1="0" x2="1"><stop offset="0" stop-color="#F4D58D"/><stop offset="1" stop-color="#F4D58D" stop-opacity="0"/></linearGradient></defs>
-      <path class="b-path-bg" d="${d}"/><path class="b-path-gold" id="bGold" d="${d}"/>
-      ${P.map(([x, y], i) => `<g class="b-st ${i === 0 ? "done" : i === 1 ? "next" : ""}" id="bSt${i}"><circle class="ring" cx="${x}" cy="${y}" r="30"/><circle class="pitch" cx="${x}" cy="${y}" r="20"/><rect x="${x - 12}" y="${y - 1}" width="24" height="2" fill="rgba(242,239,230,0.35)"/><text x="${x}" y="${y + 52}">${names[i]}</text>${i === 1 ? lights(x, y) : ""}</g>`).join("")}
-      <g class="b-lock-g" id="bLockG" transform="translate(${P[1][0]} ${P[1][1]})"><path class="b-lock l" d="M-11 -2 h11 v18 h-11 a3 3 0 0 1 -3 -3 v-12 a3 3 0 0 1 3 -3z" fill="#9AA6B2"/><path class="b-lock r" d="M0 -2 h11 a3 3 0 0 1 3 3 v12 a3 3 0 0 1 -3 3 h-11z" fill="#7E8A96"/><path class="b-lock l" d="M-8 -2 v-6 a8 8 0 0 1 16 0 v6" fill="none" stroke="#9AA6B2" stroke-width="4"/></g>
-      <text class="b-ball" id="bBall" x="${P[0][0]}" y="${P[0][1]}" text-anchor="middle" dominant-baseline="central">⚽</text>
-    </svg></div>
-    <div class="b-banner fade" id="bBanner"><div class="k">Welt 2 freigeschaltet</div><div class="t">Regionalliga</div></div>`);
-    const h = hint();
-    const gold = $("bGold"), full = gold.getTotalLength(), seg = (() => { // Länge bis Stadion 2
-      let lo = 0, hi = full; for (let k = 0; k < 30; k++) { const m = (lo + hi) / 2, p = gold.getPointAtLength(m); if (p.y > P[1][1] + 1 || (Math.abs(p.y - P[1][1]) < 1 && p.x < P[1][0] - 1)) lo = m; else hi = m; } return hi; })();
-    gold.style.strokeDasharray = full; gold.style.strokeDashoffset = full;
-    const ball = $("bBall");
-    at(500, () => {
-      if (RM || FAST) { gold.style.strokeDashoffset = full - seg; ball.setAttribute("x", P[1][0]); ball.setAttribute("y", P[1][1] - 40); return; }
-      const t0 = performance.now(), D = 2200;
-      (function step(now) { const t = Math.min(1, (now - t0) / D), e = t < 0.5 ? 2 * t * t : 1 - Math.pow(-2 * t + 2, 2) / 2, L = e * seg, p = gold.getPointAtLength(L);
-        const hop = Math.abs(Math.sin(e * Math.PI * 5)) * 10 * (1 - e * 0.6);
-        ball.setAttribute("x", p.x); ball.setAttribute("y", p.y - 6 - hop); ball.setAttribute("transform", `rotate(${e * 720} ${p.x} ${p.y - 6 - hop})`);
-        gold.style.strokeDashoffset = full - L; if (t < 1) raf = requestAnimationFrame(step); })(t0);
-    });
-    at(2800, () => { ball.setAttribute("transform", ""); ball.setAttribute("y", P[1][1] - 44); $("bLockG").classList.add("shake"); });
-    at(3300, () => { document.querySelectorAll(".b-lock").forEach(l => l.classList.add("off")); $("bSt1").classList.add("open"); });
-    [0, 1, 2, 3].forEach(i => at(3700 + i * 260, () => document.querySelectorAll(`#bSt1 [data-i="${i}"]`).forEach(e => e.classList.add("on"))));
-    at(4900, () => { $("bBanner").classList.add("on"); confetti(["#a8d94a", "#E8B23D", "#F4D58D"], 70, "burst"); });
-    at(5600, () => { h.remove(); cta("Zur Regionalliga ›", () => play(cur)); });
-  }
-
-  function playC(next) {
-    const s = $("stage");
-    const teams = [["SV Grünwiese", 68], ["FC Kreidestadt", 66], ["TSV Flutlicht", 63], ["Eintracht Anstoß", 61], ["SC Elfmeterpunkt", 58], ["VfB Abseits", 55], ["Union Nachspielzeit", 52]];
-    s.insertAdjacentHTML("beforeend", `<div class="c-bg"></div>
-      <div class="c-head fade" id="cHead"><div class="k">Kreisliga · letzter Spieltag</div><div class="t">Wer steigt auf?</div></div>
-      <div class="c-table"><div class="c-hd"><span>Pl.</span><span>Team</span><span style="text-align:center">Sp.</span><span style="text-align:right">Pkt.</span></div>
-        <div class="c-rows" id="cRows"><div class="c-zone"></div></div></div>
-      <div class="c-banner" id="cBanner"><b>Aufstieg in die <span>Regionalliga!</span></b><small>Welt 2 ist freigeschaltet</small></div>`);
-    const rows = $("cRows");
-    const all = [...teams.map(([n, p]) => ({ n, p })), { n: "Dein Team", p: 50, me: true }];
-    all.forEach((t, i) => { const r = document.createElement("div"); r.className = "c-row" + (t.me ? " me" : ""); r.innerHTML = `<span class="pl">${i + 1}.</span><span class="nm">${t.n}${t.me ? '<span class="up">▲</span>' : ""}</span><span class="sp">30</span><span class="pt">${t.p}</span>`; r.style.transform = `translateY(${i * 44}px)`; t.el = r; rows.appendChild(r); });
-    const h = hint();
-    at(200, () => $("cHead").classList.add("on"));
-    const me = all[7]; let pos = 7, pts = 50;
-    const steps = [56, 59, 62, 64, 67, 69, 71];
-    steps.forEach((np, k) => at(900 + k * 560, () => {
-      pts = np; me.el.classList.add("moving"); me.el.querySelector(".pt").textContent = pts;
-      const above = all.filter(t => !t.me).find((t, i) => true);
-      // eine Position nach oben tauschen
-      const order = all.filter(t => t !== me).slice(); const newPos = pos - 1;
-      order.splice(newPos, 0, me); order.forEach((t, i) => { t.el.style.transform = `translateY(${i * 44}px)`; t.el.querySelector(".pl").textContent = (i + 1) + "."; });
-      pos = newPos; if (pos === 0) { me.el.classList.add("top"); me.el.classList.remove("moving"); }
-    }));
-    at(900 + 7 * 560 + 300, () => { $("cBanner").classList.add("on"); confetti(["#E8B23D", "#F4D58D", "#7fd99a", "#2ECC71"]); });
-    at(900 + 7 * 560 + 1100, () => { h.remove(); if (next) at(700, next); else cta("Weiter ›", () => play(cur)); });
-  }
-
-  function playD() {
-    const s = $("stage");
-    const rings = Array.from({ length: 9 }, (_, i) => { const sc = 1 + i * 0.55; return `<div class="d-ring" style="width:${80 * sc}px;height:${100 * sc}px;border-color:rgba(242,239,230,${0.03 + i * 0.012})"></div>`; }).join("");
-    s.insertAdjacentHTML("beforeend", `<div class="d-bg">${rings}<div class="d-end" id="dEnd"></div></div>
-      <div class="d-stadium" id="dStad"><canvas id="dCrowd"></canvas><div class="d-lights">${"<i></i>".repeat(4)}</div></div>
-      <div class="d-text" id="dText"><div class="k">Willkommen in Welt 2</div><div class="t">Regionalliga</div><div class="s">Größere Stadien · schwerere Spiele · 13 Level</div></div>`);
-    const h = hint();
-    at(300, () => $("dEnd").classList.add("go"));
-    at(2400, () => {
-      $("dStad").classList.add("on");
-      const c = $("dCrowd"), W = c.width = c.clientWidth * 2, H = c.height = c.clientHeight * 2, x = c.getContext("2d");
-      // Tribüne: Ränge als dunkle Bänder, Zuschauer als kleine helle Punkte, nach unten dichter
-      for (let row = 0; row < 14; row++) { const y = H * 0.14 + row * (H * 0.022); x.fillStyle = row % 2 ? "rgba(8,14,10,0.55)" : "rgba(14,24,18,0.55)"; x.fillRect(0, y, W, H * 0.022);
-        for (let i = 0; i < 90; i++) { const xx = (i + Math.random()) * W / 90, yy = y + H * 0.011 + (Math.random() - 0.5) * 6; const c = Math.random(); x.fillStyle = c < 0.12 ? "rgba(168,217,74,0.7)" : c < 0.2 ? "rgba(232,178,61,0.6)" : `rgba(230,225,210,${0.18 + Math.random() * 0.25})`; x.beginPath(); x.arc(xx, yy, 2.2 + Math.random() * 1.6, 0, 6.28); x.fill(); } }
-      x.fillStyle = "rgba(242,239,230,0.25)"; x.fillRect(W * 0.1, H * 0.62, W * 0.8, 3); x.beginPath(); x.arc(W / 2, H * 0.72, 70, 0, 6.28); x.strokeStyle = "rgba(242,239,230,0.25)"; x.lineWidth = 3; x.stroke();
-    });
-    [0, 1, 2, 3].forEach(i => at(2800 + i * 280, () => $("dStad").querySelectorAll(".d-lights i")[i].classList.add("on")));
-    at(4000, () => { $("dText").classList.add("on"); });
-    at(4900, () => { h.remove(); cta("Anpfiff in der Regionalliga ›", () => play(cur)); });
-  }
-
-  const NOTES = {
-    A: "<b>A · Pokalübergabe:</b> Flutlicht-Kegel geht an, der Welt-Pokal steigt aus dem Dunkel auf, dreht sich einmal, Konfetti in Gold und Weltfarbe, darunter die Plakette mit deinen Sternen. Ruhig und feierlich – der Pokal landet danach im Trophäenschrank.",
-    B: "<b>B · Reise zur nächsten Welt:</b> Auf der Weltkarte springt der Ball vom geschafften Stadion los und hüpft den Weg entlang, der sich dabei gold nachzeichnet. Am nächsten Stadion wackelt das Schloss und bricht auseinander, die vier Flutlichter gehen nacheinander an, dann „Regionalliga“.",
-    C: "<b>C · Aufstieg:</b> Die Abschlusstabelle der Kreisliga – dein Team klettert mit jedem Punkt einen Platz nach oben, bis es ganz oben steht. Dann das Banner „Aufstieg in die Regionalliga!“. Teamnamen frei erfunden.",
-    D: "<b>D · Tunnel in die neue Liga:</b> Du gehst durch den dunklen Spielertunnel aufs Licht zu, das Licht öffnet sich zum neuen, größeren Stadion, die Flutlichtmasten gehen an, dann „Willkommen in Welt 2 – Regionalliga“.",
-    CA: "<b>C + A · deine Kombination:</b> Erst die Abschlusstabelle – dein Team klettert bis auf Platz 1, Banner „Aufstieg in die Regionalliga!“. Dann wird es dunkel, der Flutlicht-Kegel geht an und der Kreisliga-Pokal steigt auf, dreht sich, Konfetti, Plakette mit deinen Sternen. Zusammen ca. 10 Sekunden; ein Tipp springt erst ans Ende der Tabelle, ein zweiter ans Ende des Pokals.",
-    AB: "<b>A + B:</b> Erst die Pokalübergabe als Belohnung für die geschaffte Welt, dann direkt die Reise auf der Karte als Ausblick auf die nächste. Zusammen ca. 9–10 Sekunden, jederzeit überspringbar."
+  const W = 390, H = 844;
+  const WORLDS = {
+    1: { name: "Kreisliga", color: "#7fd99a", teams: ["SV Grünwiese", "TuS Feldkirchen 09", "SpVgg Lindenhof", "Eintracht Kleinmühlen", "VfR Ostkamp", "SG Wiesenau", "FC Brückendorf"] },
+    2: { name: "Regionalliga", color: "#a8d94a", teams: ["FC Hafenstadt", "SV Nordring 1911", "Borussia Talheim", "VfB Steinach", "Union Westerfeld", "Kickers Hochberg", "SC Eichenau"] },
+    3: { name: "Bundesliga", color: "#e8b23d", teams: ["FC Rheinhausen", "Fortuna Nordstadt", "VfL Südhang", "SC Waldheim", "Eintracht Bergtal", "SV Löwenstein", "Viktoria Seewald"] },
+    4: { name: "Champions League", color: "#e8863d", teams: ["Real Montebello", "AC Venturi", "Sporting Alvorada", "Dynamo Varenka", "Olympique Lunay", "Athletic Bravia", "FK Severin"] },
+    5: { name: "Weltklasse", color: "#c1392b", teams: ["Nordavia", "Altamar", "Kaledor", "Solvenia", "Marisca", "Vardenia", "Ostria"] }
   };
-  let stageAB = "A";
-  function play(v, fast = false) {
-    reset(); FAST = fast; $("note").innerHTML = NOTES[v];
-    if (v === "A") playA(); else if (v === "B") playB(); else if (v === "C") playC(); else if (v === "D") playD();
-    else if (v === "CA") { if (fast && stageAB === "A") playA(); else { stageAB = "C"; playC(() => { reset(); stageAB = "A"; playA(); }); } }
-    else if (fast && stageAB === "B") playB();
-    else { stageAB = "A"; playA(() => { reset(); stageAB = "B"; playB(); }); }
+  // Punkte: Spieltag 10 → 30. Dein Team startet letzter und endet klar vorn.
+  const PTS = [[24, 66], [22, 62], [20, 57], [19, 53], [17, 49], [15, 43], [14, 39]];
+  const ME = [8, 71];
+
+  const T = {
+    chalk: [80, 700], ring: [300, 950], kick: [320, 760], title: [420, 900], rowsIn: [560, 1350],
+    season: [1450, 3350], shine: [3350, 3720], fall: [3720, 4350], collapse: [3780, 4120], beam: [4120, 4520],
+    lights: [4420, 4900], lKick: [4380, 4700], drop: 4480, shake: 0, uline: [4880, 5200], sub: [4980, 5320],
+    toTitle: [5380, 5980], spot: [5300, 5950], rise: [5450, 6300], spin: [5650, 7250], fire: 6150, fire2: 6500,
+    rain: [6450, 7900], wg: [6500, 7000], plaque: [6980, 7380], stars: [7250, 8150], glint: [7300, 7700],
+    btn: [8350, 8800], hint: [250, 8300]
+  };
+  const END_UI = 8800, END = 13600, SKIP1 = 5380;
+
+  // ---------- Hilfen ----------
+  const $ = id => document.getElementById(id);
+  const clamp = (x, a = 0, b = 1) => Math.min(b, Math.max(a, x));
+  const seg = (t, r) => clamp((t - r[0]) / (r[1] - r[0]));
+  const lerp = (a, b, x) => a + (b - a) * x;
+  const eo3 = x => 1 - Math.pow(1 - x, 3);
+  const eo5 = x => 1 - Math.pow(1 - x, 5);
+  const ei3 = x => x * x * x;
+  const eio3 = x => x < 0.5 ? 4 * x * x * x : 1 - Math.pow(-2 * x + 2, 3) / 2;
+  const eioS = x => -(Math.cos(Math.PI * x) - 1) / 2;
+  const eoBack = (x, s = 1.70158) => 1 + (s + 1) * Math.pow(x - 1, 3) + s * Math.pow(x - 1, 2);
+  const sig = x => 1 / (1 + Math.exp(-x));
+  function rng(seed) { return () => { seed |= 0; seed = seed + 0x6D2B79F5 | 0; let t = Math.imul(seed ^ seed >>> 15, 1 | seed); t = t + Math.imul(t ^ t >>> 7, 61 | t) ^ t; return ((t ^ t >>> 14) >>> 0) / 4294967296; }; }
+
+  let world = 1, teamName = "Dein Team", reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+  $("rm").checked = reduce;
+
+  // ---------- Tabelle ----------
+  const ROW_Y0 = 192, ROW_H = 46;
+  const slotsEl = $("slots"), rowsEl = $("rows");
+  for (let i = 0; i < 8; i++) {
+    const s = document.createElement("div"); s.className = "slot"; s.style.top = (ROW_Y0 + i * ROW_H) + "px"; s.innerHTML = (i < 2 ? "<i></i>" : "") + (i + 1); slotsEl.appendChild(s);
   }
-  document.querySelectorAll("[data-v]").forEach(b => b.onclick = () => { cur = b.dataset.v; document.querySelectorAll("[data-v]").forEach(x => x.setAttribute("aria-pressed", String(x === b))); play(cur); });
-  $("replay").onclick = () => { stageAB = "A"; play(cur); };
-  // Überspringen: zum Endzustand springen (bei A+B: erst ans Ende von A → weiter zu B, dann ans Ende von B)
-  $("stage").addEventListener("click", (e) => { if (e.target.closest(".cta")) return; if (!$("stage").querySelector(".hint")) return;
-    if (cur === "AB" && stageAB === "A") { reset(); stageAB = "B"; FAST = false; $("note").innerHTML = NOTES.AB; playB(); return; }
-    if (cur === "CA" && stageAB === "C") { reset(); stageAB = "A"; FAST = false; $("note").innerHTML = NOTES.CA; playA(); return; }
-    play(cur, true); });
-  play("CA");
+  const rows = [];
+  for (let i = 0; i < 8; i++) {
+    const r = document.createElement("div"); r.className = "row" + (i === 7 ? " me" : "");
+    r.innerHTML = '<span class="up">▲</span><span class="nm"></span><span class="sp">10</span><span class="pk">0</span>' + (i === 7 ? '<span class="shine"></span>' : "");
+    rowsEl.appendChild(r);
+    rows.push({ el: r, nm: r.querySelector(".nm"), sp: r.querySelector(".sp"), pk: r.querySelector(".pk"), up: r.querySelector(".up"), shine: r.querySelector(".shine"),
+      p0: i === 7 ? ME[0] : PTS[i][0], p1: i === 7 ? ME[1] : PTS[i][1], me: i === 7 });
+  }
+  const slotEls = [...slotsEl.children];
+
+  function points(r, s) { return r.me ? lerp(r.p0, r.p1, Math.pow(s, 1.35)) : lerp(r.p0, r.p1, s); }
+  function softRanks(s) {
+    const p = rows.map(r => points(r, s));
+    return p.map((pi, i) => p.reduce((acc, pj, j) => j === i ? acc : acc + sig((pj - pi) / 0.32), 0));
+  }
+
+  // ---------- Liga-Wort ----------
+  const wordEl = $("word");
+  let letters = [];
+  function buildWord() {
+    const last = world === 5;
+    const next = last ? WORLDS[5] : WORLDS[world + 1];
+    const lines = next.name === "Champions League" ? ["CHAMPIONS", "LEAGUE"] : [next.name.toUpperCase()];
+    const c = document.createElement("canvas").getContext("2d");
+    c.font = "400 100px Anton, Impact, sans-serif";
+    const size = Math.min(84, ...lines.map(l => 350 / (c.measureText(l).width / 100)));
+    wordEl.style.fontSize = size.toFixed(1) + "px";
+    wordEl.innerHTML = ""; letters = [];
+    lines.forEach(l => {
+      const ln = document.createElement("span"); ln.className = "ln";
+      [...l].forEach(ch => { const s = document.createElement("span"); s.className = "ch"; s.textContent = ch === " " ? " " : ch; ln.appendChild(s); letters.push(s); });
+      wordEl.appendChild(ln);
+    });
+    const uw = Math.min(330, Math.max(...lines.map(l => c.measureText(l).width / 100 * size)));
+    $("uline").dataset.w = uw;
+    $("uline").style.background = next.color;
+    $("lKick").textContent = last ? "Du bist" : "Aufstieg in die";
+    $("sub").innerHTML = last ? "<b>Alle Welten geschafft</b>" : "<b>Welt " + (world + 1) + "</b> ist freigeschaltet";
+  }
+
+  function setupWorld() {
+    const w = WORLDS[world], last = world === 5;
+    $("hKick").textContent = w.name + (last ? " · Saisonfinale" : " · Saisonverlauf");
+    $("hTitle").textContent = last ? "Wer holt den Titel?" : "Wer steigt auf?";
+    $("footTxt").textContent = last ? "Platz 1: Weltklasse-Titel" : "Platz 1–2: Aufstieg";
+    slotEls[1].querySelector("i") && (slotEls[1].querySelector("i").style.display = last ? "none" : "");
+    rows.forEach((r, i) => { r.nm.textContent = r.me ? (teamName.trim() || "Dein Team") : w.teams[i]; });
+    $("shield").textContent = "WELT " + world;
+    $("pName").textContent = w.name + "-Pokal";
+    buildWord();
+    buildFx();
+  }
+
+  // ---------- Pokal (echte Drehung: Henkel, Rillen, Emblem) ----------
+  const NS = "http://www.w3.org/2000/svg";
+  const hB = [0, 1].map(() => $("hBack").appendChild(document.createElementNS(NS, "path")));
+  const hF = [0, 1].map(() => $("hFront").appendChild(document.createElementNS(NS, "path")));
+  const flutes = Array.from({ length: 14 }, () => $("flutes").appendChild(document.createElementNS(NS, "path")));
+  function drawTrophy(theta) {
+    [0, Math.PI].forEach((base, k) => {
+      const phi = base + theta, c = Math.cos(phi), z = Math.sin(phi);
+      const d = `M${100 + 57 * c} 36 C${100 + 98 * c} 34 ${100 + 92 * c} 92 ${100 + 44 * c} 98`;
+      const front = z >= -0.0001;
+      hF[k].setAttribute("d", d); hF[k].style.display = front ? "" : "none";
+      hB[k].setAttribute("d", d); hB[k].style.display = front ? "none" : "";
+    });
+    flutes.forEach((f, k) => {
+      const phi = theta + k * Math.PI * 2 / flutes.length + 0.11, c = Math.cos(phi), z = Math.sin(phi);
+      if (z <= 0.05) { f.style.display = "none"; return; }
+      f.style.display = "";
+      f.setAttribute("d", `M${100 + 60 * c} 30 Q${100 + 54 * c} 100 ${100 + 22 * c} 138`);
+      f.setAttribute("stroke-opacity", (0.15 + 0.35 * (1 - z)).toFixed(3));
+    });
+    const pe = Math.PI / 2 + theta, ze = Math.sin(pe), xe = 100 + 34 * Math.cos(pe);
+    const em = $("emblem");
+    if (ze <= 0.02) em.style.display = "none";
+    else { em.style.display = ""; em.setAttribute("transform", `translate(${xe.toFixed(2)} 70) scale(${ze.toFixed(3)} 1)`); }
+  }
+
+  // ---------- Konfetti (deterministisch, damit Zeitleiste und Zeitlupe exakt stimmen) ----------
+  let parts = [];
+  const fx = $("fx"), ctx = fx.getContext("2d");
+  const dpr = Math.min(2, window.devicePixelRatio || 1);
+  fx.width = W * dpr; fx.height = H * dpr; ctx.scale(dpr, dpr);
+  function shade(hex, f) {
+    const n = parseInt(hex.slice(1), 16), r = n >> 16, g = n >> 8 & 255, b = n & 255;
+    return `rgb(${Math.round(r * f)},${Math.round(g * f)},${Math.round(b * f)})`;
+  }
+  function buildFx() {
+    const R = rng(7 + world), wc = WORLDS[world === 5 ? 5 : world + 1].color;
+    const pal = ["#E8B23D", "#E8B23D", "#F6D88E", "#F2EFE6", wc, wc];
+    parts = [];
+    const cannon = (t0, side, n, sMin, sMax) => {
+      for (let i = 0; i < n; i++) {
+        const ang = (side < 0 ? -68 : -112) + (R() - 0.5) * 36;
+        const sp = lerp(sMin, sMax, R());
+        const a = ang * Math.PI / 180;
+        parts.push({ kind: 0, t0: t0 + R() * 90, x0: side < 0 ? -6 : W + 6, y0: H - 70 + R() * 30, vx: Math.cos(a) * sp, vy: Math.sin(a) * sp,
+          k: lerp(1.9, 2.7, R()), g: 600, w: lerp(5, 9, R()), h: lerp(9, 15, R()), col: pal[(R() * pal.length) | 0],
+          r0: R() * 6.3, vr: lerp(-9, 9, R()), ff: lerp(5, 12, R()), fp: R() * 6.3, sa: lerp(10, 26, R()), sw: lerp(2, 4, R()), sp0: R() * 6.3, rib: R() < 0.22 });
+      }
+    };
+    cannon(T.fire, -1, 120, 1250, 1850);
+    cannon(T.fire, 1, 120, 1250, 1850);
+    cannon(T.fire2, -1, 55, 950, 1450);
+    cannon(T.fire2, 1, 55, 950, 1450);
+    for (let i = 0; i < 70; i++) {
+      parts.push({ kind: 1, t0: lerp(T.rain[0], T.rain[1], R()), x0: R() * W, y0: -20, vy: lerp(120, 210, R()), w: lerp(5, 8, R()), h: lerp(8, 13, R()),
+        col: pal[(R() * pal.length) | 0], r0: R() * 6.3, vr: lerp(-4, 4, R()), ff: lerp(3, 7, R()), fp: R() * 6.3, sa: lerp(14, 34, R()), sw: lerp(1, 2.2, R()), sp0: R() * 6.3, rib: false });
+    }
+  }
+  function drawFx(t) {
+    ctx.clearRect(0, 0, W, H);
+    if (reduce) return;
+    for (const p of parts) {
+      const tau = (t - p.t0) / 1000;
+      if (tau < 0) continue;
+      let x, y;
+      if (p.kind === 0) {
+        const e = 1 - Math.exp(-p.k * tau);
+        x = p.x0 + p.vx / p.k * e + p.sa * Math.sin(p.sw * tau + p.sp0) * clamp(tau - 0.35, 0, 1);
+        y = p.y0 + (p.g / p.k) * tau + (p.vy - p.g / p.k) / p.k * e;
+      } else {
+        x = p.x0 + p.sa * Math.sin(p.sw * tau + p.sp0);
+        y = p.y0 + p.vy * tau;
+      }
+      if (y > H + 30 || x < -40 || x > W + 40) continue;
+      const flip = Math.cos(p.ff * tau + p.fp);
+      ctx.save();
+      ctx.translate(x, y);
+      ctx.rotate(p.r0 + p.vr * tau);
+      ctx.scale(1, Math.max(0.08, Math.abs(flip)));
+      ctx.fillStyle = flip >= 0 ? p.col : shade(p.col, 0.62);
+      if (p.rib) ctx.fillRect(-1.6, -p.h, 3.2, p.h * 2);
+      else ctx.fillRect(-p.w / 2, -p.h / 2, p.w, p.h);
+      ctx.restore();
+    }
+  }
+
+  // ---------- Bild für Zeitpunkt t ----------
+  const el = id => $(id).style;
+  function render(t) {
+    // Kamera: leichter Push-in während der Saison, Ruck beim Aufprall der Liga und bei den Kanonen
+    let sx = 0, sy = 0;
+    const lastDrop = T.drop + (letters.length - 1) * 34 + 300;
+    T.shake = lastDrop;
+    [[lastDrop, 7], [T.fire, 3.5]].forEach(([t0, A]) => {
+      const d = t - t0;
+      if (d > 0 && d < 600 && !reduce) { const env = A * Math.exp(-d / 95); sx += env * Math.sin(d / 17); sy += env * Math.cos(d / 23); }
+    });
+    const push = lerp(1, 1.035, eioS(seg(t, [600, 3600]))) - 0.035 * eo3(seg(t, T.fall));
+    el("cam").transform = `translate(${sx.toFixed(2)}px, ${sy.toFixed(2)}px) scale(${push.toFixed(4)})`;
+
+    // Abpfiff
+    const ch = eo3(seg(t, T.chalk));
+    const chalkFade = 1 - 0.75 * seg(t, [3700, 4400]);
+    $("cLine").setAttribute("stroke-dashoffset", (390 * (1 - ch)).toFixed(1));
+    $("cCirc").setAttribute("stroke-dashoffset", (440 * (1 - eo3(seg(t, [220, 900])))).toFixed(1));
+    $("cLine").style.opacity = $("cCirc").style.opacity = (0.5 * chalkFade).toFixed(3);
+    $("cDot").setAttribute("opacity", (0.6 * seg(t, [600, 760]) * chalkFade).toFixed(3));
+    el("stripes").opacity = (0.4 + 0.6 * seg(t, [0, 900])).toFixed(3);
+    const rg = seg(t, T.ring);
+    el("ring").opacity = (rg > 0 && rg < 1 ? 0.7 * (1 - rg) : 0).toFixed(3);
+    el("ring").transform = `scale(${(0.6 + 2.6 * eo3(rg)).toFixed(3)})`;
+
+    // Kopf + Tabelle rein
+    const hdrOut = eo3(seg(t, [3700, 4050]));
+    const kk = eo3(seg(t, T.kick));
+    el("hdr").opacity = (1 - hdrOut).toFixed(3);
+    el("hKick").opacity = kk; el("hKick").transform = `translateY(${(8 * (1 - kk)).toFixed(2)}px)`;
+    const tt = eo5(seg(t, T.title));
+    el("hTitle").transform = `translateY(${(105 * (1 - tt)).toFixed(1)}%)`;
+    const headIn = eo3(seg(t, [520, 900]));
+    el("tHead").opacity = (headIn * (1 - hdrOut)).toFixed(3);
+    el("foot").opacity = (eo3(seg(t, [1100, 1500])) * (1 - hdrOut)).toFixed(3);
+
+    // Saison: Spieltag 10 → 30, Tabelle sortiert sich weich
+    const s = eioS(seg(t, T.season));
+    const md = Math.round(10 + 20 * s);
+    $("md").textContent = md;
+    const ranks = softRanks(s);
+    const prev = softRanks(eioS(seg(t - 50, T.season)));
+    const leader = s >= 0.999;
+    slotEls.forEach((sl, i) => {
+      const a = eo3(seg(t, [520 + i * 40, 860 + i * 40])) * (1 - hdrOut);
+      sl.style.opacity = a.toFixed(3);
+      sl.style.color = (i === 0 && t > T.shine[0]) ? "var(--gold)" : "";
+    });
+
+    const fallOrder = rows.map((r, i) => ({ i, rk: ranks[i] })).filter(o => !rows[o.i].me).sort((a, b) => b.rk - a.rk);
+    rows.forEach((r, i) => {
+      const inn = eo3(seg(t, [T.rowsIn[0] + i * 55, T.rowsIn[0] + i * 55 + 420]));
+      let y = ROW_Y0 + ranks[i] * ROW_H, x = 0, rot = 0, op = inn, scaleY = 1, w = 320, left = 54, h = 42;
+      x = 40 * (1 - inn);
+      r.sp.textContent = md;
+      r.pk.textContent = Math.round(points(r, s));
+      if (!r.me) {
+        const k = fallOrder.findIndex(o => o.i === i);
+        const d = seg(t, [T.fall[0] + k * 50, T.fall[0] + k * 50 + 460]);
+        y += 560 * ei3(d); rot = (k % 2 ? 1 : -1) * 9 * ei3(d); op *= 1 - ei3(d);
+        r.el.style.transform = `translate(${x.toFixed(1)}px, ${y.toFixed(1)}px) rotate(${rot.toFixed(2)}deg)`;
+        r.el.style.opacity = op.toFixed(3);
+        r.el.style.top = "0px";
+      } else {
+        const v = ranks[i] - prev[i];
+        r.up.style.opacity = clamp(-v * 18).toFixed(3);
+        const lift = clamp(-v * 6);
+        r.el.style.boxShadow = `inset 0 0 0 1.5px var(--gold), 0 ${(10 * lift).toFixed(1)}px ${(22 * lift).toFixed(1)}px rgba(0,0,0,${(0.5 * lift).toFixed(2)})`;
+        const sh = seg(t, T.shine);
+        r.shine.style.transform = `translateX(${lerp(-120, 260, eio3(sh)).toFixed(1)}%)`;
+        const c = eo3(seg(t, T.collapse));
+        y = lerp(y, 400, c); h = lerp(42, 6, c); left = lerp(54, 16, c); w = lerp(320, 358, c);
+        r.el.style.background = c > 0 ? `rgba(232,178,61,${lerp(0.16, 1, c).toFixed(3)})` : "";
+        [r.nm, r.sp, r.pk, r.up].forEach(n => n.style.visibility = c > 0.25 ? "hidden" : "");
+        r.el.style.left = left + "px"; r.el.style.width = w + "px"; r.el.style.height = h + "px";
+        r.el.style.transform = `translate(${x.toFixed(1)}px, ${(y + (42 - h) / 2).toFixed(1)}px) scale(${(1 + 0.03 * lift * (1 - c)).toFixed(4)})`;
+        r.el.style.opacity = (seg(t, T.beam) > 0 ? 0 : op).toFixed(3);
+      }
+    });
+
+    // Strahl: waagrechter Balken → senkrechter Lichtstrahl → löst sich im Spotlicht auf
+    const b = seg(t, T.beam);
+    const bw = lerp(358, 5, eio3(clamp(b / 0.45)));
+    const bh = lerp(6, H + 40, eo5(clamp((b - 0.3) / 0.7)));
+    el("beam").width = bw.toFixed(1) + "px"; el("beam").height = bh.toFixed(1) + "px";
+    el("beam").transform = `translate(${(195 - bw / 2).toFixed(1)}px, ${(403 - bh / 2).toFixed(1)}px)`;
+    el("beam").opacity = (b > 0 ? 1 - eo3(seg(t, [5000, 5700])) : 0).toFixed(3);
+
+    // Flutlicht
+    for (let k = 0; k < 4; k++) {
+      const order = [0, 3, 1, 2][k];
+      const a = eo3(seg(t, [T.lights[0] + order * 90, T.lights[0] + order * 90 + 260]));
+      $("m" + k).style.opacity = (a * (1 - 0.35 * seg(t, [5400, 6000]))).toFixed(3);
+    }
+
+    // Neue Liga fällt ein
+    const lk = eo3(seg(t, T.lKick));
+    el("lKick").opacity = lk; el("lKick").transform = `translateY(${(10 * (1 - lk)).toFixed(1)}px)`;
+    letters.forEach((L, j) => {
+      const d = seg(t, [T.drop + j * 34, T.drop + j * 34 + 420]);
+      const y = -170 * (1 - eoBack(d, 2.4));
+      L.style.transform = `translateY(${y.toFixed(1)}px) rotate(${((1 - eo3(d)) * (j % 2 ? 6 : -6)).toFixed(2)}deg)`;
+      L.style.opacity = clamp(d * 5).toFixed(3);
+    });
+    const ul = eo3(seg(t, T.uline));
+    el("uline").width = ((+$("uline").dataset.w || 300) * ul).toFixed(1) + "px";
+    const sb = eo3(seg(t, T.sub)), tt2 = eio3(seg(t, T.toTitle));
+    el("sub").opacity = (sb * (1 - clamp(tt2 * 2.2))).toFixed(3);
+    el("sub").transform = `translateY(${(8 * (1 - sb)).toFixed(1)}px)`;
+    el("league").transform = `translateY(${(-168 * tt2).toFixed(1)}px) scale(${lerp(1, 0.56, tt2).toFixed(4)})`;
+
+    // Pokal
+    const sp = eo3(seg(t, T.spot));
+    el("spot").opacity = sp.toFixed(3);
+    el("floor").opacity = (eo3(seg(t, [5900, 6500]))).toFixed(3);
+    const rs = seg(t, T.rise);
+    el("trophy").transform = `translateY(${(230 * (1 - eoBack(rs, 1.3))).toFixed(1)}px) scale(${lerp(0.82, 1, eo3(rs)).toFixed(4)})`;
+    el("trophy").opacity = clamp(rs * 4).toFixed(3);
+    drawTrophy(Math.PI * 2 * eio3(seg(t, T.spin)));
+    const gl = seg(t, T.glint);
+    $("spark").setAttribute("opacity", (gl > 0 && gl < 1 ? 1 : 0));
+    $("spark").setAttribute("transform", `translate(152 20) scale(${Math.sin(Math.PI * gl).toFixed(3)}) rotate(${(70 * gl).toFixed(1)})`);
+
+    const wg = eo5(seg(t, T.wg));
+    el("wgIn").transform = `translateY(${(110 * (1 - wg)).toFixed(1)}%)`;
+    const pq = eo3(seg(t, T.plaque));
+    el("plaque").opacity = pq; el("plaque").transform = `translateY(${(14 * (1 - pq)).toFixed(1)}px)`;
+    const total = 30, got = 27;
+    $("pStars").textContent = "★ " + Math.round(got * eo3(seg(t, T.stars))) + " / " + total;
+
+    const bt = eo3(seg(t, T.btn));
+    el("btn").opacity = bt; el("btn").transform = `translateY(${(16 * (1 - bt)).toFixed(1)}px)`;
+    $("btn").classList.toggle("live", bt > 0.9);
+    const h1 = seg(t, [T.hint[0], T.hint[0] + 400]), h2 = seg(t, [T.hint[1] - 300, T.hint[1]]);
+    el("hint").opacity = (0.9 * h1 * (1 - h2)).toFixed(3);
+
+    drawFx(t);
+  }
+
+  // ---------- Abspielen ----------
+  let t = 0, playing = false, speed = 1, last = 0, raf = 0;
+  const scrub = $("scrub"), clock = $("clock");
+  const MARKS = [["Abpfiff", 0], ["Saison", 600], ["Aufstieg", 3720], ["Pokal", 5380], ["Weiter", 8350]];
+  MARKS.forEach(([n, at]) => {
+    const b = document.createElement("button"); b.type = "button"; b.textContent = n; b.style.left = (at / 9600 * 100) + "%";
+    b.addEventListener("click", () => { pause(); seek(at + 1); });
+    $("marks").appendChild(b);
+  });
+  const markEls = [...$("marks").children];
+  function showTime() {
+    clock.textContent = (t / 1000).toFixed(1).replace(".", ",") + " s";
+    scrub.value = Math.min(9600, t);
+    let cur = 0; MARKS.forEach(([, at], i) => { if (t >= at) cur = i; });
+    markEls.forEach((m, i) => m.classList.toggle("on", i === cur));
+  }
+  function frame(now) {
+    if (playing) {
+      t += (now - last) * speed; last = now;
+      if (t >= END) { t = END; playing = false; }
+    }
+    render(t); showTime();
+    if (playing) raf = requestAnimationFrame(frame);
+  }
+  function play(from) {
+    $("after").classList.remove("on");
+    cancelAnimationFrame(raf);
+    t = reduce ? END_UI : (from ?? 0);
+    playing = !reduce; last = performance.now();
+    $("pause").textContent = "Pause";
+    raf = requestAnimationFrame(frame);
+  }
+  function pause() { playing = false; cancelAnimationFrame(raf); $("pause").textContent = "Weiter"; }
+  function seek(v) { t = v; render(t); showTime(); }
+
+  $("play").addEventListener("click", () => play(0));
+  $("again").addEventListener("click", () => play(0));
+  $("pause").addEventListener("click", () => {
+    if (playing) pause();
+    else { if (t >= END) t = 0; playing = true; last = performance.now(); $("pause").textContent = "Pause"; raf = requestAnimationFrame(frame); }
+  });
+  scrub.addEventListener("input", () => { pause(); seek(+scrub.value); });
+  $("speed").addEventListener("click", e => {
+    const b = e.target.closest("button"); if (!b) return;
+    speed = +b.dataset.s;
+    [...$("speed").children].forEach(x => x.setAttribute("aria-pressed", x === b));
+  });
+  function skip() {
+    if (t < SKIP1) t = SKIP1; else if (t < END_UI) t = END_UI; else return;
+    if (!playing) { playing = true; last = performance.now(); $("pause").textContent = "Pause"; raf = requestAnimationFrame(frame); }
+  }
+  $("stage").addEventListener("click", e => { if (e.target.closest("button")) return; skip(); });
+  $("stage").addEventListener("keydown", e => { if (e.key === " " || e.key === "Enter") { e.preventDefault(); skip(); } });
+  $("btn").addEventListener("click", () => { pause(); $("after").classList.add("on"); });
+  $("team").addEventListener("input", e => { teamName = e.target.value; rows[7].nm.textContent = teamName.trim() || "Dein Team"; });
+  $("rm").addEventListener("change", e => { reduce = e.target.checked; play(0); });
+
+  const wEl = $("worlds");
+  Object.entries(WORLDS).forEach(([n, w]) => {
+    const b = document.createElement("button"); b.type = "button"; b.className = "chip"; b.setAttribute("aria-pressed", n == world);
+    b.innerHTML = `<i style="background:${w.color}"></i>${n} · ${w.name}`;
+    b.addEventListener("click", () => { world = +n; [...wEl.children].forEach(x => x.setAttribute("aria-pressed", x === b)); setupWorld(); play(0); });
+    wEl.appendChild(b);
+  });
+
+  // Handy einpassen
+  function fit() {
+    const box = $("phoneBox");
+    const wide = window.innerWidth >= 900;
+    const availW = Math.min(390, document.querySelector(".wrap").clientWidth - 32);
+    const availH = wide ? window.innerHeight - 40 : 10000;
+    const sc = Math.min(availW / 390, availH / 844, 1);
+    $("phone").style.transform = `scale(${sc})`;
+    box.style.width = (390 * sc) + "px"; box.style.height = (844 * sc) + "px";
+  }
+  window.addEventListener("resize", fit);
+  fit();
+
+  const go = () => { setupWorld(); render(0); play(0); };
+  (document.fonts && document.fonts.ready ? document.fonts.ready : Promise.resolve()).then(go);
 })();
 </script>
-
 </body>
 </html>

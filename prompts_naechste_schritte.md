@@ -62,7 +62,7 @@ Welten-Ausschmückung), `prototypes/ladescreen.html` (Prompt 11d) und
 `prototypes/modus-kacheln.html` (Prompt 18, nur „A · neu“) und
 `prototypes/regeln.html` (Prompt 19) und `prototypes/freispiel.html` (Prompt 20) und
 `prototypes/teilen.html` (Prompt 24) und `prototypes/duell.html` (Prompts 25–26) und
-`prototypes/welt-animation.html` (Prompt 31, nur „C + A“).
+`prototypes/welt-animation.html` (Prompt 31, Fassung v2 vom 10.10.2026 – nur die Bühne, nicht das Regie-Pult).
 
 **Wichtig nach jeder Änderung:** Der Service Worker liefert die App aus dem
 Cache. Jeder Prompt erhöht deshalb `CACHE_NAME` in `sw.js` – sonst sieht die
@@ -2360,18 +2360,21 @@ Pfad überein; Screenshots bei 375/402/430; keine Konsolenfehler.
   Flutlichter gehen nacheinander an), C „Aufstieg“ (Tabelle, eigenes Team
   klettert auf Platz 1, Banner „Aufstieg in die Regionalliga!“), D
   „Tunnel in die neue Liga“ (Walkout-Stil, größeres Stadion, Name der
-  neuen Welt). Entschieden: C + A → Prompt 31.
+  neuen Welt). Entschieden: C + A → Prompt 31. Am 10.10.2026 ersetzt durch
+  eine neue durchgehende Fassung „Aufstieg – Welt geschafft“ (v2).
   Eigene Gestaltung, keine Figuren/Grafiken aus fremden Spielen.
 
-## Prompt 31 – Kampagne: Animation „Welt geschafft“ (Aufstieg + Pokal)
+## Prompt 31 – Kampagne: Animation „Welt geschafft“ (Fassung v2)
 
 ```
 Lies CLAUDE.md. Neue Feier-Animation beim Abschluss einer Kampagnen-Welt →
-kurz Plan zeigen, dann umsetzen. Optik/Ablauf 1:1 aus
-prototypes/welt-animation.html, maßgeblich ist NUR die Variante "C + A"
-(Funktionen playC und playA, CSS .c-*/.a-*, Konfetti-Funktion). Prototyp nur
-lesen, nicht einbinden. Voraussetzung: Prompt 30 (Knopf "🏆 Welt geschafft!
-Weiter ›").
+kurz Plan zeigen, dann umsetzen. Optik, Timing und Bewegung 1:1 aus
+prototypes/welt-animation.html (Fassung v2). Maßgeblich ist NUR die Bühne:
+#stage mit allen Ebenen, CSS dazu, render(t), drawTrophy(theta),
+buildFx/drawFx, Hilfsfunktionen (seg, Easings, rng). Das Regie-Pult
+(.desk, Zeitleiste, Tempo, Welt-Chips, Teamname-Feld) gehört NICHT in die
+App. Prototyp nur lesen, nicht einbinden. Voraussetzung: Prompt 30
+(Knopf "🏆 Welt geschafft! Weiter ›").
 
 1. Wann
    - Genau einmal pro Welt: wenn durch das aktuelle Ergebnis zum ERSTEN
@@ -2382,42 +2385,74 @@ Weiter ›").
    - Startet direkt nach "Auswerten", VOR Level-Up-Overlay und Trophäen-
      Toasts (die danach wie gewohnt folgen bzw. in einer Warteschlange
      laufen – nichts darf sich überlagern).
-   - Vollbild-Overlay über dem Spielfeld, kein Navigations-Eintrag.
+   - Vollbild-Overlay über dem Spielfeld, kein Navigations-Eintrag,
+     Safe-Areas beachten (Inhalt unter Notch/Home-Balken frei).
 
-2. Ablauf C → A (ca. 10 s)
-   C · Aufstieg: Kopf "<Weltname> · letzter Spieltag" / "Wer steigt auf?",
-     Tabelle mit 8 Teams: 7 erfundene Teamnamen (Liste je Welt im Code,
-     KEINE echten Vereine/Wappen) + eigenes Team (profile.duelName, sonst
-     "Dein Team") startet auf Platz 8 und klettert Platz für Platz auf 1
-     (Punkte zählen mit, grüner Pfeil ▲, Aufstiegszone links grün). Dann
-     Banner "Aufstieg in die <nächste Welt>!" + "Welt n+1 ist
-     freigeschaltet" + Konfetti in Gold und Weltfarbe (DIFF_COLOR).
-     Letzte Welt (Weltklasse): Kopf "Weltklasse · letzter Spieltag",
-     Banner "Du bist Weltklasse!" + "Alle Welten geschafft".
-   A · Pokal: Abblenden, Flutlicht-Kegel, Pokal steigt auf und dreht sich
-     einmal, "Welt geschafft!" ("geschafft" gold), Plakette
-     "<Weltname>-Pokal" + "⭐ x / y · kommt in deinen Trophäenschrank"
-     (x/y = Kampagnen-Sterne dieser Welt aus profile.campaign.stars). Auf
-     dem Pokal-Schild "WELT n". Danach Knopf "Weiter ›" → schließt das
-     Overlay, dann der Ergebnis-Bildschirm mit den Knöpfen aus Prompt 30.
+2. Technik (wie im Prototyp, nicht vereinfachen)
+   - EINE Zeitachse t in ms; jedes Bild wird mit render(t) komplett aus t
+     berechnet (deterministisch). Kein Mix aus CSS-Transitions/Keyframes für
+     die Sequenz. Ein requestAnimationFrame-Loop, nach dem Ende stoppen.
+   - Bühne intern 390×844 und per transform: scale() auf den Bildschirm
+     eingepasst (Breite füllt, vertikal zentriert; bei sehr hohen Geräten
+     Hintergrund ink weiterlaufen lassen). 375×667 bis 430×932 prüfen –
+     auf kleinen Geräten darf nichts abgeschnitten werden (ggf. vertikal
+     nach Höhe skalieren).
+   - Konfetti als Canvas mit analytischer Bahn (deterministisch, seeded
+     rng), devicePixelRatio max. 2, nach Ende Canvas leeren und entfernen.
+   - Pokal als Inline-SVG wie im Prototyp, inkl. echter Drehung: Henkel
+     wechseln zwischen vorderer/hinterer Ebene, Rillen und Emblem laufen
+     mit, Sockel dreht nicht mit. Sockel-Schild "WELT n".
+   - Tabelle mit weicher Rangberechnung (softRanks, Sigmoid-Breite 0.32),
+     überholende Zeile hebt sich leicht an (Schatten/Scale) – wie Prototyp.
 
-3. Regeln
-   - Überspringen: "Tippen zum Überspringen" unten; erster Tipp → Ende von
-     C bzw. direkt zu A, zweiter Tipp → Endzustand von A mit "Weiter ›".
-   - Nur einmalige Animationen, kein Blinken/Dauerschleife (CLAUDE.md);
-     prefers-reduced-motion: direkt Endzustände ohne Bewegung.
-   - Schriften laut CLAUDE.md (Anton für Titel/Zahlen, Oswald sonst).
-   - Pokal als eigenes SVG wie im Prototyp, Konfetti als Canvas, nach
-     Ende aufräumen (requestAnimationFrame stoppen, Canvas entfernen).
+3. Ablauf (Zeiten aus T im Prototyp übernehmen, gesamt ≈ 8,8 s bis zum
+   Knopf, Konfetti läuft bis ≈ 13,6 s aus)
+   - Abpfiff: Kreide-Mittellinie + Mittelkreis, ein Pfiff-Ring.
+   - Saisonverlauf: Kopf "<Weltname> · Saisonverlauf" / "Wer steigt auf?",
+     Spieltag 10 → 30, Tabelle mit 7 erfundenen Teams (Listen je Welt aus
+     dem Prototyp; KEINE echten Vereine/Wappen) + eigenes Team
+     (profile.duelName, sonst "Dein Team"), startet auf Platz 8, endet auf
+     Platz 1; Aufstiegszone Platz 1–2 grün; Lichtschimmer auf Platz 1.
+   - Aufstieg: andere Zeilen fallen, eigene Zeile → goldener Strahl, vier
+     Flutlichtmasten, Kicker "Aufstieg in die", Liganame der nächsten Welt
+     fällt buchstabenweise (Champions League zweizeilig), Kamera-Ruck,
+     Unterstrich in DIFF_COLOR der nächsten Welt, "Welt n+1 ist
+     freigeschaltet".
+   - Pokal: Spotlicht, Pokal steigt auf und dreht sich einmal, Konfetti-
+     Kanonen links/rechts (Gold, Hellgold, Kreide, Farbe der nächsten Welt),
+     ein Funkeln, "Welt geschafft!" ("geschafft!" gold), Plakette
+     "<Weltname>-Pokal" + "★ x / y · kommt in deinen Trophäenschrank"
+     (x/y = Kampagnen-Sterne dieser Welt aus profile.campaign.stars, zählt
+     hoch). Dann Knopf "Weiter ›" → Overlay schließen → Ergebnis-Bildschirm
+     mit den Knöpfen aus Prompt 30.
+   - Letzte Welt (Weltklasse): Kopf "Weltklasse · Saisonfinale" / "Wer holt
+     den Titel?", nur Platz 1 markiert ("Platz 1: Weltklasse-Titel"),
+     Kicker "Du bist", Wort "WELTKLASSE", Untertitel "Alle Welten
+     geschafft", Konfetti in Gold + Weltklasse-Rot.
+
+4. Regeln
+   - Überspringen: "Tippen zum Überspringen"; erster Tipp → Beginn Pokal
+     (SKIP1), zweiter Tipp → Endbild mit Knopf (END_UI). Tastatur: Enter/
+     Leertaste.
+   - Nur einmalige Bewegungen, kein Blinken, keine Schleife (CLAUDE.md);
+     Endbild steht still.
+   - prefers-reduced-motion: direkt Endbild (render(END_UI)) ohne Konfetti,
+     ohne Kamera-Ruck.
+   - Schriften laut CLAUDE.md (Anton für Titel/Zahlen, Oswald sonst),
+     Farben nur aus den App-Variablen (ink, gold, pitch, chalk, ok).
+   - Performance: nur transform/opacity animieren, keine Layout-Thrashes im
+     Loop außer den im Prototyp genutzten Breiten/Höhen von Strahl und
+     eigener Zeile; auf einem älteren Android (360 px) flüssig.
    - Bonus (falls einfach): Im Trophäenschrank Tipp auf einen gewonnenen
-     <Welt>-Pokal → Animation erneut ansehen (nur A, ohne Belohnungen).
+     <Welt>-Pokal → Animation erneut ansehen (ohne Belohnungen).
 
-sw.js CACHE_NAME erhöhen. Test: Testprofil mit 9/10 bestandenen Leveln in
-Welt 1 → letztes Level bestehen → C dann A laufen einmal, danach Ergebnis
+sw.js CACHE_NAME erhöhen. Test: Testprofil mit allen bis auf ein Level in
+Welt 1 → letztes Level bestehen → Animation läuft einmal, danach Ergebnis
 mit "🏆 Welt geschafft! Weiter ›"; dasselbe Level erneut bestehen → keine
-Animation; Überspringen mit 1 und 2 Tipps; Welt 5 zeigt "Du bist
-Weltklasse!"; reduced motion; Screenshot-Serie bei 375/402/430; keine
-Konsolenfehler.
+Animation; Überspringen mit 1 und 2 Tipps; Welt 3 → "CHAMPIONS LEAGUE"
+zweizeilig; Welt 5 → "Du bist Weltklasse"; reduced motion; Screenshot-
+Serie (t = 0,9 / 2,3 / 3,5 / 4,7 / 6,0 / 7,5 / 9,0 s) bei 375/402/430;
+nach Ende kein laufender rAF-Loop, Canvas entfernt; keine Konsolenfehler.
 ```
 
 ---
