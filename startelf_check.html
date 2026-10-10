@@ -85,6 +85,15 @@
   .sub { color: rgba(242,239,230,0.6); font-size: 13.5px; margin-top: 5px; font-weight: 300; line-height: 1.35; max-width: 42ch; margin-left: auto; margin-right: auto; text-wrap: balance; }
 
   /* ---- Match picker ---- */
+  .lvl-badge { display: inline-block; font-family: 'Oswald', sans-serif; font-weight: 600; font-size: 12.5px; padding: 2px 11px; border-radius: 20px; color: var(--wc); line-height: 1.35; background: color-mix(in srgb, var(--wc) 14%, transparent); border: 1px solid color-mix(in srgb, var(--wc) 40%, transparent); }
+  .lvl-dots { display: flex; justify-content: center; align-items: center; gap: 4px; height: 11px; margin-top: 2px; }
+  .lvl-dots i { width: 7px; height: 7px; border-radius: 50%; border: 1.5px solid rgba(242,239,230,0.35); box-sizing: border-box; }
+  .lvl-dots i.done { background: var(--gold); border-color: var(--gold); }
+  .lvl-dots i.now { width: 11px; height: 11px; border: 2px solid var(--wc); box-shadow: 0 0 0 2px color-mix(in srgb, var(--wc) 25%, transparent); }
+  .lvl-dots i.now.done { background: var(--gold); }
+  .badge-row.lvl { margin-bottom: 1px !important; }
+  .badge-row.lvl.pl { margin-bottom: -2px !important; }
+  .badge-row.lvl + .bonus-text { margin-top: 0; }
   .diff-badge { display: inline-flex; align-items: center; gap: 5px; font-family: 'Oswald', sans-serif; font-size: 10.5px; font-weight: 700; letter-spacing: 0.05em; padding: 4px 10px; border-radius: 20px; text-transform: uppercase; }
   .diff-dots { display: inline-flex; gap: 2px; }
   .diff-dot { width: 6px; height: 6px; border-radius: 50%; background: rgba(255,255,255,0.2); }
@@ -361,6 +370,8 @@
   .btn-row { display: flex; gap: 10px; margin-bottom: 10px; }
   button.action { flex: 1; font-family: 'Oswald', sans-serif; font-weight: 600; font-size: 14.5px; text-transform: uppercase; letter-spacing: 0.02em; padding: 15px 8px; border-radius: 8px; border: none; cursor: pointer; transition: transform 0.1s ease, box-shadow 0.15s ease; }
   button.action:active { transform: scale(0.97); }
+  button.action.small-left { flex: 0 0 auto; padding-left: 16px; padding-right: 16px; }
+  .btn-row #nextBtn, .btn-row #retryBtn { flex: 1; }
   .btn-gold { background: var(--gold); color: var(--ink); box-shadow: 0 4px 14px rgba(232,178,61,0.25); }
   .btn-light { background: var(--chalk); color: var(--ink); }
   .btn-outline { background: transparent; color: var(--chalk); border: 1px solid var(--line); }
@@ -3600,6 +3611,14 @@ function startArchiveMatch() {
   startMatch(m);
 }
 
+// Kampagne (Prompt 30): "<Weltname> · Level n von N" + Punktreihe der Welt (bestanden gold, aktuell gross, offen leer)
+function renderLevelBadge(m) {
+  const { tier, index } = currentLevelContext;
+  const matches = getMatchesByTier(tier);
+  const color = DIFF_COLOR[tier];
+  const dots = matches.map((x, i) => `<i class="${profile.campaign.levelPassed[x.id] ? "done" : ""}${i === index ? " now" : ""}"></i>`).join("");
+  return `<span class="lvl-badge" style="--wc:${color}">${DIFF_LABEL[tier]} · Level ${index + 1} von ${matches.length}</span><span class="lvl-dots" style="--wc:${color}" aria-hidden="true">${dots}</span>`;
+}
 function renderDiffBadge(difficulty) {
   const color = DIFF_COLOR[difficulty];
   const dots = [1, 2, 3, 4, 5].map(n => `<span class="diff-dot${n <= difficulty ? " on" : ""}"></span>`).join("");
@@ -3941,13 +3960,15 @@ function startMatch(m) {
   currentMatch = m;
   draftCtx = null; // bis renderPitch() die Aufstellung (neu) aufbaut
   if (navStack[navStack.length - 1] !== "game") navigate("game");
+  const gameScreen = document.getElementById("screen-game");
+  if (gameScreen) gameScreen.scrollTop = 0;
   const pitchView = document.getElementById("pitchView");
   pitchView.innerHTML = `
     <div class="bonus-panel">
       <button class="back-btn" id="exitMatchBtn"><span class="back-arrow">←</span>Abbrechen</button>
       <div class="bonus-eyebrow">${m.comp}</div>
       <div class="bonus-title">${m.teams}</div>
-      <div style="text-align:center; margin-bottom:12px">${renderDiffBadge(m.difficulty)}</div>
+      <div class="badge-row${currentLevelContext ? " lvl" : ""}" style="text-align:center; margin-bottom:12px">${currentLevelContext ? renderLevelBadge(m) : renderDiffBadge(m.difficulty)}</div>
       <div class="bonus-text"><b>${m.side}</b><br>${m.context}</div>
       <button class="action btn-gold" id="toPitchBtn" style="width:100%">Aufstellung eintragen</button>
     </div>`;
@@ -6183,7 +6204,7 @@ function renderPitch() {
       </div>
       <div class="bonus-eyebrow">${m.formation} · ${m.comp}</div>
       <div class="bonus-title" style="font-size:19px">${m.teams}</div>
-      <div style="text-align:center; margin-bottom:10px">${renderDiffBadge(m.difficulty)}</div>
+      <div class="badge-row${currentLevelContext ? " lvl pl" : ""}" style="text-align:center; margin-bottom:10px">${currentLevelContext ? renderLevelBadge(m) : renderDiffBadge(m.difficulty)}</div>
       <div class="bonus-text" style="margin-bottom:10px">Gesucht: <b>${m.side}</b></div>
       ${prefilledAbbrs.size > 0 ? `<div class="prefill-note">🎁 ${prefilledAbbrs.size} von ${positions.length} Positionen bereits vorgegeben</div>` : ""}
       <div class="combo-chip hidden" id="comboChip"></div>
@@ -7085,19 +7106,22 @@ function evaluatePitch() {
     const { tier, index, passed } = campaignResult;
     const tierMatches = getMatchesByTier(tier);
     const hasNext = index + 1 < tierMatches.length;
-    if (passed && hasNext) {
-      row.innerHTML = `<button class="action btn-gold" id="backBtn" style="width:100%">← Zurück zum Pfad</button>`;
+    // Prompt 30: links klein "‹ Pfad", rechts der Hauptknopf (naechstes Level / Welt geschafft / nochmal)
+    const nextUnlocked = hasNext && index + 1 < unlockedLevelCount(tier);
+    const pathBtn = `<button class="action btn-outline small-left" id="backBtn">‹ Pfad</button>`;
+    if (passed && nextUnlocked) {
+      row.innerHTML = pathBtn + `<button class="action btn-gold" id="nextBtn">Level ${index + 2} ›</button>`;
     } else if (passed && !hasNext) {
-      row.innerHTML = `<button class="action btn-gold" id="backBtn" style="width:100%">🏆 Stufe geschafft! Zur Weltkarte</button>`;
+      row.innerHTML = pathBtn + `<button class="action btn-gold" id="nextBtn">🏆 Welt geschafft! Weiter ›</button>`;
+    } else if (passed) {
+      row.innerHTML = pathBtn;
     } else {
-      row.innerHTML = `
-        <button class="action btn-outline" id="backBtn">Zurück zum Pfad</button>
-        <button class="action btn-gold" id="retryBtn">Nochmal versuchen</button>`;
+      row.innerHTML = pathBtn + `<button class="action btn-gold" id="retryBtn">Nochmal versuchen</button>`;
     }
     panel.appendChild(row);
-    document.getElementById("backBtn").onclick = () => {
-      goBackTo(passed && !hasNext ? "worldmap" : "levelpath");
-    };
+    document.getElementById("backBtn").onclick = () => goBackTo("levelpath");
+    const nextBtn = document.getElementById("nextBtn");
+    if (nextBtn) nextBtn.onclick = () => { if (hasNext) startCampaignLevel(tier, index + 1); else goBackTo("worldmap"); };
     const retryBtn = document.getElementById("retryBtn");
     if (retryBtn) retryBtn.onclick = () => { startMatch(m); };
   } else if (dailyResult) {
