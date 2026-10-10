@@ -237,6 +237,15 @@
   .seen-note { text-align: center; font-family: 'Oswald', sans-serif; font-weight: 300; font-size: 13.5px; color: var(--muted); margin: -2px 0 10px; }
   .reveal-row { margin-bottom: 10px; }
   .level-node .seen-eye { position: absolute; top: -6px; right: -8px; font-size: 13px; line-height: 1; z-index: 3; pointer-events: none; }
+  .level-node .draft-pen { position: absolute; top: -6px; left: -8px; font-size: 13px; line-height: 1; z-index: 3; pointer-events: none; }
+  .level-node .draft-tag { position: absolute; left: 50%; transform: translateX(-50%); bottom: -13px; white-space: nowrap; font-family: 'Oswald', sans-serif; font-weight: 500; font-size: 11px; color: var(--gold-2); text-shadow: 0 1px 3px rgba(0,0,0,0.7); pointer-events: none; }
+  .clear-link { display: block; margin: 0 auto 10px; border: 0; background: transparent; color: var(--muted); font-family: 'Oswald', sans-serif; font-weight: 400; font-size: 13px; padding: 4px 8px; cursor: pointer; }
+  .fp .draft-card { display: flex; align-items: stretch; gap: 6px; flex-shrink: 0; border-radius: 12px; border: 1px solid rgba(232,178,61,0.6); background: rgba(232,178,61,0.1); }
+  .fp .draft-card .dc-go { flex: 1; min-width: 0; text-align: left; border: 0; background: transparent; color: inherit; font-family: 'Oswald', sans-serif; padding: 7px 4px 7px 12px; cursor: pointer; display: grid; grid-template-columns: 1fr auto; column-gap: 8px; }
+  .fp .draft-card small { grid-column: 1 / -1; font-weight: 500; font-size: 11px; letter-spacing: 0.08em; text-transform: uppercase; color: var(--gold-2); }
+  .fp .draft-card b { font-weight: 600; font-size: 13.5px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  .fp .draft-card span { font-weight: 600; font-size: 13px; color: var(--gold-2); white-space: nowrap; }
+  .fp .draft-card .dc-x { border: 0; background: transparent; color: var(--muted); font-size: 16px; padding: 0 12px; cursor: pointer; }
   .data-row { display: flex; gap: 8px; margin-top: 4px; }
   .data-row button { flex: 1; border: 1px solid var(--line); background: var(--ink-2); color: var(--chalk); border-radius: 10px; padding: 9px 6px; font-family: 'Oswald', sans-serif; font-weight: 500; font-size: 13px; cursor: pointer; }
   .install-tip { position: fixed; z-index: 30; left: 50%; transform: translateX(-50%); top: max(8px, calc(env(safe-area-inset-top, 0px) + 6px)); width: calc(100% - 24px); max-width: 520px; display: flex; gap: 10px; align-items: center; background: var(--ink-2); border: 1px solid rgba(232,178,61,0.55); border-radius: 12px; padding: 9px 10px 9px 12px; box-shadow: 0 6px 20px rgba(0,0,0,0.45); }
@@ -2095,6 +2104,7 @@ function showScreen(id, dir) {
   const cur = document.querySelector(".screen:not([hidden])");
   const next = document.getElementById("screen-" + id);
   if (!next || cur === next) return;
+  if (cur && cur.id === "screen-game") { flushDraft(); draftCtx = null; } // Zurueck-Geste/Abbrechen: Entwurf sichern (Prompt 34)
   refreshScreenContent(id);
   next.hidden = false;
   if (id === "worldmap") layoutRoadmapNodes();
@@ -2371,7 +2381,8 @@ const defaultProfile = {
     levelPassed: {}, // match.id -> true; alles andere (freigeschaltete Level/Welten) wird daraus abgeleitet
     stars: {}, // match.id -> 0-3, NUR Kampagnen-Sterne (Prompt 13b, getrennt von Tages-/Freispiel-Ergebnissen)
     solutionSeen: {} // match.id -> true: Loesung angesehen, Sterne dieses Levels eingefroren (Prompt 33)
-  }
+  },
+  drafts: {} // Angefangene Aufstellungen (Prompt 34): 'c:<id>' Kampagne, 'f:<id>' Freispiel, 'd:<dateKey>' Tages-Challenge
 };
 
 const PASS_THRESHOLD = 7; // von 11 Positionen richtig, um ein Level zu bestehen und das nächste freizuschalten
@@ -2453,6 +2464,7 @@ function loadProfile() {
     if (!profile.campaign.levelPassed || typeof profile.campaign.levelPassed !== "object") profile.campaign.levelPassed = {};
     if (!profile.campaign.stars || typeof profile.campaign.stars !== "object") profile.campaign.stars = {};
     if (!profile.campaign.solutionSeen || typeof profile.campaign.solutionSeen !== "object") profile.campaign.solutionSeen = {};
+    if (!profile.drafts || typeof profile.drafts !== "object") profile.drafts = {};
     // Einmalige Wirtschafts-Migration (Prompt 6): zwei Waehrungen (Scout-Token +
     // Hinweis-Punkte) werden zu einer zusammengefuehrt - altes 3:1-Wertverhaeltnis
     // (ein Scout-Token kostete/gab etwa 3x soviel wie ein Hinweis-Punkt).
@@ -3011,7 +3023,10 @@ function renderFreeplay() {
     ? "Keine Aufstellung passt – wähle etwas ab"
     : `<b>${pool.length}</b> ${pool.length === 1 ? "Aufstellung passt" : "Aufstellungen passen"}`;
 
-  body.innerHTML = `
+  const fpDraftKey = Object.keys(profile.drafts).filter(k => k.startsWith("f:")).sort((a, b) => profile.drafts[b].updated - profile.drafts[a].updated)[0];
+  const fpDraftMatch = fpDraftKey && draftMatch(profile.drafts[fpDraftKey]);
+  const draftCard = fpDraftMatch ? `<div class="draft-card"><button type="button" class="dc-go" id="fpDraftGo"><small>Angefangen</small><b>${fpDraftMatch.teams}</b><span>Weiterspielen ›</span></button><button type="button" class="dc-x" id="fpDraftX" aria-label="Entwurf verwerfen">✕</button></div>` : "";
+  body.innerHTML = draftCard + `
     <div class="lab"><b>Wettbewerb</b><span>Mehrfachauswahl möglich</span></div>
     <button type="button" class="ch all${selectedLeagues.size === 0 ? " on" : ""}" id="fpAll">Alle Wettbewerbe <small>${LINEUP_CHALLENGES.length}</small></button>
     <div class="grp">${groups.map((g, gi) => `
@@ -3033,6 +3048,13 @@ function renderFreeplay() {
 
   const refresh = () => { matchQueue = []; renderFreeplay(); };
   document.getElementById("fpAll").onclick = () => { selectedLeagues.clear(); refresh(); };
+  const fpDraftGo = document.getElementById("fpDraftGo");
+  if (fpDraftGo) fpDraftGo.onclick = () => { currentLevelContext = null; currentDailyChallenge = null; freeplaySource = "filter"; startMatch(fpDraftMatch); };
+  const fpDraftX = document.getElementById("fpDraftX");
+  if (fpDraftX) fpDraftX.onclick = () => askSheet(`<div class="t">Angefangene Aufstellung verwerfen?</div><p>Deine Eingaben und Hilfe-Markierungen gehen verloren. Verbrauchte Token werden nicht erstattet.</p>`, [
+    { label: "Verwerfen", cls: "main", fn: () => { delete profile.drafts[fpDraftKey]; saveProfile(profile); renderFreeplay(); } },
+    { label: "Behalten", cls: "quiet" }
+  ]);
   body.querySelectorAll("[data-g]").forEach(btn => btn.onclick = () => {
     const c = groups[+btn.dataset.g].chips[+btn.dataset.c];
     if (chipOn(c)) c.leagues.forEach(l => selectedLeagues.delete(l)); else c.leagues.forEach(l => selectedLeagues.add(l));
@@ -3337,6 +3359,7 @@ function renderCampaignLevels() {
           ${isCurrent ? '<div class="level-badge">' + renderMascotHTML("small") + '</div>' : ""}
         </div>
         <div class="level-stars">${isUnlocked ? starsRowHTML(levelStars) : ""}</div>
+        ${isUnlocked && profile.drafts["c:" + m.id] ? '<span class="draft-pen" aria-hidden="true">✏️</span><span class="draft-tag">angefangen</span>' : ""}
         ${isUnlocked && profile.campaign.solutionSeen[m.id] && levelStars < 3 ? '<span class="seen-eye" title="Lösung angesehen – Sterne eingefroren" aria-label="Lösung angesehen">👁</span>' : ""}
         <div class="level-label">Level ${idx + 1}</div>
       </div>`;
@@ -3453,7 +3476,7 @@ function renderDailyCard() {
       <div class="fl" aria-label="Serie ${streak} Tage"><b>🔥${streak}</b><span>Tage Serie</span></div>
       ${result
         ? `<span class="done"><i>✓</i>Erledigt</span><button class="share-sm" type="button" id="dailyShareBtn">📤 Teilen</button>`
-        : `<button class="go" type="button" id="dailyPlayBtn">Starten</button>`}
+        : `<button class="go" type="button" id="dailyPlayBtn">${profile.drafts["d:" + dateKey] ? "Weiter" : "Starten"}</button>`}
     </div>`;
 
   if (result) {
@@ -3506,7 +3529,8 @@ function renderModeTiles() {
   }).join("");
   const curMatches = getMatchesByTier(current);
   const firstOpen = curMatches.findIndex(m => !profile.campaign.levelPassed[m.id]);
-  const campLine = allDone ? "Alle Welten geschafft" : `${DIFF_LABEL[current]} <em>· Level ${firstOpen + 1}</em>`;
+  const campDraft = allDone ? null : campaignDraftLevel(); // angefangenes Level der aktuellen Welt (Prompt 34)
+  const campLine = allDone ? "Alle Welten geschafft" : `${DIFF_LABEL[current]} <em>· Level ${(campDraft ? campDraft.idx : firstOpen) + 1}${campDraft ? " ✏️" : ""}</em>`;
 
   tiles.innerHTML = `
     <button type="button" class="mt camp" id="modeTileCampaign">
@@ -3516,7 +3540,10 @@ function renderModeTiles() {
       <div class="ft">Weiter spielen ${chev}</div>
     </button>${duelTileHTML(chev)}`;
 
-  document.getElementById("modeTileCampaign").onclick = () => navigate("worldmap");
+  document.getElementById("modeTileCampaign").onclick = () => {
+    const dr = campaignDraftLevel();
+    if (dr) startCampaignLevel(dr.tier, dr.idx); else navigate("worldmap");
+  };
   document.getElementById("modeTileDuel").onclick = () => navigate("duels");
 }
 
@@ -3895,6 +3922,7 @@ function exitMatch() {
 
 function startMatch(m) {
   currentMatch = m;
+  draftCtx = null; // bis renderPitch() die Aufstellung (neu) aufbaut
   if (navStack[navStack.length - 1] !== "game") navigate("game");
   const pitchView = document.getElementById("pitchView");
   pitchView.innerHTML = `
@@ -3910,6 +3938,41 @@ function startMatch(m) {
   document.getElementById("exitMatchBtn").onclick = exitMatch;
 }
 
+/* ---- Entwuerfe: angefangene Aufstellungen (Prompt 34) ---- */
+const DRAFT_MAX = 20, DRAFT_MAX_AGE_MS = 30 * 86400000;
+let draftCtx = null; // { key, save, timer } der gerade laufenden Aufstellung (null nach Auswerten/Verlassen)
+function pruneDrafts() {
+  const today = localDateKey(), now = Date.now();
+  Object.keys(profile.drafts).forEach(k => {
+    const d = profile.drafts[k];
+    if (!d || now - (d.updated || 0) > DRAFT_MAX_AGE_MS || (k.startsWith("d:") && k !== "d:" + today)) delete profile.drafts[k];
+  });
+  const keys = Object.keys(profile.drafts).sort((a, b) => profile.drafts[a].updated - profile.drafts[b].updated);
+  while (keys.length > DRAFT_MAX) delete profile.drafts[keys.shift()];
+}
+function discardDraft() {
+  if (!draftCtx) return;
+  clearTimeout(draftCtx.timer);
+  delete profile.drafts[draftCtx.key];
+  draftCtx = null;
+}
+function flushDraft() { if (draftCtx) draftCtx.save(); }
+document.addEventListener("visibilitychange", () => { if (document.hidden) flushDraft(); });
+window.addEventListener("pagehide", flushDraft);
+function draftMatch(d) { return LINEUP_CHALLENGES.find(x => x.id === d.id) || dailyMatchById(d.id); }
+function campaignDraftLevel() { // angefangenes Level der aktuellen Welt (oder null)
+  const tier = currentCampaignTier();
+  const matches = getMatchesByTier(tier);
+  const idx = matches.findIndex(m => profile.drafts["c:" + m.id]);
+  return idx >= 0 && idx < unlockedLevelCount(tier) ? { tier, idx, m: matches[idx] } : null;
+}
+function startCampaignLevel(tier, idx) {
+  const m = getMatchesByTier(tier)[idx];
+  campaignTier = tier;
+  currentLevelContext = { tier, index: idx, m };
+  currentDailyChallenge = null;
+  startMatch(m);
+}
 let hintsUsed = new Set(); // Positionen (Kürzel) dieser Aufstellung, bei denen ein Hinweis genutzt wurde
 let tokenRevealed = new Set(); // Positionen, die per Scout-Token direkt aufgedeckt wurden
 let prefilledAbbrs = new Set(); // Positionen, die kostenlos vorgegeben wurden (nur Kampagne)
@@ -5926,6 +5989,7 @@ function renderPitch() {
         </div>
       </div>
       <div class="position-panel" id="positionPanel"></div>
+      <button type="button" class="clear-link" id="clearFieldsBtn">↺ Felder leeren</button>
       <button class="action btn-gold" id="checkBtn" style="width:100%">Auswerten</button>
     </div>`;
 
@@ -6014,6 +6078,7 @@ function renderPitch() {
           newlyUnlocked.forEach(showAchievementToast);
         }
         renderPositionPanel(abbr);
+        scheduleDraft();
       });
     }
 
@@ -6036,6 +6101,7 @@ function renderPitch() {
       input.dataset.counted = "1";
       applyNameFit(input);
       renderPositionPanel(abbr);
+      scheduleDraft();
     });
   }
 
@@ -6252,6 +6318,7 @@ function renderPitch() {
 
       setTimeout(() => {
         drawnSet.add(pick.id);
+        scheduleDraft();
         if (pick.id === "fullName") {
           tokenRevealed.add(abbr);
           input.value = m.players[abbr];
@@ -6277,6 +6344,7 @@ function renderPitch() {
       profile.hintTokens -= ECONOMY.spinCost;
       hintsUsed.add(abbr);
       resetCombo(); // Scout-Rad-Dreh zaehlt als Hilfe
+      scheduleDraft();
       saveProfile(profile);
       renderProfileBar();
       resultSlotEl.innerHTML = "";
@@ -6359,6 +6427,74 @@ function renderPitch() {
   // preventDefault) - so loest der erste Tipp sofort aus (Prompt 22).
   const posPanelEl = document.getElementById("positionPanel");
   if (posPanelEl) posPanelEl.addEventListener("mousedown", (e) => { if (e.target.closest("button")) e.preventDefault(); });
+
+  // ---- Entwurf speichern/wiederherstellen (Prompt 34) ----
+  const draftKey = currentLevelContext ? "c:" + m.id : currentDailyChallenge ? "d:" + currentDailyChallenge.dateKey : "f:" + m.id;
+  const inputOf = (abbr) => pitchView.querySelector('input[data-abbr="' + abbr + '"]');
+  const myCtx = { key: draftKey, timer: null, save: null };
+  function saveDraft() {
+    clearTimeout(myCtx.timer);
+    if (draftCtx !== myCtx) return; // schon ausgewertet/verlassen
+    const entries = {};
+    positions.forEach(({ abbr }) => {
+      if (prefilledAbbrs.has(abbr)) return;
+      const inp = inputOf(abbr), cl = inp.classList, counted = !!inp.dataset.counted;
+      let e = null;
+      // Loesungen werden nie gespeichert: aufgedeckte/korrigierte Namen nur als Zustand, beim Laden aus den Daten gesetzt
+      if (cl.contains("revealed")) e = { s: "revealed" };
+      else if (cl.contains("ok") && fuzzyCorrected.has(abbr)) e = { s: "corrected" };
+      else if (cl.contains("ok")) e = { s: "ok", v: inp.value };
+      else if (inp.value.trim()) e = { s: "typed", v: inp.value };
+      else if (counted) e = { s: "typed", v: "" };
+      if (e) { if (counted) e.c = 1; entries[abbr] = e; }
+    });
+    const wheel = {};
+    wheelDrawn.forEach((set, abbr) => { if (set.size) wheel[abbr] = [...set]; });
+    const has = Object.keys(entries).length || hintsUsed.size || tokenRevealed.size || fuzzyCorrected.size || Object.keys(wheel).length;
+    if (!has) delete profile.drafts[draftKey];
+    else profile.drafts[draftKey] = { mode: draftKey[0], id: m.id, entries, hintsUsed: [...hintsUsed], tokenRevealed: [...tokenRevealed], fuzzyCorrected: [...fuzzyCorrected], wheel, combo, updated: Date.now() };
+    pruneDrafts();
+    saveProfile(profile);
+  }
+  myCtx.save = saveDraft;
+  draftCtx = myCtx;
+  function scheduleDraft() { clearTimeout(myCtx.timer); myCtx.timer = setTimeout(saveDraft, 400); }
+  function restoreDraft() {
+    const d = profile.drafts[draftKey];
+    if (!d || d.id !== m.id) return;
+    let any = false;
+    (d.hintsUsed || []).forEach(a => { hintsUsed.add(a); any = true; });
+    (d.tokenRevealed || []).forEach(a => { tokenRevealed.add(a); any = true; });
+    (d.fuzzyCorrected || []).forEach(a => { fuzzyCorrected.add(a); any = true; });
+    Object.entries(d.wheel || {}).forEach(([a, ids]) => { wheelDrawn.set(a, new Set(ids)); any = true; });
+    Object.entries(d.entries || {}).forEach(([abbr, e]) => {
+      const inp = inputOf(abbr);
+      if (!inp || prefilledAbbrs.has(abbr) || !m.players[abbr]) return;
+      if (e.s === "revealed") { inp.value = m.players[abbr]; inp.classList.add("revealed"); inp.disabled = true; tokenRevealed.add(abbr); }
+      else if (e.s === "corrected") { inp.value = m.players[abbr]; inp.classList.add("ok"); fuzzyCorrected.add(abbr); }
+      else if (e.s === "ok" && isAcceptedFor(m, abbr, e.v || "")) { inp.value = e.v; inp.classList.add("ok"); }
+      else if (e.v) inp.value = e.v;
+      if (e.c || ["revealed", "corrected", "ok"].includes(e.s)) inp.dataset.counted = "1"; // kein erneutes Positions-XP
+      if (inp.value) { applyNameFit(inp); any = true; if (!inp.classList.contains("ok") && !inp.classList.contains("revealed")) runFuzzyCheck(inp); }
+    });
+    combo = d.combo || 0; renderCombo();
+    if (any) showToast("Weiter, wo du aufgehört hast");
+  }
+  restoreDraft();
+  // Aenderungen entprellt sichern (Tippen, Korrigieren, Aufdecken, Scout-Rad rufen scheduleDraft)
+  pitchView.addEventListener("input", scheduleDraft);
+  const clearBtn = document.getElementById("clearFieldsBtn");
+  clearBtn.onclick = () => askSheet(`<div class="t">Felder leeren?</div><p>Deine Eingaben werden gelöscht. Verbrauchte Hilfen und Token bleiben verbraucht.</p>`, [
+    { label: "Felder leeren", cls: "main", fn: () => {
+      positions.forEach(({ abbr }) => {
+        const inp = inputOf(abbr);
+        if (prefilledAbbrs.has(abbr) || inp.classList.contains("revealed")) return;
+        inp.value = ""; inp.classList.remove("ok", "bad", "near"); inp.disabled = false; applyNameFit(inp);
+      });
+      resetCombo(); renderPositionPanel(activePosAbbr); scheduleDraft();
+    } },
+    { label: "Abbrechen", cls: "quiet" }
+  ]);
 
   const firstSelectable = positions.find(p => !prefilledAbbrs.has(p.abbr));
   if (firstSelectable) setActivePosition(firstSelectable.abbr);
@@ -6470,6 +6606,7 @@ function renderPitch() {
 
 function evaluatePitch() {
   const m = currentMatch;
+  discardDraft(); // Auswerten beendet den Entwurf (Prompt 34)
   markPitchRulesSeen();
   const positions = PITCH_LAYOUTS[m.formation];
   const pitchView = document.getElementById("pitchView");
