@@ -217,7 +217,30 @@
   .pitch-header-row .back-btn { margin-bottom: 0; }
   .rules-btn { position: relative; display: inline-flex; align-items: center; gap: 6px; background: var(--ink-2); border: 1px solid var(--line); color: var(--chalk); font-family: 'Oswald', sans-serif; font-weight: 600; font-size: 12.5px; text-transform: uppercase; letter-spacing: 0.03em; cursor: pointer; padding: 9px 14px; border-radius: 24px; box-shadow: 0 4px 12px rgba(0,0,0,0.3); transition: transform 0.1s ease; }
   .rules-btn:active { transform: scale(0.96); }
+  .pitch-header-row .hdr-right { display: flex; align-items: center; gap: 8px; flex-shrink: 0; }
+  .pitch-header-row .tok-chip { font-family: 'Oswald', sans-serif; font-weight: 700; font-size: 13px; color: var(--token); background: rgba(74,163,255,0.12); border: 1px solid rgba(74,163,255,0.3); border-radius: 20px; padding: 3px 9px; white-space: nowrap; }
   .rules-dot { position: absolute; top: -3px; right: -3px; width: 9px; height: 9px; border-radius: 50%; background: var(--gold); border: 2px solid var(--ink); }
+
+  /* Spielstand sichern/laden + Speicher-Warnung + Home-Bildschirm-Tipp (Prompt 32) */
+  .save-box { display: flex; flex-direction: column; gap: 10px; }
+  .save-box .t { font-family: 'Anton', Impact, sans-serif; font-size: 24px; line-height: 1.1; }
+  .save-box p { margin: 0; font-family: 'Oswald', sans-serif; font-weight: 300; font-size: 14px; line-height: 1.4; color: var(--muted); }
+  .save-box p b { font-weight: 600; color: var(--chalk); }
+  .save-box textarea { width: 100%; min-height: 96px; resize: none; border-radius: 10px; border: 1px solid var(--line); background: var(--ink); color: var(--chalk); padding: 9px 10px; font-family: 'Oswald', sans-serif; font-weight: 300; font-size: 12px; word-break: break-all; }
+  .save-box .err { color: #E37464; font-weight: 500; }
+  .save-box .sum { border-radius: 10px; border: 1px solid var(--line); padding: 9px 12px; font-family: 'Oswald', sans-serif; font-size: 14px; line-height: 1.5; }
+  .save-box .sum b { font-weight: 600; color: var(--gold-2); }
+  .save-row { display: flex; gap: 8px; } .save-row > * { flex: 1; }
+  .save-btn { border: 1px solid rgba(232,178,61,0.6); background: rgba(232,178,61,0.1); color: var(--gold-2); border-radius: 12px; padding: 10px 8px; font-family: 'Oswald', sans-serif; font-weight: 600; font-size: 14px; cursor: pointer; }
+  .save-btn.main { background: linear-gradient(180deg, var(--gold-2), var(--gold)); color: var(--ink); border-color: transparent; }
+  .save-btn.quiet { border-color: var(--line); background: transparent; color: var(--muted); }
+  .data-row { display: flex; gap: 8px; margin-top: 4px; }
+  .data-row button { flex: 1; border: 1px solid var(--line); background: var(--ink-2); color: var(--chalk); border-radius: 10px; padding: 9px 6px; font-family: 'Oswald', sans-serif; font-weight: 500; font-size: 13px; cursor: pointer; }
+  .install-tip { position: fixed; z-index: 30; left: 50%; transform: translateX(-50%); top: max(8px, calc(env(safe-area-inset-top, 0px) + 6px)); width: calc(100% - 24px); max-width: 520px; display: flex; gap: 10px; align-items: center; background: var(--ink-2); border: 1px solid rgba(232,178,61,0.55); border-radius: 12px; padding: 9px 10px 9px 12px; box-shadow: 0 6px 20px rgba(0,0,0,0.45); }
+  .install-tip p { margin: 0; flex: 1; font-family: 'Oswald', sans-serif; font-weight: 300; font-size: 12.5px; line-height: 1.35; }
+  .install-tip p b { font-weight: 600; color: var(--gold-2); }
+  .install-tip button { border: 0; background: transparent; color: var(--muted); font-size: 18px; line-height: 1; padding: 4px 6px; cursor: pointer; }
+  .install-tip[hidden] { display: none; }
 
   .pass-banner { text-align: center; font-family: 'Oswald', sans-serif; font-weight: 700; font-size: 15px; padding: 10px; border-radius: 8px; margin-bottom: 10px; }
   .pass-banner.pass { background: rgba(46,204,113,0.15); color: #2ecc71; border: 1px solid rgba(46,204,113,0.4); }
@@ -367,7 +390,7 @@
     .profile-bar .foot .wissen-txt { display: none; }
   }
 
-  .toast-stack { position: fixed; top: 16px; left: 50%; transform: translateX(-50%); z-index: 50; display: flex; flex-direction: column; gap: 8px; width: 92%; max-width: 500px; pointer-events: none; }
+  .toast-stack { position: fixed; top: max(16px, calc(env(safe-area-inset-top, 0px) + 10px)); left: 50%; transform: translateX(-50%); z-index: 50; display: flex; flex-direction: column; gap: 8px; width: 92%; max-width: 500px; pointer-events: none; }
   #srFx { position: fixed; inset: 0; width: 100%; height: 100%; pointer-events: none; z-index: 55; }
   .toast { background: var(--ink-2); border: 1px solid var(--gold); border-radius: 8px; padding: 12px 16px; font-family: 'Oswald', sans-serif; font-size: 13.5px; color: var(--chalk); box-shadow: 0 6px 20px rgba(0,0,0,0.4); animation: toastIn 0.3s ease, toastOut 0.3s ease 3.2s forwards; }
   .toast b { color: var(--gold); }
@@ -1072,6 +1095,7 @@
 
   <!-- START -->
   <section class="screen" id="screen-start" aria-label="Start">
+    <div class="install-tip" id="installTip" role="note" hidden><p><b>Tipp:</b> Zum Home-Bildschirm hinzufügen, dann bleibt dein Spielstand sicher und die App startet im Vollbild.</p><button type="button" id="installTipClose" aria-label="Tipp schließen">✕</button></div>
     <header>
       <button class="help-btn" id="helpBtn"><span class="help-icon">🎮</span>So geht's<span class="help-dot" id="helpDot"></span></button>
       <div class="brand-badge">⚽</div>
@@ -2315,6 +2339,7 @@ const defaultProfile = {
   best: {}, // match.id -> { stars: 0-3, correct, solvedAbbrs: string[] }; immer das beste Ergebnis (Prompt 11)
   hasSeenGuide: false,
   hasSeenPitchRules: false,
+  hasSeenInstallTip: false,
   trophiesWon: [], // Kampagne-Trophaeen-IDs (Achievements laufen weiter ueber profile.achievements)
   streak: { current: 0, best: 0, lastDayKey: null }, // NUR Tages-Challenge zaehlt, kein Serien-Schutz (Prompt 13)
   daily: {}, // dateKey ("YYYY-MM-DD") -> { id, correct, grid, stars }
@@ -2435,6 +2460,7 @@ function loadProfile() {
     if (!profile.perfectRewarded || typeof profile.perfectRewarded !== "object") profile.perfectRewarded = {};
     if (typeof profile.hasSeenGuide !== "boolean") profile.hasSeenGuide = false;
     if (typeof profile.hasSeenPitchRules !== "boolean") profile.hasSeenPitchRules = false;
+    if (typeof profile.hasSeenInstallTip !== "boolean") profile.hasSeenInstallTip = false;
     if (!Array.isArray(profile.trophiesWon)) profile.trophiesWon = [];
     if (!profile.streak || typeof profile.streak !== "object") profile.streak = { current: 0, best: 0, lastDayKey: null };
     if (!profile.daily || typeof profile.daily !== "object") profile.daily = {};
@@ -2504,8 +2530,50 @@ function loadProfile() {
   }
 }
 
+// Token-Chip in der Spielfeld-Kopfzeile (Prompt 32) - existiert nur waehrend eines Kampagnen-/Freispiel-/Tages-Spiels
+function updateGameTokChip() {
+  const chip = document.getElementById("gameTokChip");
+  if (chip) chip.textContent = "🔍 " + profile.hintTokens;
+}
 function saveProfile(p) {
-  try { localStorage.setItem(PROFILE_KEY, JSON.stringify(p)); } catch (e) { /* Speicher evtl. voll/deaktiviert - Spiel läuft trotzdem weiter */ }
+  try { localStorage.setItem(PROFILE_KEY, JSON.stringify(p)); return true; }
+  catch (e) { /* Speicher evtl. voll/deaktiviert - Spiel läuft trotzdem weiter, der Spieler bekommt einmal pro Sitzung einen Hinweis */
+    showStorageWarning();
+    return false;
+  }
+}
+
+/* ---- Spielstand-Sicherheit (Prompt 32) ---- */
+let storageWarned = false;
+function storageSelfTest() {
+  try {
+    const k = "__sxi_test";
+    localStorage.setItem(k, "1");
+    const ok = localStorage.getItem(k) === "1";
+    localStorage.removeItem(k);
+    return ok;
+  } catch (e) { return false; }
+}
+function whenSplashGone(cb) {
+  if (!document.getElementById("splash")) { cb(); return; }
+  setTimeout(() => whenSplashGone(cb), 400);
+}
+function showStorageWarning() {
+  if (storageWarned) return;
+  storageWarned = true;
+  whenSplashGone(() => {
+    const b = document.createElement("div");
+    b.className = "modal-backdrop";
+    b.innerHTML = `<div class="modal-sheet" role="dialog" aria-modal="true"><div class="save-box">
+      <div class="t">Spielstand nicht gesichert</div>
+      <p><b>Dein Spielstand kann hier nicht gespeichert werden.</b> Öffne Starting XI in Safari (nicht im privaten Modus) und füge es über Teilen → „Zum Home-Bildschirm“ hinzu.</p>
+      <button type="button" class="save-btn main" id="storageWarnOk">Verstanden</button>
+    </div></div>`;
+    document.body.appendChild(b);
+    const close = () => b.remove();
+    b.querySelector("#storageWarnOk").onclick = close;
+    b.onclick = (e) => { if (e.target === b) close(); };
+  });
 }
 
 // Kurven-Konstante 75 (statt vormals 100) - siehe tools/xp-sim.mjs: bei
@@ -2711,6 +2779,7 @@ function renderProfileBar() {
     </div>
     <div class="foot"><span class="st">🏆 <b>${won.length}</b>/${TROPHIES.length}</span><span class="st">⭐ <b>${stars.earned}</b>/${stars.max}</span><span class="st">📊 <span class="wissen-txt">Wissen</span></span><span class="cta">${hasNewTrophy ? '<span class="new" title="Neue Trophäe"></span>' : ""}Scout-Profil ${chev}</span></div>`;
   bar.classList.toggle("gold-frame", profile.level >= 30);
+  updateGameTokChip();
 
   applyUnlockedFeatures();
 }
@@ -3634,7 +3703,8 @@ function profileOverviewHTML() {
     <div class="week">${weekHtml}</div>
     <div class="sheet-label">Karriereleiter</div>
     <div class="ladder">${ladderRows}</div>
-    ${duelNameRowHTML()}`;
+    ${duelNameRowHTML()}
+    <div class="data-row"><button type="button" id="saveExportBtn">💾 Spielstand sichern</button><button type="button" id="saveImportBtn">📥 Spielstand laden</button></div>`;
 }
 
 function profileTrophiesHTML() {
@@ -3757,7 +3827,7 @@ function renderProfileSheetPanel() {
   document.getElementById("profileTabOv").setAttribute("aria-selected", String(profileSheetTab === "ov"));
   document.getElementById("profileTabTr").setAttribute("aria-selected", String(profileSheetTab === "tr"));
   document.getElementById("profileTabKn").setAttribute("aria-selected", String(profileSheetTab === "kn"));
-  if (profileSheetTab === "ov") bindDuelNameRow();
+  if (profileSheetTab === "ov") { bindDuelNameRow(); bindSaveRow(); }
   if (profileSheetTab === "tr") {
     panel.querySelectorAll(".trophy").forEach((btn) => {
       btn.onclick = () => { selectedTrophyId = btn.dataset.id; renderProfileSheetPanel(); };
@@ -5821,7 +5891,7 @@ function renderPitch() {
     <div class="bonus-panel">
       <div class="pitch-header-row">
         <button class="back-btn" id="exitMatchBtn"><span class="back-arrow">←</span>Abbrechen</button>
-        <button class="rules-btn" id="rulesBtn">ℹ️ Regeln${!profile.hasSeenPitchRules ? '<span class="rules-dot" id="rulesDot"></span>' : ""}</button>
+        <div class="hdr-right"><span class="tok-chip" id="gameTokChip" title="Scout-Token">🔍 ${profile.hintTokens}</span><button class="rules-btn" id="rulesBtn">ℹ️ Regeln${!profile.hasSeenPitchRules ? '<span class="rules-dot" id="rulesDot"></span>' : ""}</button></div>
       </div>
       <div class="bonus-eyebrow">${m.formation} · ${m.comp}</div>
       <div class="bonus-title" style="font-size:19px">${m.teams}</div>
@@ -7220,6 +7290,112 @@ function renderDuelInvite() {
   document.getElementById("duelDecline").onclick = () => { delete profile.duels[activeInviteId]; saveProfile(profile); activeInviteId = null; renderModeTiles(); goBack(); };
 }
 
+
+/* ---- Spielstand sichern / laden (Prompt 32) ---- */
+const SAVE_PREFIX = "SXI1";
+function exportSaveCode() {
+  const json = JSON.stringify(profile);
+  return SAVE_PREFIX + "." + b64uEncode(json) + "." + hashString(json).toString(36);
+}
+// Liefert { obj } oder { error }
+function parseSaveCode(text) {
+  const t = (text || "").trim().replace(/\s+/g, "");
+  const parts = t.split(".");
+  if (parts[0] !== SAVE_PREFIX) return { error: "Das ist kein Starting-XI-Spielstand. Kopiere den ganzen Code." };
+  if (parts.length !== 3) return { error: "Der Code ist unvollständig. Kopiere ihn noch einmal komplett." };
+  let json;
+  try { json = b64uDecode(parts[1]); } catch (e) { return { error: "Der Code ist unvollständig oder beschädigt." }; }
+  if (hashString(json).toString(36) !== parts[2]) return { error: "Der Code ist unvollständig oder beschädigt. Kopiere ihn noch einmal komplett." };
+  let obj;
+  try { obj = JSON.parse(json); } catch (e) { return { error: "Der Code ist beschädigt." }; }
+  if (!obj || typeof obj !== "object" || typeof obj.totalXP !== "number" || typeof obj.level !== "number") return { error: "Der Code enthält keinen gültigen Spielstand." };
+  if (typeof obj.version === "number" && obj.version > defaultProfile.version) return { error: "Dieser Spielstand stammt aus einer neueren App-Version. Bitte zuerst die App aktualisieren." };
+  return { obj };
+}
+function openSaveModal(inner) {
+  const b = document.createElement("div");
+  b.className = "modal-backdrop";
+  b.style.zIndex = "45";
+  b.innerHTML = `<div class="modal-sheet" role="dialog" aria-modal="true"><div class="save-box">${inner}</div></div>`;
+  document.body.appendChild(b);
+  b.onclick = (e) => { if (e.target === b) b.remove(); };
+  return b;
+}
+function openExportSave() {
+  const code = exportSaveCode();
+  const b = openSaveModal(`
+    <div class="t">Spielstand sichern</div>
+    <p>Kopiere den Code und bewahre ihn sicher auf (z. B. in einer Notiz). Mit <b>Spielstand laden</b> holst du alles zurück oder ziehst von Safari in die Home-Bildschirm-App um.</p>
+    <textarea readonly id="saveCodeBox" aria-label="Spielstand-Code">${code}</textarea>
+    <div class="save-row"><button type="button" class="save-btn main" id="saveCopy">Code kopieren</button><button type="button" class="save-btn" id="saveShare" hidden>Als Datei teilen</button></div>
+    <button type="button" class="save-btn quiet" id="saveClose">Schließen</button>`);
+  const box = b.querySelector("#saveCodeBox");
+  box.onfocus = () => box.select();
+  b.querySelector("#saveCopy").onclick = () => copyText(code, "Spielstand-Code kopiert");
+  b.querySelector("#saveClose").onclick = () => b.remove();
+  try {
+    const file = new File([code], "starting-xi-spielstand.txt", { type: "text/plain" });
+    if (navigator.canShare && navigator.canShare({ files: [file] })) {
+      const sb = b.querySelector("#saveShare");
+      sb.hidden = false;
+      sb.onclick = async () => { try { await navigator.share({ files: [file], title: "Starting XI Spielstand" }); } catch (e) { /* Abbruch ist kein Fehler */ } };
+    }
+  } catch (e) { /* kein Datei-Teilen */ }
+}
+function openImportSave() {
+  const b = openSaveModal(`
+    <div class="t">Spielstand laden</div>
+    <p>Füge hier den Code ein, den du mit „Spielstand sichern“ kopiert hast.</p>
+    <textarea id="saveImportBox" aria-label="Spielstand-Code einfügen" placeholder="SXI1.…"></textarea>
+    <p class="err" id="saveImportErr" hidden></p>
+    <div id="saveImportSum"></div>
+    <div class="save-row"><button type="button" class="save-btn main" id="saveImportCheck">Prüfen</button></div>
+    <button type="button" class="save-btn quiet" id="saveImportCancel">Abbrechen</button>`);
+  const box = b.querySelector("#saveImportBox"), err = b.querySelector("#saveImportErr"), sum = b.querySelector("#saveImportSum");
+  b.querySelector("#saveImportCancel").onclick = () => b.remove();
+  const check = () => {
+    err.hidden = true; sum.innerHTML = "";
+    const r = parseSaveCode(box.value);
+    if (r.error) { err.textContent = r.error; err.hidden = false; return; }
+    const o = r.obj;
+    const rank = rankForLevel(o.level).name;
+    const duels = o.duels && typeof o.duels === "object" ? Object.keys(o.duels).length : 0;
+    sum.innerHTML = `<div class="sum"><b>Level ${o.level}</b> · ${rank}<br>${o.totalXP} XP · ${Array.isArray(o.trophiesWon) ? o.trophiesWon.length : 0} Trophäen · ${duels} Duelle</div>
+      <p style="margin-top:8px"><b>Dein jetziger Stand (Level ${profile.level}) wird ersetzt.</b> Das lässt sich nicht rückgängig machen.</p>
+      <div class="save-row" style="margin-top:8px"><button type="button" class="save-btn main" id="saveImportGo">Ersetzen</button></div>`;
+    sum.querySelector("#saveImportGo").onclick = () => {
+      try {
+        const old = localStorage.getItem(PROFILE_KEY);
+        if (old) { try { localStorage.setItem(PROFILE_KEY + "_backup", old); } catch (e) { /* Backup ist nur Zusatz */ } }
+        localStorage.setItem(PROFILE_KEY, JSON.stringify(o));
+      } catch (e) {
+        err.textContent = "Der Spielstand konnte hier nicht gespeichert werden. Nichts wurde verändert."; err.hidden = false;
+        return;
+      }
+      location.reload(); // der normale loadProfile()-Pfad migriert den importierten Stand
+    };
+  };
+  b.querySelector("#saveImportCheck").onclick = check;
+  box.addEventListener("input", () => { err.hidden = true; sum.innerHTML = ""; });
+  setTimeout(() => box.focus(), 50);
+}
+function bindSaveRow() {
+  const e = document.getElementById("saveExportBtn"), i = document.getElementById("saveImportBtn");
+  if (e) e.onclick = openExportSave;
+  if (i) i.onclick = openImportSave;
+}
+
+/* ---- Tipp: Zum Home-Bildschirm hinzufuegen (Prompt 32) ---- */
+function maybeShowInstallTip() {
+  const tip = document.getElementById("installTip");
+  if (!tip || profile.hasSeenInstallTip || isStandalone() || profile.totalXP <= 0) return;
+  if (!(window.matchMedia && matchMedia("(pointer: coarse)").matches)) return; // am Desktop sinnlos
+  whenSplashGone(() => {
+    tip.hidden = false;
+    document.getElementById("installTipClose").onclick = () => { tip.hidden = true; profile.hasSeenInstallTip = true; saveProfile(profile); };
+  });
+}
+
 // Duell-Name im Scout-Profil (Uebersicht)
 function duelNameRowHTML() {
   const s = profile.duelStats;
@@ -7678,6 +7854,9 @@ if ("serviceWorker" in navigator) {
   window.addEventListener("load", () => navigator.serviceWorker.register("./sw.js"));
 }
 
+if (!storageSelfTest()) showStorageWarning();
+try { if (navigator.storage && navigator.storage.persist) navigator.storage.persist().catch(() => {}); } catch (e) { /* nicht unterstuetzt - ignorieren */ }
+maybeShowInstallTip();
 runSplash();
 </script>
 </body>
