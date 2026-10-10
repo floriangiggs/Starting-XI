@@ -47,8 +47,9 @@ vorige umgesetzt, getestet und committet ist.
 | 33 | Kampagne: Auswerten verrät keine Lösungen mehr, „Lösung anzeigen“ friert Sterne ein | – |
 | 34 | Angefangene Aufstellungen merken und fortsetzen (Kampagne, Freispiel, Tag) | – |
 | 35 | Aufstellungen: alles vor 2008 ersetzen (12 Kampagne inkl. St. Pauli, 6 Tag), neue bevorzugt 2015–2026 | – |
+| 36 | Duell: Walkout v2 „Spielertunnel“ – langsamer, Merkliste, Countdown als Stadionuhr | – |
 
-**Empfohlene Reihenfolge ab jetzt:** 27 → 32 → 33 → 34 → 35 → 30 → 31 → weitere Offline-Feinschliffe → Planung Online-Duell → 8
+**Empfohlene Reihenfolge ab jetzt:** 27 → 36 → 32 → 33 → 34 → 35 → 30 → 31 → weitere Offline-Feinschliffe → Planung Online-Duell → 8
 
 Prompt 7 steht bewusst vor der Tages-Challenge: Nur mit der neuen
 Update-Strategie kommen neue Tages-Aufstellungen zuverlässig auf dem iPhone an.
@@ -62,7 +63,8 @@ Welten-Ausschmückung), `prototypes/ladescreen.html` (Prompt 11d) und
 `prototypes/modus-kacheln.html` (Prompt 18, nur „A · neu“) und
 `prototypes/regeln.html` (Prompt 19) und `prototypes/freispiel.html` (Prompt 20) und
 `prototypes/teilen.html` (Prompt 24) und `prototypes/duell.html` (Prompts 25–26) und
-`prototypes/welt-animation.html` (Prompt 31, Fassung v2 vom 10.10.2026 – nur die Bühne, nicht das Regie-Pult).
+`prototypes/welt-animation.html` (Prompt 31, Fassung v2 vom 10.10.2026 – nur die Bühne, nicht das Regie-Pult) und
+`prototypes/walkout.html` (Prompt 36 – nur die Bühne, nicht das Regie-Pult).
 
 **Wichtig nach jeder Änderung:** Der Service Worker liefert die App aus dem
 Cache. Jeder Prompt erhöht deshalb `CACHE_NAME` in `sw.js` – sonst sieht die
@@ -2746,6 +2748,90 @@ Team zwei Tage hintereinander, Verteilung je Stufe im Tages-Pool
 ausgeben, Pflichtfelder vollständig, Formation passt, keine doppelten
 ids/Partien; 120 Tage Tages-Challenge simulieren; altes Profil lädt
 fehlerfrei, ersetzte Level bleiben bestanden; keine Konsolenfehler.
+```
+
+---
+
+## Prompt 36 – Duell: Walkout v2 „Spielertunnel“
+
+```
+Lies CLAUDE.md. Rückmeldung mehrerer Spieler: Der Walkout vor jeder
+Duell-Runde läuft zu schnell (Infos je 1,25 s, Countdown je 0,65 s).
+Neue Fassung → kurz Plan zeigen, dann umsetzen. Optik, Timing und Bewegung
+1:1 aus prototypes/walkout.html. Maßgeblich ist NUR die Bühne (#stage):
+timeline(), camPos(), drawTunnel(), drawScene(), wallGlyph(), render(t),
+flapRender(), build() inkl. Merkliste und Mini-Formation, Countdown,
+Ausgang. Das Regie-Pult (.desk, Zeitleiste, Tempo, Lesezeit-Regler,
+Beispiel-Chips, Gegner-Feld) gehört NICHT in die App. Prototyp nur lesen,
+nicht einbinden. Ersetzt walkoutHTML()/runWalkout() und das zugehörige
+CSS (#screen-duelplay .wk …) – Rest des Duells unverändert.
+
+1. Daten (aus der App, nicht aus dem Prototyp)
+   - Partie-Infos weiter über duelMatchInfo(m) (inkl. der neuen Regel
+     "Aufstellung des/der"); Formation-Punkte aus PITCH_LAYOUTS[m.formation].
+   - Duo: links eigener Duell-Name (profile.duelName) mit Rang/Level wie
+     im Scout-Profil, rechts Gegner aus d.opponent (Name, Rang/Level, falls
+     im Link vorhanden – sonst nur der Name). Kopfzeile "Runde n von N".
+   - Lesezeit pro Info fest 2,2 s (Konstante WALKOUT_READ_MS = 2200).
+
+2. Ablauf (Zeiten aus timeline() bei R = 2200, ≈ 14 s bis Anpfiff)
+   - Licht an: LED-Bänder im Tunnelgewölbe gehen von vorn nach hinten an.
+   - Duo "Name gegen Gegner" fährt von links/rechts ein, rückt dann klein
+     in die Kopfzeile.
+   - 4 Infos (Wettbewerb, Datum, Partie, Du stellst auf) je als
+     Klappziffer-Tafel (Anton, Zeichen klappen durch und rasten ein), Partie:
+     Heim von links, Gast von rechts, "gegen" dazwischen, Endstand darunter;
+     Team in Gold, darunter Mini-Spielfeld, 11 Punkte fliegen in die
+     Formation. Jede Info wandert danach in die Merkliste oben und bleibt
+     bis zum Anpfiff lesbar.
+   - Countdown 3-2-1 je 1,0 s im Tunnelausgang als Stadionuhr (Scheibe,
+     60 Striche, die sich füllen, goldener Ring), darunter "Bereit machen";
+     Schild "STARTING XI" hängt über dem Ausgang.
+   - "Anpfiff!", Ring-Impuls, Kamera fährt aus dem Tunnel ins Flutlicht,
+     Rasen öffnet sich vom Mittelkreis → startDuelRound() (Uhr startet
+     erst hier, wie bisher).
+
+3. Tunnel (Canvas, wie Prototyp – nicht vereinfachen)
+   - Echte Perspektive mit gewölbter Decke, Betonrippen, zwei LED-Bändern,
+     hellen Wandpaneelen mit Fugen, gepolsterter Sockelwand, Edelstahl-
+     Handlauf mit Glanzlicht, Betonboden mit Rasenläufer und Kreidekanten,
+     Lichtspiegelungen, Kabinentüren "KABINE HEIM"/"KABINE GAST", goldene
+     Leitpfeile, Schild "STARTING XI", Torbogen mit Stadion dahinter
+     (Flutlicht, Tribüne mit Zuschauerpunkten, LED-Bande, Rasen mit
+     Mähstreifen), warmes Licht vom Ausgang, Lichtstrahlen, Staub im
+     Gegenlicht, Vignette, leichtes Kamera-Wippen beim Gehen.
+   - Eigene Gestaltung: keine echten Vereinsnamen, Wappen oder Sponsoren im
+     Tunnel/Stadion.
+   - Deterministisch aus t (eine Zeitachse, ein requestAnimationFrame-Loop,
+     nach Anpfiff stoppen und Canvas freigeben). devicePixelRatio max. 2.
+   - Bühne intern 390×844, per scale eingepasst; 375×667 bis 430×932 und
+     360 px (Samsung A10) prüfen – nichts abgeschnitten, Merkliste lesbar.
+   - Performance: auf älterem Android flüssig; falls nötig Staub/Zuschauer-
+     punkte reduzieren, aber nicht den Tunnel vereinfachen.
+
+4. Bedienung
+   - Tippen auf die Bühne → nächste Info (Duo → Wettbewerb → … → Merkliste
+     fertig). Während des Countdowns kein Sprung.
+   - Knopf oben rechts heißt "Zum Countdown ›" und springt zu 3-2-1 (nicht
+     mehr direkt ins Spiel). Fairness bleibt: Duell-Uhr startet erst beim
+     Anpfiff.
+   - Unten: "Tippen = nächste Info" (verschwindet nach der letzten Info)
+     und "Die Zeit startet erst mit dem Anpfiff."
+   - REDUCED_MOTION: Tunnel steht (Kamera am Ausgang), keine Klappziffern
+     (Text sofort), kein Staub/Wippen/Blitz; Infos und Merkliste trotzdem
+     nacheinander, Countdown-Zahlen ohne Schieben.
+   - Nur einmalige Bewegungen, kein Blinken, keine Schleife (CLAUDE.md).
+     Schriften: Anton für Namen/Tafeln/Zahlen, Oswald für Labels/Texte.
+   - Optional (falls einfach): navigator.vibrate(15) bei 3, 2, 1 und
+     vibrate(40) beim Anpfiff (Android; iPhone ignoriert es still).
+
+sw.js CACHE_NAME erhöhen. Test: Duell gegen Testprofil starten → Walkout
+läuft komplett (Screenshot-Serie bei t ≈ 0,7 / 1,5 / 3,5 / 5,6 / 8,2 /
+10,3 / 12,6 / 14,7 s), lange Partie (WM-Finale 2022, Endstand mit i.E.)
+passt ohne Abschneiden, 3-2-1 je 1 s, Uhr startet erst nach Anpfiff;
+Tippen springt Info für Info; "Zum Countdown" springt zu 3-2-1; Runde 2
+im Best of 3 zeigt "Runde 2 von 3"; reduced motion; 360/375/402/430 px;
+nach Anpfiff kein laufender rAF-Loop; keine Konsolenfehler.
 ```
 
 ---
