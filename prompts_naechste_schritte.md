@@ -42,7 +42,7 @@ vorige umgesetzt, getestet und committet ist.
 | 28 | Duell: Ergebnis kommt sicher an, beendete Duelle (Richtige + Zeiten), Duelle entfernen | ⏸ zurückgestellt – kommt ins Online-Duell |
 | 29 | Duell: Zwischenstand nach jeder Runde, vorzeitige Entscheidung, Auflösung beim Abpfiff | ⏸ zurückgestellt – kommt ins Online-Duell |
 | 30 | Kampagne: direkt weiter zum nächsten Level, Level-Anzeige „Level n von N“ | – |
-| 31 | Kampagne: Animation „Welt geschafft“ (Aufstieg + Pokal) | 30 |
+| 31 | Kampagne: Animation „Welt geschafft“ (Fassung v2: Aufstieg + Pokal als eine Kamerafahrt) | 30 |
 | 32 | iPhone: Hinweise unter der Kamera, Token-Anzeige im Spiel, Spielstand sichern (Export/Import) | – |
 | 33 | Kampagne: Auswerten verrät keine Lösungen mehr, „Lösung anzeigen“ friert Sterne ein | – |
 | 34 | Angefangene Aufstellungen merken und fortsetzen (Kampagne, Freispiel, Tag) | – |
