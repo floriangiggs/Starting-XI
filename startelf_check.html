@@ -1464,6 +1464,18 @@ const LINEUP_CHALLENGES = [
     difficulty: 4,
     players: { TW:"Krahl", RV:"Zolinski", RIV:"Tomiak", LIV:"Elvedi", LV:"Puchacz", RZM:"Zimmer", LZM:"Kaloc", ROM:"Redondo", ZOM:"Ritter", LOM:"Raschl", ST:"Hanslik" },
     details: { TW:{nr:18,nat:"DE"}, RV:{nr:31,nat:"DE"}, RIV:{nr:2,nat:"DE"}, LIV:{nr:33,nat:"CH"}, LV:{nr:15,nat:"PL"}, RZM:{nr:8,nat:"DE"}, LZM:{nr:26,nat:"CZ"}, ROM:{nr:11}, ZOM:{nr:7,nat:"DE"}, LOM:{nr:20,nat:"DE"}, ST:{nr:19,nat:"DE"} },
+    bench: [
+      { name: "Ache", nr: 9, pos: "ANG", in: 46, for: "ST" },
+      { name: "Tachie", nr: 29, pos: "ANG", in: 74, for: "RV" },
+      { name: "Klement", nr: 10, pos: "MIT", in: 83, for: "LOM" },
+      { name: "Opoku", nr: 17, pos: "ANG", in: 83, for: "ROM" },
+      { name: "Touré", nr: 6, pos: "ABW", in: 90, inExtra: 3, for: "RZM" },
+      { name: "Himmelmann", nr: 32, pos: "TW" },
+      { name: "Kraus", nr: 5, pos: "TW" },
+      { name: "Ronstadt", nr: 27, pos: "ABW" },
+      { name: "Aremu", nr: 4, pos: "MIT" }
+    ],
+    benchSource: ["https://www.espn.com/soccer/lineups/_/gameId/701602 (komplette Bank, Nummern, Wechsel mit Gegenspieler)", "https://www.fussballdaten.de/dfb-pokal/2024/finale/klautern-leverkusen/aufstellung/ (Bank, Minuten)", "https://en.wikipedia.org/wiki/2024_DFB-Pokal_final (Wechselminuten inkl. Nachspielzeit; Tella 90+3 laut Wikipedia, ESPN 90+4)"],
     source: "https://www.fussballdaten.de/dfb-pokal/2024/finale/klautern-leverkusen/ (Redondo: nat weggelassen, doppelte Staatsangehoerigkeit DE/ES nicht eindeutig)"
   },
   {
@@ -1503,6 +1515,16 @@ const LINEUP_CHALLENGES = [
     difficulty: 2,
     players: { TW:"Valdés", RV:"Alves", RIV:"Puyol", LIV:"Piqué", LV:"Abidal", RZM:"Xavi", ZM:"Touré", LZM:"Iniesta", RA:"Messi", ST:"Eto'o", LA:"Henry" },
     details: { TW:{nr:1,nat:"ES"}, RV:{nr:20,nat:"BR"}, RIV:{nr:5,nat:"ES"}, LIV:{nr:3,nat:"ES"}, LV:{nr:22,nat:"FR"}, RZM:{nr:6,nat:"ES"}, ZM:{nr:24,nat:"CI"}, LZM:{nr:8,nat:"ES"}, RA:{nr:10,nat:"AR"}, ST:{nr:9,nat:"CM"}, LA:{nr:14,nat:"FR"} },
+    bench: [
+      { name: "Keita", nr: 15, pos: "MIT", in: 61, for: "LA" },
+      { name: "Bojan", nr: 11, pos: "ANG", in: 85, for: "LZM" },
+      { name: "Busquets", nr: 28, pos: "MIT", in: 85, for: "ZM" },
+      { name: "Jorquera", nr: 25, pos: "TW" },
+      { name: "Cáceres", nr: 2, pos: "ABW" },
+      { name: "Sylvinho", nr: 16, pos: "ABW" },
+      { name: "Gudjohnsen", nr: 7, pos: "ANG" }
+    ],
+    benchSource: ["https://www.espn.com/soccer/lineups/_/gameId/252775 (Wechsel, Gegenspieler, Positionen; ESPN nennt zusätzlich Hleb, laut LaLiga-Limit nur 7 - 7er-Bank wie fussballdaten)", "https://www.fussballdaten.de/spanien/2009/34/realmadrid-fcbarcelona/aufstellung/ (Bank mit 7 Spielern, Minuten)"],
     source: "https://www.espn.com/soccer/lineups/_/gameId/252775 (Aufstellung + Rueckennummern) ; https://en.wikipedia.org/wiki/2008%E2%80%9309_FC_Barcelona_season (Kader: Nummer + Nationalitaet)"
   },
   {
@@ -1516,6 +1538,16 @@ const LINEUP_CHALLENGES = [
     difficulty: 2,
     players: { TW:"Schmeichel", RV:"Simpson", RIV:"Morgan", LIV:"Huth", LV:"Fuchs", RM:"Mahrez", RZM:"Drinkwater", LZM:"Kanté", LM:"Albrighton", RST:"Vardy", LST:"Okazaki" },
     details: { TW:{nr:1,nat:"DK"}, RV:{nr:17,nat:"GB-ENG"}, RIV:{nr:5,nat:"JM"}, LIV:{nr:6,nat:"DE"}, LV:{nr:28,nat:"AT"}, RM:{nr:26,nat:"DZ"}, RZM:{nr:4,nat:"GB-ENG"}, LZM:{nr:14,nat:"FR"}, LM:{nr:11,nat:"GB-ENG"}, RST:{nr:9,nat:"GB-ENG"}, LST:{nr:20,nat:"JP"} },
+    bench: [
+      { name: "Gray", nr: 22, pos: "ANG", in: 79, for: "LM" },
+      { name: "King", nr: 10, pos: "MIT", in: 87, for: "LST" },
+      { name: "Ulloa", nr: 23, pos: "ANG", in: 90, for: "RM" },
+      { name: "Schwarzer", nr: 32, pos: "TW" },
+      { name: "Wasilewski", nr: 27, pos: "ABW" },
+      { name: "Chilwell", nr: 30, pos: "ABW" },
+      { name: "Dyer", nr: 24, pos: "MIT" }
+    ],
+    benchSource: ["https://www.espn.com/soccer/lineups/_/gameId/422431 (komplette Bank, Nummern, Wechsel mit Gegenspieler)", "https://www.fussballdaten.de/england/2016/24/leicester-liverpool/aufstellung/ (Bank, Minuten; deckungsgleich mit ESPN)"],
     source: "https://sport.sky.de/fussball/leicester-vs-liverpool/aufstellung/341419 ; Nummern kreuzgeprueft mit https://www.fussballdaten.de/vereine/leicester-city/2016/kader/"
   },
   {
@@ -1542,6 +1574,19 @@ const LINEUP_CHALLENGES = [
     difficulty: 1,
     players: { TW:"Neuer", RV:"Lahm", RIV:"Hummels", LIV:"Boateng", LV:"Höwedes", RZM:"Kramer", LZM:"Schweinsteiger", ROM:"Müller", ZOM:"Kroos", LOM:"Özil", ST:"Klose" },
     details: { TW:{nr:1}, RV:{nr:16}, RIV:{nr:5}, LIV:{nr:20}, LV:{nr:4}, RZM:{nr:23}, LZM:{nr:7}, ROM:{nr:13}, ZOM:{nr:18}, LOM:{nr:8}, ST:{nr:11} },
+    bench: [
+      { name: "Schürrle", nr: 9, pos: "ANG", in: 32, for: "RZM" },
+      { name: "Götze", nr: 19, pos: "MIT", in: 88, for: "ST" },
+      { name: "Mertesacker", nr: 17, pos: "ABW", in: 120, for: "LOM" },
+      { name: "Zieler", nr: 12, pos: "TW" },
+      { name: "Weidenfeller", nr: 22, pos: "TW" },
+      { name: "Ginter", nr: 3, pos: "ABW" },
+      { name: "Durm", nr: 15, pos: "ABW" },
+      { name: "Großkreutz", nr: 2, pos: "MIT" },
+      { name: "Draxler", nr: 14, pos: "ANG" },
+      { name: "Podolski", nr: 10, pos: "ANG" }
+    ],
+    benchSource: ["https://www.espn.com/soccer/lineups/_/gameId/383239 (komplette Bank, Nummern, Wechsel mit Gegenspieler)", "https://www.fussballdaten.de/wm/2014/finale/deutschland-argentinien/aufstellung/ (Bank; dort zusätzlich Khedira gelistet - nicht übernommen, ESPN und Wikipedia führen ihn nicht)", "https://en.wikipedia.org/wiki/2014_FIFA_World_Cup_final (Wechselminuten, FIFA-Basis)"],
     source: "https://www.fussballdaten.de/wm/2014/finale/deutschland-argentinien/"
   },
   {
@@ -1885,6 +1930,24 @@ const LINEUP_CHALLENGES = [
     difficulty: 1,
     players: { TW:"Martínez", RV:"Molina", RIV:"Romero", LIV:"Otamendi", LV:"Tagliafico", RZM:"De Paul", ZM:"Fernández", LZM:"Mac Allister", RA:"Di María", ST:"Álvarez", LA:"Messi" },
     details: { TW:{nr:23}, RV:{nr:26}, RIV:{nr:13}, LIV:{nr:19}, LV:{nr:3}, RZM:{nr:7}, ZM:{nr:24}, LZM:{nr:20}, RA:{nr:11}, ST:{nr:9}, LA:{nr:10} },
+    bench: [
+      { name: "Acuña", nr: 8, pos: "ABW", in: 64, for: "RA" },
+      { name: "Montiel", nr: 4, pos: "ABW", in: 91, for: "RV" },
+      { name: "Paredes", nr: 5, pos: "MIT", in: 102, for: "RZM" },
+      { name: "Lautaro Martínez", nr: 22, pos: "ANG", in: 102, for: "ST" },
+      { name: "Pezzella", nr: 6, pos: "ABW", in: 116, for: "LZM" },
+      { name: "Dybala", nr: 21, pos: "ANG", in: 120, inExtra: 1, for: "LV" },
+      { name: "Armani", nr: 1, pos: "TW" },
+      { name: "Rulli", nr: 12, pos: "TW" },
+      { name: "Foyth", nr: 2, pos: "ABW" },
+      { name: "Lisandro Martínez", nr: 25, pos: "ABW" },
+      { name: "Guido Rodríguez", nr: 18, pos: "MIT" },
+      { name: "Gómez", nr: 17, pos: "MIT" },
+      { name: "Palacios", nr: 14, pos: "MIT" },
+      { name: "Almada", nr: 16, pos: "MIT" },
+      { name: "Correa", nr: 15, pos: "ANG" }
+    ],
+    benchSource: ["https://www.espn.com/soccer/lineups/_/gameId/633850 (komplette Bank, Nummern, Wechsel mit Gegenspieler)", "https://www.fussballdaten.de/wm/2022/finale/argentinien-frankreich/aufstellung/ (Bank, Minuten)", "https://en.wikipedia.org/wiki/2022_FIFA_World_Cup_final (Wechselminuten; Lautaro/Paredes 102 laut Wikipedia, ESPN/fussballdaten Lautaro 103; Montiel 91 statt ESPN 90; Lisandro Martínez als nicht eingesetzt - 7. Wechsel bei fussballdaten widerspricht dem Kontingent)"],
     source: "https://www.fussballdaten.de/wm/2022/finale/argentinien-frankreich/"
   },
   {
@@ -4356,6 +4419,16 @@ const DAILY_CHALLENGES = [
       ST: { nr: 20, nat: "AR" },
       LA: { nr: 7, nat: "ES" },
     },
+    bench: [
+      { name: "Huntelaar", nr: 19, pos: "ANG", in: 59, for: "LZM" },
+      { name: "van der Vaart", nr: 23, pos: "MIT", in: 72, for: "RV" },
+      { name: "Javi García", nr: 24, pos: "MIT", in: 79, for: "RA" },
+      { name: "Dudek", nr: 25, pos: "TW" },
+      { name: "Miguel Torres", nr: 22, pos: "ABW" },
+      { name: "Drenthe", nr: 15, pos: "MIT" },
+      { name: "Faubert", nr: 18, pos: "MIT" }
+    ],
+    benchSource: ["https://www.espn.com/soccer/lineups/_/gameId/252775 (Wechsel, Gegenspieler, Positionen; bei Real 9 Bankspieler gelistet, laut LaLiga-Limit nur 7 - 7er-Bank wie fussballdaten)", "https://www.fussballdaten.de/spanien/2009/34/realmadrid-fcbarcelona/aufstellung/ (Bank mit 7 Spielern, Minuten)"],
     source: "https://www.espn.com/soccer/lineups/_/gameId/252775 (Aufstellung) ; Rückennummern kreuzgeprüft mit https://www.bdfutbol.com/en/t/t2008-092.html",
   },
   {
@@ -4394,6 +4467,18 @@ const DAILY_CHALLENGES = [
       LOM: { nr: 10, nat: "DE" },
       ST: { nr: 14, nat: "CZ" },
     },
+    bench: [
+      { name: "Adli", nr: 21, pos: "ANG", in: 46, for: "ROM" },
+      { name: "Stanišić", nr: 2, pos: "ABW", in: 46, for: "ST" },
+      { name: "Hincapié", nr: 3, pos: "ABW", in: 85, for: "LM" },
+      { name: "Hložek", nr: 23, pos: "ANG", in: 90, inExtra: 3, for: "LOM" },
+      { name: "Tella", nr: 19, pos: "ANG", in: 90, inExtra: 3, for: "RM" },
+      { name: "Kovář", nr: 17, pos: "TW" },
+      { name: "Palacios", nr: 25, pos: "MIT" },
+      { name: "Boniface", nr: 22, pos: "ANG" },
+      { name: "Iglesias", nr: 9, pos: "ANG" }
+    ],
+    benchSource: ["https://www.espn.com/soccer/lineups/_/gameId/701602 (komplette Bank, Nummern, Wechsel mit Gegenspieler)", "https://www.fussballdaten.de/dfb-pokal/2024/finale/klautern-leverkusen/aufstellung/ (Bank, Minuten)", "https://en.wikipedia.org/wiki/2024_DFB-Pokal_final (Wechselminuten inkl. Nachspielzeit; Tella 90+3 laut Wikipedia, ESPN 90+4)"],
     source: "https://www.kicker.de/klautern-gegen-leverkusen-2024-dfb-pokal-4915106/aufstellung ; https://en.wikipedia.org/wiki/2024_DFB-Pokal_final (Rückennummern)",
   },
   {
@@ -4432,6 +4517,16 @@ const DAILY_CHALLENGES = [
       LM: { nr: 20, nat: "GB-ENG" },
       ST: { nr: 11, nat: "BR" },
     },
+    bench: [
+      { name: "Benteke", nr: 9, pos: "ANG", in: 66, for: "RZM" },
+      { name: "Allen", nr: 24, pos: "MIT", in: 75, for: "LZM" },
+      { name: "Teixeira", nr: 53, pos: "MIT", in: 87, for: "ST" },
+      { name: "Ward", nr: 52, pos: "TW" },
+      { name: "Flanagan", nr: 38, pos: "ABW" },
+      { name: "Touré", nr: 4, pos: "ABW" },
+      { name: "Ibe", nr: 33, pos: "MIT" }
+    ],
+    benchSource: ["https://www.espn.com/soccer/lineups/_/gameId/422431 (komplette Bank, Nummern, Wechsel mit Gegenspieler)", "https://www.fussballdaten.de/england/2016/24/leicester-liverpool/aufstellung/ (Bank, Minuten; deckungsgleich mit ESPN)"],
     source: "https://www.lfchistory.net/SeasonArchive/Game/5515",
   },
   {
@@ -4473,6 +4568,21 @@ const DAILY_CHALLENGES = [
       LOM: { nr: 22 },
       ST: { nr: 9 },
     },
+    bench: [
+      { name: "Agüero", nr: 20, pos: "ANG", in: 46, for: "LOM" },
+      { name: "Palacio", nr: 18, pos: "ANG", in: 78, for: "ST" },
+      { name: "Gago", nr: 5, pos: "MIT", in: 86, for: "ROM" },
+      { name: "Andújar", nr: 21, pos: "TW" },
+      { name: "Orion", nr: 12, pos: "TW" },
+      { name: "Basanta", nr: 23, pos: "ABW" },
+      { name: "Campagnaro", nr: 3, pos: "ABW" },
+      { name: "Maxi Rodríguez", nr: 11, pos: "MIT" },
+      { name: "Álvarez", nr: 19, pos: "MIT" },
+      { name: "Di María", nr: 7, pos: "MIT" },
+      { name: "Augusto Fernández", nr: 13, pos: "ANG" },
+      { name: "Federico Fernández", nr: 17, pos: "ANG" }
+    ],
+    benchSource: ["https://www.espn.com/soccer/lineups/_/gameId/383239 (komplette Bank, Nummern, Wechsel mit Gegenspieler)", "https://www.fussballdaten.de/wm/2014/finale/deutschland-argentinien/aufstellung/ (Bank, Minuten)", "https://en.wikipedia.org/wiki/2014_FIFA_World_Cup_final (Wechselminuten, FIFA-Basis)"],
     source: "https://datencenter.dfb.de/datencenter/weltmeisterschaft/2014-in-brasilien/finale/deutschland-argentinien-513339 ; https://en.wikipedia.org/wiki/2014_FIFA_World_Cup_final",
   },
   {
@@ -4511,6 +4621,22 @@ const DAILY_CHALLENGES = [
       ST: { nr: 9 },
       LA: { nr: 10 },
     },
+    bench: [
+      { name: "Thuram", nr: 26, pos: "ANG", in: 41, for: "ST" },
+      { name: "Kolo Muani", nr: 12, pos: "ANG", in: 41, for: "RA" },
+      { name: "Coman", nr: 20, pos: "ANG", in: 71, for: "LZM" },
+      { name: "Camavinga", nr: 25, pos: "MIT", in: 71, for: "LV" },
+      { name: "Fofana", nr: 13, pos: "MIT", in: 96, for: "RZM", concussion: true },
+      { name: "Konaté", nr: 24, pos: "ABW", in: 113, for: "RIV" },
+      { name: "Disasi", nr: 3, pos: "ABW", in: 120, inExtra: 1, for: "RV" },
+      { name: "Mandanda", nr: 16, pos: "TW" },
+      { name: "Areola", nr: 23, pos: "TW" },
+      { name: "Saliba", nr: 17, pos: "ABW" },
+      { name: "Pavard", nr: 2, pos: "ABW" },
+      { name: "Guendouzi", nr: 6, pos: "MIT" },
+      { name: "Veretout", nr: 15, pos: "MIT" }
+    ],
+    benchSource: ["https://www.espn.com/soccer/lineups/_/gameId/633850 (komplette Bank, Nummern, Wechsel mit Gegenspieler)", "https://www.fussballdaten.de/wm/2022/finale/argentinien-frankreich/aufstellung/ (Bank, Minuten)", "https://en.wikipedia.org/wiki/2022_FIFA_World_Cup_final (Wechselminuten, FIFA-Basis; Fofana als Gehirnerschütterungs-Wechsel)"],
     source: "https://www.eurosport.de/fussball/wm/2022/frankreich-argentinien-aufstellung-finale-mbappe-messi-dayot-upamecano-coman-pavard-katar_sto9280837/story.shtml ; Rückennummern: https://en.wikipedia.org/wiki/Template:France_squad_2022_FIFA_World_Cup",
   },
   {

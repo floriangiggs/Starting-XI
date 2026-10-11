@@ -455,7 +455,8 @@ if ($idxLC -lt 0) {
                 else { if ($benchNrs.Contains($bnr.Groups[1].Value)) { $errors.Add("[LINEUP_CHALLENGES] Eintrag '$entryId': Bank '$bName': Rueckennummer $($bnr.Groups[1].Value) doppelt.") }; $benchNrs.Add($bnr.Groups[1].Value) }
                 if (-not $bpos.Success -or @('TW','ABW','MIT','ANG') -notcontains $bpos.Groups[1].Value) { $errors.Add("[LINEUP_CHALLENGES] Eintrag '$entryId': Bank '$bName': 'pos' muss TW, ABW, MIT oder ANG sein.") }
                 if ($bin.Success) {
-                  $usedCount++
+                  # concussion: true = Gehirnerschuetterungs-Wechsel, zaehlt nicht zum Kontingent
+                  if ($bb -notmatch '\bconcussion\s*:\s*true') { $usedCount++ }
                   $minute = [int]$bin.Groups[1].Value
                   if ($minute -lt 1 -or $minute -gt 120) { $errors.Add("[LINEUP_CHALLENGES] Eintrag '$entryId': Bank '$bName': Minute $minute unplausibel (1-120).") }
                   if (-not $bfor.Success) { $errors.Add("[LINEUP_CHALLENGES] Eintrag '$entryId': Bank '$bName': eingewechselt, aber ohne 'for'.") }

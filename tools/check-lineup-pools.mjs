@@ -63,7 +63,7 @@ function checkBench(w, m, abbrs, startNames) {
       if (typeof b.in !== "number" || b.in < 1 || b.in > 120) err(`${w}: Bank ${b.name}: Minute ${b.in} unplausibel`);
       if (b.inExtra !== undefined && (![45, 90, 105, 120].includes(b.in) || typeof b.inExtra !== "number" || b.inExtra < 1 || b.inExtra > 15)) err(`${w}: Bank ${b.name}: inExtra nur bei 45/90/105/120 und 1-15`);
       if (!b.for) err(`${w}: Bank ${b.name}: eingewechselt, aber ohne for`);
-    } else if (b.for || b.inExtra) err(`${w}: Bank ${b.name}: for/inExtra ohne Minute`);
+    } else if (b.for || b.inExtra || b.concussion) err(`${w}: Bank ${b.name}: for/inExtra/concussion ohne Minute`);
   }
   const benchNames = new Map(m.bench.map((b) => [norm(b.name), b]));
   for (const b of m.bench) {
@@ -72,7 +72,8 @@ function checkBench(w, m, abbrs, startNames) {
     if (!ok) err(`${w}: Bank ${b.name}: for "${b.for}" verweist auf nichts`);
   }
   // Wechselkontingent: bis Mai 2020 3 (+1 in der Verlängerung), danach 5 (+1)
-  const used = m.bench.filter((b) => b.in).length, d = dateOf(m) || "9999";
+  const used = m.bench.filter((b) => b.in && !b.concussion).length, // concussion: true = Gehirnerschütterungs-Wechsel, zählt nicht
+     d = dateOf(m) || "9999";
   const limit = (d >= "2020-05-01" ? 5 : 3) + (/n\.V\./.test(m.teams) ? 1 : 0);
   if (used > limit) err(`${w}: ${used} Einwechslungen, erlaubt wären ${limit}`);
 }
