@@ -912,48 +912,80 @@
   #screen-duelplay.walkout { padding: 0; gap: 0; overflow: hidden; background:
       radial-gradient(120% 60% at 50% 115%, rgba(31,77,54,0.9), transparent 60%),
       linear-gradient(180deg, #0B1218, #101A23 60%, #12261C); }
-  #screen-duelplay .wk { position: relative; flex: 1; display: flex; flex-direction: column; min-height: 0; overflow: hidden; }
-  #screen-duelplay .wk .beam { position: absolute; top: -60px; width: 70%; height: 85%; opacity: 0; transition: opacity 0.9s ease; pointer-events: none;
-    background: conic-gradient(from 180deg at 50% 0%, transparent 42%, rgba(244,213,141,0.38) 50%, transparent 58%);
-    -webkit-mask-image: linear-gradient(180deg, #000 20%, transparent 100%); mask-image: linear-gradient(180deg, #000 20%, transparent 100%); }
-  #screen-duelplay .wk .beam.l { left: -18%; transform: rotate(-16deg); } #screen-duelplay .wk .beam.r { right: -18%; transform: rotate(16deg); }
-  #screen-duelplay .wk.lit .beam { opacity: 1; }
-  #screen-duelplay .wk .tunnel { position: absolute; left: 50%; bottom: -40px; width: 140%; height: 46%; transform: translateX(-50%); border-radius: 50% 50% 0 0; border: 1px solid rgba(242,239,230,0.08); }
-  #screen-duelplay .wk .top { position: relative; z-index: 2; padding: max(18px, env(safe-area-inset-top)) 16px 0; display: flex; justify-content: space-between; align-items: center; gap: 10px; }
-  #screen-duelplay .wk .top .k { font-family: 'Oswald', sans-serif; font-weight: 500; font-size: 14px; color: var(--gold-2); min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
-  #screen-duelplay .wk .skip { background: transparent; border: 1px solid var(--line); border-radius: 18px; padding: 5px 12px; font-family: 'Oswald', sans-serif; font-weight: 500; font-size: 12.5px; color: rgba(242,239,230,0.7); cursor: pointer; flex-shrink: 0; }
-  #screen-duelplay .wk .wo { position: relative; z-index: 2; flex: 1; display: flex; flex-direction: column; justify-content: center; gap: 14px; padding: 0 22px; min-height: 0; }
-  #screen-duelplay .wk .wr { position: relative; opacity: 0; transform: translateY(18px) scale(0.96); transition: opacity 0.5s ease, transform 0.55s cubic-bezier(.2,1.2,.3,1); }
-  #screen-duelplay .wk .wr.in { opacity: 1; transform: none; }
-  #screen-duelplay .wk .wr .lb { font-family: 'Oswald', sans-serif; font-weight: 600; font-size: 11.5px; text-transform: uppercase; letter-spacing: 0.12em; color: rgba(242,239,230,0.45); transition: color 0.4s; }
-  #screen-duelplay .wk .wr .val { font-family: 'Anton', Impact, sans-serif; line-height: 1.05; font-size: 20px; color: rgba(242,239,230,0.75); white-space: nowrap; transition: font-size 0.45s ease, color 0.45s ease; text-transform: uppercase; }
-  #screen-duelplay .wk .wr .sub { font-family: 'Oswald', sans-serif; font-weight: 300; font-size: 13px; color: rgba(242,239,230,0.7); max-height: 0; overflow: hidden; transition: max-height 0.4s ease; }
-  #screen-duelplay .wk .wr.cur .lb { color: var(--gold-2); }
-  #screen-duelplay .wk .wr.cur .val { color: var(--chalk); font-size: var(--fs, 36px); }
-  #screen-duelplay .wk .wr.cur .sub { max-height: 24px; }
-  #screen-duelplay .wk .wr .flare { position: absolute; left: -30px; top: 50%; width: 220px; height: 120px; transform: translateY(-50%); border-radius: 50%; pointer-events: none;
-    background: radial-gradient(closest-side, rgba(244,213,141,0.35), transparent); opacity: 0; }
-  #screen-duelplay .wk .wr.cur .flare { animation: dwFlare 1s ease-out 1 forwards; }
-  @keyframes dwFlare { 0% { opacity: 0; transform: translateY(-50%) scale(0.4); } 35% { opacity: 1; } 100% { opacity: 0; transform: translateY(-50%) scale(1.5); } }
-  #screen-duelplay .wk .wr .sweep { position: absolute; inset: 0; pointer-events: none; overflow: hidden; }
-  #screen-duelplay .wk .wr.cur .sweep::after { content: ""; position: absolute; top: 0; bottom: 0; width: 40%; left: -50%; background: linear-gradient(100deg, transparent, rgba(244,213,141,0.12), transparent); transform: skewX(-18deg); animation: dwSweep 0.9s ease-out 0.15s 1 forwards; }
-  @keyframes dwSweep { to { left: 120%; } }
-  #screen-duelplay .wk .wr.team { padding: 12px 14px; border-radius: 14px; border: 1.5px solid transparent; transition: border-color 0.5s, background 0.5s, opacity 0.5s ease, transform 0.55s cubic-bezier(.2,1.2,.3,1); }
-  #screen-duelplay .wk .wr.team.cur { border-color: rgba(232,178,61,0.75); background: linear-gradient(150deg, rgba(39,96,63,0.85), rgba(23,63,43,0.85)); box-shadow: 0 0 40px rgba(232,178,61,0.18); }
-  #screen-duelplay .wk .wr.team.cur .val { color: var(--gold-2); font-size: var(--fs, 40px); text-shadow: 0 0 18px rgba(232,178,61,0.45); }
-  #screen-duelplay .wk .wr .val .vsl { font-family: 'Oswald', sans-serif; font-weight: 300; font-size: 0.5em; text-transform: none; color: var(--gold-2); vertical-align: 0.35em; margin-right: 0.15em; }
-  #screen-duelplay .wk .cd { position: absolute; inset: 0; z-index: 4; display: grid; place-items: center; pointer-events: none; }
-  #screen-duelplay .wk .cd span { font-family: 'Anton', Impact, sans-serif; font-size: 120px; line-height: 1; color: var(--gold-2); text-shadow: 0 0 30px rgba(232,178,61,0.5); opacity: 0; }
-  #screen-duelplay .wk .cd span.cdgo { animation: dwCount 0.62s ease-out 1 forwards; }
-  #screen-duelplay .wk .cd span.ko { font-size: 64px; text-transform: uppercase; }
-  @keyframes dwCount { 0% { opacity: 0; transform: scale(1.6); } 25% { opacity: 1; transform: scale(1); } 80% { opacity: 1; } 100% { opacity: 0; transform: scale(0.85); } }
-  #screen-duelplay .wk.dim .wo { opacity: 0.25; transition: opacity 0.4s; }
-  #screen-duelplay .wk .wo-foot { position: relative; z-index: 2; text-align: center; padding: 0 16px max(22px, env(safe-area-inset-bottom)); font-family: 'Oswald', sans-serif; font-weight: 300; font-size: 12.5px; color: rgba(242,239,230,0.45); }
-  @media (prefers-reduced-motion: reduce) {
-    #screen-duelplay .wk .wr { transition: none; transform: none; }
-    #screen-duelplay .wk .wr.cur .flare, #screen-duelplay .wk .wr.cur .sweep::after { animation: none; }
-    #screen-duelplay .wk .cd span.cdgo { animation: none; opacity: 1; }
-  }
+  /* ---- Duell-Walkout v2 "Spielertunnel" (Prompt 36) - Buehne 1:1 aus prototypes/walkout.html ---- */
+  #screen-duelplay .wkroot { position: relative; flex: 1; min-height: 0; }
+  #duelWo { position: absolute; inset: 0; display: grid; place-items: center; overflow: hidden; background: #0A1118; box-sizing: border-box;
+    --ink: #14202B; --ink-deep: #0A1118; --ink-2: #1C2B38; --pitch: #1F4D36; --pitch-hi: #27603F; --chalk: #F2EFE6; --gold: #E8B23D; --gold-hi: #F6D88E;
+    --line: rgba(242,239,230,0.14); --muted: rgba(242,239,230,0.74); --dim: rgba(242,239,230,0.46);
+    --f-display: Anton, Impact, "Arial Narrow", sans-serif; --f-text: Oswald, "Arial Narrow", system-ui, sans-serif; color: var(--chalk); font-family: var(--f-text); }
+  #duelWo * { box-sizing: border-box; }
+  #duelWo .wo-box { position: relative; }
+  #duelWo .wo-phone { position: absolute; left: 0; top: 0; width: 390px; height: 844px; transform-origin: 0 0; overflow: hidden; background: var(--ink-deep); }
+  #duelWo button { font-family: inherit; color: inherit; cursor: pointer; }
+/* ---------- Bühne ---------- */
+  #duelWo .wo-stage { position: absolute; inset: 0; overflow: hidden; cursor: pointer; }
+  #duelWo .wo-abs { position: absolute; }
+  #duelWo canvas.wo-tun { position: absolute; inset: 0; width: 100%; height: 100%; }
+  #duelWo .wo-veil { position: absolute; inset: 0; pointer-events: none; background: radial-gradient(64% 22% at 50% 50%, rgba(7,12,17,0.5), transparent 80%), linear-gradient(180deg, rgba(7,12,17,0.88) 0, rgba(7,12,17,0.5) 290px, transparent 360px); }
+  #duelWo #wo-cam { position: absolute; inset: 0; will-change: transform; }
+
+  #duelWo .wo-topbar { position: absolute; left: 16px; right: 16px; top: 22px; height: 30px; display: flex; align-items: center; justify-content: space-between; gap: 10px; }
+  #duelWo .wo-topbar .wo-k { font-weight: 500; font-size: 13.5px; color: var(--gold-hi); }
+  #duelWo .wo-skip { background: rgba(10,17,24,0.4); border: 1px solid var(--line); border-radius: 18px; padding: 5px 12px; font-weight: 500; font-size: 12.5px; color: var(--muted); }
+
+  /* Anstoß-Duo */
+  #duelWo .wo-fo { position: absolute; left: 0; right: 0; top: 330px; text-align: center; transform-origin: 50% 0; }
+  #duelWo .wo-fo .wo-who { font-weight: 600; font-size: 11.5px; letter-spacing: 0.12em; text-transform: uppercase; color: var(--dim); }
+  #duelWo .wo-fo .wo-nm { font-family: var(--f-display); font-size: 50px; line-height: 1.05; white-space: nowrap; }
+  #duelWo .wo-fo .wo-op .wo-nm { color: var(--gold-hi); }
+  #duelWo .wo-fo .wo-vs { font-weight: 300; font-size: 20px; color: var(--gold-hi); margin: 6px 0; }
+  #duelWo .wo-fo .wo-me, #duelWo .wo-fo .wo-op { will-change: transform; }
+  #duelWo .wo-duo { position: absolute; left: 16px; right: 16px; top: 62px; display: flex; align-items: baseline; gap: 8px; font-size: 16px; opacity: 0; white-space: nowrap; overflow: hidden; }
+  #duelWo .wo-duo b { font-family: var(--f-display); font-weight: 400; font-size: 20px; letter-spacing: 0.01em; }
+  #duelWo .wo-duo .wo-o { color: var(--gold-hi); }
+  #duelWo .wo-duo span { font-weight: 300; color: var(--gold-hi); }
+
+  /* Merkliste */
+  #duelWo .wo-sum { position: absolute; left: 16px; right: 16px; top: 108px; display: grid; gap: 6px; }
+  #duelWo .wo-slot { display: grid; grid-template-columns: 92px minmax(0, 1fr); align-items: baseline; gap: 10px; padding: 7px 10px; border-radius: 9px; background: rgba(28,43,56,0.62); box-shadow: inset 0 0 0 1px rgba(242,239,230,0.06); opacity: 0; will-change: transform; }
+  #duelWo .wo-slot small { font-weight: 600; font-size: 10.5px; letter-spacing: 0.1em; text-transform: uppercase; color: var(--dim); }
+  #duelWo .wo-slot span { font-weight: 500; font-size: 15px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; min-width: 0; }
+  #duelWo .wo-slot.wo-team { background: rgba(232,178,61,0.13); box-shadow: inset 0 0 0 1px rgba(232,178,61,0.55); }
+  #duelWo .wo-slot.wo-team span { color: var(--gold-hi); font-weight: 600; }
+
+  /* Info-Karten */
+  #duelWo .wo-card { position: absolute; left: 22px; right: 22px; top: 372px; transform-origin: 50% 0; opacity: 0; will-change: transform; }
+  #duelWo .wo-card .wo-lb { display: flex; align-items: center; gap: 10px; font-weight: 600; font-size: 12px; letter-spacing: 0.12em; text-transform: uppercase; color: var(--gold-hi); }
+  #duelWo .wo-card .wo-lb i { height: 2px; width: 0; background: var(--gold); border-radius: 1px; }
+  #duelWo .wo-card .wo-val { margin-top: 8px; font-family: var(--f-display); line-height: 1.04; text-transform: uppercase; }
+  #duelWo .wo-card .wo-ln { display: block; white-space: nowrap; will-change: transform; }
+  #duelWo .wo-card .wo-ch { display: inline-block; text-align: center; }
+  #duelWo .wo-card .wo-ch.wo-r { color: rgba(242,239,230,0.38); }
+  #duelWo .wo-card .wo-gg { display: block; font-family: var(--f-text); font-weight: 300; font-size: 18px; text-transform: none; color: var(--gold-hi); margin: 2px 0; }
+  #duelWo .wo-card .wo-sub { margin-top: 10px; font-weight: 300; font-size: 16px; color: var(--muted); }
+  #duelWo .wo-card.wo-team .wo-val { color: var(--gold-hi); text-shadow: 0 0 22px rgba(232,178,61,0.4); }
+  #duelWo .wo-mini { display: block; margin: 14px auto 0; width: 150px; height: 186px; overflow: visible; }
+
+  /* Countdown */
+  #duelWo .wo-cd { position: absolute; left: 195px; top: 470px; width: 0; height: 0; }
+  #duelWo .wo-cd .wo-disc { position: absolute; left: -84px; top: -84px; width: 168px; height: 168px; border-radius: 50%; background: radial-gradient(closest-side, rgba(10,17,24,0.94), rgba(10,17,24,0.82)); box-shadow: 0 0 0 1px rgba(232,178,61,0.25), 0 0 50px rgba(0,0,0,0.6); opacity: 0; }
+  #duelWo .wo-cd svg { position: absolute; left: -96px; top: -96px; width: 192px; height: 192px; overflow: visible; opacity: 0; }
+  #duelWo .wo-cd .wo-num { position: absolute; left: -80px; top: -74px; width: 160px; height: 148px; overflow: hidden; text-align: center; }
+  #duelWo .wo-cd .wo-num span { display: block; font-family: var(--f-display); font-size: 126px; line-height: 148px; color: var(--gold-hi); text-shadow: 0 0 26px rgba(232,178,61,0.45); will-change: transform; opacity: 0; }
+  #duelWo .wo-cd .wo-ko { position: absolute; left: -180px; top: -40px; width: 360px; text-align: center; font-family: var(--f-display); font-size: 62px; line-height: 80px; color: var(--chalk); text-shadow: 0 0 30px rgba(246,216,142,0.8); opacity: 0; }
+  #duelWo .wo-cd .wo-burst { position: absolute; left: -84px; top: -84px; width: 168px; height: 168px; border-radius: 50%; border: 3px solid var(--gold-hi); opacity: 0; }
+  #duelWo .wo-cd .wo-ready { position: absolute; left: -150px; top: 104px; width: 300px; text-align: center; font-weight: 500; font-size: 13px; letter-spacing: 0.1em; text-transform: uppercase; color: var(--gold-hi); opacity: 0; }
+
+  #duelWo .wo-flash { position: absolute; inset: 0; background: #FFF6DC; opacity: 0; pointer-events: none; }
+  #duelWo .wo-out { position: absolute; inset: 0; pointer-events: none; clip-path: circle(0px at 195px 470px);
+    background: repeating-linear-gradient(180deg, var(--pitch) 0 70px, #1B4530 70px 140px); }
+  #duelWo .wo-out svg { position: absolute; inset: 0; width: 100%; height: 100%; }
+  #duelWo .wo-foot { position: absolute; left: 16px; right: 16px; bottom: 26px; text-align: center; display: grid; gap: 4px; }
+  #duelWo .wo-foot .wo-a { font-weight: 300; font-size: 12.5px; color: var(--dim); }
+  #duelWo .wo-foot .wo-b { font-weight: 400; font-size: 12.5px; color: var(--muted); }
+
+
+  
   /* Spiel */
   #screen-duelplay .dplay { gap: 10px; min-height: 100%; }
   #screen-duelplay .dplay .hud { position: sticky; top: 0; z-index: 6; display: grid; grid-template-columns: 1fr auto 1fr; align-items: center; gap: 8px; padding: 4px 0 6px; background: var(--ink); }
@@ -8051,6 +8083,7 @@ function startDuelRun(id) {
 }
 
 function endDuelRun() {
+  stopWalkout();
   const r = duelRun, id = r.id;
   (r.timers || []).forEach(clearTimeout);
   clearInterval(r.tick);
@@ -8086,56 +8119,611 @@ function duelMatchInfo(m) {
   };
 }
 
+// Lesezeit je Info im Walkout (Prompt 36)
+const WALKOUT_READ_MS = 2200;
+const WO_STAGE_HTML = "<div class=\"wo-stage\" id=\"wo-stage\" role=\"button\" tabindex=\"0\" aria-label=\"Walkout: tippen für die nächste Info\">\n        <canvas class=\"wo-tun\" id=\"wo-tun\" width=\"390\" height=\"844\"></canvas>\n        <div class=\"wo-veil\"></div>\n        <div id=\"wo-cam\">\n          <div class=\"wo-fo\" id=\"wo-fo\">\n            <div class=\"wo-me\" id=\"wo-foMe\"><div class=\"wo-who\" id=\"wo-foMeWho\">Du · Level 9</div><div class=\"wo-nm\" id=\"wo-foMeNm\">Florian</div></div>\n            <div class=\"wo-vs\" id=\"wo-foVs\">gegen</div>\n            <div class=\"wo-op\" id=\"wo-foOp\"><div class=\"wo-nm\" id=\"wo-foOpNm\">Lisa</div><div class=\"wo-who\" id=\"wo-foOpWho\">Stammspieler · Level 12</div></div>\n          </div>\n          <div class=\"wo-duo\" id=\"wo-duo\"><b id=\"wo-duoMe\">Florian</b><span>gegen</span><b class=\"wo-o\" id=\"wo-duoOp\">Lisa</b></div>\n\n          <div class=\"wo-sum\" id=\"wo-sum\">\n            <div class=\"wo-slot\" id=\"wo-s0\"><small>Wettbewerb</small><span></span></div>\n            <div class=\"wo-slot\" id=\"wo-s1\"><small>Datum</small><span></span></div>\n            <div class=\"wo-slot\" id=\"wo-s2\"><small>Partie</small><span></span></div>\n            <div class=\"wo-slot wo-team\" id=\"wo-s3\"><small>Du stellst auf</small><span></span></div>\n          </div>\n\n          <div class=\"wo-card\" id=\"wo-c0\"><div class=\"wo-lb\"><i></i><span>Wettbewerb</span></div><div class=\"wo-val\"></div><div class=\"wo-sub\"></div></div>\n          <div class=\"wo-card\" id=\"wo-c1\"><div class=\"wo-lb\"><i></i><span>Datum</span></div><div class=\"wo-val\"></div><div class=\"wo-sub\"></div></div>\n          <div class=\"wo-card\" id=\"wo-c2\"><div class=\"wo-lb\"><i></i><span>Partie</span></div><div class=\"wo-val\"></div><div class=\"wo-sub\"></div></div>\n          <div class=\"wo-card wo-team\" id=\"wo-c3\"><div class=\"wo-lb\"><i></i><span>Du stellst auf</span></div><div class=\"wo-val\"></div><div class=\"wo-sub\"></div>\n            <svg class=\"wo-mini\" id=\"wo-mini\" viewBox=\"0 0 150 186\" aria-hidden=\"true\">\n              <g id=\"wo-miniLines\" fill=\"none\" stroke=\"#F2EFE6\" stroke-opacity=\"0.35\" stroke-width=\"1.2\">\n                <rect x=\"1\" y=\"1\" width=\"148\" height=\"184\" rx=\"4\"/>\n                <line x1=\"1\" y1=\"93\" x2=\"149\" y2=\"93\"/>\n                <circle cx=\"75\" cy=\"93\" r=\"20\"/>\n                <rect x=\"40\" y=\"1\" width=\"70\" height=\"26\"/>\n                <rect x=\"40\" y=\"159\" width=\"70\" height=\"26\"/>\n              </g>\n              <g id=\"wo-dots\"></g>\n            </svg>\n          </div>\n\n          <div class=\"wo-cd\" id=\"wo-cd\">\n            <div class=\"wo-disc\" id=\"wo-disc\"></div>\n            <svg viewBox=\"-96 -96 192 192\" id=\"wo-ringSvg\" aria-hidden=\"true\">\n              <g id=\"wo-ticks\"></g>\n              <circle id=\"wo-ring\" r=\"88\" fill=\"none\" stroke=\"#E8B23D\" stroke-width=\"3\" stroke-linecap=\"round\" transform=\"rotate(-90)\" stroke-dasharray=\"553\" stroke-dashoffset=\"553\"/>\n            </svg>\n            <div class=\"wo-burst\" id=\"wo-burst\"></div>\n            <div class=\"wo-num\"><span id=\"wo-num\">3</span></div>\n            <div class=\"wo-ko\" id=\"wo-ko\">Anpfiff!</div>\n            <div class=\"wo-ready\" id=\"wo-ready\">Bereit machen</div>\n          </div>\n        </div>\n        <div class=\"wo-flash\" id=\"wo-flash\"></div>\n        <div class=\"wo-out\" id=\"wo-out\">\n          <svg viewBox=\"0 0 390 844\" aria-hidden=\"true\"><g fill=\"none\" stroke=\"#F2EFE6\" stroke-opacity=\"0.55\" stroke-width=\"2\">\n            <line x1=\"0\" y1=\"470\" x2=\"390\" y2=\"470\"/><circle cx=\"195\" cy=\"470\" r=\"74\"/><circle cx=\"195\" cy=\"470\" r=\"3\" fill=\"#F2EFE6\"/>\n          </g></svg>\n        </div>\n        <div class=\"wo-topbar\" id=\"wo-topbar\"><span class=\"wo-k\" id=\"wo-round\">Runde 1 von 3</span><button type=\"button\" class=\"wo-skip\" id=\"wo-skip\">Zum Countdown ›</button></div>\n        <div class=\"wo-foot\" id=\"wo-foot\"><span class=\"wo-b\" id=\"wo-tapHint\">Tippen = nächste Info</span><span class=\"wo-a\">Die Zeit startet erst mit dem Anpfiff.</span></div>\n      </div>";
+
 function walkoutHTML(d, m) {
-  const i = duelMatchInfo(m), o = d.opponent;
-  const vs = `<span class="vsl" style="font-family:'Oswald',sans-serif;font-weight:300;font-size:0.5em;text-transform:none">gegen</span>`;
-  const row = (k, lb, val, sub, cls = "") => `<div class="wr ${cls}" data-i="${k}"><div class="flare"></div><div class="sweep"></div><div class="lb">${lb}</div><div class="val">${val}</div><div class="sub">${sub}</div></div>`;
-  return `
-    <div class="wk" id="duelWk">
-      <div class="beam l"></div><div class="beam r"></div><div class="tunnel"></div>
-      <div class="top"><span class="k">Runde ${duelRun.round + 1} von ${d.settings.rounds}${o ? " · gegen " + duelEsc(o.name) : ""}</span><button type="button" class="skip" id="duelSkipWo">Überspringen ›</button></div>
-      <div class="wo">
-        ${row(0, "Wettbewerb", duelEsc(i.league), duelEsc(i.stage))}
-        ${row(1, "Datum", duelEsc(i.date), duelEsc(i.weekday))}
-        ${row(2, "Partie", i.away ? `${duelEsc(i.home)}<br>${vs} ${duelEsc(i.away)}` : duelEsc(i.home), i.score ? "Endstand " + duelEsc(i.score) : "")}
-        ${row(3, "Du stellst auf", duelEsc(i.side), `Alle 11 · Formation ${m.formation}`, "team")}
-      </div>
-      <div class="cd"><span id="duelCdN"></span></div>
-      <div class="wo-foot">Die Zeit startet erst mit dem Anpfiff.</div>
-    </div>`;
+  return '<div id="duelWo"><div class="wo-box" id="wo-box"><div class="wo-phone" id="wo-phone">' + WO_STAGE_HTML + '</div></div></div>';
 }
 
+function stopWalkout() {
+  if (duelRun && duelRun.wo) { duelRun.wo.stop(); duelRun.wo = null; }
+  const el = document.getElementById("duelWo"); if (el) el.remove(); // Container samt (freigegebenem) Canvas entfernen
+}
+
+/* Walkout v2 "Spielertunnel" (Prompt 36): Buehne, Zeiten und Bewegung 1:1 aus prototypes/walkout.html. EINE Zeitachse t, render(t)
+   berechnet jedes Bild komplett aus t (deterministisch), ein requestAnimationFrame-Loop; nach dem Anpfiff wird gestoppt und der
+   Canvas freigegeben. Die Duell-Uhr startet erst in startDuelRound() (nach dem Walkout). Keine echten Vereine/Wappen im Tunnel. */
 function runWalkout(d) {
-  const r = duelRun, wk = document.getElementById("duelWk");
-  const rows = [...wk.querySelectorAll(".wr")], n = document.getElementById("duelCdN");
-  const at = (ms, fn) => r.timers.push(setTimeout(fn, ms));
-  // Glitch-Fix (Prompt 26): jede Zeile bekommt vorab die groesste Schrift, bei der IHRE LAENGSTE Zeile in EINE Zeile passt
-  // (nowrap) - beim Gross-/Kleinwerden bricht nichts um und nichts springt. Breite aus dem Fenster, nicht aus dem (beim
-  // Aufbau evtl. noch versteckten) Layout.
-  const stageW = Math.min(window.innerWidth, 560);
-  rows.forEach(row => {
-    const v = row.querySelector(".val"), isTeam = row.classList.contains("team"), max = isTeam ? 40 : 36;
-    const lines = v.innerHTML.split("<br>");
-    let wMax = 1;
-    lines.forEach(h => {
-      const probe = document.createElement("span");
-      probe.innerHTML = h;
-      probe.style.cssText = "position:absolute;visibility:hidden;white-space:nowrap;font-size:100px;text-transform:uppercase;font-family:'Anton',Impact,sans-serif";
-      document.body.appendChild(probe);
-      wMax = Math.max(wMax, probe.getBoundingClientRect().width);
-      probe.remove();
+  const r = duelRun, root = document.getElementById("duelWo");
+  if (!r || !root) return;
+  const m = dailyMatchById(d.lineups[r.round]);
+  const info = duelMatchInfo(m), opp = d.opponent, me = duelMeInfo();
+  const W = 390, H = 844, VX = 195, VY = 470;
+  const $ = (id) => root.querySelector("#wo-" + id);
+  // ---------- Hilfen ----------
+  const clamp = (x, a = 0, b = 1) => Math.min(b, Math.max(a, x));
+  const seg = (t, a, b) => clamp((t - a) / (b - a));
+  const lerp = (a, b, x) => a + (b - a) * x;
+  const eo3 = x => 1 - Math.pow(1 - x, 3), eo5 = x => 1 - Math.pow(1 - x, 5), ei3 = x => x * x * x;
+  const eio3 = x => x < 0.5 ? 4 * x * x * x : 1 - Math.pow(-2 * x + 2, 3) / 2;
+  const eioS = x => -(Math.cos(Math.PI * x) - 1) / 2;
+  const eoBack = (x, s = 1.70158) => 1 + (s + 1) * Math.pow(x - 1, 3) + s * Math.pow(x - 1, 2);
+  const hash = (a, b) => { let h = (a * 374761393 + b * 668265263) | 0; h = (h ^ (h >>> 13)) * 1274126177 | 0; return (h ^ (h >>> 16)) >>> 0; };
+  const FLAP = "ABCDEFGHIJKLMNOPRSTUVWZÄÖÜ0123456789";
+
+
+  let R = WALKOUT_READ_MS, reduce = REDUCED_MOTION;
+  const testT = typeof window.WO_TEST_T === "number" ? window.WO_TEST_T : null; // nur fuer Tests: genau diesen Zeitpunkt zeigen
+  const myName = (profile.duelName || "").trim() || "Du", oppName = opp && opp.name ? opp.name : "Freund";
+  // ---------- Zeitplan (alles aus R abgeleitet) ----------
+  let TL;
+  function timeline() {
+    const FO = [400, 2300];
+    const S = [0, 1, 2, 3].map(k => FO[1] + k * R);
+    const SUM = FO[1] + 4 * R;
+    const CD = SUM + 350;
+    const KO = CD + 3000;
+    TL = { FO, S, SUM, CD, KO, EXIT: [KO + 260, KO + 950], END: KO + 1250 };
+  }
+
+
+  // ---------- Klappziffer-Text ----------
+  const mctx = document.createElement("canvas").getContext("2d");
+  function charW(ch, px) { mctx.font = `400 ${px}px Anton, Impact, sans-serif`; return mctx.measureText(ch).width; }
+  function fitSize(lines, avail, max) {
+    mctx.font = "400 100px Anton, Impact, sans-serif";
+    return Math.max(20, Math.min(max, ...lines.map(l => avail * 100 / mctx.measureText(l.toUpperCase()).width)));
+  }
+  function flapLine(text, px) {
+    const ln = document.createElement("span"); ln.className = "wo-ln";
+    const chars = [];
+    [...text.toUpperCase()].forEach(c => {
+      const s = document.createElement("span"); s.className = "wo-ch";
+      s.textContent = c === " " ? " " : c;
+      s.style.width = charW(c === " " ? " " : c, px).toFixed(2) + "px";
+      ln.appendChild(s); chars.push({ el: s, c, sp: c === " " });
     });
-    const avail = stageW - 44 - (isTeam ? 31 : 0) - 4;
-    row.style.setProperty("--fs", Math.max(18, Math.min(max, Math.floor(avail * 100 / wMax))) + "px");
-  });
-  const STEP = REDUCED_MOTION ? 350 : 1250;
-  at(150, () => wk.classList.add("lit"));
-  rows.forEach((row, i) => at(REDUCED_MOTION ? 100 + i * STEP : 700 + i * STEP, () => { rows.forEach(x => x.classList.remove("cur")); row.classList.add("in", "cur"); }));
-  const cdStart = (REDUCED_MOTION ? 100 : 700) + rows.length * STEP + (REDUCED_MOTION ? 200 : 600);
-  at(cdStart - 150, () => wk.classList.add("dim"));
-  ["3", "2", "1", "Anpfiff!"].forEach((t, i) => at(cdStart + i * (REDUCED_MOTION ? 450 : 650), () => { n.className = ""; void n.offsetWidth; n.textContent = t; n.className = "cdgo" + (i === 3 ? " ko" : ""); }));
-  at(cdStart + 4 * (REDUCED_MOTION ? 450 : 650) + 250, () => startDuelRound());
-  document.getElementById("duelSkipWo").onclick = () => { r.timers.forEach(clearTimeout); r.timers = []; startDuelRound(); };
+    return { ln, chars };
+  }
+
+
+  function setNames() {
+    const fit = (el, text) => { el.textContent = text; el.style.fontSize = fitSize([text], W - 44, 50).toFixed(1) + "px"; };
+    fit($("foMeNm"), myName); fit($("foOpNm"), oppName);
+    $("duoMe").textContent = myName; $("duoOp").textContent = oppName;
+    $("foMeWho").textContent = "Du · " + me.rank + " · Level " + me.level;
+    $("foOpWho").textContent = opp && opp.rank ? opp.rank + " · Level " + opp.level : "";
+    $("round").textContent = "Runde " + (r.round + 1) + " von " + d.settings.rounds;
+  }
+  let cards = [], dots = [];
+  function build() {
+    const i = info;
+    const avail = W - 44 - 4;
+    const defs = [
+      { lines: [i.league], sub: i.stage, max: 50 },
+      { lines: [i.date], sub: i.weekday, max: 50 },
+      { lines: [i.home, i.away], sub: i.score ? "Endstand " + i.score : "", max: 46, partie: true },
+      { lines: [i.side], sub: "Alle 11 · Formation " + m.formation, max: 54 }
+    ];
+    cards = defs.map((d, k) => {
+      const el = $("c" + k), val = el.querySelector(".wo-val");
+      val.innerHTML = "";
+      const px = fitSize(d.lines, avail, d.max);
+      val.style.fontSize = px.toFixed(1) + "px";
+      const lines = d.lines.map((l, j) => {
+        const fl = flapLine(l, px);
+        if (d.partie && j === 1) { const g = document.createElement("span"); g.className = "wo-gg"; g.textContent = "gegen"; val.appendChild(g); fl.gg = g; }
+        val.appendChild(fl.ln);
+        return fl;
+      });
+      el.querySelector(".wo-sub").textContent = d.sub;
+      return { el, lb: el.querySelector(".wo-lb"), bar: el.querySelector(".wo-lb i"), sub: el.querySelector(".wo-sub"), lines, partie: !!d.partie };
+    });
+    // Merkliste
+    const sv = [
+      i.league + (i.stage ? " · " + i.stage : ""),
+      (i.weekday ? i.weekday + ", " : "") + i.date,
+      i.home + " – " + i.away + (i.score ? "  " + i.score.split(",")[0] : ""),
+      i.side + " · " + m.formation
+    ];
+    sv.forEach((v, k) => $("s" + k).querySelector("span").textContent = v);
+    // Mini-Spielfeld
+    const g = $("dots"); g.innerHTML = ""; dots = [];
+    PITCH_LAYOUTS[m.formation].forEach(({ abbr, x, y }, k) => {
+      const c = document.createElementNS("http://www.w3.org/2000/svg", "circle");
+      c.setAttribute("r", abbr === "TW" ? 5.5 : 6);
+      c.setAttribute("fill", abbr === "TW" ? "#F2EFE6" : "#E8B23D");
+      c.setAttribute("stroke", "#0A1118"); c.setAttribute("stroke-width", "1.5");
+      g.appendChild(c);
+      dots.push({ el: c, x: 1 + x / 100 * 148, y: 1 + y / 100 * 184 });
+    });
+    setNames();
+  }
+
+
+  // ---------- Stadionuhr-Striche ----------
+  const ticks = [];
+  for (let k = 0; k < 60; k++) {
+    const a = k / 60 * Math.PI * 2 - Math.PI / 2, r1 = k % 5 ? 76 : 72, r2 = 80;
+    const l = document.createElementNS("http://www.w3.org/2000/svg", "line");
+    l.setAttribute("x1", (Math.cos(a) * r1).toFixed(2)); l.setAttribute("y1", (Math.sin(a) * r1).toFixed(2));
+    l.setAttribute("x2", (Math.cos(a) * r2).toFixed(2)); l.setAttribute("y2", (Math.sin(a) * r2).toFixed(2));
+    l.setAttribute("stroke", "#F2EFE6"); l.setAttribute("stroke-width", k % 5 ? 1.2 : 2); l.setAttribute("stroke-linecap", "round");
+    $("ticks").appendChild(l); ticks.push(l);
+  }
+
+
+  // ---------- Tunnel (Canvas, deterministisch aus t) ----------
+  // Echte 3D-Projektion: gewölbte Decke mit Betonrippen, LED-Bänder, gepolsterte Sockelwand, Handlauf,
+  // Rasenläufer mit Kreidekanten, Kabinentüren HEIM/GAST, Wandschrift, Tunnelausgang mit Stadion dahinter,
+  // Lichtstrahlen, Staub im Gegenlicht. Alles aus t berechnet (Zeitleiste/Zeitlupe exakt).
+  const cv = $("tun"), tc = cv.getContext("2d");
+  const dpr = Math.min(2, window.devicePixelRatio || 1);
+  cv.width = W * dpr; cv.height = H * dpr;
+  const F = 150, XW = 1.65, YF = 1.0, YD = 0.3, YS = -0.5, YA = -1.55, NR = 18, GAP = 1.3, Z0 = 1.2;
+  const ZM = Z0 + NR * GAP + 0.5; // Tunnelausgang
+  const ARCH = [];
+  for (let i = 0; i <= 12; i++) { const a = Math.PI - i * Math.PI / 12; ARCH.push([XW * Math.cos(a), YS - (YS - YA) * Math.sin(a)]); }
+  const archY = x => YS - (YS - YA) * Math.sqrt(Math.max(0, 1 - (x / XW) ** 2));
+  const PORTAL = [[-XW, YF], ...ARCH, [XW, YF]];
+  const WALLTXT = [
+    { side: -1, z: Z0 + 5.2, y0: YS + 0.08, h: 0.36, text: "HEUTE ZÄHLT NUR", col: [242, 239, 230] },
+    { side: -1, z: Z0 + 5.2, y0: YS + 0.5, h: 0.24, text: "DIE STARTELF", col: [232, 178, 61] },
+    { side: 1, z: Z0 + 12.6, y0: YS + 0.1, h: 0.62, text: "STARTING XI", col: [232, 178, 61] }
+  ];
+  const DOORS = [{ side: -1, z: Z0 + 1.0, label: "KABINE HEIM" }, { side: 1, z: Z0 + 1.9, label: "KABINE GAST" }];
+  const DUST = Array.from({ length: 90 }, (_, i) => ({ x: (hash(i, 1) % 1000 / 1000 - 0.5) * 2.8, y: (hash(i, 2) % 1000 / 1000) * 1.9 - 1.1, z: ZM - 0.6 - (hash(i, 3) % 1000 / 1000) * 9, ph: hash(i, 4) % 1000 / 160 }));
+  const CROWD = Array.from({ length: 520 }, (_, i) => ({ u: hash(i, 11) % 10000 / 10000, v: hash(i, 12) % 10000 / 10000, c: hash(i, 13) % 7 }));
+  const CROWD_COL = ["#3a4656", "#55606d", "#6b5a4a", "#8a3b34", "#2f4f7a", "#c9b27a", "#FFF6DC"];
+
+  function camPos(t) {
+    const stop = ZM - 2.7;
+    const walk = stop * eioS(seg(t, 0, TL.SUM + 300));
+    const exit = (ZM - 0.1 - stop) * ei3(seg(t, TL.EXIT[0], TL.EXIT[1]));
+    return reduce ? stop : walk + exit;
+  }
+  let BOB = 0;
+  const P = (x, y, z) => [VX + x * F / z, VY + BOB + y * F / z];
+  function poly(pts) { tc.beginPath(); tc.moveTo(pts[0][0], pts[0][1]); for (let i = 1; i < pts.length; i++) tc.lineTo(pts[i][0], pts[i][1]); tc.closePath(); }
+  const rgb = (c, f, w = 0, a = 1) => `rgba(${Math.min(255, c[0] * f + 255 * w) | 0},${Math.min(255, c[1] * f + 236 * w) | 0},${Math.min(255, c[2] * f + 196 * w) | 0},${a})`;
+
+  // Glyph per affiner Abbildung auf eine Wandfläche (je Buchstabe eigenes Viereck → kaum Verzerrung)
+  function wallGlyph(ch, side, zA, zB, yT, yB, col, f, w) {
+    if (Math.min(zA, zB) < 0.35) return;
+    const o = P(side * XW, yT, zA), u = P(side * XW, yT, zB), v = P(side * XW, yB, zA);
+    const gw = 100, gh = 100;
+    tc.setTransform(dpr * (u[0] - o[0]) / gw, dpr * (u[1] - o[1]) / gw, dpr * (v[0] - o[0]) / gh, dpr * (v[1] - o[1]) / gh, dpr * o[0], dpr * o[1]);
+    tc.fillStyle = rgb(col, f, w);
+    tc.fillText(ch, 0, gh * 0.9);
+    tc.setTransform(dpr, 0, 0, dpr, 0, 0);
+  }
+  function wallText(item, c, f0) {
+    tc.font = "400 100px Anton, Impact, sans-serif";
+    const chars = [...item.text];
+    let z = item.z;
+    chars.forEach(ch => {
+      const wz = tc.measureText(ch).width / 100 * item.h * 0.92;
+      const za = z - c, zb = z + wz - c;
+      if (ch !== " " && Math.min(za, z - wz - c) > 0.35) {
+        const f = f0(za), w = exitWarm(za);
+        if (item.side < 0) wallGlyph(ch, -1, za, zb, item.y0, item.y0 + item.h, item.col, f, w);
+        else wallGlyph(ch, 1, z - c, z - wz - c, item.y0, item.y0 + item.h, item.col, f, w);
+      }
+      z += item.side < 0 ? wz + 0.02 : -(wz + 0.02);
+    });
+  }
+  let ZMc = 10;
+  const exitWarm = z => 0.55 * Math.exp(-Math.max(0, ZMc - z) / 2.2);
+
+  function drawScene(L, T, R, B, t, near) {
+    const w = R - L, h = B - T;
+    const sky = tc.createLinearGradient(0, T, 0, T + h * 0.42);
+    sky.addColorStop(0, "#0E1A2A"); sky.addColorStop(1, "#24364A");
+    tc.fillStyle = sky; tc.fillRect(L, T, w, h);
+    // Flutlichtmasten
+    [[0.16, 0.1], [0.84, 0.1]].forEach(([fx, fy]) => {
+      const x = L + w * fx, y = T + h * fy, r = w * 0.42;
+      const g = tc.createRadialGradient(x, y, 0, x, y, r);
+      g.addColorStop(0, "rgba(255,248,226,0.95)"); g.addColorStop(0.08, "rgba(255,240,205,0.55)"); g.addColorStop(1, "rgba(255,240,205,0)");
+      tc.fillStyle = g; tc.fillRect(L, T, w, h);
+      tc.fillStyle = "#FFFDF2";
+      for (let a = 0; a < 3; a++) for (let b = 0; b < 4; b++) tc.fillRect(x - w * 0.03 + b * w * 0.016, y - h * 0.012 + a * h * 0.012, Math.max(1, w * 0.01), Math.max(1, h * 0.008));
+    });
+    // Tribüne
+    const st0 = T + h * 0.2, st1 = T + h * 0.47;
+    const sg = tc.createLinearGradient(0, st0, 0, st1);
+    sg.addColorStop(0, "#1A2430"); sg.addColorStop(1, "#2A3644");
+    tc.fillStyle = sg; tc.fillRect(L, st0, w, st1 - st0);
+    const dot = Math.max(0.7, w / 230);
+    CROWD.forEach(p => {
+      const y = st0 + (st1 - st0) * (0.05 + 0.9 * p.v);
+      tc.fillStyle = CROWD_COL[p.c];
+      tc.fillRect(L + w * p.u, y, dot * (p.c === 6 ? 0.8 : 1.4), dot * (p.c === 6 ? 0.8 : 1.2));
+    });
+    tc.strokeStyle = "rgba(10,17,24,0.5)"; tc.lineWidth = Math.max(0.5, h / 260);
+    for (let r = 1; r < 6; r++) { const y = st0 + (st1 - st0) * r / 6; tc.beginPath(); tc.moveTo(L, y); tc.lineTo(R, y); tc.stroke(); }
+    // Bandenwerbung (LED)
+    const bd0 = st1, bd1 = st1 + h * 0.035;
+    tc.fillStyle = "#0B1218"; tc.fillRect(L, bd0, w, bd1 - bd0);
+    for (let k = 0; k < 9; k++) {
+      tc.fillStyle = k % 3 === 0 ? "#E8B23D" : k % 3 === 1 ? "#F2EFE6" : "#2ECC71";
+      tc.globalAlpha = 0.75; tc.fillRect(L + w * (k / 9 + 0.01), bd0 + (bd1 - bd0) * 0.3, w * 0.07, (bd1 - bd0) * 0.4); tc.globalAlpha = 1;
+    }
+    // Rasen mit Mähstreifen in Perspektive
+    const hz = bd1;
+    for (let k = 0; k < 9; k++) {
+      const y0 = hz + (B - hz) * Math.pow(k / 9, 1.7), y1 = hz + (B - hz) * Math.pow((k + 1) / 9, 1.7);
+      tc.fillStyle = k % 2 ? "#2B6443" : "#33744E"; tc.fillRect(L, y0, w, y1 - y0 + 1);
+    }
+    tc.fillStyle = "rgba(242,239,230,0.85)"; tc.fillRect(L, hz + (B - hz) * 0.06, w, Math.max(1, h * 0.006));
+    // Überstrahlung, je näher desto heller
+    const bl = tc.createRadialGradient((L + R) / 2, T + h * 0.45, 0, (L + R) / 2, T + h * 0.45, w * 0.9);
+    bl.addColorStop(0, `rgba(255,246,220,${(0.18 + 0.25 * near).toFixed(3)})`); bl.addColorStop(1, "rgba(255,246,220,0)");
+    tc.fillStyle = bl; tc.fillRect(L, T, w, h);
+  }
+
+  function drawTunnel(t) {
+    tc.setTransform(dpr, 0, 0, dpr, 0, 0);
+    const c = camPos(t);
+    ZMc = ZM - c;
+    const speed = reduce ? 0 : (camPos(t + 16) - c) * 60;
+    BOB = reduce ? 0 : Math.sin(c * 3.4) * 2.4 * clamp(speed * 1.2);
+    const on = k => reduce ? 1 : eo3(seg(t, 120 + k * 55, 420 + k * 55));
+    const zm = Math.max(0.1, ZM - c);
+    const near = clamp(1 - (zm - 0.1) / 6);
+    const fog = z => clamp(1 - z / 24) * 0.9 + 0.1;
+    const lit = z => (0.62 + 0.38 * on(Math.max(0, Math.floor((z + c - Z0) / GAP)))) * fog(z);
+
+    tc.fillStyle = "#070C11"; tc.fillRect(0, 0, W, H);
+
+    // Ausgang: Stadion hinter dem Torbogen
+    const port = PORTAL.map(([x, y]) => P(x, y, zm));
+    const pL = port[0][0], pR = port[port.length - 1][0], pT = P(0, YA, zm)[1], pB = port[0][1];
+    tc.save(); poly(port); tc.clip();
+    drawScene(pL, pT, pR, pB, t, near);
+    tc.restore();
+    const halo = tc.createRadialGradient(VX, VY + BOB, 0, VX, VY + BOB, Math.max(90, (pR - pL) * 1.4));
+    halo.addColorStop(0, "rgba(255,240,205,0.22)"); halo.addColorStop(1, "rgba(255,240,205,0)");
+
+    // Segmente von hinten nach vorn
+    for (let k = NR; k >= -6; k--) {
+      const z1w = Z0 + k * GAP, z1 = z1w - c, z2 = z1 + GAP;
+      const za = Math.max(0.12, z1), zb = Math.min(z2, zm);
+      if (zb <= za) continue;
+      const zmid = (za + zb) / 2, f = lit(zmid), wm = exitWarm(zmid), L = on(Math.max(0, k)) * fog(zmid), Ln = L * clamp((zmid - 0.6) / 2.2);
+      const Q = (x1, y1, x2, y2) => [P(x1, y1, za), P(x2, y2, za), P(x2, y2, zb), P(x1, y1, zb)];
+      // Gewölbe
+      for (let i = 0; i < ARCH.length - 1; i++) {
+        const [x1, y1] = ARCH[i], [x2, y2] = ARCH[i + 1];
+        const lift = 0.85 + 0.35 * Math.sin(Math.PI * (i + 0.5) / (ARCH.length - 1));
+        tc.fillStyle = rgb([24, 35, 47], f * lift, wm * 0.6); poly(Q(x1, y1, x2, y2)); tc.fill();
+      }
+      // Wände: oben helle Paneele, unten gepolsterte Sockelwand
+      [-1, 1].forEach(s => {
+        tc.fillStyle = rgb([38, 52, 66], f, wm); poly(Q(s * XW, YS, s * XW, YD)); tc.fill();
+        tc.fillStyle = rgb([17, 34, 52], f, wm * 0.7); poly(Q(s * XW, YD, s * XW, YF)); tc.fill();
+      });
+      // Boden: Beton + Rasenläufer
+      tc.fillStyle = rgb([34, 40, 44], f, wm * 0.8); poly(Q(-XW, YF, XW, YF)); tc.fill();
+      tc.fillStyle = rgb([30, 78, 52], f * 1.05, wm * 0.6); poly(Q(-0.8, YF, 0.8, YF)); tc.fill();
+      // Spiegelung der Deckenlichter auf dem Boden
+      if (Ln > 0.02) {
+        const zr1 = za + (zb - za) * 0.2, zr2 = za + (zb - za) * 0.8;
+        tc.fillStyle = `rgba(255,236,190,${(0.06 * Ln).toFixed(3)})`;
+        poly([P(-0.35, YF, zr1), P(0.35, YF, zr1), P(0.35, YF, zr2), P(-0.35, YF, zr2)]); tc.fill();
+        poly([P(-0.18, YF, zr1 + 0.1), P(0.18, YF, zr1 + 0.1), P(0.18, YF, zr2 - 0.1), P(-0.18, YF, zr2 - 0.1)]); tc.fill();
+        tc.fillStyle = `rgba(255,236,190,${(0.03 * Ln).toFixed(3)})`;
+        poly([P(-1.3, YF, zr1), P(-0.9, YF, zr1), P(-0.9, YF, zr2), P(-1.3, YF, zr2)]); tc.fill();
+        poly([P(0.9, YF, zr1), P(1.3, YF, zr1), P(1.3, YF, zr2), P(0.9, YF, zr2)]); tc.fill();
+      }
+      const lw = z => Math.max(0.6, F / z * 0.03);
+      // Kreidekanten des Läufers
+      tc.strokeStyle = rgb([242, 239, 230], 0.55 * f, wm * 0.4); tc.lineWidth = lw(zmid) * 0.8;
+      [-0.8, 0.8].forEach(x => { const a = P(x, YF, za), b = P(x, YF, zb); tc.beginPath(); tc.moveTo(a[0], a[1]); tc.lineTo(b[0], b[1]); tc.stroke(); });
+      // Paneelfugen + Polsterkante
+      tc.strokeStyle = rgb([8, 14, 20], 1, 0, 0.7); tc.lineWidth = lw(za) * 0.6;
+      [-1, 1].forEach(s => { const a = P(s * XW, YS, za), b = P(s * XW, YF, za); tc.beginPath(); tc.moveTo(a[0], a[1]); tc.lineTo(b[0], b[1]); tc.stroke(); });
+      tc.strokeStyle = rgb([90, 110, 130], f, wm * 0.5); tc.lineWidth = lw(zmid) * 0.6;
+      [-1, 1].forEach(s => { const a = P(s * XW, YD, za), b = P(s * XW, YD, zb); tc.beginPath(); tc.moveTo(a[0], a[1]); tc.lineTo(b[0], b[1]); tc.stroke(); });
+      // Handlauf (Edelstahl) mit Glanzlicht
+      [-1, 1].forEach(s => {
+        const x = s * (XW - 0.07), a = P(x, 0.08, za), b = P(x, 0.08, zb);
+        tc.strokeStyle = rgb([150, 162, 175], f, wm * 0.6); tc.lineWidth = lw(zmid) * 1.6; tc.beginPath(); tc.moveTo(a[0], a[1]); tc.lineTo(b[0], b[1]); tc.stroke();
+        tc.strokeStyle = `rgba(255,250,235,${(0.55 * Math.max(L, wm)).toFixed(3)})`; tc.lineWidth = lw(zmid) * 0.5;
+        tc.beginPath(); tc.moveTo(a[0], a[1] - lw(zmid) * 0.4); tc.lineTo(b[0], b[1] - lw(zmid) * 0.4); tc.stroke();
+      });
+      // Betonrippe
+      if (z1 > 0.12) {
+        tc.strokeStyle = rgb([52, 66, 80], f, wm * 0.5); tc.lineWidth = Math.max(1, F / z1 * 0.09);
+        tc.beginPath(); PORTAL.forEach(([x, y], i) => { const p = P(x, y, z1); i ? tc.lineTo(p[0], p[1]) : tc.moveTo(p[0], p[1]); }); tc.stroke();
+      }
+      // LED-Bänder im Gewölbe
+      if (L > 0.01) {
+        [-0.5, 0.5].forEach(x => {
+          const y = archY(x) + 0.02, zl1 = za + 0.06, zl2 = zb - 0.06;
+          if (zl2 <= zl1) return;
+          tc.fillStyle = `rgba(255,236,190,${(0.16 * Ln).toFixed(3)})`;
+          poly([P(x - 0.2, y + 0.03, zl1), P(x + 0.2, y + 0.03, zl1), P(x + 0.2, y + 0.03, zl2), P(x - 0.2, y + 0.03, zl2)]); tc.fill();
+          tc.fillStyle = `rgba(255,250,236,${(0.95 * Ln).toFixed(3)})`;
+          poly([P(x - 0.05, y, zl1), P(x + 0.05, y, zl1), P(x + 0.05, y, zl2), P(x - 0.05, y, zl2)]); tc.fill();
+        });
+      }
+    }
+
+    // Kabinentüren mit Schild
+    tc.font = "400 100px Anton, Impact, sans-serif";
+    DOORS.forEach(d => {
+      const za = d.z - c, zb = za + 0.95;
+      if (zb < 0.3) return;
+      const z1 = Math.max(0.3, za), f = lit(z1), s = d.side;
+      tc.fillStyle = rgb([9, 15, 21], 1); poly([P(s * XW, -0.3, z1), P(s * XW, -0.3, zb), P(s * XW, YF, zb), P(s * XW, YF, z1)]); tc.fill();
+      tc.strokeStyle = rgb([120, 132, 145], f); tc.lineWidth = Math.max(0.8, F / z1 * 0.025);
+      poly([P(s * XW, -0.3, z1), P(s * XW, -0.3, zb), P(s * XW, YF, zb), P(s * XW, YF, z1)]); tc.stroke();
+      // Türgriff
+      const g = P(s * XW, 0.35, zb - 0.12); tc.fillStyle = rgb([200, 205, 210], f); tc.fillRect(g[0] - 1, g[1] - 1, 2.5, Math.max(2, F / zb * 0.05));
+      // Schild
+      tc.fillStyle = rgb([232, 178, 61], f * 0.9); poly([P(s * XW, -0.47, z1), P(s * XW, -0.47, zb), P(s * XW, -0.36, zb), P(s * XW, -0.36, z1)]); tc.fill();
+      let zc = s < 0 ? za + 0.08 : zb - 0.08;
+      [...d.label].forEach(ch => {
+        const wz = tc.measureText(ch).width / 100 * 0.08;
+        if (ch !== " ") {
+          if (s < 0) wallGlyph(ch, -1, zc, zc + wz, -0.465, -0.375, [14, 20, 28], 1, 0);
+          else wallGlyph(ch, 1, zc, zc - wz, -0.465, -0.375, [14, 20, 28], 1, 0);
+        }
+        zc += s < 0 ? wz + 0.008 : -(wz + 0.008);
+      });
+    });
+
+    // Leitpfeile Richtung Feld (gold, auf beiden Wänden)
+    [4, 8, 12].forEach(k => {
+      [-1, 1].forEach(s => {
+        for (let n = 0; n < 3; n++) {
+          const z0 = Z0 + k * GAP + 0.15 + n * 0.32 - c;
+          if (z0 < 0.35 || z0 > zm) continue;
+          const yc = -0.12, h = 0.2;
+          const pts = [[z0, yc - h], [z0 + 0.12, yc - h], [z0 + 0.36, yc], [z0 + 0.12, yc + h], [z0, yc + h], [z0 + 0.24, yc]];
+          tc.fillStyle = rgb([232, 178, 61], lit(z0) * (0.55 + 0.15 * n), exitWarm(z0) * 0.5);
+          poly(pts.map(([z, y]) => P(s * XW, y, z))); tc.fill();
+        }
+      });
+    });
+
+    // Schild über dem Ausgang
+    const zs = ZM - 1.0 - c;
+    if (zs > 0.3) {
+      const fs = lit(zs), ws = exitWarm(zs);
+      const a = P(-0.92, -1.36, zs), b = P(0.92, -1.06, zs);
+      tc.strokeStyle = rgb([120, 132, 145], fs, ws); tc.lineWidth = Math.max(0.6, F / zs * 0.015);
+      [-0.7, 0.7].forEach(x => { const p1 = P(x, -1.36, zs), p2 = P(x, archY(x), zs); tc.beginPath(); tc.moveTo(p1[0], p1[1]); tc.lineTo(p2[0], p2[1]); tc.stroke(); });
+      tc.fillStyle = rgb([12, 20, 28], 1, ws * 0.3); tc.fillRect(a[0], a[1], b[0] - a[0], b[1] - a[1]);
+      tc.strokeStyle = rgb([232, 178, 61], fs * 1.1, ws * 0.5); tc.lineWidth = Math.max(0.8, F / zs * 0.018);
+      tc.strokeRect(a[0], a[1], b[0] - a[0], b[1] - a[1]);
+      const hpx = (b[1] - a[1]) * 0.66;
+      tc.font = `400 ${hpx.toFixed(1)}px Anton, Impact, sans-serif`; tc.textAlign = "center"; tc.textBaseline = "middle";
+      tc.fillStyle = rgb([246, 216, 142], Math.min(1.15, fs * 1.2), ws * 0.4);
+      tc.fillText("STARTING XI", (a[0] + b[0]) / 2, (a[1] + b[1]) / 2 + hpx * 0.05);
+      tc.textAlign = "start"; tc.textBaseline = "alphabetic";
+    }
+
+    // Torbogen-Rahmen am Ausgang
+    tc.strokeStyle = rgb([70, 84, 98], 1, 0.4); tc.lineWidth = Math.max(1.5, F / zm * 0.12);
+    tc.beginPath(); port.forEach((p, i) => i ? tc.lineTo(p[0], p[1]) : tc.moveTo(p[0], p[1])); tc.stroke();
+
+    // Gegenlicht: Strahlen + Staub
+    tc.globalCompositeOperation = "lighter";
+    tc.fillStyle = halo; tc.fillRect(0, 0, W, H);
+    const rayA = (0.012 + 0.07 * near) * (reduce ? 1 : on(NR));
+    [[-2.45, 0.05], [-2.05, 0.035], [-1.6, 0.05], [-1.1, 0.03], [-0.55, 0.045], [0.6, 0.04], [1.15, 0.035], [1.7, 0.05], [2.25, 0.04], [2.7, 0.03]].forEach(([a, wdt], i) => {
+      const ox = VX, oy = VY + BOB - (pB - pT) * 0.1;
+      const r = 900, g = tc.createRadialGradient(ox, oy, 0, ox, oy, 620);
+      g.addColorStop(0, `rgba(255,240,205,${rayA.toFixed(3)})`); g.addColorStop(1, "rgba(255,240,205,0)");
+      tc.fillStyle = g;
+      tc.beginPath(); tc.moveTo(ox, oy); tc.lineTo(ox + Math.cos(a - wdt) * r, oy + Math.sin(a - wdt) * r); tc.lineTo(ox + Math.cos(a + wdt) * r, oy + Math.sin(a + wdt) * r); tc.closePath(); tc.fill();
+    });
+    if (!reduce) {
+      DUST.forEach((d, i) => {
+        const z = d.z - c + Math.sin(t / 2100 + d.ph) * 0.05;
+        if (z < 0.4 || z > zm) return;
+        const x = d.x + Math.sin(t / 1700 + d.ph) * 0.06 + t / 1000 * 0.012, y = d.y + Math.sin(t / 2600 + d.ph * 1.3) * 0.05;
+        const p = P(x, y, z), a = clamp(Math.exp(-(zm - z) / 2.5) * 0.9) * clamp((z - 0.4) / 0.6);
+        if (a < 0.02) return;
+        tc.fillStyle = `rgba(255,240,210,${a.toFixed(3)})`;
+        const rr = Math.max(0.5, F / z * 0.008);
+        tc.beginPath(); tc.arc(p[0], p[1], rr, 0, 6.283); tc.fill();
+      });
+    }
+    tc.globalCompositeOperation = "source-over";
+
+    // Vignette
+    const vg = tc.createRadialGradient(VX, VY, H * 0.2, VX, VY, H * 0.75);
+    vg.addColorStop(0, "rgba(5,9,13,0)"); vg.addColorStop(1, "rgba(5,9,13,0.75)");
+    tc.fillStyle = vg; tc.fillRect(0, 0, W, H);
+  }
+
+
+  // ---------- Bild für Zeitpunkt t ----------
+  const st = id => $(id).style;
+  function flapRender(card, t, t0) {
+    let idx = 0;
+    card.lines.forEach((fl, li) => {
+      fl.chars.forEach(ch => {
+        const start = t0 + idx * 24, settle = start + (reduce ? 0 : 260);
+        if (ch.sp) { idx++; return; }
+        if (t < start && !reduce) { ch.el.style.opacity = 0; }
+        else if (t < settle) {
+          ch.el.style.opacity = 1;
+          ch.el.textContent = FLAP[hash(idx + li * 97, Math.floor(t / 50)) % FLAP.length];
+          ch.el.classList.add("wo-r");
+          ch.el.style.transform = `scaleY(${(0.78 + 0.22 * ((t / 50) % 1)).toFixed(3)})`;
+        } else {
+          ch.el.style.opacity = 1; ch.el.textContent = ch.c; ch.el.classList.remove("wo-r"); ch.el.style.transform = "";
+        }
+        idx++;
+      });
+    });
+  }
+
+  function render(t) {
+    drawTunnel(t);
+    const { FO, S, CD, KO, EXIT } = TL;
+
+    // Kamera-Ruck beim Anpfiff
+    let sx = 0, sy = 0;
+    const d = t - KO;
+    if (d > 0 && d < 500 && !reduce) { const env = 5 * Math.exp(-d / 90); sx = env * Math.sin(d / 16); sy = env * Math.cos(d / 21); }
+    st("cam").transform = `translate(${sx.toFixed(2)}px, ${sy.toFixed(2)}px)`;
+
+    // Anstoß-Duo
+    const a = eo5(seg(t, FO[0], FO[0] + 600)), b = eo5(seg(t, FO[0] + 180, FO[0] + 780));
+    const up = eio3(seg(t, FO[1] - 420, FO[1]));
+    st("foMe").transform = `translateX(${(-260 * (1 - a)).toFixed(1)}px)`; st("foMe").opacity = a;
+    st("foOp").transform = `translateX(${(260 * (1 - b)).toFixed(1)}px)`; st("foOp").opacity = b;
+    const vs = eoBack(seg(t, FO[0] + 380, FO[0] + 760), 2.2);
+    st("foVs").transform = `scale(${vs.toFixed(3)})`; st("foVs").opacity = clamp(vs);
+    st("fo").transform = `translateY(${(-280 * up).toFixed(1)}px) scale(${lerp(1, 0.4, up).toFixed(3)})`;
+    st("fo").opacity = (1 - clamp((up - 0.55) / 0.45)).toFixed(3);
+    const duo = eo3(seg(t, FO[1] - 200, FO[1] + 150));
+    st("duo").opacity = duo; st("duo").transform = `translateY(${(6 * (1 - duo)).toFixed(1)}px)`;
+
+    // Info-Karten → Merkliste
+    cards.forEach((c, k) => {
+      const s0 = S[k], s1 = S[k] + R;
+      const inn = eo3(seg(t, s0, s0 + 520));
+      const col = eio3(seg(t, s1 - 430, s1));
+      const vis = t >= s0 && t < s1 + 10;
+      c.el.style.opacity = vis ? (inn * (1 - clamp(col * 1.6))).toFixed(3) : 0;
+      const slotY = 108 + k * 41 + 16;
+      c.el.style.transform = `translateY(${lerp(14 * (1 - inn), slotY - 372, col).toFixed(1)}px) scale(${lerp(1, 0.32, col).toFixed(3)})`;
+      c.bar.style.width = (40 * eo5(seg(t, s0 + 60, s0 + 460))).toFixed(1) + "px";
+      flapRender(c, t, s0 + 140);
+      if (c.partie) {
+        const l0 = eo5(seg(t, s0 + 60, s0 + 620)), l1 = eo5(seg(t, s0 + 260, s0 + 820));
+        c.lines[0].ln.style.transform = `translateX(${(-60 * (1 - l0)).toFixed(1)}px)`;
+        c.lines[1].ln.style.transform = `translateX(${(60 * (1 - l1)).toFixed(1)}px)`;
+        const gg = eoBack(seg(t, s0 + 200, s0 + 560), 2);
+        c.lines[1].gg.style.transform = `scale(${gg.toFixed(3)})`; c.lines[1].gg.style.transformOrigin = "0 50%";
+        c.lines[1].gg.style.opacity = clamp(gg);
+      }
+      const sb = eo3(seg(t, s0 + 520, s0 + 900));
+      c.sub.style.opacity = sb; c.sub.style.transform = `translateY(${(6 * (1 - sb)).toFixed(1)}px)`;
+      // Merkliste
+      const sl = eo5(seg(t, s1 - 260, s1 + 160));
+      const slot = $("s" + k).style;
+      slot.opacity = (sl * (1 - eo3(seg(t, EXIT[0] - 100, EXIT[0] + 300)))).toFixed(3);
+      slot.transform = `translateY(${(18 * (1 - sl)).toFixed(1)}px) scale(${lerp(1.06, 1, sl).toFixed(3)})`;
+    });
+
+    // Formation fliegt ein
+    const s3 = S[3];
+    dots.forEach((p, k) => {
+      const dd = eoBack(seg(t, s3 + 520 + k * 55, s3 + 980 + k * 55), 1.6);
+      const x = lerp(75, p.x, dd), y = lerp(-30, p.y, dd);
+      p.el.setAttribute("cx", x.toFixed(2)); p.el.setAttribute("cy", y.toFixed(2));
+      p.el.setAttribute("opacity", clamp(dd * 3).toFixed(3));
+    });
+    st("miniLines").opacity = eo3(seg(t, s3 + 380, s3 + 800)).toFixed(3);
+
+    // Countdown im Tunnelausgang
+    const cdIn = eo3(seg(t, CD - 350, CD));
+    const koT = seg(t, KO, KO + 500);
+    st("disc").opacity = (cdIn * (1 - koT)).toFixed(3);
+    st("disc").transform = `scale(${(lerp(0.7, 1, cdIn) + 0.6 * eo3(koT)).toFixed(3)})`;
+    st("ringSvg").opacity = (cdIn * (1 - koT)).toFixed(3);
+    st("ready").opacity = (cdIn * (1 - seg(t, KO - 200, KO))).toFixed(3);
+    const i = Math.floor((t - CD) / 1000), p = ((t - CD) % 1000) / 1000;
+    if (t >= CD && i < 3) {
+      $("num").textContent = 3 - i;
+      const inp = reduce ? 1 : eo5(clamp(p / 0.26)), outp = reduce ? 0 : ei3(clamp((p - 0.84) / 0.16));
+      st("num").transform = `translateY(${(100 * (1 - inp) - 100 * outp).toFixed(1)}%)`;
+      st("num").opacity = 1;
+      $("ring").setAttribute("stroke-dashoffset", (553 * (1 - eioS(p))).toFixed(1));
+      const lit = Math.floor(p * 60);
+      ticks.forEach((l, k) => l.setAttribute("stroke-opacity", k <= lit ? "0.9" : "0.18"));
+      const pulse = 1 + 0.06 * Math.exp(-p * 9);
+      st("ringSvg").transform = `scale(${pulse.toFixed(4)})`;
+    } else {
+      st("num").opacity = 0;
+      if (t < CD) { $("ring").setAttribute("stroke-dashoffset", 553); ticks.forEach(l => l.setAttribute("stroke-opacity", "0.18")); }
+    }
+    const ko = seg(t, KO, KO + 420);
+    st("ko").opacity = t >= KO ? (clamp(ko * 4) * (1 - seg(t, EXIT[0] + 250, EXIT[0] + 550))).toFixed(3) : 0;
+    st("ko").transform = `scale(${lerp(1.5, 1, eoBack(ko, 2)).toFixed(3)})`;
+    const bu = seg(t, KO, KO + 700);
+    st("burst").opacity = (bu > 0 && bu < 1 ? 0.9 * (1 - bu) : 0).toFixed(3);
+    st("burst").transform = `scale(${(1 + 2.4 * eo3(bu)).toFixed(3)})`;
+
+    // Raus ins Flutlicht
+    const fl = seg(t, EXIT[0] + 200, EXIT[1]);
+    st("flash").opacity = (reduce ? 0 : Math.sin(Math.PI * fl) * 0.85).toFixed(3);
+    const oc = eo3(seg(t, EXIT[0] + 420, EXIT[1] + 250));
+    st("out").clipPath = `circle(${(oc * 980).toFixed(1)}px at ${VX}px ${VY}px)`;
+    const uiOut = 1 - eo3(seg(t, EXIT[0], EXIT[0] + 300));
+    st("topbar").opacity = uiOut; st("foot").opacity = uiOut;
+    st("tapHint").opacity = t < S[3] + R - 300 ? 1 : 0;
+  }
+
+
+  // ---------- Abspielen ----------
+  let t = 0, last = 0, raf = 0, running = false, stopped = false, lastCd = -2, vibKo = false;
+  const vib = (ms) => { try { if (navigator.vibrate) navigator.vibrate(ms); } catch (e) { /* iPhone/Desktop: ignorieren */ } };
+  function stop() {
+    if (stopped) return;
+    stopped = true; running = false; cancelAnimationFrame(raf);
+    window.removeEventListener("resize", fit); window.removeEventListener("orientationchange", fit);
+    try { cv.width = 1; cv.height = 1; } catch (e) { /* Canvas freigeben */ }
+  }
+  function frame(now) {
+    if (stopped) return;
+    t += now - last; last = now;
+    if (t >= TL.END) { t = TL.END; render(t); stop(); startDuelRound(); return; }
+    render(t);
+    const ci = t >= TL.CD && t < TL.CD + 3000 ? Math.floor((t - TL.CD) / 1000) : -1;
+    if (ci !== lastCd) { lastCd = ci; if (ci >= 0) vib(15); }
+    if (!vibKo && t >= TL.KO) { vibKo = true; vib(40); }
+    raf = requestAnimationFrame(frame);
+  }
+  // Tippen = naechste Info; waehrend des Countdowns kein Sprung
+  function nextInfo() {
+    if (testT !== null) return;
+    const pts = [TL.S[0], TL.S[1], TL.S[2], TL.S[3], TL.SUM];
+    const nxt = pts.find((x) => x > t + 40);
+    if (nxt === undefined || t >= TL.CD - 400) return;
+    t = nxt === TL.SUM ? TL.SUM : nxt - 1;
+  }
+  $("stage").addEventListener("click", (e) => { if (e.target.closest("button")) return; nextInfo(); });
+  $("stage").addEventListener("keydown", (e) => { if (e.key === " " || e.key === "Enter") { e.preventDefault(); nextInfo(); } });
+  $("skip").addEventListener("click", () => { if (testT === null && t < TL.CD - 350) t = TL.CD - 350; });
+
+  // ---------- einpassen: Breite fuellt, bei wenig Hoehe nach Hoehe; Safe-Areas frei ----------
+  const probe = document.createElement("div");
+  probe.style.cssText = "position:absolute;visibility:hidden;pointer-events:none;padding:env(safe-area-inset-top,0px) env(safe-area-inset-right,0px) env(safe-area-inset-bottom,0px) env(safe-area-inset-left,0px)";
+  root.appendChild(probe);
+  function fit() {
+    const cs = getComputedStyle(probe), rc = root.getBoundingClientRect();
+    const sT = parseFloat(cs.paddingTop) || 0, sB = parseFloat(cs.paddingBottom) || 0, sL = parseFloat(cs.paddingLeft) || 0, sR = parseFloat(cs.paddingRight) || 0;
+    const sc = Math.min((rc.width - sL - sR) / W, (rc.height - sT - sB) / H);
+    $("phone").style.transform = "scale(" + sc + ")";
+    const box = root.querySelector("#wo-box");
+    box.style.width = (W * sc) + "px"; box.style.height = (H * sc) + "px";
+    root.style.paddingTop = sT + "px"; root.style.paddingBottom = sB + "px";
+  }
+  window.addEventListener("resize", fit); window.addEventListener("orientationchange", fit);
+  fit();
+
+  r.wo = { stop };
+  const go = () => {
+    if (stopped) return;
+    timeline(); build();
+    if (testT !== null) { t = testT; render(t); return; }
+    render(0); t = 0; last = performance.now(); running = true; raf = requestAnimationFrame(frame);
+    try { $("stage").focus({ preventScroll: true }); } catch (e) { /* Fokus ist nur Komfort */ }
+  };
+  const fontsReady = document.fonts && document.fonts.load
+    ? Promise.all([document.fonts.load("400 100px Anton"), document.fonts.load("500 20px Oswald")]).catch(() => {})
+    : Promise.resolve();
+  fontsReady.then(go);
 }
 
 /* ---- Runde ---- */
@@ -8152,6 +8740,7 @@ function duelClockHTML(s) {
 function startDuelRound() {
   const r = duelRun;
   if (!r || r.phase === "play") return;
+  stopWalkout();
   const d = profile.duels[r.id];
   (r.timers || []).forEach(clearTimeout); r.timers = [];
   r.phase = "play"; r.left = 0; r.finishing = false; r.view = null;
@@ -8231,6 +8820,7 @@ function confirmDuelAbort() {
   backdrop.querySelector("#duelAbortYes").onclick = () => { backdrop.remove(); abortDuelRun(); };
 }
 function abortDuelRun() {
+  stopWalkout();
   const r = duelRun;
   if (!r) return;
   const d = profile.duels[r.id];
@@ -8264,6 +8854,7 @@ function renderDuelPlay() {
   const r = duelRun, d = profile.duels[r.id];
   const key = r.phase + ":" + r.round;
   if (r.view === key && root.firstChild) return; // laufende Runde nicht neu aufbauen
+  stopWalkout();
   r.view = key;
   const m = dailyMatchById(d.lineups[r.round]);
   screen.classList.toggle("walkout", r.phase === "walkout");
