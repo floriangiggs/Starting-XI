@@ -48,8 +48,9 @@ vorige umgesetzt, getestet und committet ist.
 | 34 | Angefangene Aufstellungen merken und fortsetzen (Kampagne, Freispiel, Tag) | ✅ erledigt |
 | 35 | Aufstellungen: alles vor 2008 ersetzen (12 Kampagne inkl. St. Pauli, 6 Tag), neue bevorzugt 2015–2026 | ✅ erledigt (59 Kampagne, 45 Tages-Pool; Wolfsburg-2009-Formation offen) |
 | 36 | Duell: Walkout v2 „Spielertunnel“ – langsamer, Merkliste, Countdown als Stadionuhr | ✅ erledigt |
+| 37 | Ersatzbank im Spiel: Knopf „Bank“ unten rechts im Feld, Regeln ergänzen, Bank recherchieren (in Paketen) | – |
 
-**Empfohlene Reihenfolge ab jetzt:** weitere Offline-Feinschliffe (u. a. Wolfsburg-2009-Formation klären, Jahres-Lücken im Ideen-Speicher auffüllen) → Planung Online-Duell (inkl. 28/29) → 8 (Capacitor, erst wenn die App final ist; vorher Duell-Pflichtpunkt aus CLAUDE.md ansprechen)
+**Empfohlene Reihenfolge ab jetzt:** 37 (Teil A, dann Bank-Recherche in Paketen) → weitere Offline-Feinschliffe (u. a. Wolfsburg-2009-Formation klären, Jahres-Lücken im Ideen-Speicher auffüllen) → Planung Online-Duell (inkl. 28/29) → 8 (Capacitor, erst wenn die App final ist; vorher Duell-Pflichtpunkt aus CLAUDE.md ansprechen)
 
 Prompt 7 steht bewusst vor der Tages-Challenge: Nur mit der neuen
 Update-Strategie kommen neue Tages-Aufstellungen zuverlässig auf dem iPhone an.
@@ -64,7 +65,8 @@ Welten-Ausschmückung), `prototypes/ladescreen.html` (Prompt 11d) und
 `prototypes/regeln.html` (Prompt 19) und `prototypes/freispiel.html` (Prompt 20) und
 `prototypes/teilen.html` (Prompt 24) und `prototypes/duell.html` (Prompts 25–26) und
 `prototypes/welt-animation.html` (Prompt 31, Fassung v2 vom 10.10.2026 – nur die Bühne, nicht das Regie-Pult) und
-`prototypes/walkout.html` (Prompt 36 – nur die Bühne, nicht das Regie-Pult).
+`prototypes/walkout.html` (Prompt 36 – nur die Bühne, nicht das Regie-Pult) und
+`prototypes/bank.html` (Prompt 37 – nur Variante C und das Blatt).
 
 **Wichtig nach jeder Änderung:** Der Service Worker liefert die App aus dem
 Cache. Jeder Prompt erhöht deshalb `CACHE_NAME` in `sw.js` – sonst sieht die
@@ -2832,6 +2834,81 @@ passt ohne Abschneiden, 3-2-1 je 1 s, Uhr startet erst nach Anpfiff;
 Tippen springt Info für Info; "Zum Countdown" springt zu 3-2-1; Runde 2
 im Best of 3 zeigt "Runde 2 von 3"; reduced motion; 360/375/402/430 px;
 nach Anpfiff kein laufender rAF-Loop; keine Konsolenfehler.
+```
+
+---
+
+## Prompt 37 – Ersatzbank im Spiel
+
+```
+Lies CLAUDE.md (Datengenauigkeit: jede Bank nur mit verlässlicher Quelle,
+nie aus dem Gedächtnis). Neues Feature → kurz Plan zeigen, dann in zwei
+Teilen umsetzen: A = Oberfläche + Datenformat, B = Recherche in Paketen.
+Optik 1:1 aus prototypes/bank.html – maßgeblich NUR Variante C (Knopf
+.corner) und das Blatt (.sheet …). Prototyp nur lesen, nicht einbinden.
+
+Teil A – Oberfläche
+1. Knopf "BANK" unten rechts IM Spielfeld (Ecke zwischen Strafraum und
+   Seitenlinie), gerade, klein (≈ 38 px hoch): dunkles Ink, goldener Rand
+   + leichter Gold-Schimmer, links goldene Kachel mit gezeichneter Bank
+   (SVG wie Prototyp, kein Emoji), Text "BANK" in Oswald 600, gold. Keine
+   Zahl. Für ALLE Formationen in PITCH_LAYOUTS prüfen, dass der Knopf
+   keine Position (Schild + Eingabefeld) überdeckt – sonst Position je
+   Formation leicht anpassen. 360–430 px prüfen.
+2. Nur sichtbar, wenn die Aufstellung eine vollständige Bank hat (siehe
+   Datenformat). Gilt in Kampagne, Freispiel und Tages-Challenge.
+   NICHT im Duell (dort bewusst keine Hilfen).
+3. Tippen → Blatt von unten (wie Prototyp, bestehende modal-sheet-Optik
+   nutzen): "Ersatzbank", darunter "<Team> · <Wettbewerb, Datum>", Gruppen
+   "Eingewechselt" und "Nicht eingesetzt"; je Spieler Rückennummer,
+   Nachname, Position (TW/ABW/MIT/ANG klein), bei Einwechslung grünes
+   Abzeichen "⇡ 88'". Unten Hinweis + Knopf "Zurück aufs Feld".
+4. WICHTIG – keine Lösung verraten: Vor dem Auswerten NIE anzeigen, für
+   wen ein Spieler kam. Erst nach dem Auswerten (bzw. nach "Lösung
+   anzeigen") zusätzlich "für <Nachname>". Hinweistext vorher: "Der grüne
+   Pfeil zeigt, wer eingewechselt wurde. Für wen er kam, siehst du nach
+   dem Auswerten."
+5. Kostenlos: zählt NICHT als Hinweis, keine Auswirkung auf Sterne,
+   Kombo, XP, Teilen-Raster. (Ein Token-Preis kann später kommen – Code so
+   bauen, dass das leicht nachrüstbar ist, z. B. Konstante BENCH_COST = 0.)
+6. Entwürfe (Prompt 34), Zurück/Abbrechen, Safe-Areas: Blatt schließt
+   sauber, nichts geht verloren. Keine Blink-/Daueranimation.
+
+Teil A – Datenformat (LINEUP_CHALLENGES und DAILY_CHALLENGES, optional)
+   bench: [ { name: "Götze", nr: 19, pos: "ANG", in: 88, for: "ST" }, … ]
+   benchSource: "<URL>"  (zusätzlich zu source; mehrere als Array erlaubt)
+   - name = Nachname wie in players (gleiche Schreibweise/Umlaute).
+   - pos: TW | ABW | MIT | ANG.
+   - in: Minute der Einwechslung (Zahl; Nachspielzeit als 90 bzw. 45 +
+     Feld "inExtra": 2 → Anzeige "90+2'"), fehlt/null = nicht eingesetzt.
+   - for: Positions-Kürzel des ersetzten Startspielers aus players; wurde
+     ein Eingewechselter selbst ersetzt, for = name dieses Bankspielers.
+   - Vollständig = ALLE Ersatzspieler laut Spielbericht (auch die nicht
+     eingesetzten). Unvollständige Bank → Feld weglassen (kein Knopf).
+   - Prüfskript/Hook check-lineups erweitern: Namen eindeutig, kein
+     Bankspieler zugleich in players, for verweist auf gültiges Kürzel
+     bzw. Bankspieler, Minuten plausibel (1–120 + Nachspielzeit), nr Zahl,
+     Anzahl Einwechslungen ≤ erlaubtes Wechselkontingent der Zeit.
+
+Teil B – Recherche (eigene Durchgänge, je Paket ein Commit)
+   - Reihenfolge: Tages-Pool, dann Kampagne Welt 1 → 5. Pakete à ca. 10
+     Aufstellungen. Bei Spielen mit beiden Seiten (pairedWith) beide Bänke
+     im selben Paket.
+   - Quellen: kicker.de, fussballdaten.de, weltfussball.de, transfermarkt.de,
+     offizielle Vereins-/Verbands-/UEFA-/FIFA-Seiten. Widersprechen sich
+     Quellen (z. B. Minute 31 vs. 32), gilt kicker.de; ist kicker nicht
+     verfügbar, die offizielle Verbandsseite. Unklar → Bank weglassen.
+   - Vor dem Eintragen je Paket eine Tabelle zeigen (Spiel, Seite, Anzahl
+     Bank, Wechsel mit Minute und für wen, Quelle) und auf mein OK warten.
+   - Am Ende jedes Pakets: Hook-Ergebnis zeigen + Stand "x von y
+     Aufstellungen mit Bank".
+
+sw.js CACHE_NAME erhöhen. Test Teil A (mit einem Test-Eintrag, z. B.
+WM-Finale 2014, sobald belegt): Knopf nur bei Aufstellungen mit Bank, nie
+im Duell; Blatt vor dem Auswerten ohne "für …", danach mit; Sterne/XP
+unverändert gegenüber ohne Bank; alle Formationen ohne Überdeckung
+(Screenshot-Serie 360/375/402/430); Entwurf bleibt erhalten; keine
+Konsolenfehler.
 ```
 
 ---
