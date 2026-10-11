@@ -423,6 +423,59 @@ if ($idxLC -lt 0) {
             }
           }
 
+          # --- bench (Prompt 37): optionale Ersatzbank [{ name, nr, pos, in?, inExtra?, for? }] + benchSource.
+          $benchKeyMatch = [regex]::Match($entry, '\bbench\s*:\s*\[')
+          if ($benchKeyMatch.Success) {
+            $bOpen = $benchKeyMatch.Index + $benchKeyMatch.Length - 1
+            $bClose = Get-MatchingBracket $entry $bOpen '[' ']'
+            if ($bClose -lt 0) {
+              $errors.Add("[LINEUP_CHALLENGES] Eintrag '$entryId': 'bench'-Array hat keine schliessende Klammer.")
+            } else {
+              $benchText = $entry.Substring($bOpen + 1, $bClose - $bOpen - 1)
+              $benchItems = [regex]::Matches($benchText, '\{([^}]*)\}')
+              if ($benchItems.Count -eq 0) { $errors.Add("[LINEUP_CHALLENGES] Eintrag '$entryId': 'bench' ist leer (Feld weglassen, wenn nicht vollstaendig).") }
+              if ($entry -notmatch '\bbenchSource\s*:') { $errors.Add("[LINEUP_CHALLENGES] Eintrag '$entryId': 'bench' ohne 'benchSource'.") }
+              $benchNames = New-Object System.Collections.Generic.List[string]
+              $benchNrs = New-Object System.Collections.Generic.List[string]
+              $startNameSet = @($displayNameByAbbr.Values)
+              $usedCount = 0
+              foreach ($bi in $benchItems) {
+                $bb = $bi.Groups[1].Value
+                $bn = [regex]::Match($bb, '\bname\s*:\s*"([^"]*)"')
+                $bnr = [regex]::Match($bb, '\bnr\s*:\s*(-?\d+)')
+                $bpos = [regex]::Match($bb, '\bpos\s*:\s*"([^"]*)"')
+                $bin = [regex]::Match($bb, '\bin\s*:\s*(-?\d+)')
+                $bfor = [regex]::Match($bb, '\bfor\s*:\s*"([^"]*)"')
+                if (-not $bn.Success) { $errors.Add("[LINEUP_CHALLENGES] Eintrag '$entryId': Bankspieler ohne 'name'."); continue }
+                $bName = $bn.Groups[1].Value
+                if ($benchNames.Contains($bName)) { $errors.Add("[LINEUP_CHALLENGES] Eintrag '$entryId': Bankspieler '$bName' doppelt.") }
+                $benchNames.Add($bName)
+                if ($startNameSet -contains $bName) { $errors.Add("[LINEUP_CHALLENGES] Eintrag '$entryId': Bankspieler '$bName' steht auch in 'players'.") }
+                if (-not $bnr.Success -or [int]$bnr.Groups[1].Value -lt 1 -or [int]$bnr.Groups[1].Value -gt 99) { $errors.Add("[LINEUP_CHALLENGES] Eintrag '$entryId': Bank '$bName': 'nr' fehlt oder liegt nicht im Bereich 1-99.") }
+                else { if ($benchNrs.Contains($bnr.Groups[1].Value)) { $errors.Add("[LINEUP_CHALLENGES] Eintrag '$entryId': Bank '$bName': Rueckennummer $($bnr.Groups[1].Value) doppelt.") }; $benchNrs.Add($bnr.Groups[1].Value) }
+                if (-not $bpos.Success -or @('TW','ABW','MIT','ANG') -notcontains $bpos.Groups[1].Value) { $errors.Add("[LINEUP_CHALLENGES] Eintrag '$entryId': Bank '$bName': 'pos' muss TW, ABW, MIT oder ANG sein.") }
+                if ($bin.Success) {
+                  $usedCount++
+                  $minute = [int]$bin.Groups[1].Value
+                  if ($minute -lt 1 -or $minute -gt 120) { $errors.Add("[LINEUP_CHALLENGES] Eintrag '$entryId': Bank '$bName': Minute $minute unplausibel (1-120).") }
+                  if (-not $bfor.Success) { $errors.Add("[LINEUP_CHALLENGES] Eintrag '$entryId': Bank '$bName': eingewechselt, aber ohne 'for'.") }
+                }
+                if ($bfor.Success) {
+                  $fv = $bfor.Groups[1].Value
+                  if (-not $playerKeySet.Contains($fv) -and -not ($benchText -match ('name\s*:\s*"' + [regex]::Escape($fv) + '"'))) {
+                    $errors.Add("[LINEUP_CHALLENGES] Eintrag '$entryId': Bank '$bName': for '$fv' verweist weder auf eine Position noch auf einen Bankspieler.")
+                  }
+                }
+              }
+              $teamsM = [regex]::Match($entry, '\bteams\s*:\s*"([^"]*)"')
+              $dateM = [regex]::Match($entry, '\bcomp\s*:\s*"[^"]*?(\d{2})\.(\d{2})\.(\d{4})')
+              $limit = 3
+              if ($dateM.Success -and ([int]($dateM.Groups[3].Value + $dateM.Groups[2].Value) -ge 202005)) { $limit = 5 }
+              if ($teamsM.Success -and $teamsM.Groups[1].Value -match 'n\.V\.') { $limit++ }
+              if ($usedCount -gt $limit) { $errors.Add("[LINEUP_CHALLENGES] Eintrag '$entryId': $usedCount Einwechslungen, erlaubt waeren $limit.") }
+            }
+          }
+
           if ($formationMatch.Success) {
             $fName = $formationMatch.Groups[1].Value
             if (-not $formations.ContainsKey($fName)) {

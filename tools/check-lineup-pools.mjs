@@ -43,6 +43,40 @@ const yearOf = (m) => { const r = m.comp.match(/\d{4}/g); return +r[r.length - 1
 const dateOf = (m) => { const r = m.comp.match(/(\d{2})\.(\d{2})\.(\d{4})/); return r ? `${r[3]}-${r[2]}-${r[1]}` : null; };
 const norm = (s) => s.toLowerCase().normalize("NFD").replace(/[̀-ͯ]/g, "").replace(/ß/g, "ss").replace(/[-'’`]/g, " ").replace(/\s+/g, " ").trim();
 
+
+// Ersatzbank (Prompt 37): bench: [{ name, nr, pos, in?, inExtra?, for? }], benchSource
+function checkBench(w, m, abbrs, startNames) {
+  if (!Array.isArray(m.bench) || !m.bench.length) { err(`${w}: bench ist leer/kein Array (Feld weglassen, wenn nicht vollständig)`); return; }
+  if (!m.benchSource || (Array.isArray(m.benchSource) && !m.benchSource.length)) err(`${w}: benchSource fehlt`);
+  const POS = ["TW", "ABW", "MIT", "ANG"];
+  const names = new Set(), nrs = new Set();
+  for (const b of m.bench) {
+    if (!b.name) { err(`${w}: Bankspieler ohne name`); continue; }
+    const nn = norm(b.name);
+    if (names.has(nn)) err(`${w}: Bankspieler doppelt: ${b.name}`); names.add(nn);
+    if (startNames.includes(nn)) err(`${w}: Bankspieler ${b.name} steht auch in players`);
+    if (typeof b.nr !== "number" || b.nr < 1 || b.nr > 99) err(`${w}: Bank ${b.name}: nr ungültig`);
+    else { if (nrs.has(b.nr)) err(`${w}: Bank ${b.name}: Rückennummer ${b.nr} doppelt`); nrs.add(b.nr); }
+    if (m.details && Object.values(m.details).some((dd) => dd && dd.nr === b.nr)) err(`${w}: Bank ${b.name}: Rückennummer ${b.nr} auch bei einem Startspieler`);
+    if (!POS.includes(b.pos)) err(`${w}: Bank ${b.name}: pos ${b.pos} ungültig`);
+    if (b.in !== undefined && b.in !== null) {
+      if (typeof b.in !== "number" || b.in < 1 || b.in > 120) err(`${w}: Bank ${b.name}: Minute ${b.in} unplausibel`);
+      if (b.inExtra !== undefined && (![45, 90, 105, 120].includes(b.in) || typeof b.inExtra !== "number" || b.inExtra < 1 || b.inExtra > 15)) err(`${w}: Bank ${b.name}: inExtra nur bei 45/90/105/120 und 1-15`);
+      if (!b.for) err(`${w}: Bank ${b.name}: eingewechselt, aber ohne for`);
+    } else if (b.for || b.inExtra) err(`${w}: Bank ${b.name}: for/inExtra ohne Minute`);
+  }
+  const benchNames = new Map(m.bench.map((b) => [norm(b.name), b]));
+  for (const b of m.bench) {
+    if (!b.for) continue;
+    const ok = abbrs.includes(b.for) || (benchNames.has(norm(b.for)) && norm(b.for) !== norm(b.name));
+    if (!ok) err(`${w}: Bank ${b.name}: for "${b.for}" verweist auf nichts`);
+  }
+  // Wechselkontingent: bis Mai 2020 3 (+1 in der Verlängerung), danach 5 (+1)
+  const used = m.bench.filter((b) => b.in).length, d = dateOf(m) || "9999";
+  const limit = (d >= "2020-05-01" ? 5 : 3) + (/n\.V\./.test(m.teams) ? 1 : 0);
+  if (used > limit) err(`${w}: ${used} Einwechslungen, erlaubt wären ${limit}`);
+}
+
 for (const [label, arr] of [["Kampagne", LINEUPS], ["Tag", DAILY]]) {
   const ids = new Set(), games = new Set();
   for (const m of arr) {
@@ -61,6 +95,7 @@ for (const [label, arr] of [["Kampagne", LINEUPS], ["Tag", DAILY]]) {
     } else err(`${w}: details fehlt`);
     const names = abbrs.map((a) => norm(m.players[a])); if (new Set(names).size !== names.length) err(`${w}: doppelter Spielername`);
     if (!/^Aufstellung (von|des|der) /.test(m.side)) err(`${w}: side ungewöhnlich: ${m.side}`);
+    if (m.bench !== undefined) checkBench(w, m, abbrs, names);
     if (label === "Tag") {
       if (m.pairedWith && !LINEUPS.some((x) => x.id === m.pairedWith) && !DAILY.some((x) => x.id === m.pairedWith)) err(`${w}: pairedWith ${m.pairedWith} unbekannt`);
     }
@@ -93,6 +128,7 @@ notes.push(`Jahre gesamt: ${JSON.stringify(cnt(all, yearOf))}`);
 notes.push(`Wettbewerb Kampagne: ${JSON.stringify(cnt(LINEUPS, (m) => m.league))}`);
 notes.push(`Wettbewerb Tag: ${JSON.stringify(cnt(DAILY, (m) => m.league))}`);
 for (let t = 1; t <= 5; t++) notes.push(`  Welt ${t}: ${JSON.stringify(cnt(worlds[t - 1], (m) => m.league))}`);
+notes.push(`Ersatzbank: Kampagne ${LINEUPS.filter((m) => m.bench).length} von ${LINEUPS.length}, Tages-Pool ${DAILY.filter((m) => m.bench).length} von ${DAILY.length} Aufstellungen mit Bank`);
 const since2015 = all.filter((m) => yearOf(m) >= 2015).length;
 notes.push(`ab 2015: ${since2015} von ${all.length}`);
 

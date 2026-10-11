@@ -255,6 +255,36 @@
   .fp .draft-card b { font-weight: 600; font-size: 13.5px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
   .fp .draft-card span { font-weight: 600; font-size: 13px; color: var(--gold-2); white-space: nowrap; }
   .fp .draft-card .dc-x { border: 0; background: transparent; color: var(--muted); font-size: 16px; padding: 0 12px; cursor: pointer; }
+  /* ---- Ersatzbank (Prompt 37) - Optik aus prototypes/bank.html (Variante C + Blatt) ---- */
+  .pitch .bench-btn { position: absolute; right: 9px; bottom: 9px; z-index: 4; height: 38px; padding: 0 10px 0 5px; display: inline-flex; align-items: center; gap: 7px; border-radius: 12px;
+    background: linear-gradient(180deg, rgba(28,43,56,0.95), rgba(12,20,28,0.95)); border: 1.5px solid var(--gold);
+    box-shadow: 0 4px 14px rgba(0,0,0,0.45), 0 0 0 3px rgba(232,178,61,0.14), inset 0 1px 0 rgba(255,240,200,0.12);
+    color: var(--gold-2); font-family: 'Oswald', sans-serif; font-weight: 600; font-size: 14px; letter-spacing: 0.06em; text-transform: uppercase; cursor: pointer; transition: transform 0.12s ease; }
+  .pitch .bench-btn:active { transform: scale(0.95); }
+  .bench-ic { width: 26px; height: 26px; border-radius: 8px; display: inline-grid; place-items: center; background: linear-gradient(135deg, var(--gold), #f4d58d); box-shadow: 0 2px 5px rgba(0,0,0,0.35); flex-shrink: 0; }
+  .bench-ic svg { width: 19px; height: 19px; display: block; }
+  .bench-sheet { display: flex; flex-direction: column; max-height: min(88vh, 640px); padding-top: 12px; }
+  .bench-sheet .bn-head { display: flex; justify-content: space-between; align-items: flex-start; gap: 12px; }
+  .bench-sheet .bn-head h2 { margin: 0; font-family: 'Anton', Impact, sans-serif; font-weight: 400; font-size: 30px; line-height: 1.05; }
+  .bench-sheet .bn-head p { margin: 3px 0 0; font-family: 'Oswald', sans-serif; font-weight: 300; font-size: 14.5px; color: var(--muted); }
+  .bench-sheet .bn-list { margin-top: 14px; flex: 1; min-height: 0; overflow-y: auto; display: grid; align-content: start; gap: 6px; }
+  .bench-sheet .bn-grp { font-family: 'Oswald', sans-serif; font-weight: 600; font-size: 11px; letter-spacing: 0.12em; text-transform: uppercase; color: var(--dim); margin: 8px 0 2px; }
+  .bench-sheet .bn-pl { display: grid; grid-template-columns: 34px minmax(0,1fr) auto; align-items: center; gap: 10px; padding: 8px 10px; border-radius: 10px; background: var(--ink-2); box-shadow: inset 0 0 0 1px rgba(242,239,230,0.05); }
+  .bench-sheet .bn-pl.on { box-shadow: inset 0 0 0 1px rgba(46,204,113,0.35); }
+  .bench-sheet .bn-nr { width: 34px; height: 34px; border-radius: 50%; display: grid; place-items: center; font-family: 'Anton', Impact, sans-serif; font-size: 16px; background: rgba(242,239,230,0.07); color: var(--muted); }
+  .bench-sheet .bn-nm { font-family: 'Oswald', sans-serif; font-weight: 500; font-size: 16.5px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; min-width: 0; }
+  .bench-sheet .bn-nm em { font-style: normal; font-weight: 400; font-size: 11px; letter-spacing: 0.08em; color: var(--dim); margin-left: 6px; }
+  .bench-sheet .bn-nm small { display: block; font-weight: 300; font-size: 13px; color: var(--muted); }
+  .bench-sheet .bn-in { display: inline-flex; align-items: center; gap: 4px; padding: 3px 9px; border-radius: 12px; background: rgba(46,204,113,0.14); color: var(--ok); font-family: 'Oswald', sans-serif; font-weight: 600; font-size: 13px; font-variant-numeric: tabular-nums; white-space: nowrap; }
+  .bench-sheet .bn-legend { margin-top: 12px; font-family: 'Oswald', sans-serif; font-weight: 300; font-size: 13.5px; color: var(--muted); line-height: 1.45; }
+  .bench-sheet .bn-legend b { color: var(--ok); font-weight: 600; }
+  .bench-sheet .bn-back { margin-top: 12px; height: 48px; flex-shrink: 0; border: none; border-radius: 13px; background: linear-gradient(160deg, var(--gold-2), var(--gold)); color: var(--ink); font-family: 'Anton', Impact, sans-serif; font-size: 19px; box-shadow: 0 4px 0 #9C7422; cursor: pointer; }
+  .gs .help.bench-help { display: grid; grid-template-columns: 26px minmax(0,1fr); gap: 10px; align-items: start; padding: 7px 10px; }
+  .gs .help.bench-help .bench-ic { width: 26px; height: 26px; margin-top: 1px; }
+  .gs .help.bench-help b { display: flex; justify-content: space-between; align-items: baseline; gap: 8px; font-size: 15px; }
+  .gs .help.bench-help .cost { font-family: 'Anton', Impact, sans-serif; font-weight: 400; font-size: 14px; color: var(--token); }
+  .gs .help.bench-help p { margin: 2px 0 0; font-size: 12px; line-height: 1.3; }
+  .gs .help.bench-help .bk { font-weight: 600; color: var(--gold-2); letter-spacing: 0.05em; }
   .t-replay { display: block; margin-top: 8px; border: 1px solid rgba(232,178,61,0.6); background: rgba(232,178,61,0.1); color: var(--gold-2); border-radius: 18px; padding: 6px 14px; font-family: 'Oswald', sans-serif; font-weight: 600; font-size: 13px; cursor: pointer; }
   .data-row { display: flex; gap: 8px; margin-top: 4px; }
   .data-row button { flex: 1; border: 1px solid var(--line); background: var(--ink-2); color: var(--chalk); border-radius: 10px; padding: 9px 6px; font-family: 'Oswald', sans-serif; font-weight: 500; font-size: 13px; cursor: pointer; }
@@ -602,6 +632,18 @@
   .gs .warn p b { font-weight: 600; color: var(--flame); }
   .gs .warn.gold { background: rgba(232,178,61,0.07); border-color: rgba(232,178,61,0.35); }
   .gs .warn.gold p b { color: var(--gold-2); }
+  /* Reiter Hilfen mit Ersatzbank-Punkt: etwas dichter, damit er ohne internes Scrollen passt (Prompt 37) */
+  .gs .two .help { padding: 9px 10px 8px; gap: 3px; }
+  .gs .two .help p { font-size: 12.5px; line-height: 1.32; }
+  .gs .warn { padding: 7px 11px; }
+  @media (max-height: 700px) { .gs .two .help .ic { font-size: 20px; } .gs .two .help b { font-size: 15.5px; } .gs .two .help { padding: 7px 10px; } .gs .warn p { font-size: 13px; line-height: 1.35; } .gs .card { padding: 8px 12px; } }
+  /* Regeln-Blatt im Spielfeld (hat die Fusszeile "Aktueller Stand") */
+  .gs:has(.stand) .panel { gap: 7px; }
+  .gs:has(.stand) .help.bench-help p { font-size: 11.5px; line-height: 1.25; }
+  .gs:has(.stand) .two .help p { font-size: 12px; line-height: 1.28; }
+  .gs:has(.stand) .warn p { font-size: 12.5px; line-height: 1.3; }
+  .gs:has(.stand) .card { padding: 7px 11px; }
+  @media (max-height: 700px) { .gs:has(.stand) .two .help .ic { font-size: 17px; } .gs:has(.stand) .two .help b { font-size: 14px; } .gs:has(.stand) .two .help { padding: 6px 9px; gap: 2px; } .gs:has(.stand) .warn { padding: 5px 10px; } .gs:has(.stand) .help.bench-help { padding: 5px 9px; } .gs:has(.stand) .card .chips { gap: 4px; } .gs:has(.stand) .tk { padding: 3px 8px; } }
   .gs .chips { display: flex; flex-wrap: wrap; gap: 5px; }
   .gs .chips span { font-weight: 500; font-size: 12.5px; padding: 3px 9px; border-radius: 12px; background: rgba(255,255,255,0.05); border: 1px solid var(--line); white-space: nowrap; }
   .gs .chips span.tk { color: var(--token); border-color: rgba(125,184,255,0.35); }
@@ -2162,6 +2204,24 @@ const LINEUP_CHALLENGES = [
     difficulty: 2,
     players: { TW:"Neuer", RV:"Kimmich", RIV:"Rüdiger", LIV:"Tah", LV:"Mittelstädt", RZM:"Andrich", LZM:"Kroos", ROM:"Musiala", ZOM:"Gündoğan", LOM:"Wirtz", ST:"Havertz" },
     details: { TW:{nr:1}, RV:{nr:6}, RIV:{nr:2}, LIV:{nr:4}, LV:{nr:18}, RZM:{nr:23}, LZM:{nr:8}, ROM:{nr:10}, ZOM:{nr:21}, LOM:{nr:17}, ST:{nr:7} },
+    bench: [
+      { name: "Groß", nr: 5, pos: "MIT", in: 46, for: "RZM" },
+      { name: "Sané", nr: 19, pos: "MIT", in: 63, for: "LOM" },
+      { name: "Füllkrug", nr: 9, pos: "ANG", in: 63, for: "ST" },
+      { name: "Müller", nr: 13, pos: "ANG", in: 74, for: "ROM" },
+      { name: "Can", nr: 25, pos: "MIT", in: 80, for: "LZM" },
+      { name: "ter Stegen", nr: 22, pos: "TW" },
+      { name: "Baumann", nr: 12, pos: "TW" },
+      { name: "Schlotterbeck", nr: 15, pos: "ABW" },
+      { name: "Koch", nr: 24, pos: "ABW" },
+      { name: "Anton", nr: 16, pos: "ABW" },
+      { name: "Henrichs", nr: 20, pos: "ABW" },
+      { name: "Raum", nr: 3, pos: "ABW" },
+      { name: "Führich", nr: 11, pos: "MIT" },
+      { name: "Undav", nr: 26, pos: "ANG" },
+      { name: "Beier", nr: 14, pos: "ANG" }
+    ],
+    benchSource: ["https://www.espn.com/soccer/lineups/_/gameId/690573 (komplette Bank, Nummern, Wechsel mit Gegenspieler)", "https://www.fussballdaten.de/em/2024/gruppenphase/deutschland-schottland/aufstellung/ (Bank, Minuten)", "https://en.wikipedia.org/wiki/UEFA_Euro_2024_Group_A (Wechselminuten, Positionen)"],
     source: "https://en.wikipedia.org/wiki/UEFA_Euro_2024_Group_A (Aufstellung/Nummern) ; https://www.fussballdaten.de/em/2024/gruppenphase/deutschland-schottland/aufstellung/ ; Positionen links/rechts: https://www.espn.com/soccer/lineups/_/gameId/690573 ; EM = nat weggelassen."
   },
   {
@@ -2488,6 +2548,7 @@ const defaultProfile = {
   best: {}, // match.id -> { correct, solvedAbbrs: string[], seenAbbrs?: string[] (Loesung gezeigt, Prompt 33) }; immer das beste Ergebnis (Prompt 11)
   hasSeenGuide: false,
   hasSeenPitchRules: false,
+  seenRulesBench: false, // Punkt an Regeln-/So-geht's-Knopf, bis das Blatt mit dem neuen Punkt Ersatzbank geoeffnet wurde (Prompt 37)
   hasSeenInstallTip: false,
   trophiesWon: [], // Kampagne-Trophaeen-IDs (Achievements laufen weiter ueber profile.achievements)
   streak: { current: 0, best: 0, lastDayKey: null }, // NUR Tages-Challenge zaehlt, kein Serien-Schutz (Prompt 13)
@@ -2623,6 +2684,7 @@ function loadProfile() {
     if (!profile.perfectRewarded || typeof profile.perfectRewarded !== "object") profile.perfectRewarded = {};
     if (typeof profile.hasSeenGuide !== "boolean") profile.hasSeenGuide = false;
     if (typeof profile.hasSeenPitchRules !== "boolean") profile.hasSeenPitchRules = false;
+    if (typeof profile.seenRulesBench !== "boolean") profile.seenRulesBench = false;
     if (typeof profile.hasSeenInstallTip !== "boolean") profile.hasSeenInstallTip = false;
     if (!Array.isArray(profile.trophiesWon)) profile.trophiesWon = [];
     if (!profile.streak || typeof profile.streak !== "object") profile.streak = { current: 0, best: 0, lastDayKey: null };
@@ -2980,6 +3042,7 @@ const GUIDE_TABS = [
       <div class="help"><div class="top"><span class="ic">🎡</span><span class="cost">${ECONOMY.spinCost} 🔍</span></div><b>Scout-Rad</b><p>Dreh für einen Tipp: 1. Buchstabe, Rückennummer, Nationalität – oder als Jackpot der ganze Name. Position bringt weniger XP.</p></div>
       <div class="help"><div class="top"><span class="ic">👁️</span><span class="cost">${ECONOMY.revealCost} 🔍</span></div><b>Aufdecken</b><p>Zeigt sofort den kompletten Namen. Zählt als richtig, bringt aber keine Positions-XP.</p></div>
     </div>
+    <div class="help bench-help"><span class="ic bench-ic">${BENCH_SVG}</span><div><b>Ersatzbank <span class="cost">gratis</span></b><p>Unten rechts im Spielfeld öffnest du mit <span class="bk">BANK</span> die Ersatzbank – kostenlos, ohne Einfluss auf deine Sterne. Ein grüner Pfeil zeigt, wer eingewechselt wurde, für wen er kam siehst du nach dem Auswerten. Nicht bei jedem Spiel verfügbar.</p></div></div>
     <div class="warn"><span class="ic">⚠️</span><p>Jede Hilfe – auch Korrigieren – kostet dich <b>⭐⭐⭐</b> für dieses Spiel und deine <b>Kombo endet</b>. Gilt in allen Modi.</p></div>
     <div class="card"><div class="h">Token verdienen</div>
       <div class="chips">
@@ -3007,7 +3070,7 @@ const GUIDE_TABS = [
     <div class="card">
       <div class="mline"><span class="ic">🌍</span><p><b>Kampagne:</b> Von Kreisliga bis Weltklasse. Ab <b>${PASS_THRESHOLD} von 11</b> ist ein Level bestanden – das nächste wird frei.</p></div>
       <div class="mline"><span class="ic">📅</span><p><b>Tages-Challenge:</b> Für alle dasselbe Spiel. <b>Jeden Tag ein anderes Spiel – keine Wiederholung, bis alle durch sind.</b> Täglich spielen baut deine 🔥-Serie auf – bis zu <b>+${Math.round(XP_RULES.dailyStreakBonusMax * 100)} % XP</b>. Ergebnis als Raster teilbar.</p></div>
-      <div class="mline"><span class="ic">⚔️</span><p><b>Duell:</b> Fordere einen Freund per Link heraus – gleiche Aufstellungen, jeder für sich mit Zeitlimit. Wer mehr Spieler kennt, gewinnt. Kein Scout-Rad, keine Hilfen.</p></div>
+      <div class="mline"><span class="ic">⚔️</span><p><b>Duell:</b> Fordere einen Freund per Link heraus – gleiche Aufstellungen, jeder für sich mit Zeitlimit. Wer mehr Spieler kennt, gewinnt. Kein Scout-Rad, keine Hilfen – auch keine Ersatzbank.</p></div>
       <div class="mline"><span class="ic">🎲</span><p><b>Frei spielen:</b> Training ohne Druck. Mehrere Wettbewerbe oder Stufen antippen = mehr Spiele, beides kombiniert grenzt die Auswahl ein. Mit Tages-Archiv für verpasste Tage.</p></div>
     </div>` },
   { id: "belohnung", icon: "🏆", label: "Belohnung", render: () => `
@@ -3074,8 +3137,9 @@ function openGuideModal() {
     label: "So geht's",
     tabIds: ["spielen", "hilfen", "modi", "belohnung"]
   });
-  if (!profile.hasSeenGuide) {
+  if (!profile.hasSeenGuide || !profile.seenRulesBench) {
     profile.hasSeenGuide = true;
+    profile.seenRulesBench = true;
     saveProfile(profile);
     document.getElementById("helpDot").classList.add("hidden");
   }
@@ -3084,12 +3148,19 @@ function openGuideModal() {
 document.getElementById("helpBtn").onclick = openGuideModal;
 
 // Regeln-Modal im Spielfeld (Prompt 11c): dasselbe Blatt, aber ohne den Reiter "Modi".
-function markPitchRulesSeen() {
+function markPitchRulesSeen() { // beim Auswerten: nur das alte Flag; der Punkt bleibt, bis das Blatt (mit Ersatzbank) geoeffnet wurde
   if (profile.hasSeenPitchRules) return;
   profile.hasSeenPitchRules = true;
   saveProfile(profile);
   const dot = document.getElementById("rulesDot");
-  if (dot) dot.remove();
+  if (dot && profile.seenRulesBench) dot.remove();
+}
+function markBenchRulesSeen() { // Blatt geoeffnet (So geht's oder Regeln): Punkte an beiden Knoepfen weg (Prompt 37)
+  if (profile.hasSeenPitchRules && profile.seenRulesBench && profile.hasSeenGuide) return;
+  profile.hasSeenPitchRules = true; profile.seenRulesBench = true;
+  saveProfile(profile);
+  const dot = document.getElementById("rulesDot"); if (dot) dot.remove();
+  const help = document.getElementById("helpDot"); if (help && profile.hasSeenGuide) help.classList.add("hidden");
 }
 
 function openRulesModal() {
@@ -3099,7 +3170,7 @@ function openRulesModal() {
     tabIds: ["spielen", "hilfen", "belohnung"],
     footerHTML: `<div class="stand">🔍 Aktueller Stand: <b>${profile.hintTokens}</b> Scout-Token</div>`
   });
-  markPitchRulesSeen();
+  markBenchRulesSeen();
 }
 
 let profile = loadProfile();
@@ -6323,7 +6394,7 @@ function renderPitch() {
     <div class="bonus-panel">
       <div class="pitch-header-row">
         <button class="back-btn" id="exitMatchBtn"><span class="back-arrow">←</span>Abbrechen</button>
-        <div class="hdr-right"><span class="tok-chip" id="gameTokChip" title="Scout-Token">🔍 ${profile.hintTokens}</span><button class="rules-btn" id="rulesBtn">ℹ️ Regeln${!profile.hasSeenPitchRules ? '<span class="rules-dot" id="rulesDot"></span>' : ""}</button></div>
+        <div class="hdr-right"><span class="tok-chip" id="gameTokChip" title="Scout-Token">🔍 ${profile.hintTokens}</span><button class="rules-btn" id="rulesBtn">ℹ️ Regeln${!profile.hasSeenPitchRules || !profile.seenRulesBench ? '<span class="rules-dot" id="rulesDot"></span>' : ""}</button></div>
       </div>
       <div class="bonus-eyebrow">${m.formation} · ${m.comp}</div>
       <div class="bonus-title" style="font-size:19px">${m.teams}</div>
@@ -6348,6 +6419,7 @@ function renderPitch() {
               <div class="pos-label">${p.abbr}</div>
               <input type="text" class="pos-input" data-abbr="${p.abbr}" placeholder="Name" autocomplete="off" autocapitalize="words" autocorrect="off" spellcheck="false">
             </div>`).join("")}
+          ${benchOf(m) ? `<button type="button" class="bench-btn" id="benchBtn" aria-label="Ersatzbank öffnen"><span class="bench-ic">${BENCH_SVG}</span>Bank</button>` : ""}
         </div>
       </div>
       <div class="position-panel" id="positionPanel"></div>
@@ -6953,6 +7025,9 @@ function renderPitch() {
     });
   });
 
+  benchReveal = false;
+  const benchBtn = document.getElementById("benchBtn");
+  if (benchBtn) benchBtn.onclick = () => openBenchSheet(m);
   document.getElementById("checkBtn").onclick = () => {
     // Leere Felder (Prompt 33): vor dem Auswerten kurz nachfragen - kein confirm()
     const empty = positions.filter(p => !pitchView.querySelector('input[data-abbr="' + p.abbr + '"]').value.trim()).length;
@@ -6988,6 +7063,7 @@ function evaluatePitch() {
     if (isCorrect) { correct++; correctAbbrs.push(p.abbr); }
   });
   const wrongAbbrs = positions.map(p => p.abbr).filter(a => !correctAbbrs.includes(a));
+  benchReveal = !hideSolution || wrongAbbrs.length === 0; // Ersatzbank: "fuer <Name>" erst jetzt (Kampagne: nach "Loesung anzeigen")
   pitchView.querySelectorAll("#srSpinBtn, #srRevealBtn, .sr-hub").forEach(btn => btn.disabled = true);
   const total = positions.length;
   // Welt-geschafft-Feier (Prompt 31): genau einmal, wenn dieses Ergebnis zum ERSTEN Mal alle Level der Welt bestanden macht.
@@ -7209,6 +7285,7 @@ function evaluatePitch() {
     revealRow.innerHTML = `<button type="button" class="action btn-outline" id="revealSolutionBtn" style="width:100%">👁 Lösung anzeigen</button>`;
     panel.appendChild(revealRow);
     const doReveal = () => {
+      benchReveal = true;
       wrongAbbrs.forEach(abbr => {
         const inp = pitchView.querySelector('input[data-abbr="' + abbr + '"]');
         inp.value = m.players[abbr];
@@ -8979,6 +9056,45 @@ function renderDuelResult() {
 }
 
 
+
+/* ================= ERSATZBANK (Prompt 37) =================
+   Optionales Feld bench (Datenformat siehe CLAUDE/prompts): [{ name, nr, pos: TW|ABW|MIT|ANG, in?, inExtra?, for? }].
+   Der Knopf "BANK" erscheint nur bei vollstaendiger Bank, nie im Duell (dort eigener Spielfeld-Pfad). Kostenlos: kein Einfluss auf
+   Hilfen, Kombo, XP, Sterne, Teilen-Raster. "fuer <Name>" erst nach dem Auswerten (Kampagne: nach "Loesung anzeigen"), sonst waere
+   ein verdeckter Startspieler verraten. */
+const BENCH_COST = 0; // Token-Preis spaeter moeglich: hier Abzug + Hilfe-Markierung nachruesten
+let benchReveal = false;
+const BENCH_SVG = '<svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="#14202B" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 7h16"/><path d="M4 11h16"/><path d="M3 15h18"/><path d="M6 15v5"/><path d="M18 15v5"/><path d="M6 7v8"/><path d="M18 7v8"/></svg>';
+function benchOf(m) { return Array.isArray(m.bench) && m.bench.length ? m.bench : null; }
+function openBenchSheet(m) {
+  const bench = benchOf(m);
+  if (!bench || document.getElementById("benchSheet")) return;
+  const esc = (x) => duelEsc(String(x));
+  const minute = (b) => b.in ? (b.inExtra ? b.in + "+" + b.inExtra : b.in) + "'" : "";
+  const nameOf = (f) => (m.players && m.players[f]) || f; // Kuerzel eines Startspielers oder Name eines Bankspielers
+  const row = (b, on) => `<div class="bn-pl${on ? " on" : ""}"><span class="bn-nr">${esc(b.nr)}</span><span class="bn-nm">${esc(b.name)}<em>${esc(b.pos)}</em>${on && benchReveal && b.for ? `<small>für ${esc(nameOf(b.for))}</small>` : ""}</span>${on ? `<span class="bn-in">⇡ ${minute(b) || "eingew."}</span>` : "<span></span>"}</div>`;
+  const used = bench.filter((b) => b.in).sort((a, b) => a.in - b.in || (a.inExtra || 0) - (b.inExtra || 0));
+  const unused = bench.filter((b) => !b.in);
+  const team = m.side.replace(/^Aufstellung (?:von|des|der)\s+/i, "");
+  const backdrop = document.createElement("div");
+  backdrop.className = "modal-backdrop";
+  backdrop.id = "benchSheet";
+  backdrop.innerHTML = `<div class="modal-sheet bench-sheet" role="dialog" aria-modal="true" aria-label="Ersatzbank">
+      <div class="bn-head"><div><h2>Ersatzbank</h2><p>${esc(team)} · ${esc(m.comp.replace(/\s*\([^)]*\)/g, ""))}</p></div><button type="button" class="modal-close" id="benchClose">Schließen</button></div>
+      <div class="bn-list">
+        ${used.length ? '<div class="bn-grp">Eingewechselt</div>' + used.map((b) => row(b, true)).join("") : ""}
+        ${unused.length ? '<div class="bn-grp">Nicht eingesetzt</div>' + unused.map((b) => row(b, false)).join("") : ""}
+      </div>
+      <div class="bn-legend">${benchReveal ? "Bei jedem Wechsel steht, für wen er kam." : "Der <b>grüne Pfeil</b> zeigt, wer eingewechselt wurde. Für wen er kam, siehst du nach dem Auswerten."}</div>
+      <button type="button" class="bn-back" id="benchBack">Zurück aufs Feld</button>
+    </div>`;
+  document.body.appendChild(backdrop);
+  const close = () => backdrop.remove();
+  backdrop.querySelector("#benchClose").onclick = close;
+  backdrop.querySelector("#benchBack").onclick = close;
+  backdrop.onclick = (e) => { if (e.target === backdrop) close(); };
+}
+
 /* ================= WELT GESCHAFFT (Prompt 31) =================
    Feier-Animation beim ersten Abschluss einer Kampagnen-Welt. Buehne, Zeiten und Bewegung 1:1 aus
    prototypes/welt-animation.html (Fassung v2, nur die Buehne): EINE Zeitachse t, render(t) berechnet jedes Bild
@@ -9403,7 +9519,7 @@ renderModeTiles();
 setInterval(tickDailyTimer, 1000);
 document.getElementById("soloLine").onclick = () => navigate("freeplay");
 handleIncomingHash(INITIAL_HASH); // Duell-Link beim App-Start
-if (profile.hasSeenGuide) document.getElementById("helpDot").classList.add("hidden");
+if (profile.hasSeenGuide && profile.seenRulesBench) document.getElementById("helpDot").classList.add("hidden");
 document.getElementById("backFromWorldmap").onclick = goBack;
 document.getElementById("backFromLevelpath").onclick = goBack;
 document.getElementById("backFromFreeplay").onclick = goBack;
