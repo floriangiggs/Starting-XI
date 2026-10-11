@@ -1848,6 +1848,18 @@ const LINEUP_CHALLENGES = [
     difficulty: 5,
     players: { TW:"Heuer Fernandes", RV:"Mikelbrencis", RIV:"Poreba", LIV:"Elfadli", LV:"Muheim", RZM:"Königsdörffer", ZM:"Meffert", LZM:"Reis", RA:"Dompé", ST:"Selke", LA:"Sahiti" },
     details: { TW:{nr:1}, RV:{nr:2,nat:"FR"}, RIV:{nr:6,nat:"PL"}, LIV:{nr:8,nat:"LY"}, LV:{nr:28,nat:"CH"}, RZM:{nr:11,nat:"GH"}, ZM:{nr:23,nat:"DE"}, LZM:{nr:14,nat:"NL"}, RA:{nr:7,nat:"FR"}, ST:{nr:27,nat:"DE"}, LA:{nr:29,nat:"XK"} },
+    bench: [
+      { name: "Baldé", nr: 45, pos: "ANG", in: 46, for: "LA" },
+      { name: "Karabec", nr: 17, pos: "MIT", in: 69, for: "RZM" },
+      { name: "Glatzel", nr: 9, pos: "ANG", in: 69, for: "ST" },
+      { name: "Richter", nr: 20, pos: "MIT", in: 80, for: "RIV" },
+      { name: "Stange", nr: 49, pos: "ANG", in: 81, for: "LV" },
+      { name: "Raab", nr: 19, pos: "TW" },
+      { name: "Agyekum", nr: 39, pos: "ABW" },
+      { name: "Hefti", nr: 30, pos: "ABW" },
+      { name: "Pherai", nr: 10, pos: "MIT" }
+    ],
+    benchSource: ["https://www.espn.com/soccer/lineups/_/gameId/712103 (Bank, Nummern, Wechsel mit Gegenspieler)", "https://www.fussballdaten.de/2liga/2025/33/hamburg-ulm/aufstellung/ (Bank (9 Spieler), Minuten; deckungsgleich mit ESPN)"],
     source: "https://www.fussballdaten.de/2liga/2025/33/hamburg-ulm/ ; Königsdörffer-Rückennummer per Websuche auf 11 korrigiert (Fussballdaten zeigte fehlerhaft 112); Nationalitäten via HSV.de/Wikipedia-Spielerprofile. Heuer Fernandes: nat weggelassen (deutsch-portugiesische Doppelstaatlerschaft, bislang keine A-Nationalmannschaft für DE oder PT belegt)."
   },
   {
@@ -1885,6 +1897,21 @@ const LINEUP_CHALLENGES = [
     difficulty: 5,
     players: { TW:"von Ballmoos", RV:"Hefti", RIV:"Lauper", LIV:"Camara", LV:"Garcia", RZM:"Martins", LZM:"Sierro", ROM:"Ngamaleu", ZOM:"Aebischer", LOM:"Fassnacht", ST:"Elia" },
     details: { TW:{nr:26,nat:"CH"}, RV:{nr:36,nat:"CH"}, RIV:{nr:30,nat:"CH"}, LIV:{nr:4,nat:"GN"}, LV:{nr:21,nat:"CH"}, RZM:{nr:35,nat:"LU"}, LZM:{nr:8,nat:"CH"}, ROM:{nr:13,nat:"CM"}, ZOM:{nr:20,nat:"CH"}, LOM:{nr:16,nat:"CH"}, ST:{nr:15,nat:"CD"} },
+    bench: [
+      { name: "Pefok", nr: 17, pos: "ANG", in: 46, for: "LZM" },
+      { name: "Rieder", nr: 32, pos: "MIT", in: 82, for: "RZM" },
+      { name: "Sulejmani", nr: 10, pos: "MIT", in: 83, for: "RV" },
+      { name: "Kanga", nr: 9, pos: "ANG", in: 90, inExtra: 2, for: "ST" },
+      { name: "Zesiger", nr: 5, pos: "ABW", in: 90, inExtra: 2, for: "RIV" },
+      { name: "Faivre", nr: 91, pos: "TW" },
+      { name: "Zbinden", nr: 61, pos: "TW" },
+      { name: "Jankewitz", nr: 11, pos: "MIT" },
+      { name: "Spielmann", nr: 7, pos: "MIT" },
+      { name: "Mambimbi", nr: 19, pos: "ANG" },
+      { name: "Maceiras", nr: 24, pos: "ABW" },
+      { name: "Bürgy", nr: 14, pos: "ABW" }
+    ],
+    benchSource: ["https://www.espn.com/soccer/lineups/_/gameId/618790 (Bank, Nummern, Wechsel mit Gegenspieler)", "https://www.fussballdaten.de/championsleague/2022/gruppenphase/f/ybbern-manunited/aufstellung/ (Einwechslungen und 5 Nichteingesetzte, Minuten; Pefok, Faivre, Zbinden dort nicht gelistet - nur von ESPN)"],
     source: "https://www.fussballdaten.de/championsleague/2022/gruppenphase/f/ybbern-manunited/ gegengeprueft mit Websuche (kicker.de-Aufstellung, identisch). Nationalitaeten via Wikipedia-Spielerprofile/Websuche (Garcia: geboren Portugal, spielt fuer Schweiz; Martins Pereira: Luxemburg)."
   },
   {
@@ -1898,6 +1925,21 @@ const LINEUP_CHALLENGES = [
     difficulty: 5,
     players: { TW:"Halldórsson", RV:"Sævarsson", RIV:"Árnason", LIV:"Sigurðsson", LV:"Skúlason", RM:"G. Sigurðsson", RZM:"Gunnarsson", LZM:"Bjarnason", LM:"Guðmundsson", RST:"Sigþórsson", LST:"Böðvarsson" },
     details: { TW:{nr:1}, RV:{nr:2}, RIV:{nr:14}, LIV:{nr:6}, LV:{nr:23}, RM:{nr:10}, RZM:{nr:17}, LZM:{nr:8}, LM:{nr:7}, RST:{nr:9}, LST:{nr:15} },
+    bench: [
+      { name: "E. Bjarnason", nr: 18, pos: "MIT", in: 77, for: "RST" },
+      { name: "Traustason", nr: 21, pos: "MIT", in: 89, for: "LST" },
+      { name: "Jónsson", nr: 13, pos: "TW" },
+      { name: "Kristinsson", nr: 12, pos: "TW" },
+      { name: "Magnússon", nr: 19, pos: "ABW" },
+      { name: "Hauksson", nr: 3, pos: "ABW" },
+      { name: "Hermannsson", nr: 4, pos: "ABW" },
+      { name: "Ingason", nr: 5, pos: "ABW" },
+      { name: "Hallfreðsson", nr: 20, pos: "MIT" },
+      { name: "Sigurjónsson", nr: 16, pos: "MIT" },
+      { name: "Finnbogason", nr: 11, pos: "ANG" },
+      { name: "Guðjohnsen", nr: 22, pos: "ANG" }
+    ],
+    benchSource: ["https://www.espn.com/soccer/lineups/_/gameId/438161 (Bank, Nummern, Wechsel mit Gegenspieler)", "https://www.fussballdaten.de/em/2016/achtelfinale/england-island/aufstellung/ (Bank, Minuten; Bjarnason dort 76', ESPN 77' - ESPN uebernommen; fuer Nr. 16 steht dort faelschlich 'Lucas Goncalves', ESPN und Wikipedia-Kader nennen Sigurjonsson)", "https://en.wikipedia.org/wiki/UEFA_Euro_2016_squads (23-Mann-Kader mit Nummern; Hauksson DF statt ESPN uebernommen)"],
     source: "https://en.wikipedia.org/wiki/UEFA_Euro_2016_knockout_stage (Rohtext, England v Iceland); gegengeprueft via Websuche. EM = nat weggelassen."
   },
   {
@@ -1935,6 +1977,21 @@ const LINEUP_CHALLENGES = [
     players: { TW:"Navas", RV:"Gamboa", RIV:"Duarte", ZIV:"González", LIV:"Umaña", LV:"Junior Díaz", RM:"Bolaños", RZM:"Borges", LZM:"Tejeda", LM:"Ruiz", ST:"Campbell" },
     aliases: { LV: ["Junior"] },
     details: { TW:{nr:1}, RV:{nr:16}, RIV:{nr:6}, ZIV:{nr:3}, LIV:{nr:4}, LV:{nr:15}, RM:{nr:7}, RZM:{nr:5}, LZM:{nr:17}, LM:{nr:10}, ST:{nr:9} },
+    bench: [
+      { name: "Cubero", nr: 22, pos: "MIT", in: 74, for: "LZM" },
+      { name: "Ureña", nr: 21, pos: "ANG", in: 83, for: "LM" },
+      { name: "Barrantes", nr: 11, pos: "MIT", in: 89, for: "RM" },
+      { name: "Cambronero", nr: 23, pos: "TW" },
+      { name: "Pemberton", nr: 18, pos: "TW" },
+      { name: "Myrie", nr: 8, pos: "ABW" },
+      { name: "Francis", nr: 12, pos: "ABW" },
+      { name: "Miller", nr: 19, pos: "ABW" },
+      { name: "Acosta", nr: 2, pos: "ABW" },
+      { name: "Granados", nr: 13, pos: "MIT" },
+      { name: "Calvo", nr: 20, pos: "MIT" },
+      { name: "Brenes", nr: 14, pos: "ANG" }
+    ],
+    benchSource: ["https://www.espn.com/soccer/lineups/_/gameId/383298 (Bank, Nummern, Wechsel mit Gegenspieler)", "https://www.fussballdaten.de/uruguay-costarica/aufstellung/ (Bank, Minuten; Urena dort 82', Barrantes 88' - ESPN uebernommen)", "https://en.wikipedia.org/wiki/2014_FIFA_World_Cup_squads (Kader mit Nummern und Positionen; Calvo MF statt ESPN uebernommen)"],
     source: "https://en.wikipedia.org/w/index.php?title=2014_FIFA_World_Cup_Group_D (Match-Rohtext) gegengeprueft mit https://en.wikipedia.org/wiki/Template:Costa_Rica_squad_2014_FIFA_World_Cup (Kader-Rueckennummern identisch). WM = nat weggelassen."
   },
   {
@@ -1948,6 +2005,16 @@ const LINEUP_CHALLENGES = [
     difficulty: 5,
     players: { TW:"Benaglio", RV:"Vieirinha", RIV:"Dante", LIV:"Naldo", LV:"Rodríguez", RM:"Draxler", RZM:"Arnold", LZM:"Gustavo", LM:"Guilavogui", RST:"Schürrle", LST:"Henrique" },
     details: { TW:{nr:1,nat:"CH"}, RV:{nr:8,nat:"PT"}, RIV:{nr:18,nat:"BR"}, LIV:{nr:25,nat:"BR"}, LV:{nr:34,nat:"CH"}, RM:{nr:10,nat:"DE"}, RZM:{nr:27,nat:"DE"}, LZM:{nr:22,nat:"BR"}, LM:{nr:23,nat:"FR"}, RST:{nr:17,nat:"DE"}, LST:{nr:16,nat:"BR"} },
+    bench: [
+      { name: "Träsch", nr: 15, pos: "ABW", in: 80, for: "LST" },
+      { name: "Kruse", nr: 11, pos: "ANG", in: 85, for: "RST" },
+      { name: "Schäfer", nr: 4, pos: "ABW", in: 90, inExtra: 3, for: "RM" },
+      { name: "Casteels", nr: 28, pos: "TW" },
+      { name: "Knoche", nr: 31, pos: "ABW" },
+      { name: "Ascues", nr: 6, pos: "ABW" },
+      { name: "Dost", nr: 12, pos: "ANG" }
+    ],
+    benchSource: ["https://www.espn.com/soccer/lineups/_/gameId/446397 (Bank, Nummern, Wechsel mit Gegenspieler)", "https://www.fussballdaten.de/championsleague/2016/viertelfinale/wolfsburg-realmadrid/aufstellung/ (Bank, Minuten; Schaefer dort 90', ESPN 90+3' - ESPN uebernommen)"],
     source: "https://en.wikipedia.org/wiki/2015%E2%80%9316_VfL_Wolfsburg_season (Kader-Rueckennummern) gegengeprueft mit ESPN-Spielbericht (identisch); Bruno Henrique #16 zusaetzlich per Websuche bestaetigt. Nationalitaeten via Wikipedia-Spielerprofile/Websuche."
   },
   {
@@ -2105,6 +2172,16 @@ const LINEUP_CHALLENGES = [
     players: { TW:"Alisson", RIV:"Fazio", ZIV:"Manolas", LIV:"Juan Jesus", RM:"Florenzi", RZM:"Strootman", ZM:"De Rossi", LZM:"Nainggolan", LM:"Kolarov", RST:"Schick", LST:"Džeko" },
     aliases: { LIV: ["Jesus"] },
     details: { TW:{nr:1,nat:"BR"}, RIV:{nr:20,nat:"AR"}, ZIV:{nr:44,nat:"GR"}, LIV:{nr:5,nat:"BR"}, RM:{nr:24,nat:"IT"}, RZM:{nr:6,nat:"NL"}, ZM:{nr:16,nat:"IT"}, LZM:{nr:4,nat:"BE"}, LM:{nr:11,nat:"RS"}, RST:{nr:14,nat:"CZ"}, LST:{nr:9,nat:"BA"} },
+    bench: [
+      { name: "Ünder", nr: 17, pos: "ANG", in: 73, for: "RST" },
+      { name: "El Shaarawy", nr: 92, pos: "ANG", in: 77, for: "LZM" },
+      { name: "Skorupski", nr: 28, pos: "TW" },
+      { name: "Bruno Peres", nr: 25, pos: "ABW" },
+      { name: "Gonalons", nr: 21, pos: "MIT" },
+      { name: "Gerson", nr: 30, pos: "MIT" },
+      { name: "Pellegrini", nr: 7, pos: "MIT" }
+    ],
+    benchSource: ["https://www.espn.com/soccer/lineups/_/gameId/509298 (Bank, Nummern, Wechsel mit Gegenspieler)", "https://www.fussballdaten.de/championsleague/2018/viertelfinale/asrom-fcbarcelona/aufstellung/ (Bank (7 Spieler), Minuten; deckungsgleich mit ESPN)"],
     source: "https://www.fussballdaten.de/championsleague/2018/viertelfinale/asrom-fcbarcelona/aufstellung/ ; https://www.espn.com/soccer/lineups/_/gameId/509298 (Aufstellung/Nummern/Positionen, beide: 3-5-2) ; Nationalitäten/Nummern: https://en.wikipedia.org/wiki/2017%E2%80%9318_AS_Roma_season"
   },
   {
@@ -2620,6 +2697,16 @@ const LINEUP_CHALLENGES = [
     difficulty: 5,
     players: { TW:"De Gea", RV:"Smalling", RIV:"Ferdinand", LIV:"Vidić", LV:"Evra", RZM:"Jones", ZM:"Park", LZM:"Giggs", RA:"Young", ST:"Rooney", LA:"Nani" },
     details: { TW:{nr:1,nat:"ES"}, RV:{nr:12,nat:"GB-ENG"}, RIV:{nr:5,nat:"GB-ENG"}, LIV:{nr:15,nat:"RS"}, LV:{nr:3,nat:"FR"}, RZM:{nr:4,nat:"GB-ENG"}, ZM:{nr:13,nat:"KR"}, LZM:{nr:11,nat:"GB-WLS"}, RA:{nr:18,nat:"GB-ENG"}, ST:{nr:10,nat:"GB-ENG"}, LA:{nr:17,nat:"PT"} },
+    bench: [
+      { name: "Evans", nr: 6, pos: "ABW", in: 44, for: "LIV" },
+      { name: "Welbeck", nr: 19, pos: "ANG", in: 64, for: "RA" },
+      { name: "Macheda", nr: 27, pos: "ANG", in: 82, for: "ZM" },
+      { name: "Lindegaard", nr: 34, pos: "TW" },
+      { name: "Valencia", nr: 25, pos: "MIT" },
+      { name: "Fletcher", nr: 24, pos: "MIT" },
+      { name: "Gibson", nr: 28, pos: "MIT" }
+    ],
+    benchSource: ["https://www.espn.com/soccer/lineups/_/gameId/331192 (Bank, Nummern, Wechsel mit Gegenspieler)", "https://www.fussballdaten.de/championsleague/2012/gruppenphase/c/fcbasel-manunited/aufstellung/ (nur die Einwechslungen mit Minuten, keine Liste der Nichteingesetzten; Bank nur von ESPN)"],
     source: "https://en.wikipedia.org/wiki/2011%E2%80%9312_Manchester_United_F.C._season (Kader-Rueckennummern) gegengeprueft mit Websuche; Smalling-Nummer per Websuche verifiziert, da ein erster ESPN-Abruf 2 statt 12 zeigte (Extraktionsfehler)."
   },
   {
@@ -2633,6 +2720,16 @@ const LINEUP_CHALLENGES = [
     difficulty: 5,
     players: { TW:"Caballero", RV:"Sagna", RIV:"Stones", LIV:"Fernandinho", LV:"Clichy", RZM:"D. Silva", LZM:"Kolarov", ROM:"Sané", ZOM:"De Bruyne", LOM:"Sterling", ST:"Agüero" },
     details: { TW:{nr:13,nat:"AR"}, RV:{nr:3,nat:"FR"}, RIV:{nr:24,nat:"GB-ENG"}, LIV:{nr:25,nat:"BR"}, LV:{nr:22,nat:"FR"}, RZM:{nr:21,nat:"ES"}, LZM:{nr:11,nat:"RS"}, ROM:{nr:19,nat:"DE"}, ZOM:{nr:17,nat:"BE"}, LOM:{nr:7,nat:"GB-ENG"}, ST:{nr:10,nat:"AR"} },
+    bench: [
+      { name: "Iheanacho", nr: 72, pos: "ANG", in: 84, for: "LV" },
+      { name: "Bravo", nr: 1, pos: "TW" },
+      { name: "Zabaleta", nr: 5, pos: "ABW" },
+      { name: "Otamendi", nr: 30, pos: "ABW" },
+      { name: "Navas", nr: 15, pos: "ABW" },
+      { name: "Delph", nr: 18, pos: "MIT" },
+      { name: "Y. Touré", nr: 42, pos: "MIT" }
+    ],
+    benchSource: ["https://www.espn.com/soccer/lineups/_/gameId/469089 (Bank, Nummern, Wechsel mit Gegenspieler)", "https://www.fussballdaten.de/championsleague/2017/achtelfinale/monaco-mancity/aufstellung/ (Bank (7 Spieler), Minuten; deckungsgleich mit ESPN)"],
     source: "https://en.wikipedia.org/wiki/2016%E2%80%9317_Manchester_City_F.C._season (Kader-Rueckennummern, Rohtext) gegengeprueft mit Websuche (mancity.com-Meldung zu den Saison-Rueckennummern, identisch)."
   },
   {
@@ -2646,6 +2743,21 @@ const LINEUP_CHALLENGES = [
     difficulty: 5,
     players: { TW:"Neuer", RV:"Pavard", RIV:"Upamecano", LIV:"Hernández", LV:"Davies", RZM:"Kimmich", LZM:"Musiala", ROM:"Coman", ZOM:"Müller", LOM:"Gnabry", ST:"Lewandowski" },
     details: { TW:{nr:1,nat:"DE"}, RV:{nr:5,nat:"FR"}, RIV:{nr:2,nat:"FR"}, LIV:{nr:21,nat:"FR"}, LV:{nr:19,nat:"CA"}, RZM:{nr:6,nat:"DE"}, LZM:{nr:42,nat:"DE"}, ROM:{nr:11,nat:"FR"}, ZOM:{nr:25,nat:"DE"}, LOM:{nr:7,nat:"DE"}, ST:{nr:9,nat:"PL"} },
+    bench: [
+      { name: "Goretzka", nr: 8, pos: "MIT", in: 62, for: "ZOM" },
+      { name: "Sané", nr: 10, pos: "ANG", in: 62, for: "LOM" },
+      { name: "Süle", nr: 4, pos: "ABW", in: 71, for: "RV" },
+      { name: "Roca", nr: 22, pos: "MIT", in: 90, inExtra: 4, for: "Goretzka" },
+      { name: "Ulreich", nr: 26, pos: "TW" },
+      { name: "Früchtl", nr: 36, pos: "TW" },
+      { name: "Stanišić", nr: 44, pos: "ABW" },
+      { name: "Richards", nr: 3, pos: "ABW" },
+      { name: "Nianzou", nr: 23, pos: "ABW" },
+      { name: "Sabitzer", nr: 18, pos: "MIT" },
+      { name: "Tillman", nr: 40, pos: "MIT" },
+      { name: "Wanner", nr: 14, pos: "MIT" }
+    ],
+    benchSource: ["https://www.espn.com/soccer/lineups/_/gameId/633245 (Bank, Nummern, Wechsel mit Gegenspieler)", "https://www.fussballdaten.de/championsleague/2022/viertelfinale/villarreal-bayern/aufstellung/ (Bank (12 Spieler), Minuten; deckungsgleich mit ESPN)"],
     source: "https://www.fussballdaten.de/championsleague/2022/viertelfinale/villarreal-bayern/ ; Pavard/Upamecano-Nummern per Websuche korrigiert (Fussballdaten vertauschte 2 und 5). Nationalitaeten via Websuche/Fussballdaten-Kader."
   },
   {
@@ -2659,6 +2771,20 @@ const LINEUP_CHALLENGES = [
     difficulty: 5,
     players: { TW:"Neuer", RV:"Kimmich", RIV:"Süle", LIV:"Hummels", LV:"Hector", RM:"Reus", RZM:"Kroos", ZM:"Khedira", LZM:"Goretzka", LM:"Özil", ST:"Werner" },
     details: { TW:{nr:1}, RV:{nr:18}, RIV:{nr:15}, LIV:{nr:5}, LV:{nr:3}, RM:{nr:11}, RZM:{nr:8}, ZM:{nr:6}, LZM:{nr:14}, LM:{nr:10}, ST:{nr:9} },
+    bench: [
+      { name: "Gómez", nr: 23, pos: "ANG", in: 58, for: "ZM" },
+      { name: "Müller", nr: 13, pos: "ANG", in: 63, for: "LZM" },
+      { name: "Brandt", nr: 20, pos: "MIT", in: 78, for: "LV" },
+      { name: "ter Stegen", nr: 22, pos: "TW" },
+      { name: "Trapp", nr: 12, pos: "TW" },
+      { name: "Plattenhardt", nr: 2, pos: "ABW" },
+      { name: "Rüdiger", nr: 16, pos: "ABW" },
+      { name: "Ginter", nr: 4, pos: "ABW" },
+      { name: "Gündoğan", nr: 21, pos: "MIT" },
+      { name: "Rudy", nr: 19, pos: "MIT" },
+      { name: "Draxler", nr: 7, pos: "MIT" }
+    ],
+    benchSource: ["https://www.espn.com/soccer/lineups/_/gameId/498161 (Bank, Nummern, Wechsel mit Gegenspieler)", "https://www.fussballdaten.de/wm/2018/suedkorea-deutschland/aufstellung/ (Bank (11 Spieler), Minuten; deckungsgleich mit ESPN)", "https://en.wikipedia.org/wiki/2018_FIFA_World_Cup_squads (Kader mit Nummern und Positionen; Draxler MF statt ESPN uebernommen)"],
     source: "https://en.wikipedia.org/wiki/Template:Germany_squad_2018_FIFA_World_Cup gegengeprueft mit Websuche (kicker.de/sport.de-Aufstellung). WM = nat weggelassen."
   },
   {
@@ -2723,6 +2849,16 @@ const LINEUP_CHALLENGES = [
     players: { TW:"Fabiano", RV:"Danilo", RIV:"Maicon", LIV:"Martins Indi", LV:"Alex Sandro", RZM:"Herrera", ZM:"Casemiro", LZM:"Óliver Torres", RA:"Quaresma", ST:"Martínez", LA:"Brahimi" },
     aliases: { LIV: ["Indi"], LV: ["Sandro"], LZM: ["Óliver", "Torres"] },
     details: { TW:{nr:12,nat:"BR"}, RV:{nr:2,nat:"BR"}, RIV:{nr:4,nat:"BR"}, LIV:{nr:3,nat:"NL"}, LV:{nr:26,nat:"BR"}, RZM:{nr:16,nat:"MX"}, ZM:{nr:6,nat:"BR"}, LZM:{nr:30,nat:"ES"}, RA:{nr:7,nat:"PT"}, ST:{nr:9,nat:"CO"}, LA:{nr:8,nat:"DZ"} },
+    bench: [
+      { name: "Rúben Neves", nr: 36, pos: "MIT", in: 75, for: "LZM" },
+      { name: "Hernâni", nr: 17, pos: "ANG", in: 80, for: "LA" },
+      { name: "Evandro", nr: 15, pos: "MIT", in: 84, for: "RA" },
+      { name: "Helton", nr: 1, pos: "TW" },
+      { name: "Reyes", nr: 13, pos: "ABW" },
+      { name: "Quintero", nr: 10, pos: "MIT" },
+      { name: "Aboubakar", nr: 99, pos: "ANG" }
+    ],
+    benchSource: ["https://www.espn.com/soccer/lineups/_/gameId/418413 (Bank, Nummern, Wechsel mit Gegenspieler)", "https://www.fussballdaten.de/championsleague/2015/viertelfinale/porto-bayern/aufstellung/ (Bank, Minuten; Evandro dort nicht als Einwechsler gelistet, nur von ESPN)"],
     source: "https://www.fussballdaten.de/championsleague/2015/viertelfinale/porto-bayern/aufstellung/ ; https://www.espn.com/soccer/lineups/_/gameId/418413 (Aufstellung/Nummern/Positionen, beide: 4-3-3) ; Nationalitäten/Nummern: https://en.wikipedia.org/wiki/2014%E2%80%9315_FC_Porto_season"
   },
   {
@@ -2736,6 +2872,20 @@ const LINEUP_CHALLENGES = [
     difficulty: 5,
     players: { TW:"Subašić", RV:"Vrsaljko", RIV:"Lovren", LIV:"Vida", LV:"Strinić", RZM:"Rakitić", LZM:"Brozović", ROM:"Rebić", ZOM:"Modrić", LOM:"Perišić", ST:"Mandžukić" },
     details: { TW:{nr:23}, RV:{nr:2}, RIV:{nr:6}, LIV:{nr:21}, LV:{nr:3}, RZM:{nr:7}, LZM:{nr:11}, ROM:{nr:18}, ZOM:{nr:10}, LOM:{nr:4}, ST:{nr:17} },
+    bench: [
+      { name: "Kramarić", nr: 9, pos: "ANG", in: 57, for: "ROM" },
+      { name: "Kovačić", nr: 8, pos: "MIT", in: 82, for: "LOM" },
+      { name: "Ćorluka", nr: 5, pos: "ABW", in: 90, inExtra: 2, for: "ST" },
+      { name: "Livaković", nr: 1, pos: "TW" },
+      { name: "Kalinić", nr: 12, pos: "TW" },
+      { name: "Jedvaj", nr: 13, pos: "ABW" },
+      { name: "Čaleta-Car", nr: 15, pos: "ABW" },
+      { name: "Pivarić", nr: 22, pos: "ABW" },
+      { name: "Badelj", nr: 19, pos: "MIT" },
+      { name: "Bradarić", nr: 14, pos: "MIT" },
+      { name: "Pjaca", nr: 20, pos: "ANG" }
+    ],
+    benchSource: ["https://www.espn.com/soccer/lineups/_/gameId/498180 (Bank, Nummern, Wechsel mit Gegenspieler)", "https://www.fussballdaten.de/wm/2018/gruppenphase/d/argentinien-kroatien/aufstellung/ (Bank (11 Spieler), Minuten; Corluka dort 90', ESPN 90+2' - ESPN uebernommen)", "https://en.wikipedia.org/wiki/2018_FIFA_World_Cup_squads (Kader mit Nummern und Positionen)"],
     source: "https://en.wikipedia.org/wiki/2018_FIFA_World_Cup_Group_D (Rohtext Argentina vs Croatia) ; https://www.fussballdaten.de/wm/2018/gruppenphase/d/argentinien-kroatien/aufstellung/ ; https://www.espn.com/soccer/lineups/_/gameId/498180 (Positionen; ESPN: 4-1-4-1, Wikipedia/fussballdaten: 4-2-3-1) ; WM = nat weggelassen."
   },
   {
