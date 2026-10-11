@@ -48,9 +48,9 @@ vorige umgesetzt, getestet und committet ist.
 | 34 | Angefangene Aufstellungen merken und fortsetzen (Kampagne, Freispiel, Tag) | ✅ erledigt |
 | 35 | Aufstellungen: alles vor 2008 ersetzen (12 Kampagne inkl. St. Pauli, 6 Tag), neue bevorzugt 2015–2026 | ✅ erledigt (59 Kampagne, 45 Tages-Pool; Wolfsburg-2009-Formation offen) |
 | 36 | Duell: Walkout v2 „Spielertunnel“ – langsamer, Merkliste, Countdown als Stadionuhr | ✅ erledigt |
-| 37 | Ersatzbank im Spiel: Knopf „Bank“ unten rechts im Feld, Regeln ergänzen, Bank recherchieren (in Paketen) | – |
+| 37 | Ersatzbank im Spiel: Knopf „Bank“ unten rechts im Feld, Regeln ergänzen, Bank recherchieren (in Paketen) | ✅ erledigt (Teil A + Teil B: alle 104 Aufstellungen mit Bank; einzelne Banken nur von ESPN belegt, siehe `benchSource`) |
 
-**Empfohlene Reihenfolge ab jetzt:** 37 (Teil A, dann Bank-Recherche in Paketen) → weitere Offline-Feinschliffe (u. a. Wolfsburg-2009-Formation klären, Jahres-Lücken im Ideen-Speicher auffüllen) → Planung Online-Duell (inkl. 28/29) → 8 (Capacitor, erst wenn die App final ist; vorher Duell-Pflichtpunkt aus CLAUDE.md ansprechen)
+**Empfohlene Reihenfolge ab jetzt:** weitere Offline-Feinschliffe (u. a. Wolfsburg-2009-Formation klären, Jahres-Lücken im Ideen-Speicher auffüllen) → Planung Online-Duell (inkl. 28/29) → 8 (Capacitor, erst wenn die App final ist; vorher Duell-Pflichtpunkt aus CLAUDE.md ansprechen)
 
 Prompt 7 steht bewusst vor der Tages-Challenge: Nur mit der neuen
 Update-Strategie kommen neue Tages-Aufstellungen zuverlässig auf dem iPhone an.
