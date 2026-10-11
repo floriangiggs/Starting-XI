@@ -1600,6 +1600,18 @@ const LINEUP_CHALLENGES = [
     difficulty: 1,
     players: { TW:"Urbig", RV:"Stanišić", RIV:"Kim", LIV:"Ito", LV:"Davies", RM:"Guerreiro", RZM:"Kimmich", ZM:"Goretzka", LZM:"Musiala", LM:"Díaz", ST:"Jackson" },
     details: { TW:{nr:40,nat:"DE"}, RV:{nr:44,nat:"HR"}, RIV:{nr:3,nat:"KR"}, LIV:{nr:21,nat:"JP"}, LV:{nr:19,nat:"CA"}, RM:{nr:22,nat:"PT"}, RZM:{nr:6,nat:"DE"}, ZM:{nr:8,nat:"DE"}, LZM:{nr:10,nat:"DE"}, LM:{nr:14,nat:"CO"}, ST:{nr:11,nat:"SN"} },
+    bench: [
+      { name: "Kane", nr: 9, pos: "ANG", in: 46, for: "LZM" },
+      { name: "Olise", nr: 17, pos: "MIT", in: 46, for: "LM" },
+      { name: "Laimer", nr: 27, pos: "MIT", in: 62, for: "LV" },
+      { name: "Ndiaye", nr: 39, pos: "MIT", in: 76, for: "RM" },
+      { name: "Ofli", nr: 34, pos: "ABW", in: 85, for: "RV" },
+      { name: "Neuer", nr: 1, pos: "TW" },
+      { name: "Upamecano", nr: 2, pos: "ABW" },
+      { name: "Tah", nr: 4, pos: "ABW" },
+      { name: "Pavlović", nr: 45, pos: "MIT" }
+    ],
+    benchSource: ["https://www.espn.com/soccer/lineups/_/gameId/746983 (Bank, Nummern, Wechsel mit Gegenspieler)", "https://www.fussballdaten.de/bundesliga/2026/30/bayern-stuttgart/aufstellung/ (Bank (9 Spieler), Minuten; deckungsgleich mit ESPN)"],
     source: "https://www.fussballdaten.de/bundesliga/2026/30/bayern-stuttgart/ ; Nationalitäten: https://de.uefa.com/uefachampionsleague/clubs/50037--bayern/squad/"
   },
   {
@@ -1903,6 +1915,24 @@ const LINEUP_CHALLENGES = [
     players: { TW:"Simón", RV:"Porro", RIV:"Cubarsí", LIV:"Laporte", LV:"Cucurella", RZM:"Rodri", LZM:"Fabián Ruiz", ROM:"Yamal", ZOM:"Olmo", LOM:"Baena", ST:"Oyarzabal" },
     aliases: { LZM: ["Fabián", "Ruiz"] },
     details: { TW:{nr:23}, RV:{nr:12}, RIV:{nr:22}, LIV:{nr:14}, LV:{nr:24}, RZM:{nr:16}, LZM:{nr:8}, ROM:{nr:19}, ZOM:{nr:10}, LOM:{nr:15}, ST:{nr:21} },
+    bench: [
+      { name: "Torres", nr: 7, pos: "ANG", in: 62, for: "ST" },
+      { name: "Pedri", nr: 20, pos: "MIT", in: 62, for: "LZM" },
+      { name: "Williams", nr: 17, pos: "ANG", in: 75, for: "LOM" },
+      { name: "Merino", nr: 6, pos: "MIT", in: 75, for: "ZOM" },
+      { name: "Zubimendi", nr: 18, pos: "MIT", in: 99, for: "RZM" },
+      { name: "E. García", nr: 4, pos: "ABW", in: 99, for: "LIV" },
+      { name: "Raya", nr: 1, pos: "TW" },
+      { name: "J. García", nr: 13, pos: "TW" },
+      { name: "Grimaldo", nr: 3, pos: "ABW" },
+      { name: "Pubill", nr: 2, pos: "ABW" },
+      { name: "Llorente", nr: 5, pos: "MIT" },
+      { name: "Gavi", nr: 9, pos: "MIT" },
+      { name: "Pino", nr: 11, pos: "MIT" },
+      { name: "Iglesias", nr: 26, pos: "ANG" },
+      { name: "Muñoz", nr: 25, pos: "ANG" }
+    ],
+    benchSource: ["https://www.espn.com/soccer/lineups/_/gameId/760517 (Bank, Nummern, Wechsel mit Gegenspieler)", "https://www.fussballdaten.de/wm/2026/finale/spanien-argentinien/aufstellung/ (Bank (15 Spieler), Minuten; Nico Williams dort 75' wie ESPN)", "https://en.wikipedia.org/wiki/2026_FIFA_World_Cup_final (Wechselminuten)"],
     source: "https://www.fussballdaten.de/wm/2026/finale/spanien-argentinien/"
   },
   {
@@ -1917,6 +1947,21 @@ const LINEUP_CHALLENGES = [
     players: { TW:"Safonov", RV:"Hakimi", RIV:"Marquinhos", LIV:"Pacho", LV:"Nuno Mendes", RZM:"Fabián Ruiz", ZM:"Vitinha", LZM:"João Neves", RA:"Doué", ST:"Dembélé", LA:"Kvaratskhelia" },
     aliases: { LV: ["Nuno"], RZM: ["Fabián", "Ruiz"], LZM: ["Neves"] },
     details: { TW:{nr:39,nat:"RU"}, RV:{nr:2,nat:"MA"}, RIV:{nr:5,nat:"BR"}, LIV:{nr:51,nat:"EC"}, LV:{nr:25,nat:"PT"}, RZM:{nr:8,nat:"ES"}, ZM:{nr:17,nat:"PT"}, LZM:{nr:87,nat:"PT"}, RA:{nr:14,nat:"FR"}, ST:{nr:10,nat:"FR"}, LA:{nr:7,nat:"GE"} },
+    bench: [
+      { name: "Barcola", nr: 29, pos: "ANG", in: 83, for: "LA" },
+      { name: "Ramos", nr: 9, pos: "ANG", in: 90, inExtra: 6, for: "ST" },
+      { name: "Zaïre-Emery", nr: 33, pos: "MIT", in: 95, for: "RZM" },
+      { name: "Beraldo", nr: 4, pos: "ABW", in: 106, for: "ZM" },
+      { name: "Zabarnyi", nr: 6, pos: "ABW", in: 106, for: "RIV" },
+      { name: "Chevalier", nr: 30, pos: "TW" },
+      { name: "Marin", nr: 89, pos: "TW" },
+      { name: "Hernández", nr: 21, pos: "ABW" },
+      { name: "Mayulu", nr: 24, pos: "MIT" },
+      { name: "Lee", nr: 19, pos: "MIT" },
+      { name: "Fernández", nr: 27, pos: "MIT" },
+      { name: "Mbaye", nr: 49, pos: "ANG" }
+    ],
+    benchSource: ["https://www.espn.com/soccer/lineups/_/gameId/401862897 (Bank, Nummern, Wechsel mit Gegenspieler)", "https://www.fussballdaten.de/championsleague/2026/finale/psg-arsenal/aufstellung/ (Bank, Minuten; Beraldo/Zabarnyi dort 106' wie Wikipedia, ESPN 105')", "https://en.wikipedia.org/wiki/2026_UEFA_Champions_League_final (komplette Bank mit Nummern, Positionen und Wechselminuten)"],
     source: "https://www.fussballdaten.de/championsleague/2026/finale/psg-arsenal/ ; Nationalitäten: https://de.uefa.com/uefachampionsleague/clubs/52747--paris/squad/"
   },
   {
@@ -1941,7 +1986,7 @@ const LINEUP_CHALLENGES = [
       { name: "Rulli", nr: 12, pos: "TW" },
       { name: "Foyth", nr: 2, pos: "ABW" },
       { name: "Lisandro Martínez", nr: 25, pos: "ABW" },
-      { name: "Guido Rodríguez", nr: 18, pos: "MIT" },
+      { name: "Rodríguez", nr: 18, pos: "MIT" },
       { name: "Gómez", nr: 17, pos: "MIT" },
       { name: "Palacios", nr: 14, pos: "MIT" },
       { name: "Almada", nr: 16, pos: "MIT" },
@@ -1962,6 +2007,22 @@ const LINEUP_CHALLENGES = [
     players: { TW:"Simón", RV:"Carvajal", RIV:"Le Normand", LIV:"Laporte", LV:"Cucurella", RZM:"Rodri", LZM:"Fabián Ruiz", ROM:"Yamal", ZOM:"Olmo", LOM:"Williams", ST:"Morata" },
     aliases: { LZM: ["Fabián", "Ruiz"] },
     details: { TW:{nr:23}, RV:{nr:2}, RIV:{nr:3}, LIV:{nr:14}, LV:{nr:24}, RZM:{nr:16}, LZM:{nr:8}, ROM:{nr:19}, ZOM:{nr:10}, LOM:{nr:17}, ST:{nr:7} },
+    bench: [
+      { name: "Zubimendi", nr: 18, pos: "MIT", in: 46, for: "RZM" },
+      { name: "Oyarzabal", nr: 21, pos: "ANG", in: 68, for: "ST" },
+      { name: "Nacho", nr: 4, pos: "ABW", in: 83, for: "RIV" },
+      { name: "Merino", nr: 6, pos: "MIT", in: 89, for: "ROM" },
+      { name: "Raya", nr: 1, pos: "TW" },
+      { name: "Remiro", nr: 13, pos: "TW" },
+      { name: "Navas", nr: 22, pos: "ABW" },
+      { name: "Vivian", nr: 5, pos: "ABW" },
+      { name: "Grimaldo", nr: 12, pos: "ABW" },
+      { name: "Fermín", nr: 25, pos: "MIT" },
+      { name: "Baena", nr: 15, pos: "MIT" },
+      { name: "Torres", nr: 11, pos: "ANG" },
+      { name: "Joselu", nr: 9, pos: "ANG" }
+    ],
+    benchSource: ["https://www.espn.com/soccer/lineups/_/gameId/703945 (Bank, Nummern, Wechsel mit Gegenspieler)", "https://www.fussballdaten.de/em/2024/finale/spanien-england/aufstellung/ (Bank, Minuten; Nacho dort nicht als Einwechsler gefuehrt, ESPN und Wikipedia 83')", "https://en.wikipedia.org/wiki/UEFA_Euro_2024_final (Wechselminuten)"],
     source: "https://www.fussballdaten.de/em/2024/finale/spanien-england/"
   },
   {
@@ -1975,6 +2036,18 @@ const LINEUP_CHALLENGES = [
     difficulty: 1,
     players: { TW:"Alisson", RV:"Alexander-Arnold", RIV:"Konaté", LIV:"Van Dijk", LV:"Robertson", RZM:"Mac Allister", LZM:"Gravenberch", ROM:"Szoboszlai", ZOM:"Gakpo", LOM:"Díaz", ST:"Salah" },
     details: { TW:{nr:1,nat:"BR"}, RV:{nr:66,nat:"GB-ENG"}, RIV:{nr:5,nat:"FR"}, LIV:{nr:4,nat:"NL"}, LV:{nr:26,nat:"GB-SCT"}, RZM:{nr:10,nat:"AR"}, LZM:{nr:38,nat:"NL"}, ROM:{nr:8,nat:"HU"}, ZOM:{nr:18,nat:"NL"}, LOM:{nr:7,nat:"CO"}, ST:{nr:11,nat:"EG"} },
+    bench: [
+      { name: "Jones", nr: 17, pos: "MIT", in: 68, for: "ROM" },
+      { name: "Jota", nr: 20, pos: "ANG", in: 68, for: "ZOM" },
+      { name: "Elliott", nr: 19, pos: "MIT", in: 76, for: "LOM" },
+      { name: "Endo", nr: 3, pos: "MIT", in: 76, for: "RV" },
+      { name: "Núñez", nr: 9, pos: "ANG", in: 83, for: "RZM" },
+      { name: "Kelleher", nr: 62, pos: "TW" },
+      { name: "Quansah", nr: 78, pos: "ABW" },
+      { name: "Tsimikas", nr: 21, pos: "ABW" },
+      { name: "Chiesa", nr: 14, pos: "ANG" }
+    ],
+    benchSource: ["https://www.espn.com/soccer/lineups/_/gameId/704617 (Bank, Nummern, Wechsel mit Gegenspieler)", "https://www.fussballdaten.de/england/2025/34/liverpool-tottenham/aufstellung/ (Bank (9 Spieler), Minuten; deckungsgleich mit ESPN)"],
     source: "https://www.fussballdaten.de/england/2025/34/liverpool-tottenham/"
   },
   {
@@ -1989,6 +2062,24 @@ const LINEUP_CHALLENGES = [
     players: { TW:"Martínez", RV:"Montiel", RIV:"Romero", LIV:"Lisandro Martínez", LV:"Tagliafico", RZM:"De Paul", ZM:"Fernández", LZM:"Mac Allister", RA:"Di María", ST:"Álvarez", LA:"Messi" },
     aliases: { TW: ["Dibu"], LIV: ["Lisandro"] },
     details: { TW:{nr:23}, RV:{nr:4}, RIV:{nr:13}, LIV:{nr:25}, LV:{nr:3}, RZM:{nr:7}, ZM:{nr:24}, LZM:{nr:20}, RA:{nr:11}, ST:{nr:9}, LA:{nr:10} },
+    bench: [
+      { name: "González", nr: 15, pos: "ANG", in: 66, for: "LA" },
+      { name: "Molina", nr: 26, pos: "ABW", in: 72, for: "RV" },
+      { name: "Lautaro Martínez", nr: 22, pos: "ANG", in: 97, for: "ST" },
+      { name: "Paredes", nr: 5, pos: "MIT", in: 97, for: "LZM" },
+      { name: "Lo Celso", nr: 16, pos: "MIT", in: 97, for: "ZM" },
+      { name: "Otamendi", nr: 19, pos: "ABW", in: 117, for: "RA" },
+      { name: "Armani", nr: 1, pos: "TW" },
+      { name: "Rulli", nr: 12, pos: "TW" },
+      { name: "Quarta", nr: 2, pos: "ABW" },
+      { name: "Acuña", nr: 8, pos: "ABW" },
+      { name: "Pezzella", nr: 6, pos: "ABW" },
+      { name: "Palacios", nr: 14, pos: "MIT" },
+      { name: "Rodríguez", nr: 18, pos: "MIT" },
+      { name: "Garnacho", nr: 17, pos: "ANG" },
+      { name: "Carboni", nr: 21, pos: "ANG" }
+    ],
+    benchSource: ["https://www.espn.com/soccer/lineups/_/gameId/703953 (Bank, Nummern, Wechsel mit Gegenspieler)", "https://www.fussballdaten.de/copaamerica/2024/finale/argentinien-kolumbien/aufstellung/ (Bank (15 Spieler), Minuten; Lautaro dort 97' wie Wikipedia, ESPN 96')", "https://en.wikipedia.org/wiki/2024_Copa_Am%C3%A9rica_final (Wechselminuten)"],
     source: "https://www.fussballdaten.de/copaamerica/2024/finale/argentinien-kolumbien/"
   },
   {
@@ -2002,6 +2093,18 @@ const LINEUP_CHALLENGES = [
     difficulty: 1,
     players: { TW:"Hrádecký", RIV:"Kossounou", ZIV:"Tah", LIV:"Tapsoba", RM:"Frimpong", RZM:"Andrich", LZM:"Palacios", LM:"Grimaldo", ROM:"Adli", LOM:"Hofmann", ST:"Boniface" },
     details: { TW:{nr:1,nat:"FI"}, RIV:{nr:6,nat:"CI"}, ZIV:{nr:4,nat:"DE"}, LIV:{nr:12,nat:"BF"}, RM:{nr:30,nat:"NL"}, RZM:{nr:8,nat:"DE"}, LZM:{nr:25,nat:"AR"}, LM:{nr:20,nat:"ES"}, ROM:{nr:21,nat:"MA"}, LOM:{nr:7,nat:"DE"}, ST:{nr:22,nat:"NG"} },
+    bench: [
+      { name: "Wirtz", nr: 10, pos: "MIT", in: 63, for: "ROM" },
+      { name: "Schick", nr: 14, pos: "ANG", in: 63, for: "ST" },
+      { name: "Xhaka", nr: 34, pos: "MIT", in: 70, for: "LZM" },
+      { name: "Hincapié", nr: 3, pos: "ABW", in: 70, for: "LM" },
+      { name: "Stanišić", nr: 2, pos: "ABW", in: 82, for: "RM" },
+      { name: "Kovář", nr: 17, pos: "TW" },
+      { name: "Tella", nr: 19, pos: "ANG" },
+      { name: "Hložek", nr: 23, pos: "ANG" },
+      { name: "Puerta", nr: 32, pos: "MIT" }
+    ],
+    benchSource: ["https://www.espn.com/soccer/lineups/_/gameId/677577 (Bank, Nummern, Wechsel mit Gegenspieler)", "https://www.fussballdaten.de/bundesliga/2024/34/leverkusen-augsburg/aufstellung/ (Bank (9 Spieler), Minuten; Wirtz dort 62', ESPN 63' - 63' uebernommen, dritte Quelle fehlt)"],
     source: "https://www.fussballdaten.de/bundesliga/2024/34/leverkusen-augsburg/"
   },
   {
@@ -2015,6 +2118,21 @@ const LINEUP_CHALLENGES = [
     difficulty: 1,
     players: { TW:"Ederson", RV:"Stones", RIV:"Dias", LIV:"Aké", LV:"Akanji", RZM:"Gündoğan", ZM:"Rodri", LZM:"De Bruyne", RA:"Silva", ST:"Haaland", LA:"Grealish" },
     details: { TW:{nr:31,nat:"BR"}, RV:{nr:5,nat:"GB-ENG"}, RIV:{nr:3,nat:"PT"}, LIV:{nr:6,nat:"NL"}, LV:{nr:25,nat:"CH"}, RZM:{nr:8,nat:"DE"}, ZM:{nr:16,nat:"ES"}, LZM:{nr:17,nat:"BE"}, RA:{nr:20,nat:"PT"}, ST:{nr:9,nat:"NO"}, LA:{nr:10,nat:"GB-ENG"} },
+    bench: [
+      { name: "Foden", nr: 47, pos: "MIT", in: 36, for: "LZM" },
+      { name: "Walker", nr: 2, pos: "ABW", in: 82, for: "RV" },
+      { name: "Ortega", nr: 18, pos: "TW" },
+      { name: "Carson", nr: 33, pos: "TW" },
+      { name: "Laporte", nr: 14, pos: "ABW" },
+      { name: "Gómez", nr: 21, pos: "ABW" },
+      { name: "Lewis", nr: 82, pos: "ABW" },
+      { name: "Phillips", nr: 4, pos: "MIT" },
+      { name: "Perrone", nr: 32, pos: "MIT" },
+      { name: "Palmer", nr: 80, pos: "MIT" },
+      { name: "Álvarez", nr: 19, pos: "ANG" },
+      { name: "Mahrez", nr: 26, pos: "ANG" }
+    ],
+    benchSource: ["https://www.espn.com/soccer/lineups/_/gameId/668516 (Bank, Nummern, Wechsel mit Gegenspieler)", "https://www.fussballdaten.de/championsleague/2023/finale/mancity-intermailand/aufstellung/ (Bank, Minuten)", "https://en.wikipedia.org/wiki/2023_UEFA_Champions_League_final (komplette Bank mit Nummern, Positionen und Wechselminuten; Gomez dort DF, ESPN ANG - ABW uebernommen)"],
     source: "https://www.fussballdaten.de/championsleague/2023/finale/mancity-intermailand/"
   },
   {
@@ -4422,9 +4540,9 @@ const DAILY_CHALLENGES = [
     bench: [
       { name: "Huntelaar", nr: 19, pos: "ANG", in: 59, for: "LZM" },
       { name: "van der Vaart", nr: 23, pos: "MIT", in: 72, for: "RV" },
-      { name: "Javi García", nr: 24, pos: "MIT", in: 79, for: "RA" },
+      { name: "García", nr: 24, pos: "MIT", in: 79, for: "RA" },
       { name: "Dudek", nr: 25, pos: "TW" },
-      { name: "Miguel Torres", nr: 22, pos: "ABW" },
+      { name: "Torres", nr: 22, pos: "ABW" },
       { name: "Drenthe", nr: 15, pos: "MIT" },
       { name: "Faubert", nr: 18, pos: "MIT" }
     ],
@@ -4576,11 +4694,11 @@ const DAILY_CHALLENGES = [
       { name: "Orion", nr: 12, pos: "TW" },
       { name: "Basanta", nr: 23, pos: "ABW" },
       { name: "Campagnaro", nr: 3, pos: "ABW" },
-      { name: "Maxi Rodríguez", nr: 11, pos: "MIT" },
+      { name: "Rodríguez", nr: 11, pos: "MIT" },
       { name: "Álvarez", nr: 19, pos: "MIT" },
       { name: "Di María", nr: 7, pos: "MIT" },
-      { name: "Augusto Fernández", nr: 13, pos: "ANG" },
-      { name: "Federico Fernández", nr: 17, pos: "ANG" }
+      { name: "A. Fernández", nr: 13, pos: "ANG" },
+      { name: "F. Fernández", nr: 17, pos: "ANG" }
     ],
     benchSource: ["https://www.espn.com/soccer/lineups/_/gameId/383239 (komplette Bank, Nummern, Wechsel mit Gegenspieler)", "https://www.fussballdaten.de/wm/2014/finale/deutschland-argentinien/aufstellung/ (Bank, Minuten)", "https://en.wikipedia.org/wiki/2014_FIFA_World_Cup_final (Wechselminuten, FIFA-Basis)"],
     source: "https://datencenter.dfb.de/datencenter/weltmeisterschaft/2014-in-brasilien/finale/deutschland-argentinien-513339 ; https://en.wikipedia.org/wiki/2014_FIFA_World_Cup_final",
@@ -4842,8 +4960,8 @@ const DAILY_CHALLENGES = [
       { name: "Sosa", nr: 24, pos: "MIT", in: 66, for: "RM" },
       { name: "Alderweireld", nr: 12, pos: "ABW", in: 83, for: "LV" },
       { name: "Aranzubía", nr: 1, pos: "TW" },
-      { name: "Mario Suárez", nr: 4, pos: "MIT" },
-      { name: "Cristian Rodríguez", nr: 11, pos: "MIT" },
+      { name: "Suárez", nr: 4, pos: "MIT" },
+      { name: "Rodríguez", nr: 11, pos: "MIT" },
       { name: "Diego", nr: 26, pos: "MIT" }
     ],
     benchSource: ["https://www.espn.com/soccer/lineups/_/gameId/392450 (Bank, Nummern, Wechsel mit Gegenspieler)", "https://en.wikipedia.org/wiki/2014_UEFA_Champions_League_final (komplette Bank mit Nummern und Wechselminuten; Position Suarez dort MF, ESPN ABW - MIT uebernommen)"],
@@ -5095,16 +5213,16 @@ const DAILY_CHALLENGES = [
       LA: { nr: 19, nat: "ES" },
     },
     bench: [
-      { name: "Frenkie de Jong", nr: 21, pos: "MIT", in: 46, for: "LZM" },
+      { name: "F. de Jong", nr: 21, pos: "MIT", in: 46, for: "LZM" },
       { name: "Traoré", nr: 11, pos: "ANG", in: 61, for: "ST" },
       { name: "Dest", nr: 2, pos: "ABW", in: 62, for: "RV" },
-      { name: "Luuk de Jong", nr: 17, pos: "ANG", in: 70, for: "LIV" },
+      { name: "L. de Jong", nr: 17, pos: "ANG", in: 70, for: "LIV" },
       { name: "Depay", nr: 9, pos: "ANG", in: 80, for: "LA" },
       { name: "Tenas", nr: 36, pos: "TW" },
       { name: "Neto", nr: 13, pos: "TW" },
       { name: "Lenglet", nr: 15, pos: "ABW" },
       { name: "Balde", nr: 31, pos: "ABW" },
-      { name: "Nico González", nr: 28, pos: "MIT" },
+      { name: "González", nr: 28, pos: "MIT" },
       { name: "Puig", nr: 6, pos: "MIT" },
       { name: "Braithwaite", nr: 12, pos: "ANG" }
     ],
@@ -5202,7 +5320,7 @@ const DAILY_CHALLENGES = [
       { name: "Casilla", nr: 13, pos: "TW" },
       { name: "Carvajal", nr: 15, pos: "ABW" },
       { name: "Nacho", nr: 6, pos: "ABW" },
-      { name: "Lucas Vázquez", nr: 18, pos: "ANG" }
+      { name: "Vázquez", nr: 18, pos: "ANG" }
     ],
     benchSource: ["https://www.espn.com/soccer/lineups/_/gameId/446397 (Bank, Nummern, Wechsel mit Gegenspieler)", "https://www.fussballdaten.de/championsleague/2016/viertelfinale/wolfsburg-realmadrid/aufstellung/ (Bank, Minuten; deckungsgleich mit ESPN)", "https://en.wikipedia.org/wiki/2015%E2%80%9316_Real_Madrid_CF_season (Position Lucas Vazquez dort FW, ESPN ABW - ANG uebernommen)"],
     source: "https://www.kicker.de/real-madrid-gegen-wolfsburg-2016-champions-league-3296909/aufstellung ; Rückennummern: https://en.wikipedia.org/wiki/2015%E2%80%9316_Real_Madrid_CF_season",
@@ -5252,7 +5370,7 @@ const DAILY_CHALLENGES = [
       { name: "Coates", nr: 19, pos: "ABW" },
       { name: "Fucile", nr: 4, pos: "ABW" },
       { name: "Giménez", nr: 13, pos: "ABW" },
-      { name: "Álvaro Pereira", nr: 6, pos: "ABW" },
+      { name: "Á. Pereira", nr: 6, pos: "ABW" },
       { name: "Pérez", nr: 15, pos: "MIT" },
       { name: "Ramírez", nr: 18, pos: "MIT" },
       { name: "Suárez", nr: 9, pos: "ANG" }
@@ -5356,7 +5474,7 @@ const DAILY_CHALLENGES = [
       { name: "Albiol", nr: 2, pos: "ABW" },
       { name: "Marchena", nr: 4, pos: "ABW" },
       { name: "Arbeloa", nr: 17, pos: "ABW" },
-      { name: "Javi Martínez", nr: 20, pos: "MIT" },
+      { name: "Martínez", nr: 20, pos: "MIT" },
       { name: "Mata", nr: 13, pos: "MIT" },
       { name: "Fàbregas", nr: 10, pos: "MIT" },
       { name: "Llorente", nr: 19, pos: "ANG" }
@@ -5801,8 +5919,8 @@ const DAILY_CHALLENGES = [
       { name: "Éder", nr: 9, pos: "ANG", in: 79, for: "RM" },
       { name: "Lopes", nr: 12, pos: "TW" },
       { name: "Eduardo", nr: 22, pos: "TW" },
-      { name: "Ricardo Carvalho", nr: 6, pos: "ABW" },
-      { name: "Bruno Alves", nr: 2, pos: "ABW" },
+      { name: "R. Carvalho", nr: 6, pos: "ABW" },
+      { name: "Alves", nr: 2, pos: "ABW" },
       { name: "Eliseu", nr: 19, pos: "ABW" },
       { name: "Vieirinha", nr: 11, pos: "MIT" },
       { name: "Danilo", nr: 13, pos: "MIT" },
@@ -6003,7 +6121,7 @@ const DAILY_CHALLENGES = [
       { name: "Odriozola", nr: 2, pos: "ABW" },
       { name: "Pavard", nr: 5, pos: "ABW" },
       { name: "Hernández", nr: 21, pos: "ABW" },
-      { name: "Javi Martínez", nr: 8, pos: "MIT" },
+      { name: "Martínez", nr: 8, pos: "MIT" },
       { name: "Cuisance", nr: 11, pos: "MIT" },
       { name: "Zirkzee", nr: 35, pos: "ANG" }
     ],
@@ -6100,10 +6218,10 @@ const DAILY_CHALLENGES = [
     bench: [
       { name: "Singo", nr: 5, pos: "ABW", in: 70, for: "RV" },
       { name: "Diakité", nr: 14, pos: "MIT", in: 70, for: "RA" },
-      { name: "Ibrahim Sangaré", nr: 18, pos: "MIT", in: 88, for: "LZM" },
+      { name: "I. Sangaré", nr: 18, pos: "MIT", in: 88, for: "LZM" },
       { name: "Krasso", nr: 11, pos: "ANG", in: 88, for: "ST" },
       { name: "Amani", nr: 27, pos: "MIT", in: 90, inExtra: 2, for: "ZM" },
-      { name: "Badra Ali Sangaré", nr: 23, pos: "TW" },
+      { name: "B. Sangaré", nr: 23, pos: "TW" },
       { name: "Diomande", nr: 2, pos: "ABW" },
       { name: "Diallo", nr: 26, pos: "ABW" },
       { name: "Bamba", nr: 9, pos: "ANG" },
@@ -6210,11 +6328,11 @@ const DAILY_CHALLENGES = [
       { name: "Joselu", nr: 14, pos: "ANG", in: 85, for: "ZOM" },
       { name: "Modrić", nr: 10, pos: "MIT", in: 85, for: "LZM" },
       { name: "Militão", nr: 3, pos: "ABW", in: 90, for: "RST" },
-      { name: "Lucas Vázquez", nr: 17, pos: "ABW", in: 90, inExtra: 4, for: "LST" },
+      { name: "Vázquez", nr: 17, pos: "ABW", in: 90, inExtra: 4, for: "LST" },
       { name: "Kepa", nr: 25, pos: "TW" },
       { name: "Lunin", nr: 13, pos: "TW" },
       { name: "Alaba", nr: 4, pos: "ABW" },
-      { name: "Fran García", nr: 20, pos: "ABW" },
+      { name: "García", nr: 20, pos: "ABW" },
       { name: "Tchouaméni", nr: 18, pos: "MIT" },
       { name: "Ceballos", nr: 19, pos: "MIT" },
       { name: "Brahim", nr: 21, pos: "MIT" },
@@ -6427,7 +6545,7 @@ const DAILY_CHALLENGES = [
       LST: { nr: 11 },
     },
     bench: [
-      { name: "Felipe Gutiérrez", nr: 16, pos: "MIT", in: 64, for: "RZM" },
+      { name: "Gutiérrez", nr: 16, pos: "MIT", in: 64, for: "RZM" },
       { name: "Valdivia", nr: 10, pos: "MIT", in: 85, for: "LST" },
       { name: "Carmona", nr: 6, pos: "MIT", in: 88, for: "ZM" },
       { name: "Herrera", nr: 23, pos: "TW" },
@@ -6539,7 +6657,7 @@ const DAILY_CHALLENGES = [
       { name: "Partey", nr: 22, pos: "MIT", in: 85, for: "RM" },
       { name: "Moyà", nr: 1, pos: "TW" },
       { name: "Gámez", nr: 18, pos: "ABW" },
-      { name: "Lucas Hernández", nr: 19, pos: "ABW" },
+      { name: "Hernández", nr: 19, pos: "ABW" },
       { name: "Kranevitter", nr: 8, pos: "MIT" },
       { name: "Vietto", nr: 23, pos: "ANG" },
       { name: "Correa", nr: 16, pos: "ANG" }
@@ -6639,7 +6757,7 @@ const DAILY_CHALLENGES = [
       { name: "Boyata", nr: 20, pos: "ABW" },
       { name: "Dendoncker", nr: 23, pos: "ABW" },
       { name: "Carrasco", nr: 11, pos: "MIT" },
-      { name: "Thorgan Hazard", nr: 16, pos: "MIT" },
+      { name: "T. Hazard", nr: 16, pos: "MIT" },
       { name: "Dembélé", nr: 19, pos: "MIT" },
       { name: "Januzaj", nr: 18, pos: "ANG" },
       { name: "Mertens", nr: 14, pos: "ANG" },
