@@ -38,18 +38,18 @@ vorige umgesetzt, getestet und committet ist.
 | 24 | Tages-Challenge: Ticket-Einkerbung, „Erledigt“ + Teilen als Bild | ✅ erledigt |
 | 25 | Duell Teil 1: Hosting-Prüfung, Links, Startseite (Duell-Kachel), Duell-Bildschirme | ✅ erledigt |
 | 26 | Duell Teil 2: Spielen, Walkout, Ergebnis, XP, Bilanz, Trophäen | ✅ erledigt |
-| 27 | Duell-Einladung: „Hier im Browser spielen“ ohne Funktion, Fair-Play-Schritt klarer | – |
+| 27 | Duell-Einladung: „Hier im Browser spielen“ ohne Funktion, Fair-Play-Schritt klarer | ✅ erledigt |
 | 28 | Duell: Ergebnis kommt sicher an, beendete Duelle (Richtige + Zeiten), Duelle entfernen | ⏸ zurückgestellt – kommt ins Online-Duell |
 | 29 | Duell: Zwischenstand nach jeder Runde, vorzeitige Entscheidung, Auflösung beim Abpfiff | ⏸ zurückgestellt – kommt ins Online-Duell |
-| 30 | Kampagne: direkt weiter zum nächsten Level, Level-Anzeige „Level n von N“ | – |
-| 31 | Kampagne: Animation „Welt geschafft“ (Fassung v2: Aufstieg + Pokal als eine Kamerafahrt) | 30 |
-| 32 | iPhone: Hinweise unter der Kamera, Token-Anzeige im Spiel, Spielstand sichern (Export/Import) | – |
-| 33 | Kampagne: Auswerten verrät keine Lösungen mehr, „Lösung anzeigen“ friert Sterne ein | – |
-| 34 | Angefangene Aufstellungen merken und fortsetzen (Kampagne, Freispiel, Tag) | – |
-| 35 | Aufstellungen: alles vor 2008 ersetzen (12 Kampagne inkl. St. Pauli, 6 Tag), neue bevorzugt 2015–2026 | – |
-| 36 | Duell: Walkout v2 „Spielertunnel“ – langsamer, Merkliste, Countdown als Stadionuhr | – |
+| 30 | Kampagne: direkt weiter zum nächsten Level, Level-Anzeige „Level n von N“ | ✅ erledigt |
+| 31 | Kampagne: Animation „Welt geschafft“ (Fassung v2: Aufstieg + Pokal als eine Kamerafahrt) | ✅ erledigt |
+| 32 | iPhone: Hinweise unter der Kamera, Token-Anzeige im Spiel, Spielstand sichern (Export/Import) | ✅ erledigt |
+| 33 | Kampagne: Auswerten verrät keine Lösungen mehr, „Lösung anzeigen“ friert Sterne ein | ✅ erledigt |
+| 34 | Angefangene Aufstellungen merken und fortsetzen (Kampagne, Freispiel, Tag) | ✅ erledigt |
+| 35 | Aufstellungen: alles vor 2008 ersetzen (12 Kampagne inkl. St. Pauli, 6 Tag), neue bevorzugt 2015–2026 | ✅ erledigt (59 Kampagne, 45 Tages-Pool; Wolfsburg-2009-Formation offen) |
+| 36 | Duell: Walkout v2 „Spielertunnel“ – langsamer, Merkliste, Countdown als Stadionuhr | ✅ erledigt |
 
-**Empfohlene Reihenfolge ab jetzt:** 27 → 36 → 32 → 33 → 34 → 35 → 30 → 31 → weitere Offline-Feinschliffe → Planung Online-Duell → 8
+**Empfohlene Reihenfolge ab jetzt:** weitere Offline-Feinschliffe (u. a. Wolfsburg-2009-Formation klären, Jahres-Lücken im Ideen-Speicher auffüllen) → Planung Online-Duell (inkl. 28/29) → 8 (Capacitor, erst wenn die App final ist; vorher Duell-Pflichtpunkt aus CLAUDE.md ansprechen)
 
 Prompt 7 steht bewusst vor der Tages-Challenge: Nur mit der neuen
 Update-Strategie kommen neue Tages-Aufstellungen zuverlässig auf dem iPhone an.
