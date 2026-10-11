@@ -255,6 +255,7 @@
   .fp .draft-card b { font-weight: 600; font-size: 13.5px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
   .fp .draft-card span { font-weight: 600; font-size: 13px; color: var(--gold-2); white-space: nowrap; }
   .fp .draft-card .dc-x { border: 0; background: transparent; color: var(--muted); font-size: 16px; padding: 0 12px; cursor: pointer; }
+  .t-replay { display: block; margin-top: 8px; border: 1px solid rgba(232,178,61,0.6); background: rgba(232,178,61,0.1); color: var(--gold-2); border-radius: 18px; padding: 6px 14px; font-family: 'Oswald', sans-serif; font-weight: 600; font-size: 13px; cursor: pointer; }
   .data-row { display: flex; gap: 8px; margin-top: 4px; }
   .data-row button { flex: 1; border: 1px solid var(--line); background: var(--ink-2); color: var(--chalk); border-radius: 10px; padding: 9px 6px; font-family: 'Oswald', sans-serif; font-weight: 500; font-size: 13px; cursor: pointer; }
   .install-tip { position: fixed; z-index: 30; left: 50%; transform: translateX(-50%); top: max(8px, calc(env(safe-area-inset-top, 0px) + 6px)); width: calc(100% - 24px); max-width: 520px; display: flex; gap: 10px; align-items: center; background: var(--ink-2); border: 1px solid rgba(232,178,61,0.55); border-radius: 12px; padding: 9px 10px 9px 12px; box-shadow: 0 6px 20px rgba(0,0,0,0.45); }
@@ -1108,6 +1109,83 @@
     #splash .kickoff { display: none; }
   }
 
+
+  /* ===== Welt geschafft (Prompt 31) - Buehne aus prototypes/welt-animation.html ===== */
+  #worldCelebration { position: fixed; inset: 0; z-index: 80; display: grid; place-items: center; overflow: hidden; background: #0A1118; touch-action: manipulation;
+    --ink: #14202B; --ink-deep: #0A1118; --ink-2: #1C2B38; --pitch: #1F4D36; --chalk: #F2EFE6; --gold: #E8B23D; --gold-hi: #F6D88E; --ok: #2ECC71;
+    --line: rgba(242,239,230,0.14); --muted: rgba(242,239,230,0.72); --dim: rgba(242,239,230,0.46);
+    --f-display: Anton, Impact, "Arial Narrow", sans-serif; --f-text: Oswald, "Arial Narrow", system-ui, sans-serif; color: var(--chalk); font-family: var(--f-text); }
+  #worldCelebration * { box-sizing: border-box; }
+  #worldCelebration .wc-box { position: relative; }
+  #worldCelebration .wc-phone { position: absolute; left: 0; top: 0; width: 390px; height: 844px; transform-origin: 0 0; overflow: hidden; background: var(--ink-deep); }
+  #worldCelebration button { font-family: inherit; color: inherit; cursor: pointer; }
+/* ---------- Bühne ---------- */
+  #worldCelebration .wc-stage { position: absolute; inset: 0; overflow: hidden; cursor: pointer; }
+  #worldCelebration .wc-layer { position: absolute; inset: 0; pointer-events: none; }
+  #worldCelebration .wc-bg { background: radial-gradient(130% 70% at 50% 108%, rgba(31,77,54,0.9), transparent 62%), radial-gradient(90% 50% at 50% -10%, #1C2B38, transparent 70%), var(--ink-deep); }
+  #worldCelebration .wc-stripes { background: repeating-linear-gradient(180deg, rgba(31,77,54,0.22) 0 52px, rgba(31,77,54,0.08) 52px 104px); -webkit-mask-image: linear-gradient(180deg, transparent 5%, #000 40%, #000 80%, transparent); mask-image: linear-gradient(180deg, transparent 5%, #000 40%, #000 80%, transparent); }
+  #worldCelebration svg.wc-chalk { position: absolute; inset: 0; width: 100%; height: 100%; }
+  #worldCelebration .wc-ring { position: absolute; left: 195px; top: 422px; width: 140px; height: 140px; margin: -70px 0 0 -70px; border-radius: 50%; border: 2px solid var(--chalk); opacity: 0; }
+
+  #worldCelebration .wc-hdr { position: absolute; left: 16px; right: 16px; top: 66px; }
+  #worldCelebration .wc-kicker { font-weight: 600; font-size: 12px; letter-spacing: 0.12em; text-transform: uppercase; color: var(--gold-hi); }
+  #worldCelebration .wc-h-title { font-family: var(--f-display); font-size: 38px; line-height: 1.05; margin-top: 4px; overflow: hidden; }
+  #worldCelebration .wc-h-title span { display: inline-block; }
+  #worldCelebration .wc-md { position: absolute; right: 0; top: -2px; text-align: right; }
+  #worldCelebration .wc-md small { display: block; font-weight: 500; font-size: 10px; letter-spacing: 0.12em; color: var(--dim); }
+  #worldCelebration .wc-md b { display: block; font-family: var(--f-display); font-weight: 400; font-size: 44px; line-height: 1; font-variant-numeric: tabular-nums; }
+
+  #worldCelebration .wc-tbl-head { position: absolute; left: 16px; right: 16px; top: 168px; height: 20px; font-weight: 500; font-size: 10px; letter-spacing: 0.1em; color: var(--dim); text-transform: uppercase; }
+  #worldCelebration .wc-tbl-head span { position: absolute; top: 0; }
+  #worldCelebration .wc-slot { position: absolute; left: 16px; width: 32px; height: 42px; display: grid; place-items: center; font-family: var(--f-display); font-size: 20px; color: var(--muted); font-variant-numeric: tabular-nums; }
+  #worldCelebration .wc-slot i { position: absolute; left: 0; top: 6px; bottom: 6px; width: 3px; border-radius: 2px; background: var(--ok); }
+  #worldCelebration .wc-row { position: absolute; top: 0; left: 54px; width: 320px; height: 42px; border-radius: 8px; display: flex; align-items: center; padding: 0 12px; gap: 10px; background: rgba(28,43,56,0.92); box-shadow: inset 0 -1px 0 rgba(242,239,230,0.06); overflow: hidden; will-change: transform; z-index: 1; }
+  #worldCelebration .wc-row .wc-nm { flex: 1; min-width: 0; font-weight: 400; font-size: 15px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  #worldCelebration .wc-row .wc-sp, #worldCelebration .wc-row .wc-pk { font-variant-numeric: tabular-nums; text-align: right; }
+  #worldCelebration .wc-row .wc-sp { width: 26px; font-weight: 300; font-size: 14px; color: var(--muted); }
+  #worldCelebration .wc-row .wc-pk { width: 34px; font-family: var(--f-display); font-size: 19px; }
+  #worldCelebration .wc-row.wc-me { z-index: 2; background: #3A3622; box-shadow: inset 0 0 0 1.5px var(--gold); }
+  #worldCelebration .wc-row.wc-me .wc-nm { font-weight: 600; color: var(--gold-hi); }
+  #worldCelebration .wc-row .wc-up { color: var(--ok); font-size: 11px; width: 10px; opacity: 0; }
+  #worldCelebration .wc-row .wc-shine { position: absolute; top: 0; bottom: 0; width: 60%; left: 0; background: linear-gradient(100deg, transparent, rgba(255,240,200,0.55), transparent); transform: translateX(-120%); }
+  #worldCelebration .wc-foot { position: absolute; left: 16px; right: 16px; top: 548px; font-weight: 300; font-size: 12px; color: var(--dim); display: flex; align-items: center; gap: 8px; }
+  #worldCelebration .wc-foot i { width: 3px; height: 14px; border-radius: 2px; background: var(--ok); }
+
+  #worldCelebration .wc-mast { position: absolute; top: 0; width: 190px; height: 640px; opacity: 0; mix-blend-mode: screen; }
+  #worldCelebration .wc-mast::before { content: ""; position: absolute; inset: 0; background: linear-gradient(180deg, rgba(255,246,220,0.55), rgba(255,240,200,0.12) 45%, transparent 85%); clip-path: polygon(46% 0, 54% 0, 100% 100%, 0 100%); filter: blur(6px); }
+  #worldCelebration .wc-mast::after { content: ""; position: absolute; left: 50%; top: 6px; width: 22px; height: 10px; margin-left: -11px; border-radius: 4px; background: #fffbe9; box-shadow: 0 0 18px 8px rgba(255,240,200,0.7), 0 0 60px 24px rgba(255,230,170,0.25); }
+
+  #worldCelebration .wc-beam { position: absolute; left: 0; top: 0; background: var(--gold); border-radius: 3px; box-shadow: 0 0 24px 6px rgba(232,178,61,0.55); opacity: 0; will-change: transform, width, height; }
+
+  #worldCelebration .wc-league { position: absolute; left: 0; right: 0; top: 236px; text-align: center; transform-origin: 50% 0; }
+  #worldCelebration .wc-league .wc-kicker { opacity: 0; }
+  #worldCelebration .wc-word { margin-top: 6px; font-family: var(--f-display); line-height: 0.98; color: var(--chalk); }
+  #worldCelebration .wc-word .wc-ln { display: block; white-space: nowrap; }
+  #worldCelebration .wc-word .wc-ch { display: inline-block; will-change: transform; }
+  #worldCelebration .wc-uline { height: 4px; margin: 10px auto 0; border-radius: 2px; width: 0; }
+  #worldCelebration .wc-sub { margin-top: 14px; font-weight: 400; font-size: 17px; color: var(--muted); opacity: 0; }
+  #worldCelebration .wc-sub b { font-weight: 600; color: var(--chalk); }
+
+  #worldCelebration .wc-spot { position: absolute; left: 50%; top: -20px; width: 560px; height: 680px; margin-left: -280px; opacity: 0; mix-blend-mode: screen;
+    background: linear-gradient(180deg, rgba(255,244,214,0.42), rgba(255,236,190,0.10) 60%, transparent 92%); clip-path: polygon(44% 0, 56% 0, 86% 100%, 14% 100%); filter: blur(10px); }
+  #worldCelebration .wc-floor { position: absolute; left: 50%; top: 520px; width: 300px; height: 56px; margin-left: -150px; border-radius: 50%; background: radial-gradient(closest-side, rgba(246,216,142,0.42), transparent); opacity: 0; }
+
+  #worldCelebration .wc-trophy { position: absolute; left: 95px; top: 262px; width: 200px; height: 270px; overflow: visible; will-change: transform; filter: drop-shadow(0 16px 22px rgba(0,0,0,0.55)); }
+
+  #worldCelebration .wc-wg { position: absolute; left: 0; right: 0; top: 548px; text-align: center; font-family: var(--f-display); font-size: 46px; line-height: 1.1; overflow: hidden; padding-bottom: 4px; }
+  #worldCelebration .wc-wg span { display: inline-block; }
+  #worldCelebration .wc-wg em { font-style: normal; color: var(--gold); text-shadow: 0 0 24px rgba(232,178,61,0.45); }
+  #worldCelebration .wc-plaque { position: absolute; left: 50%; top: 622px; width: 300px; margin-left: -150px; text-align: center; padding: 10px 14px 11px; border-radius: 12px; border: 1px solid rgba(232,178,61,0.55); background: rgba(232,178,61,0.08); opacity: 0; }
+  #worldCelebration .wc-plaque b { display: block; font-weight: 600; font-size: 17px; }
+  #worldCelebration .wc-plaque span { display: block; margin-top: 2px; font-weight: 300; font-size: 13.5px; color: var(--muted); font-variant-numeric: tabular-nums; }
+  #worldCelebration .wc-plaque .wc-st { color: var(--gold); font-weight: 500; }
+  #worldCelebration .wc-btn { position: absolute; left: 32px; right: 32px; top: 724px; height: 54px; border: none; border-radius: 14px; font-family: var(--f-display); font-size: 21px; letter-spacing: 0.02em; color: var(--ink);
+    background: linear-gradient(160deg, var(--gold-hi), var(--gold)); box-shadow: 0 4px 0 #9C7422; opacity: 0; pointer-events: none; }
+  #worldCelebration .wc-btn.wc-live { pointer-events: auto; }
+  #worldCelebration .wc-hint { position: absolute; left: 0; right: 0; bottom: 22px; text-align: center; font-weight: 300; font-size: 12.5px; color: var(--dim); }
+  #worldCelebration canvas.wc-fx { position: absolute; inset: 0; width: 100%; height: 100%; pointer-events: none; }
+
+  
 </style>
 </head>
 <body>
@@ -2408,6 +2486,7 @@ const defaultProfile = {
     stars: {}, // match.id -> 0-3, NUR Kampagnen-Sterne (Prompt 13b, getrennt von Tages-/Freispiel-Ergebnissen)
     solutionSeen: {} // match.id -> true: Loesung angesehen, Sterne dieses Levels eingefroren (Prompt 33)
   },
+  worldCelebrated: {}, // tier -> true: Welt-geschafft-Animation lief schon (Prompt 31)
   drafts: {} // Angefangene Aufstellungen (Prompt 34): 'c:<id>' Kampagne, 'f:<id>' Freispiel, 'd:<dateKey>' Tages-Challenge
 };
 
@@ -2497,6 +2576,7 @@ function loadProfile() {
     if (!profile.campaign.stars || typeof profile.campaign.stars !== "object") profile.campaign.stars = {};
     if (!profile.campaign.solutionSeen || typeof profile.campaign.solutionSeen !== "object") profile.campaign.solutionSeen = {};
     if (!profile.drafts || typeof profile.drafts !== "object") profile.drafts = {};
+    if (!profile.worldCelebrated || typeof profile.worldCelebrated !== "object") profile.worldCelebrated = {};
     // Prompt 35: ersetzte Kampagnen-Aufstellungen - ein bereits bestandenes Level bleibt am selben Pfad-Platz bestanden (Sterne starten neu)
     Object.entries(LEVEL_ID_MIGRATION).forEach(([oldId, newId]) => { if (profile.campaign.levelPassed[oldId] && !profile.campaign.levelPassed[newId]) profile.campaign.levelPassed[newId] = true; });
     // Einmalige Wirtschafts-Migration (Prompt 6): zwei Waehrungen (Scout-Token +
@@ -2730,6 +2810,7 @@ function awardXP(profile, amount, reason) {
 }
 
 function showToast(html) {
+  if (celebrationQueue) { celebrationQueue.push(() => showToast(html)); return; } // waehrend der Welt-Feier warten (Prompt 31)
   const stack = document.getElementById("toastStack");
   const el = document.createElement("div");
   el.className = "toast";
@@ -2752,6 +2833,7 @@ function launchConfetti(colors) {
   }
 }
 function showLevelUpToast(newLevel, levelsGained) {
+  if (celebrationQueue) { celebrationQueue.push(() => showLevelUpToast(newLevel, levelsGained)); return; } // Prompt 31
   const rank = rankForLevel(newLevel);
   const rankChanged = rankForLevel(newLevel - 1).name !== rank.name;
   const tokens = (levelsGained || 1) * ECONOMY.earnLevelUp;
@@ -3790,7 +3872,8 @@ function profileTrophiesHTML() {
   if (sel) {
     const won = sel.check(profile);
     const [cur, goal] = sel.progress(profile);
-    detailHtml = `<div class="t-detail"><b>${sel.name}</b> · ${won ? "gewonnen" : "noch offen"}<br>${sel.desc}
+    const replayBtn = won && /^cup_tier\d$/.test(sel.id) ? `<button type="button" class="t-replay" data-tier="${sel.id.slice(8)}">▶ Animation ansehen</button>` : "";
+    detailHtml = `<div class="t-detail"><b>${sel.name}</b> · ${won ? "gewonnen" : "noch offen"}<br>${sel.desc}${replayBtn}
       ${!won ? `<div class="progress-mini"><i style="width:${Math.round(cur / goal * 100)}%"></i></div><span class="progress-mini-label">${cur} / ${goal}</span>` : ""}
     </div>`;
   }
@@ -3907,6 +3990,8 @@ function renderProfileSheetPanel() {
     panel.querySelectorAll(".trophy").forEach((btn) => {
       btn.onclick = () => { selectedTrophyId = btn.dataset.id; renderProfileSheetPanel(); };
     });
+    const replay = panel.querySelector(".t-replay");
+    if (replay) replay.onclick = () => playWorldCelebration(+replay.dataset.tier); // Replay ohne Belohnungen/Warteschlange
     // Trophaeen-Reiter angesehen -> der goldene "neu"-Punkt am Scout-Ausweis verschwindet (Prompt 17).
     const won = wonTrophyIds();
     if (won.some((id) => !profile.seenTrophies.includes(id))) {
@@ -6873,6 +6958,17 @@ function evaluatePitch() {
   const wrongAbbrs = positions.map(p => p.abbr).filter(a => !correctAbbrs.includes(a));
   pitchView.querySelectorAll("#srSpinBtn, #srRevealBtn, .sr-hub").forEach(btn => btn.disabled = true);
   const total = positions.length;
+  // Welt-geschafft-Feier (Prompt 31): genau einmal, wenn dieses Ergebnis zum ERSTEN Mal alle Level der Welt bestanden macht.
+  // Die Warteschlange wird sofort geoeffnet, damit XP-/Trophaeen-Toasts und Level-Up erst NACH der Animation erscheinen.
+  let celebrateTier = null;
+  if (currentLevelContext && correct >= PASS_THRESHOLD) {
+    const ct = currentLevelContext.tier, cms = getMatchesByTier(ct);
+    if (!profile.worldCelebrated[ct] && !profile.campaign.levelPassed[m.id] && cms.every((x) => x.id === m.id || profile.campaign.levelPassed[x.id])) {
+      celebrateTier = ct;
+      profile.worldCelebrated[ct] = true;
+      celebrationQueue = [];
+    }
+  }
   const noHintsUsed = hintsUsed.size === 0 && tokenRevealed.size === 0;
   const isPerfect = correct === total && noHintsUsed && fuzzyCorrected.size === 0;
   // Sterne (Prompt 11): ⭐ bestanden, ⭐⭐ 9+, ⭐⭐⭐ 11/11 ganz ohne Hilfe. Vorgegebene
@@ -7154,6 +7250,12 @@ function evaluatePitch() {
       }
       startMatch(pickRandomMatch());
     };
+  }
+
+  // Welt geschafft (Prompt 31): Vollbild-Overlay ueber dem fertigen Ergebnis; danach laufen Toasts/Level-Up aus der Warteschlange
+  if (celebrateTier) {
+    try { playWorldCelebration(celebrateTier, { flush: true }); }
+    catch (e) { const w = document.getElementById("worldCelebration"); if (w) w.remove(); flushCelebrationQueue(); }
   }
 }
 
@@ -8283,6 +8385,424 @@ function renderDuelResult() {
   }
   document.getElementById("duelResBack").onclick = () => goBackTo("duels");
   const over = document.getElementById("duelResOver"); if (over) over.onclick = () => goBackTo("duels");
+}
+
+
+/* ================= WELT GESCHAFFT (Prompt 31) =================
+   Feier-Animation beim ersten Abschluss einer Kampagnen-Welt. Buehne, Zeiten und Bewegung 1:1 aus
+   prototypes/welt-animation.html (Fassung v2, nur die Buehne): EINE Zeitachse t, render(t) berechnet jedes Bild
+   komplett aus t (deterministisch), ein requestAnimationFrame-Loop, nach dem Ende wird gestoppt und alles entfernt.
+   Teamnamen sind erfunden (keine echten Vereine). Klassen/IDs tragen das Praefix "wc-". */
+let celebrationQueue = null; // gesetzt, solange eine Feier bevorsteht/laeuft: Toasts und Level-Up warten (nichts ueberlagert sich)
+function flushCelebrationQueue() {
+  const q = celebrationQueue || [];
+  celebrationQueue = null;
+  q.forEach((fn) => { try { fn(); } catch (e) { /* ein fehlerhafter Hinweis darf die uebrigen nicht blockieren */ } });
+}
+const WC_TEAMS = {
+  1: ["SV Grünwiese", "TuS Feldkirchen 09", "SpVgg Lindenhof", "Eintracht Kleinmühlen", "VfR Ostkamp", "SG Wiesenau", "FC Brückendorf"],
+  2: ["FC Hafenstadt", "SV Nordring 1911", "Borussia Talheim", "VfB Steinach", "Union Westerfeld", "Kickers Hochberg", "SC Eichenau"],
+  3: ["FC Rheinhausen", "Fortuna Nordstadt", "VfL Südhang", "SC Waldheim", "Eintracht Bergtal", "SV Löwenstein", "Viktoria Seewald"],
+  4: ["Real Montebello", "AC Venturi", "Sporting Alvorada", "Dynamo Varenka", "Olympique Lunay", "Athletic Bravia", "FK Severin"],
+  5: ["Nordavia", "Altamar", "Kaledor", "Solvenia", "Marisca", "Vardenia", "Ostria"]
+};
+const WC_STAGE_HTML = "<div class=\"wc-stage\" id=\"wc-stage\" role=\"button\" tabindex=\"0\" aria-label=\"Animation: tippen zum Überspringen\">\n        <div class=\"wc-layer\" id=\"wc-cam\">\n          <div class=\"wc-layer wc-bg\"></div>\n          <div class=\"wc-layer wc-stripes\" id=\"wc-stripes\"></div>\n          <svg class=\"wc-chalk\" viewBox=\"0 0 390 844\" aria-hidden=\"true\">\n            <line id=\"wc-cLine\" x1=\"0\" y1=\"422\" x2=\"390\" y2=\"422\" stroke=\"#F2EFE6\" stroke-width=\"2\" stroke-dasharray=\"390\" stroke-dashoffset=\"390\"/>\n            <circle id=\"wc-cCirc\" cx=\"195\" cy=\"422\" r=\"70\" fill=\"none\" stroke=\"#F2EFE6\" stroke-width=\"2\" stroke-dasharray=\"440\" stroke-dashoffset=\"440\" transform=\"rotate(-90 195 422)\"/>\n            <circle id=\"wc-cDot\" cx=\"195\" cy=\"422\" r=\"3.5\" fill=\"#F2EFE6\" opacity=\"0\"/>\n          </svg>\n          <div class=\"wc-ring\" id=\"wc-ring\"></div>\n\n          <div class=\"wc-mast\" id=\"wc-m0\" style=\"left:-70px; transform-origin:50% 0; transform:rotate(-24deg)\"></div>\n          <div class=\"wc-mast\" id=\"wc-m1\" style=\"left:10px; transform-origin:50% 0; transform:rotate(-12deg)\"></div>\n          <div class=\"wc-mast\" id=\"wc-m2\" style=\"left:190px; transform-origin:50% 0; transform:rotate(12deg)\"></div>\n          <div class=\"wc-mast\" id=\"wc-m3\" style=\"left:270px; transform-origin:50% 0; transform:rotate(24deg)\"></div>\n          <div class=\"wc-spot\" id=\"wc-spot\"></div>\n          <div class=\"wc-floor\" id=\"wc-floor\"></div>\n\n          <div class=\"wc-hdr\" id=\"wc-hdr\">\n            <div class=\"wc-kicker\" id=\"wc-hKick\"></div>\n            <div class=\"wc-h-title\"><span id=\"wc-hTitle\"></span></div>\n            <div class=\"wc-md\"><small>SPIELTAG</small><b id=\"wc-md\">10</b></div>\n          </div>\n          <div class=\"wc-tbl-head\" id=\"wc-tHead\"><span style=\"left:4px\">Pl.</span><span style=\"left:50px\">Verein</span><span style=\"right:46px\">Sp.</span><span style=\"right:12px\">Pkt.</span></div>\n          <div id=\"wc-slots\"></div>\n          <div id=\"wc-rows\"></div>\n          <div class=\"wc-foot\" id=\"wc-foot\"><i></i><span id=\"wc-footTxt\">Platz 1–2: Aufstieg</span></div>\n\n          <div class=\"wc-beam\" id=\"wc-beam\"></div>\n\n          <div class=\"wc-league\" id=\"wc-league\">\n            <div class=\"wc-kicker\" id=\"wc-lKick\"></div>\n            <div class=\"wc-word\" id=\"wc-word\"></div>\n            <div class=\"wc-uline\" id=\"wc-uline\"></div>\n            <div class=\"wc-sub\" id=\"wc-sub\"></div>\n          </div>\n\n          <svg class=\"wc-trophy\" id=\"wc-trophy\" viewBox=\"0 0 200 270\" aria-hidden=\"true\">\n            <defs>\n              <linearGradient id=\"wc-metal\" x1=\"0\" x2=\"1\" y1=\"0\" y2=\"0\">\n                <stop offset=\"0\" stop-color=\"#7A4C0C\"/><stop offset=\"0.22\" stop-color=\"#C98F23\"/><stop offset=\"0.38\" stop-color=\"#FFF1C2\"/>\n                <stop offset=\"0.5\" stop-color=\"#E8B23D\"/><stop offset=\"0.78\" stop-color=\"#B07A18\"/><stop offset=\"1\" stop-color=\"#5E3A08\"/>\n              </linearGradient>\n              <linearGradient id=\"wc-metalV\" x1=\"0\" x2=\"0\" y1=\"0\" y2=\"1\">\n                <stop offset=\"0\" stop-color=\"#FFF1C2\" stop-opacity=\"0.35\"/><stop offset=\"0.5\" stop-color=\"#E8B23D\" stop-opacity=\"0\"/><stop offset=\"1\" stop-color=\"#3D2605\" stop-opacity=\"0.45\"/>\n              </linearGradient>\n              <linearGradient id=\"wc-plinth\" x1=\"0\" x2=\"0\" y1=\"0\" y2=\"1\"><stop offset=\"0\" stop-color=\"#22313F\"/><stop offset=\"1\" stop-color=\"#0E171F\"/></linearGradient>\n              <clipPath id=\"wc-bowlClip\"><path d=\"M40 22 C40 96 64 136 100 146 C136 136 160 96 160 22 Z\"/></clipPath>\n              <radialGradient id=\"wc-sparkG\"><stop offset=\"0\" stop-color=\"#fff\"/><stop offset=\"1\" stop-color=\"#fff\" stop-opacity=\"0\"/></radialGradient>\n            </defs>\n            <g id=\"wc-cup\">\n              <g id=\"wc-hBack\" stroke=\"#9A6614\" stroke-width=\"8\" fill=\"none\" stroke-linecap=\"round\"></g>\n              <path d=\"M40 22 C40 96 64 136 100 146 C136 136 160 96 160 22 Z\" fill=\"url(#wc-metal)\"/>\n              <g clip-path=\"url(#wc-bowlClip)\">\n                <path d=\"M40 22 C40 96 64 136 100 146 C136 136 160 96 160 22 Z\" fill=\"url(#wc-metalV)\"/>\n                <g id=\"wc-flutes\" stroke=\"#5E3A08\" stroke-width=\"1.2\" fill=\"none\"></g>\n                <g id=\"wc-emblem\"><circle r=\"17\" fill=\"#C98F23\" stroke=\"#FFF1C2\" stroke-opacity=\"0.6\" stroke-width=\"1.5\"/><path d=\"M0 -10 L2.9 -3.1 L10 -3.1 L4.3 1.4 L6.4 8.5 L0 4.2 L-6.4 8.5 L-4.3 1.4 L-10 -3.1 L-2.9 -3.1 Z\" fill=\"#FFF1C2\"/></g>\n              </g>\n              <ellipse cx=\"100\" cy=\"22\" rx=\"60\" ry=\"8\" fill=\"#5E3A08\"/>\n              <ellipse cx=\"100\" cy=\"21\" rx=\"57\" ry=\"6\" fill=\"#3D2605\"/>\n              <path d=\"M40 22 A60 8 0 0 0 160 22\" fill=\"none\" stroke=\"#FFF1C2\" stroke-opacity=\"0.7\" stroke-width=\"1.5\"/>\n              <path d=\"M90 146 H110 L106 186 H94 Z\" fill=\"url(#wc-metal)\"/>\n              <ellipse cx=\"100\" cy=\"166\" rx=\"12\" ry=\"5\" fill=\"url(#wc-metal)\"/>\n              <path d=\"M68 186 H132 L140 214 H60 Z\" fill=\"url(#wc-metal)\"/>\n              <g id=\"wc-hFront\" stroke=\"url(#wc-metal)\" stroke-width=\"8\" fill=\"none\" stroke-linecap=\"round\"></g>\n            </g>\n            <rect x=\"52\" y=\"214\" width=\"96\" height=\"44\" rx=\"5\" fill=\"url(#wc-plinth)\" stroke=\"#E8B23D\" stroke-opacity=\"0.65\"/>\n            <text id=\"wc-shield\" x=\"100\" y=\"244\" text-anchor=\"middle\" font-family=\"Anton, Impact, sans-serif\" font-size=\"19\" fill=\"#E8B23D\" letter-spacing=\"1\">WELT 1</text>\n            <g id=\"wc-spark\" transform=\"translate(150 20)\" opacity=\"0\">\n              <circle r=\"14\" fill=\"url(#wc-sparkG)\" opacity=\"0.7\"/>\n              <path d=\"M0 -18 L2.2 -2.2 L18 0 L2.2 2.2 L0 18 L-2.2 2.2 L-18 0 L-2.2 -2.2 Z\" fill=\"#fff\"/>\n            </g>\n          </svg>\n\n          <div class=\"wc-wg\" id=\"wc-wg\"><span id=\"wc-wgIn\">Welt <em>geschafft!</em></span></div>\n          <div class=\"wc-plaque\" id=\"wc-plaque\"><b id=\"wc-pName\">Kreisliga-Pokal</b><span><span class=\"wc-st\" id=\"wc-pStars\">★ 0 / 30</span> · kommt in deinen Trophäenschrank</span></div>\n        </div>\n        <canvas class=\"wc-fx\" id=\"wc-fx\" width=\"390\" height=\"844\"></canvas>\n        <div class=\"wc-hint\" id=\"wc-hint\">Tippen zum Überspringen</div>\n        <button class=\"wc-btn\" id=\"wc-btn\" type=\"button\">Weiter ›</button>\n        </div>";
+
+function playWorldCelebration(tier, opts = {}) {
+  if (document.getElementById("worldCelebration")) return;
+  const root = document.createElement("div");
+  root.id = "worldCelebration";
+  root.setAttribute("role", "dialog");
+  root.setAttribute("aria-modal", "true");
+  root.setAttribute("aria-label", "Welt geschafft");
+  root.innerHTML = '<div class="wc-box" id="wc-box"><div class="wc-phone" id="wc-phone">' + WC_STAGE_HTML + '</div></div>';
+  document.body.appendChild(root);
+  const W = 390, H = 844;
+  const $ = (id) => root.querySelector("#wc-" + id);
+  // ---------- Hilfen ----------
+  const clamp = (x, a = 0, b = 1) => Math.min(b, Math.max(a, x));
+  const seg = (t, r) => clamp((t - r[0]) / (r[1] - r[0]));
+  const lerp = (a, b, x) => a + (b - a) * x;
+  const eo3 = x => 1 - Math.pow(1 - x, 3);
+  const eo5 = x => 1 - Math.pow(1 - x, 5);
+  const ei3 = x => x * x * x;
+  const eio3 = x => x < 0.5 ? 4 * x * x * x : 1 - Math.pow(-2 * x + 2, 3) / 2;
+  const eioS = x => -(Math.cos(Math.PI * x) - 1) / 2;
+  const eoBack = (x, s = 1.70158) => 1 + (s + 1) * Math.pow(x - 1, 3) + s * Math.pow(x - 1, 2);
+  const sig = x => 1 / (1 + Math.exp(-x));
+  function rng(seed) { return () => { seed |= 0; seed = seed + 0x6D2B79F5 | 0; let t = Math.imul(seed ^ seed >>> 15, 1 | seed); t = t + Math.imul(t ^ t >>> 7, 61 | t) ^ t; return ((t ^ t >>> 14) >>> 0) / 4294967296; }; }
+
+
+  let world = tier, teamName = profile.duelName || "Dein Team";
+  let reduce = !!(window.matchMedia && matchMedia("(prefers-reduced-motion: reduce)").matches);
+  const WORLDS = {};
+  for (let n = 1; n <= 5; n++) WORLDS[n] = { name: DIFF_LABEL[n], color: DIFF_COLOR[n], teams: WC_TEAMS[n] };
+  const starSum = starsSummaryForTier(getMatchesByTier(tier));
+  const starTotal = starSum.max, starGot = starSum.earned;
+  // Punkte: Spieltag 10 → 30. Dein Team startet letzter und endet klar vorn.
+  const PTS = [[24, 66], [22, 62], [20, 57], [19, 53], [17, 49], [15, 43], [14, 39]];
+  const ME = [8, 71];
+
+
+  const T = {
+    chalk: [80, 700], ring: [300, 950], kick: [320, 760], title: [420, 900], rowsIn: [560, 1350],
+    season: [1450, 3350], shine: [3350, 3720], fall: [3720, 4350], collapse: [3780, 4120], beam: [4120, 4520],
+    lights: [4420, 4900], lKick: [4380, 4700], drop: 4480, shake: 0, uline: [4880, 5200], sub: [4980, 5320],
+    toTitle: [5380, 5980], spot: [5300, 5950], rise: [5450, 6300], spin: [5650, 7250], fire: 6150, fire2: 6500,
+    rain: [6450, 7900], wg: [6500, 7000], plaque: [6980, 7380], stars: [7250, 8150], glint: [7300, 7700],
+    btn: [8350, 8800], hint: [250, 8300]
+  };
+  const END_UI = 8800, END = 13600, SKIP1 = 5380;
+
+
+  // ---------- Tabelle ----------
+  const ROW_Y0 = 192, ROW_H = 46;
+  const slotsEl = $("slots"), rowsEl = $("rows");
+  for (let i = 0; i < 8; i++) {
+    const s = document.createElement("div"); s.className = "wc-slot"; s.style.top = (ROW_Y0 + i * ROW_H) + "px"; s.innerHTML = (i < 2 ? "<i></i>" : "") + (i + 1); slotsEl.appendChild(s);
+  }
+  const rows = [];
+  for (let i = 0; i < 8; i++) {
+    const r = document.createElement("div"); r.className = "wc-row" + (i === 7 ? " wc-me" : "");
+    r.innerHTML = '<span class="wc-up">▲</span><span class="wc-nm"></span><span class="wc-sp">10</span><span class="wc-pk">0</span>' + (i === 7 ? '<span class="wc-shine"></span>' : "");
+    rowsEl.appendChild(r);
+    rows.push({ el: r, nm: r.querySelector(".wc-nm"), sp: r.querySelector(".wc-sp"), pk: r.querySelector(".wc-pk"), up: r.querySelector(".wc-up"), shine: r.querySelector(".wc-shine"),
+      p0: i === 7 ? ME[0] : PTS[i][0], p1: i === 7 ? ME[1] : PTS[i][1], me: i === 7 });
+  }
+  const slotEls = [...slotsEl.children];
+
+  function points(r, s) { return r.me ? lerp(r.p0, r.p1, Math.pow(s, 1.35)) : lerp(r.p0, r.p1, s); }
+  function softRanks(s) {
+    const p = rows.map(r => points(r, s));
+    return p.map((pi, i) => p.reduce((acc, pj, j) => j === i ? acc : acc + sig((pj - pi) / 0.32), 0));
+  }
+
+
+  // ---------- Liga-Wort ----------
+  const wordEl = $("word");
+  let letters = [];
+  function buildWord() {
+    const last = world === 5;
+    const next = last ? WORLDS[5] : WORLDS[world + 1];
+    const lines = next.name === "Champions League" ? ["CHAMPIONS", "LEAGUE"] : [next.name.toUpperCase()];
+    const c = document.createElement("canvas").getContext("2d");
+    c.font = "400 100px Anton, Impact, sans-serif";
+    const size = Math.min(84, ...lines.map(l => 350 / (c.measureText(l).width / 100)));
+    wordEl.style.fontSize = size.toFixed(1) + "px";
+    wordEl.innerHTML = ""; letters = [];
+    lines.forEach(l => {
+      const ln = document.createElement("span"); ln.className = "wc-ln";
+      [...l].forEach(ch => { const s = document.createElement("span"); s.className = "wc-ch"; s.textContent = ch === " " ? " " : ch; ln.appendChild(s); letters.push(s); });
+      wordEl.appendChild(ln);
+    });
+    const uw = Math.min(330, Math.max(...lines.map(l => c.measureText(l).width / 100 * size)));
+    $("uline").dataset.w = uw;
+    $("uline").style.background = next.color;
+    $("lKick").textContent = last ? "Du bist" : "Aufstieg in die";
+    $("sub").innerHTML = last ? "<b>Alle Welten geschafft</b>" : "<b>Welt " + (world + 1) + "</b> ist freigeschaltet";
+  }
+
+  function setupWorld() {
+    const w = WORLDS[world], last = world === 5;
+    $("hKick").textContent = w.name + (last ? " · Saisonfinale" : " · Saisonverlauf");
+    $("hTitle").textContent = last ? "Wer holt den Titel?" : "Wer steigt auf?";
+    $("footTxt").textContent = last ? "Platz 1: Weltklasse-Titel" : "Platz 1–2: Aufstieg";
+    slotEls[1].querySelector("i") && (slotEls[1].querySelector("i").style.display = last ? "none" : "");
+    rows.forEach((r, i) => { r.nm.textContent = r.me ? (teamName.trim() || "Dein Team") : w.teams[i]; });
+    $("shield").textContent = "WELT " + world;
+    $("pName").textContent = w.name + "-Pokal";
+    buildWord();
+    buildFx();
+  }
+
+
+  // ---------- Pokal (echte Drehung: Henkel, Rillen, Emblem) ----------
+  const NS = "http://www.w3.org/2000/svg";
+  const hB = [0, 1].map(() => $("hBack").appendChild(document.createElementNS(NS, "path")));
+  const hF = [0, 1].map(() => $("hFront").appendChild(document.createElementNS(NS, "path")));
+  const flutes = Array.from({ length: 14 }, () => $("flutes").appendChild(document.createElementNS(NS, "path")));
+  function drawTrophy(theta) {
+    [0, Math.PI].forEach((base, k) => {
+      const phi = base + theta, c = Math.cos(phi), z = Math.sin(phi);
+      const d = `M${100 + 57 * c} 36 C${100 + 98 * c} 34 ${100 + 92 * c} 92 ${100 + 44 * c} 98`;
+      const front = z >= -0.0001;
+      hF[k].setAttribute("d", d); hF[k].style.display = front ? "" : "none";
+      hB[k].setAttribute("d", d); hB[k].style.display = front ? "none" : "";
+    });
+    flutes.forEach((f, k) => {
+      const phi = theta + k * Math.PI * 2 / flutes.length + 0.11, c = Math.cos(phi), z = Math.sin(phi);
+      if (z <= 0.05) { f.style.display = "none"; return; }
+      f.style.display = "";
+      f.setAttribute("d", `M${100 + 60 * c} 30 Q${100 + 54 * c} 100 ${100 + 22 * c} 138`);
+      f.setAttribute("stroke-opacity", (0.15 + 0.35 * (1 - z)).toFixed(3));
+    });
+    const pe = Math.PI / 2 + theta, ze = Math.sin(pe), xe = 100 + 34 * Math.cos(pe);
+    const em = $("emblem");
+    if (ze <= 0.02) em.style.display = "none";
+    else { em.style.display = ""; em.setAttribute("transform", `translate(${xe.toFixed(2)} 70) scale(${ze.toFixed(3)} 1)`); }
+  }
+
+
+  const fx = $("fx"), ctx = fx.getContext("2d");
+  const dpr = Math.min(2, window.devicePixelRatio || 1);
+  fx.width = W * dpr; fx.height = H * dpr; ctx.scale(dpr, dpr);
+  // ---------- Konfetti (deterministisch, damit Zeitleiste und Zeitlupe exakt stimmen) ----------
+  let parts = [];
+  function shade(hex, f) {
+    const n = parseInt(hex.slice(1), 16), r = n >> 16, g = n >> 8 & 255, b = n & 255;
+    return `rgb(${Math.round(r * f)},${Math.round(g * f)},${Math.round(b * f)})`;
+  }
+  function buildFx() {
+    const R = rng(7 + world), wc = WORLDS[world === 5 ? 5 : world + 1].color;
+    const pal = ["#E8B23D", "#E8B23D", "#F6D88E", "#F2EFE6", wc, wc];
+    parts = [];
+    const cannon = (t0, side, n, sMin, sMax) => {
+      for (let i = 0; i < n; i++) {
+        const ang = (side < 0 ? -68 : -112) + (R() - 0.5) * 36;
+        const sp = lerp(sMin, sMax, R());
+        const a = ang * Math.PI / 180;
+        parts.push({ kind: 0, t0: t0 + R() * 90, x0: side < 0 ? -6 : W + 6, y0: H - 70 + R() * 30, vx: Math.cos(a) * sp, vy: Math.sin(a) * sp,
+          k: lerp(1.9, 2.7, R()), g: 600, w: lerp(5, 9, R()), h: lerp(9, 15, R()), col: pal[(R() * pal.length) | 0],
+          r0: R() * 6.3, vr: lerp(-9, 9, R()), ff: lerp(5, 12, R()), fp: R() * 6.3, sa: lerp(10, 26, R()), sw: lerp(2, 4, R()), sp0: R() * 6.3, rib: R() < 0.22 });
+      }
+    };
+    cannon(T.fire, -1, 120, 1250, 1850);
+    cannon(T.fire, 1, 120, 1250, 1850);
+    cannon(T.fire2, -1, 55, 950, 1450);
+    cannon(T.fire2, 1, 55, 950, 1450);
+    for (let i = 0; i < 70; i++) {
+      parts.push({ kind: 1, t0: lerp(T.rain[0], T.rain[1], R()), x0: R() * W, y0: -20, vy: lerp(120, 210, R()), w: lerp(5, 8, R()), h: lerp(8, 13, R()),
+        col: pal[(R() * pal.length) | 0], r0: R() * 6.3, vr: lerp(-4, 4, R()), ff: lerp(3, 7, R()), fp: R() * 6.3, sa: lerp(14, 34, R()), sw: lerp(1, 2.2, R()), sp0: R() * 6.3, rib: false });
+    }
+  }
+  function drawFx(t) {
+    ctx.clearRect(0, 0, W, H);
+    if (reduce) return;
+    for (const p of parts) {
+      const tau = (t - p.t0) / 1000;
+      if (tau < 0) continue;
+      let x, y;
+      if (p.kind === 0) {
+        const e = 1 - Math.exp(-p.k * tau);
+        x = p.x0 + p.vx / p.k * e + p.sa * Math.sin(p.sw * tau + p.sp0) * clamp(tau - 0.35, 0, 1);
+        y = p.y0 + (p.g / p.k) * tau + (p.vy - p.g / p.k) / p.k * e;
+      } else {
+        x = p.x0 + p.sa * Math.sin(p.sw * tau + p.sp0);
+        y = p.y0 + p.vy * tau;
+      }
+      if (y > H + 30 || x < -40 || x > W + 40) continue;
+      const flip = Math.cos(p.ff * tau + p.fp);
+      ctx.save();
+      ctx.translate(x, y);
+      ctx.rotate(p.r0 + p.vr * tau);
+      ctx.scale(1, Math.max(0.08, Math.abs(flip)));
+      ctx.fillStyle = flip >= 0 ? p.col : shade(p.col, 0.62);
+      if (p.rib) ctx.fillRect(-1.6, -p.h, 3.2, p.h * 2);
+      else ctx.fillRect(-p.w / 2, -p.h / 2, p.w, p.h);
+      ctx.restore();
+    }
+  }
+
+
+  // ---------- Bild für Zeitpunkt t ----------
+  const el = id => $(id).style;
+  function render(t) {
+    // Kamera: leichter Push-in während der Saison, Ruck beim Aufprall der Liga und bei den Kanonen
+    let sx = 0, sy = 0;
+    const lastDrop = T.drop + (letters.length - 1) * 34 + 300;
+    T.shake = lastDrop;
+    [[lastDrop, 7], [T.fire, 3.5]].forEach(([t0, A]) => {
+      const d = t - t0;
+      if (d > 0 && d < 600 && !reduce) { const env = A * Math.exp(-d / 95); sx += env * Math.sin(d / 17); sy += env * Math.cos(d / 23); }
+    });
+    const push = lerp(1, 1.035, eioS(seg(t, [600, 3600]))) - 0.035 * eo3(seg(t, T.fall));
+    el("cam").transform = `translate(${sx.toFixed(2)}px, ${sy.toFixed(2)}px) scale(${push.toFixed(4)})`;
+
+    // Abpfiff
+    const ch = eo3(seg(t, T.chalk));
+    const chalkFade = 1 - 0.75 * seg(t, [3700, 4400]);
+    $("cLine").setAttribute("stroke-dashoffset", (390 * (1 - ch)).toFixed(1));
+    $("cCirc").setAttribute("stroke-dashoffset", (440 * (1 - eo3(seg(t, [220, 900])))).toFixed(1));
+    $("cLine").style.opacity = $("cCirc").style.opacity = (0.5 * chalkFade).toFixed(3);
+    $("cDot").setAttribute("opacity", (0.6 * seg(t, [600, 760]) * chalkFade).toFixed(3));
+    el("stripes").opacity = (0.4 + 0.6 * seg(t, [0, 900])).toFixed(3);
+    const rg = seg(t, T.ring);
+    el("ring").opacity = (rg > 0 && rg < 1 ? 0.7 * (1 - rg) : 0).toFixed(3);
+    el("ring").transform = `scale(${(0.6 + 2.6 * eo3(rg)).toFixed(3)})`;
+
+    // Kopf + Tabelle rein
+    const hdrOut = eo3(seg(t, [3700, 4050]));
+    const kk = eo3(seg(t, T.kick));
+    el("hdr").opacity = (1 - hdrOut).toFixed(3);
+    el("hKick").opacity = kk; el("hKick").transform = `translateY(${(8 * (1 - kk)).toFixed(2)}px)`;
+    const tt = eo5(seg(t, T.title));
+    el("hTitle").transform = `translateY(${(105 * (1 - tt)).toFixed(1)}%)`;
+    const headIn = eo3(seg(t, [520, 900]));
+    el("tHead").opacity = (headIn * (1 - hdrOut)).toFixed(3);
+    el("foot").opacity = (eo3(seg(t, [1100, 1500])) * (1 - hdrOut)).toFixed(3);
+
+    // Saison: Spieltag 10 → 30, Tabelle sortiert sich weich
+    const s = eioS(seg(t, T.season));
+    const md = Math.round(10 + 20 * s);
+    $("md").textContent = md;
+    const ranks = softRanks(s);
+    const prev = softRanks(eioS(seg(t - 50, T.season)));
+    const leader = s >= 0.999;
+    slotEls.forEach((sl, i) => {
+      const a = eo3(seg(t, [520 + i * 40, 860 + i * 40])) * (1 - hdrOut);
+      sl.style.opacity = a.toFixed(3);
+      sl.style.color = (i === 0 && t > T.shine[0]) ? "var(--gold)" : "";
+    });
+
+    const fallOrder = rows.map((r, i) => ({ i, rk: ranks[i] })).filter(o => !rows[o.i].me).sort((a, b) => b.rk - a.rk);
+    rows.forEach((r, i) => {
+      const inn = eo3(seg(t, [T.rowsIn[0] + i * 55, T.rowsIn[0] + i * 55 + 420]));
+      let y = ROW_Y0 + ranks[i] * ROW_H, x = 0, rot = 0, op = inn, scaleY = 1, w = 320, left = 54, h = 42;
+      x = 40 * (1 - inn);
+      r.sp.textContent = md;
+      r.pk.textContent = Math.round(points(r, s));
+      if (!r.me) {
+        const k = fallOrder.findIndex(o => o.i === i);
+        const d = seg(t, [T.fall[0] + k * 50, T.fall[0] + k * 50 + 460]);
+        y += 560 * ei3(d); rot = (k % 2 ? 1 : -1) * 9 * ei3(d); op *= 1 - ei3(d);
+        r.el.style.transform = `translate(${x.toFixed(1)}px, ${y.toFixed(1)}px) rotate(${rot.toFixed(2)}deg)`;
+        r.el.style.opacity = op.toFixed(3);
+        r.el.style.top = "0px";
+      } else {
+        const v = ranks[i] - prev[i];
+        r.up.style.opacity = clamp(-v * 18).toFixed(3);
+        const lift = clamp(-v * 6);
+        r.el.style.boxShadow = `inset 0 0 0 1.5px var(--gold), 0 ${(10 * lift).toFixed(1)}px ${(22 * lift).toFixed(1)}px rgba(0,0,0,${(0.5 * lift).toFixed(2)})`;
+        const sh = seg(t, T.shine);
+        r.shine.style.transform = `translateX(${lerp(-120, 260, eio3(sh)).toFixed(1)}%)`;
+        const c = eo3(seg(t, T.collapse));
+        y = lerp(y, 400, c); h = lerp(42, 6, c); left = lerp(54, 16, c); w = lerp(320, 358, c);
+        r.el.style.background = c > 0 ? `rgba(232,178,61,${lerp(0.16, 1, c).toFixed(3)})` : "";
+        [r.nm, r.sp, r.pk, r.up].forEach(n => n.style.visibility = c > 0.25 ? "hidden" : "");
+        r.el.style.left = left + "px"; r.el.style.width = w + "px"; r.el.style.height = h + "px";
+        r.el.style.transform = `translate(${x.toFixed(1)}px, ${(y + (42 - h) / 2).toFixed(1)}px) scale(${(1 + 0.03 * lift * (1 - c)).toFixed(4)})`;
+        r.el.style.opacity = (seg(t, T.beam) > 0 ? 0 : op).toFixed(3);
+      }
+    });
+
+    // Strahl: waagrechter Balken → senkrechter Lichtstrahl → löst sich im Spotlicht auf
+    const b = seg(t, T.beam);
+    const bw = lerp(358, 5, eio3(clamp(b / 0.45)));
+    const bh = lerp(6, H + 40, eo5(clamp((b - 0.3) / 0.7)));
+    el("beam").width = bw.toFixed(1) + "px"; el("beam").height = bh.toFixed(1) + "px";
+    el("beam").transform = `translate(${(195 - bw / 2).toFixed(1)}px, ${(403 - bh / 2).toFixed(1)}px)`;
+    el("beam").opacity = (b > 0 ? 1 - eo3(seg(t, [5000, 5700])) : 0).toFixed(3);
+
+    // Flutlicht
+    for (let k = 0; k < 4; k++) {
+      const order = [0, 3, 1, 2][k];
+      const a = eo3(seg(t, [T.lights[0] + order * 90, T.lights[0] + order * 90 + 260]));
+      $("m" + k).style.opacity = (a * (1 - 0.35 * seg(t, [5400, 6000]))).toFixed(3);
+    }
+
+    // Neue Liga fällt ein
+    const lk = eo3(seg(t, T.lKick));
+    el("lKick").opacity = lk; el("lKick").transform = `translateY(${(10 * (1 - lk)).toFixed(1)}px)`;
+    letters.forEach((L, j) => {
+      const d = seg(t, [T.drop + j * 34, T.drop + j * 34 + 420]);
+      const y = -170 * (1 - eoBack(d, 2.4));
+      L.style.transform = `translateY(${y.toFixed(1)}px) rotate(${((1 - eo3(d)) * (j % 2 ? 6 : -6)).toFixed(2)}deg)`;
+      L.style.opacity = clamp(d * 5).toFixed(3);
+    });
+    const ul = eo3(seg(t, T.uline));
+    el("uline").width = ((+$("uline").dataset.w || 300) * ul).toFixed(1) + "px";
+    const sb = eo3(seg(t, T.sub)), tt2 = eio3(seg(t, T.toTitle));
+    el("sub").opacity = (sb * (1 - clamp(tt2 * 2.2))).toFixed(3);
+    el("sub").transform = `translateY(${(8 * (1 - sb)).toFixed(1)}px)`;
+    el("league").transform = `translateY(${(-168 * tt2).toFixed(1)}px) scale(${lerp(1, 0.56, tt2).toFixed(4)})`;
+
+    // Pokal
+    const sp = eo3(seg(t, T.spot));
+    el("spot").opacity = sp.toFixed(3);
+    el("floor").opacity = (eo3(seg(t, [5900, 6500]))).toFixed(3);
+    const rs = seg(t, T.rise);
+    el("trophy").transform = `translateY(${(230 * (1 - eoBack(rs, 1.3))).toFixed(1)}px) scale(${lerp(0.82, 1, eo3(rs)).toFixed(4)})`;
+    el("trophy").opacity = clamp(rs * 4).toFixed(3);
+    drawTrophy(Math.PI * 2 * eio3(seg(t, T.spin)));
+    const gl = seg(t, T.glint);
+    $("spark").setAttribute("opacity", (gl > 0 && gl < 1 ? 1 : 0));
+    $("spark").setAttribute("transform", `translate(152 20) scale(${Math.sin(Math.PI * gl).toFixed(3)}) rotate(${(70 * gl).toFixed(1)})`);
+
+    const wg = eo5(seg(t, T.wg));
+    el("wgIn").transform = `translateY(${(110 * (1 - wg)).toFixed(1)}%)`;
+    const pq = eo3(seg(t, T.plaque));
+    el("plaque").opacity = pq; el("plaque").transform = `translateY(${(14 * (1 - pq)).toFixed(1)}px)`;
+    const total = starTotal, got = starGot;
+    $("pStars").textContent = "★ " + Math.round(got * eo3(seg(t, T.stars))) + " / " + total;
+
+    const bt = eo3(seg(t, T.btn));
+    el("btn").opacity = bt; el("btn").transform = `translateY(${(16 * (1 - bt)).toFixed(1)}px)`;
+    $("btn").classList.toggle("wc-live", bt > 0.9);
+    const h1 = seg(t, [T.hint[0], T.hint[0] + 400]), h2 = seg(t, [T.hint[1] - 300, T.hint[1]]);
+    el("hint").opacity = (0.9 * h1 * (1 - h2)).toFixed(3);
+
+    drawFx(t);
+  }
+
+
+  // ---------- Abspielen ----------
+  let t = 0, running = false, last = 0, raf = 0, closed = false;
+  const testT = typeof window.WC_TEST_T === "number" ? window.WC_TEST_T : null; // nur fuer Tests: genau diesen Zeitpunkt zeigen
+  function frame(now) {
+    if (closed) return;
+    t += now - last; last = now;
+    if (t >= END) { t = END; running = false; }
+    render(t);
+    if (running) raf = requestAnimationFrame(frame);
+  }
+  function skip() {
+    if (reduce || testT !== null) return;
+    if (t < SKIP1) t = SKIP1; else if (t < END_UI) t = END_UI; else return;
+  }
+  function close() {
+    if (closed) return;
+    closed = true; running = false; cancelAnimationFrame(raf);
+    ctx.clearRect(0, 0, W, H);
+    window.removeEventListener("resize", fit);
+    window.removeEventListener("orientationchange", fit);
+    root.remove();
+    if (opts.flush) flushCelebrationQueue();
+    if (opts.onClose) opts.onClose();
+  }
+  // ---------- Handy einpassen (Breite fuellt, bei wenig Hoehe nach Hoehe skaliert; Safe-Areas frei) ----------
+  const probe = document.createElement("div");
+  probe.style.cssText = "position:absolute;visibility:hidden;pointer-events:none;padding:env(safe-area-inset-top,0px) env(safe-area-inset-right,0px) env(safe-area-inset-bottom,0px) env(safe-area-inset-left,0px)";
+  root.appendChild(probe);
+  function fit() {
+    const cs = getComputedStyle(probe);
+    const sT = parseFloat(cs.paddingTop) || 0, sB = parseFloat(cs.paddingBottom) || 0, sL = parseFloat(cs.paddingLeft) || 0, sR = parseFloat(cs.paddingRight) || 0;
+    const sc = Math.min((window.innerWidth - sL - sR) / W, (window.innerHeight - sT - sB) / H);
+    $("phone").style.transform = "scale(" + sc + ")";
+    const box = root.querySelector("#wc-box");
+    box.style.width = (W * sc) + "px"; box.style.height = (H * sc) + "px";
+    root.style.paddingTop = sT + "px"; root.style.paddingBottom = sB + "px";
+  }
+  window.addEventListener("resize", fit);
+  window.addEventListener("orientationchange", fit);
+  fit();
+
+  $("stage").addEventListener("click", (e) => { if (e.target.closest("button")) return; skip(); });
+  $("stage").addEventListener("keydown", (e) => { if (e.key === " " || e.key === "Enter") { e.preventDefault(); skip(); } });
+  $("btn").addEventListener("click", close);
+
+  const go = () => {
+    if (closed) return;
+    setupWorld();
+    if (testT !== null) { t = testT; render(t); return; }
+    if (reduce) { t = END_UI; render(t); }
+    else { render(0); t = 0; running = true; last = performance.now(); raf = requestAnimationFrame(frame); }
+    try { $("stage").focus({ preventScroll: true }); } catch (e) { /* Fokus ist nur Komfort */ }
+  };
+  const fontsReady = document.fonts && document.fonts.load
+    ? Promise.all([document.fonts.load("400 100px Anton"), document.fonts.load("500 20px Oswald")]).catch(() => {})
+    : Promise.resolve();
+  fontsReady.then(go);
+  return { close };
 }
 
 /* ================= INIT ================= */
