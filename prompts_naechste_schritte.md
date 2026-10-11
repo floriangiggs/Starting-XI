@@ -2873,6 +2873,22 @@ Teil A – Oberfläche
    bauen, dass das leicht nachrüstbar ist, z. B. Konstante BENCH_COST = 0.)
 6. Entwürfe (Prompt 34), Zurück/Abbrechen, Safe-Areas: Blatt schließt
    sauber, nichts geht verloren. Keine Blink-/Daueranimation.
+7. Regeln anpassen (openGuideSheet, gilt für "So geht's" UND das
+   Regeln-Blatt im Spielfeld):
+   - Reiter "hilfen": neuer Punkt "Ersatzbank" mit dem gleichen Bank-
+     Symbol wie der Knopf, Text sinngemäß: "Unten rechts im Spielfeld
+     öffnest du mit BANK die Ersatzbank des Spiels – kostenlos und ohne
+     Einfluss auf deine Sterne. Ein grüner Pfeil zeigt, wer eingewechselt
+     wurde. Für wen er kam, siehst du nach dem Auswerten. Nicht bei jedem
+     Spiel verfügbar." Kurz halten, Stil wie die übrigen Punkte.
+   - Reiter "modi", Abschnitt Duell: ergänzen "Im Duell gibt es keine
+     Ersatzbank (keine Hilfen)".
+   - Texte mit dem Code abgleichen (wie Prompt 19): Was dort steht, muss
+     genau so funktionieren.
+   - Damit es bemerkt wird: Punkt am Regeln-Knopf im Spielfeld (rulesDot)
+     und am "So geht's"-Knopf (helpDot) einmalig wieder zeigen, bis das
+     Blatt geöffnet wurde (eigenes Profil-Flag, z. B.
+     profile.seenRulesBench; Migration in loadProfile).
 
 Teil A – Datenformat (LINEUP_CHALLENGES und DAILY_CHALLENGES, optional)
    bench: [ { name: "Götze", nr: 19, pos: "ANG", in: 88, for: "ST" }, … ]
@@ -2905,7 +2921,9 @@ Teil B – Recherche (eigene Durchgänge, je Paket ein Commit)
 
 sw.js CACHE_NAME erhöhen. Test Teil A (mit einem Test-Eintrag, z. B.
 WM-Finale 2014, sobald belegt): Knopf nur bei Aufstellungen mit Bank, nie
-im Duell; Blatt vor dem Auswerten ohne "für …", danach mit; Sterne/XP
+im Duell; Blatt vor dem Auswerten ohne "für …", danach mit; Regeln
+("So geht's" + Regeln im Spielfeld) zeigen den Punkt Ersatzbank, Punkt an
+den Knöpfen erscheint einmal und verschwindet nach dem Öffnen; Sterne/XP
 unverändert gegenüber ohne Bank; alle Formationen ohne Überdeckung
 (Screenshot-Serie 360/375/402/430); Entwurf bleibt erhalten; keine
 Konsolenfehler.
