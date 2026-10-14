@@ -50,8 +50,10 @@ vorige umgesetzt, getestet und committet ist.
 | 36 | Duell: Walkout v2 „Spielertunnel“ – langsamer, Merkliste, Countdown als Stadionuhr | ✅ erledigt |
 | 37 | Ersatzbank im Spiel: Knopf „Bank“ unten rechts im Feld, Regeln ergänzen, Bank recherchieren (in Paketen) | ✅ erledigt (Teil A + Teil B: alle 104 Aufstellungen mit Bank; einzelne Banken nur von ESPN belegt, siehe `benchSource`) |
 | 38 | Namen eindeutig: Argentinien-Martínez, Nachname allein zählt (Alba, Alonso …), Initialen bei Namensgleichheit mit der Bank | – |
+| 39 | Duell-Zentrale v2 (One-Pager): Namen statt Wappen, Schnell-Duell 1/2/3/5 Min, Löschen/Aufräumen, Spielhistorie mit Vergleichs-Spielfeld | – |
+| 40 | Online-Duell-Spezifikation: Liga-Duell + Ranked (Divisionen) – NICHT ausführen, Grundlage für den Online-Plan | ⏸ wartet auf Server/Accounts |
 
-**Empfohlene Reihenfolge ab jetzt:** 38 → weitere Offline-Feinschliffe (u. a. Jahres-Lücken im Ideen-Speicher auffüllen) → Planung Online-Duell (inkl. 28/29) → 8 (Capacitor, erst wenn die App final ist; vorher Duell-Pflichtpunkt aus CLAUDE.md ansprechen)
+**Empfohlene Reihenfolge ab jetzt:** 38 → 39 → weitere Offline-Feinschliffe (u. a. Jahres-Lücken im Ideen-Speicher auffüllen) → Planung Online-Duell (inkl. 28/29) → 8 (Capacitor, erst wenn die App final ist; vorher Duell-Pflichtpunkt aus CLAUDE.md ansprechen)
 
 Prompt 7 steht bewusst vor der Tages-Challenge: Nur mit der neuen
 Update-Strategie kommen neue Tages-Aufstellungen zuverlässig auf dem iPhone an.
@@ -67,7 +69,8 @@ Welten-Ausschmückung), `prototypes/ladescreen.html` (Prompt 11d) und
 `prototypes/teilen.html` (Prompt 24) und `prototypes/duell.html` (Prompts 25–26) und
 `prototypes/welt-animation.html` (Prompt 31, Fassung v2 vom 10.10.2026 – nur die Bühne, nicht das Regie-Pult) und
 `prototypes/walkout.html` (Prompt 36 – nur die Bühne, nicht das Regie-Pult) und
-`prototypes/bank.html` (Prompt 37 – nur Variante C und das Blatt).
+`prototypes/bank.html` (Prompt 37 – nur Variante C und das Blatt) und
+`prototypes/duell-ausbau.html` (Prompts 39/40 – Duell-Zentrale v3).
 
 **Wichtig nach jeder Änderung:** Der Service Worker liefert die App aus dem
 Cache. Jeder Prompt erhöht deshalb `CACHE_NAME` in `sw.js` – sonst sieht die
@@ -3065,6 +3068,170 @@ sw.js CACHE_NAME erhöhen. Test (Konsole/Skript mit isAcceptedFor):
   (HSV) ✗; "mario" (Portugal 2016) ✗; "hazard" (Belgien 2018) ✓ → "E. Hazard";
   Prüfskript läuft ohne Meldungen außer den bewusst erlaubten Ausnahmen. Hook-Ergebnis zeigen; keine
   Konsolenfehler.
+```
+
+---
+
+## Prompt 39 – Duell-Zentrale v2: One-Pager, Namen, neue Zeiten, Löschen, Spielhistorie
+
+```
+Lies CLAUDE.md. Großer Umbau des Duell-Bereichs (Offline-Teil) → Plan Mode,
+Plan zeigen, dann in Paketen umsetzen (je Paket Commit + Test).
+Optische Vorlage: prototypes/duell-ausbau.html (v3) – Optik, Farben,
+Schriftbild und Bewegungen 1:1 übernehmen; das Regie-Pult (.desk) und die
+Beispieldaten gehören NICHT in die App. Liga-Duell und Ranked sind dort
+Vorschau → in der App nur als "Bald"-Hinweis (siehe 6), voll erst mit
+Prompt 40 + Server. Duell ist der wichtigste Modus: Qualität vor Tempo.
+
+Gestaltungsregeln (Florian, verbindlich):
+- KEINE Buchstaben-Wappen mehr für Personen (duelCrest u. ä. entfernen
+  bzw. nur noch für Divisions-Schilder später). Stattdessen überall Name
+  groß (Anton) + Benutzername klein (Oswald 300), z. B. "Lisa @lisa.kickt".
+  Jede Person bekommt eine feste Akzentfarbe (aus deviceId abgeleitet,
+  Palette aus dem Prototyp) für Randstreifen/Punkte.
+- Schrift nie "maschinell": keine gesperrten Versal-Labels; Labels in
+  normaler Schreibweise Oswald 400/500; Namen, Zahlen, Überschriften Anton.
+- Mehr Grün: Kopf als Rasen mit Mähstreifen + Flutlicht-Schimmer, grüne
+  Auswahl-Zustände, kräftige Sieg/Remis/Niederlage-Farben wie Prototyp.
+- Bewegung nur einmalig (Laden, Aufklappen), nie Dauerschleife;
+  prefers-reduced-motion respektieren.
+
+1. Benutzername (ohne Server)
+   - profile.duelHandle: beim ersten Duell aus duelName vorschlagen
+     ("@" + klein, Leerzeichen → "."), änderbar im Duell-Namen-Dialog;
+     Zeichen a–z 0–9 . _ , 3–20 Zeichen. Wird im Duell-Link mitgeschickt
+     (neues Feld, alte Links ohne Handle funktionieren weiter).
+   - Hinweis im Dialog: "Eindeutig wird der Benutzername mit den
+     Online-Konten." (kein Versprechen von Eindeutigkeit jetzt).
+
+2. Duell-Zentrale als eine Seite (One-Pager)
+   - Reihenfolge wie Prototyp: Kopf (Name, @handle, Rang/Level, Siege/
+     Remis/Niederlagen als Zähler aus profile.duelStats, Formkurve letzte 5)
+     → Leiste mit Sprungmarken (Am Zug · Historie; Ranked/Liga erst mit
+     Prompt 40) bleibt beim Scrollen oben → Modus-Kacheln (Schnell-Duell
+     gold; Liga-Duell grün mit "bald") → "Am Zug" (Du bist dran / Warten
+     auf Gegner / Abgelaufen) → Spielhistorie.
+   - Bestehende Funktionen (Einladung, Code einfügen, Duell starten,
+     Walkout aus Prompt 36, Ergebnis) bleiben und werden nur neu
+     angeordnet/gestaltet. Nichts darf wegfallen.
+
+3. Schnell-Duell: Zeiten 1, 2, 3, 5 Min
+   - Auswahl im "Neues Duell"-Blatt (Gegner als Namens-Chips, Format
+     Einzel/Bo3/Bo5, Zeit 1:00/2:00/3:00/5:00, Schwierigkeit), Zusammen-
+     fassungszeile unter dem Knopf. Link-Format um 60 s erweitern; ältere
+     Links (2/3/5) bleiben gültig. Duell-Trophäen/XP unverändert.
+
+4. Löschen und Aufräumen
+   - Offenes Duell: Kachel nach links wischen → roter "Löschen"-Knopf;
+     zusätzlich "⋯"-Menü ("Duell löschen", bei wartenden auch
+     "Erinnerung schicken" = Link erneut teilen). Sofort weg, 5 s
+     "Rückgängig"-Hinweis unten (kein Bestätigungsdialog).
+   - Abgelaufen: 14 Tage ohne Reaktion (letzte Aktivität beider Seiten)
+     → Gruppe "Abgelaufen", ausgegraut, unten. Knopf "x abgelaufene
+     Duelle aufräumen" (mit Rückgängig). Nach weiteren 30 Tagen beim
+     App-Start automatisch löschen.
+   - Löschen ändert NIE profile.duelStats (Bilanz/XP/Trophäen bleiben).
+     Prüfen, dass nichts die Bilanz aus profile.duels neu berechnet.
+   - Kommt später ein Link zu einem gelöschten Duell: Hinweis "Dieses
+     Duell hast du gelöscht" und Link ignorieren (gelöschte IDs in
+     profile.duelsDeleted merken, max. 200).
+
+5. Spielhistorie mit Detail
+   - Daten: Pro gespielter Runde zusätzlich speichern: mask (11 Bits,
+     richtig je Position in Reihenfolge von PITCH_LAYOUTS) und solvedAt
+     (Sekunde, in der jede Position gelöst wurde, sonst null). Auch im
+     Rückmelde-Link mitschicken (kompakt, z. B. mask base36 + solvedAt als
+     kurze Zahlenliste). Alte Daten ohne mask/solvedAt bleiben gültig.
+   - Liste: letzte 10 beendeten Duelle als Kacheln (Name + @handle,
+     Modus/Format/Datum, Runden-Chips "WM 2014 · 9:7", Ergebnis groß mit
+     Sieg/Remis/Niederlage-Etikett, farbiger Randstreifen), Filter
+     Alle/Schnell (Liga folgt), "Ältere anzeigen". Gespeichert bleiben die
+     letzten 30 beendeten Duelle, ältere automatisch entfernen (Bilanz
+     bleibt).
+   - Antippen klappt die Kachel an Ort und Stelle auf (kein neuer
+     Bildschirm): Anzeigetafel (Namen, Klappziffern-Ergebnis, Urteil,
+     Begründung z. B. "gleich viele Richtige, 7 s schneller"), Richtige +
+     Gesamtzeit beider mit Balken, Runden-Reiter, Partie-Kopf,
+     Vergleichs-Spielfeld mit allen Lösungsnamen und Markierung je Position
+     (beide richtig / nur ich / nur Gegner / beide falsch; Antippen zeigt
+     "nach x s"), Zeitstrahl "Wer war schneller?", Ersatzbank (mit "für"),
+     Knöpfe "Revanche gegen <Name>" (öffnet Neues-Duell-Blatt vorbelegt)
+     und "Löschen" (nur Details, Bilanz bleibt).
+   - Ohne Gegner-Rückmeldung: nur eigene Seite + Hinweis "<Name>s
+     Ergebnis fehlt noch". Alte Duelle ohne mask: kein Vergleichsfeld,
+     nur Zahlen.
+   - Wertung unverändert: mehr Richtige, sonst Zeit; Remis-Regel nur
+     anpassen, wenn Florian es freigibt (Ranked-Regel ±5 s gilt erst in
+     Prompt 40).
+
+6. Vorschau-Hinweise
+   - Liga-Duell-Kachel und ein schmaler Ranked-Streifen ("Ranked ·
+     Divisionen") mit "bald": Tippen öffnet ein kurzes Info-Blatt, was
+     kommt (Text aus Prompt 40), keine Funktion.
+
+sw.js CACHE_NAME erhöhen. Test: altes Profil mit Duellen lädt fehlerfrei;
+neue und alte Links (mit/ohne 1-Min, Handle, mask) funktionieren in beide
+Richtungen; Wischen/Menü/Rückgängig/Aufräumen; 14/44-Tage-Logik per
+manipuliertem Datum; Bilanz bleibt nach Löschen gleich; Historie zeigt
+max. 10, speichert 30; Detail mit Vergleichsfeld korrekt (Stichprobe von
+Hand nachrechnen); Walkout startet weiter; reduced motion; 360/375/402/
+430 px; keine Konsolenfehler.
+```
+
+---
+
+## Prompt 40 – Online-Duell-Spezifikation: Liga-Duell und Ranked (NICHT ausführen)
+
+```
+NICHT ausführen – Spezifikation für den eigenen Online-Duell-Plan (siehe
+Pflichtpunkte bei Prompt 8). Wird gebraucht, sobald Server/Accounts
+geplant werden. Optische Vorlage: prototypes/duell-ausbau.html (v3),
+Abschnitte "Liga-Duell", "Kategorie wählen", "Ranked", Walkout-Einbindung.
+
+A. Liga-Duell (Ping-Pong, wie Quizduell)
+   - 6 Runden (später ggf. 4/6/8 wählbar). Wer dran ist, bekommt 3
+     zufällige Kategorien und wählt eine; beide spielen dieselbe
+     Aufstellung; Wahl wechselt jede Runde. Je Aufstellung 2:00 Min.
+   - Kategorien zum Start: Champions League, WM, EM, Deutschland
+     (Bundesliga + DFB-Pokal), England, Europa (Spanien/Italien/
+     Frankreich). Je Kategorie mind. ~20 Aufstellungen (Erweiterung mit
+     Florian gemeinsam auswählen). Keine Aufstellung doppelt im selben
+     Duell, kürzlich gegen denselben Gegner gespielte zurückstellen.
+   - Wertung: Summe aller Richtigen, bei Gleichstand Gesamtzeit.
+   - Gegner-Ergebnis einer Runde erst sichtbar, wenn man sie selbst
+     gespielt hat (versiegelt "?").
+   - Nach der Kategorie-Wahl (und beim Nachspielen) startet der Walkout
+     aus Prompt 36 mit zusätzlicher erster Tafel "Runde n von 6 ·
+     Kategorie · gewählt von …" (Kachel dreht sich ins Bild, Glanz) und
+     dem Liga-Spielstand im Duo-Auftritt.
+   - Push "Du bist dran", Frist pro Zug (z. B. 48 h, sonst Sieg für den
+     Gegner), Historie/Löschen wie Prompt 39.
+
+B. Ranked
+   - Divisionen 10 → 1, oben "Legenden-Division" (nicht "Elite"). Ligen-
+     Stufen mit Farbe: Bolzplatz (10–8, Kupfer), Flutlicht (7–5, Smaragd),
+     Arena (4–2, Gold), Olymp (1, Violett), Legenden (Schwarz-Gold).
+   - Aufstiegsleiter mit 6 Sprossen je Division als Treppe: Sieg +1,
+     Remis ±0, Niederlage −1; ab dem 3. Sieg in Folge +2. Klassenerhalt-
+     Marke bei Sprosse 3 (darunter kein Abstieg mehr in dieser Division);
+     Divisionen 10–8 ohne Abstieg. Sprosse 6 = Aufstieg mit Meister-
+     Animation (Stil wie "Welt geschafft").
+   - Match: 3 Aufstellungen à 2:00, Summe der Richtigen; Schwierigkeit
+     steigt mit der Division (unten Stufe 1–2, oben 4–5). Gleichstand:
+     gleiche Richtige → Gesamtzeit entscheidet ab ≥ 5 s Unterschied, sonst
+     Remis (Schwelle anhand echter Daten justierbar).
+   - Wochen-Tabelle: Sieg 3 / Remis 1 / Niederlage 0 Punkte; 15 Punkte =
+     Wochenbelohnung, 30 = Top-Belohnung (nur XP/Kosmetik, keine Token).
+   - Saison 4 Wochen, danach 2 Divisionen zurück; Saison-Vitrine.
+   - Trophäen: Meister Division 10 … 1, Ungeschlagen aufgestiegen,
+     Last-Minute-Klassenerhalt, 5/10 Siege in Folge, Legenden-Division
+     erreicht, Top 100.
+   - Gegner: bei wenig Traffic aufgezeichnete Läufe echter Spieler
+     derselben Division ("Marco (aufgezeichnet)"), später Live-Suche.
+   - Anti-Schummeln: App-Wechsel-Erkennung wie Fair-Play im Duell.
+
+C. Rechtliches vor dem Store: Markenrecherche (DPMA/EUIPO), kein "Rivals",
+   kein "Elite Division", kein "Champions", keine Kopie fremder Optik.
 ```
 
 ---
