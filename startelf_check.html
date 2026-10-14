@@ -754,6 +754,7 @@
   .mode-tiles .mt.duel .ln em { color: var(--muted); opacity: 1; }
   .mode-tiles .duel .dcount { position: absolute; top: 8px; right: 8px; z-index: 2; min-width: 22px; height: 22px; border-radius: 11px; padding: 0 6px; display: grid; place-items: center; background: var(--gold); color: var(--ink); font-family: 'Anton', Impact, sans-serif; font-size: 13px; border: 1.5px solid rgba(20,32,43,0.55); }
   .mode-tiles .duel .dpair { display: flex; align-items: center; justify-content: center; gap: 7px; }
+  .mode-tiles .duel .dpair .dn { font-family: 'Anton', Impact, sans-serif; font-size: 14px; max-width: 72px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; color: var(--chalk); }
   .mode-tiles .duel .dpair .flip b { font-size: 15px; min-width: 14px; padding: 3px 2px 2px; }
   .mode-tiles .duel .dpair .flip i { font-size: 14px; margin: 0; }
   .solo-line { flex-shrink: 0; align-self: center; background: none; border: none; font-family: 'Oswald', sans-serif; font-weight: 400; font-size: 14px; color: var(--muted); cursor: pointer; padding: 2px 6px; }
@@ -916,7 +917,8 @@
   .dl .inv .pl { display: flex; flex-direction: column; align-items: center; gap: 5px; min-width: 0; }
   .dl .inv .pl b { font-family: 'Anton', Impact, sans-serif; font-weight: 400; font-size: 22px; line-height: 1; max-width: 100%; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
   .dl .inv .pl span { font-family: 'Oswald', sans-serif; font-weight: 300; font-size: 12.5px; color: rgba(242,239,230,0.8); }
-  .dl .inv .pl .crest { font-size: 30px; }
+  .dl .inv .pl .pbar { display: block; width: 46px; height: 4px; border-radius: 2px; background: var(--pc, var(--gold)); margin-bottom: 4px; }
+  .dl .inv .pl small.hd { font-family: 'Oswald', sans-serif; font-weight: 300; font-size: 13px; color: var(--muted); margin-top: -3px; max-width: 100%; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
   .dl .inv .vs2 { font-family: 'Anton', Impact, sans-serif; font-size: 30px; color: var(--gold); text-shadow: 0 0 18px rgba(232,178,61,0.5); padding: 0 8px; }
   .dl .inv .strip { display: grid; grid-template-columns: repeat(3, 1fr); background: linear-gradient(160deg, #F6DA9C, #E8B23D 70%); color: var(--ink); border-top: 2.5px dotted rgba(20,32,43,0.4); }
   .dl .inv .strip div { padding: 9px 4px; text-align: center; } .dl .inv .strip div + div { border-left: 1px solid rgba(20,32,43,0.18); }
@@ -948,6 +950,10 @@
   .duel-name-row b { font-weight: 600; flex: 1; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
   .duel-name-row button { border: 1px solid var(--line); background: transparent; color: var(--gold-2); border-radius: 14px; padding: 4px 12px; font-family: 'Oswald', sans-serif; font-weight: 600; font-size: 12px; cursor: pointer; }
   .duel-name-box { display: flex; flex-direction: column; gap: 12px; }
+  .duel-name-box .hdrow { display: flex; align-items: center; gap: 8px; }
+  .duel-name-box .hdrow .at { font-family: 'Anton', Impact, sans-serif; font-size: 20px; color: var(--gold-2); }
+  .duel-name-box .hdnote { font-family: 'Oswald', sans-serif; font-weight: 300; font-size: 13px; line-height: 1.4; color: var(--muted); margin-top: -4px; }
+  .duel-name-box .hdnote.err { color: #F2A497; font-weight: 400; }
   .duel-name-box input { border-radius: 10px; border: 1px solid var(--line); background: rgba(10,22,16,0.6); color: var(--chalk); font-family: 'Oswald', sans-serif; font-size: 18px; padding: 10px 12px; width: 100%; }
 
   /* ---- Duell Teil 2 (Prompt 26): Walkout, Spiel, Abpfiff - Optik aus prototypes/duell.html, gescoped ---- */
@@ -1067,6 +1073,9 @@
   .dl .res2 .sb { display: grid; grid-template-columns: 1fr auto 1fr; align-items: center; }
   .dl .res2 .sb .p { display: flex; flex-direction: column; align-items: center; gap: 4px; font-family: 'Oswald', sans-serif; font-weight: 500; font-size: 13px; min-width: 0; }
   .dl .res2 .sb .p em { font-style: normal; max-width: 100%; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  .dl .res2 .sb .p b { font-family: 'Anton', Impact, sans-serif; font-weight: 400; font-size: 19px; line-height: 1.05; max-width: 100%; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  .dl .res2 .sb .p small.hd { font-family: 'Oswald', sans-serif; font-weight: 300; font-size: 12.5px; color: rgba(242,239,230,0.8); max-width: 100%; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  .dl .res2 .sb .p .pbar { display: block; width: 40px; height: 4px; border-radius: 2px; background: var(--pc, var(--gold)); margin-bottom: 3px; }
   .dl .res2 .why2 { margin-top: 9px; font-family: 'Oswald', sans-serif; font-weight: 300; font-size: 13.5px; color: rgba(242,239,230,0.85); }
   .dl .rr { display: flex; flex-direction: column; gap: 6px; }
   .dl .rr .r { display: grid; grid-template-columns: 62px 1fr 26px 1fr; align-items: center; gap: 6px; padding: 7px 10px; border-radius: 10px; background: var(--ink-2); border: 1px solid var(--line); }
@@ -8891,6 +8900,10 @@ const duelEsc = (s) => String(s).replace(/[&<>"']/g, c => ({ "&": "&amp;", "<": 
 const duelFormatLabel = (r) => r === 1 ? "Einzel" : "Best of " + r;
 const duelLevelLabel = (d) => d ? "Stufe " + d : "Gemischt";
 const duelCrest = (name, cls = "") => `<span class="crest ${cls}">${duelEsc(((name || "?").trim()[0] || "?").toUpperCase())}</span>`;
+// Personen im Duell (Prompt 39): kein Buchstaben-Wappen mehr, sondern Name groß (Anton) + @benutzername klein (Oswald 300) + feste Akzentfarbe aus der Geräte-ID.
+const DUEL_COLORS = ["#8CC8FF", "#7FE0A8", "#FF8A73", "#C9A8FF", "#F7D98E", "#7FD6E0"];
+const duelColor = (deviceId) => DUEL_COLORS[hashString("duelcolor:" + (deviceId || "")) % DUEL_COLORS.length];
+const duelPersonHTML = (name, handle) => `<b>${duelEsc(name)}</b>${handle ? `<small class="hd">@${duelEsc(handle)}</small>` : ""}`;
 const duelFlip = (str) => [...str].map(ch => ch === ":" ? "<i>:</i>" : `<b>${ch}</b>`).join("");
 const pad2 = (n) => String(Math.min(99, n)).padStart(2, "0");
 
@@ -9150,17 +9163,26 @@ function askDuelName(onDone) {
   backdrop.innerHTML = `<div class="modal-sheet"><div class="duel-name-box">
       <div class="guide-name-title" style="font-family:'Anton',Impact,sans-serif;font-size:24px">Dein Duell-Name</div>
       <div style="font-family:'Oswald',sans-serif;font-weight:300;font-size:14px;color:var(--muted)">So sehen dich deine Freunde im Duell (max. 16 Zeichen). Du kannst ihn später im Scout-Profil ändern.</div>
-      <input type="text" id="duelNameInput" maxlength="16" autocomplete="off" spellcheck="false" placeholder="z. B. Flo" value="${duelEsc(profile.duelName || "")}">
+      <input type="text" id="duelNameInput" maxlength="16" autocomplete="off" spellcheck="false" placeholder="z. B. Flo" aria-label="Duell-Name" value="${duelEsc(profile.duelName || "")}">
+      <div class="hdrow"><span class="at">@</span><input type="text" id="duelHandleInput" maxlength="20" autocomplete="off" autocapitalize="off" autocorrect="off" spellcheck="false" placeholder="benutzername" aria-label="Benutzername" value="${duelEsc(profile.duelHandle || "")}"></div>
+      <div class="hdnote" id="duelHandleMsg" role="status">Dein Benutzername: a–z, 0–9, Punkt und Unterstrich, 3–20 Zeichen. Eindeutig wird er mit den Online-Konten.</div>
       <div class="dl" style="gap:8px"><button type="button" class="startbtn" id="duelNameSave">Speichern</button><button type="button" class="ghost2" id="duelNameCancel">Abbrechen</button></div>
     </div></div>`;
   document.body.appendChild(backdrop);
-  const input = backdrop.querySelector("#duelNameInput");
+  const input = backdrop.querySelector("#duelNameInput"), hInput = backdrop.querySelector("#duelHandleInput"), msg = backdrop.querySelector("#duelHandleMsg");
+  let touched = !!profile.duelHandle; // vorhandenen Benutzernamen nicht überschreiben, solange er nicht gelöscht wird
+  if (!hInput.value) hInput.value = input.value.trim() ? duelHandleFromName(input.value) : "";
   input.focus();
+  input.addEventListener("input", () => { if (!touched) hInput.value = input.value.trim() ? duelHandleFromName(input.value) : ""; });
+  hInput.addEventListener("input", () => { touched = true; hInput.value = hInput.value.toLowerCase().replace(/^@/, "").replace(/[^a-z0-9._]/g, ""); msg.classList.remove("err"); });
   const close = () => backdrop.remove();
   const save = () => {
     const name = input.value.trim().slice(0, 16);
     if (!name) { input.focus(); return; }
+    const handle = hInput.value.trim().replace(/^@/, "").toLowerCase();
+    if (!DUEL_HANDLE_RE.test(handle)) { msg.textContent = "Der Benutzername braucht 3–20 Zeichen: a–z, 0–9, Punkt oder Unterstrich."; msg.classList.add("err"); hInput.focus(); return; }
     profile.duelName = name;
+    profile.duelHandle = handle;
     saveProfile(profile);
     close();
     if (onDone) onDone();
@@ -9168,6 +9190,7 @@ function askDuelName(onDone) {
   backdrop.querySelector("#duelNameSave").onclick = save;
   backdrop.querySelector("#duelNameCancel").onclick = close;
   input.addEventListener("keydown", (e) => { if (e.key === "Enter") save(); });
+  hInput.addEventListener("keydown", (e) => { if (e.key === "Enter") save(); });
   backdrop.onclick = (e) => { if (e.target === backdrop) close(); };
 }
 function ensureDuelName(cb) { if (profile.duelName) cb(); else askDuelName(cb); }
@@ -9186,7 +9209,7 @@ function duelTileHTML(chev) {
     <button type="button" class="mt duel" id="modeTileDuel">
       ${todo > 0 ? `<span class="dcount" aria-label="${todo} offen">${todo}</span>` : ""}
       <div class="ic">⚔️</div><div class="nm">Duell</div>
-      <div class="dpair" aria-label="Bilanz ${st.wins} zu ${st.losses}">${duelCrest(profile.duelName || "?", "me")}<span class="flip">${duelFlip(st.wins + ":" + st.losses)}</span>${duelCrest("?")}</div>
+      <div class="dpair" aria-label="Bilanz ${st.wins} zu ${st.losses}"><span class="dn">${duelEsc(profile.duelName || "Du")}</span><span class="flip">${duelFlip(st.wins + ":" + st.losses)}</span></div>
       <div class="ln">${line}</div>
       <div class="ft">Freund herausfordern ${chev}</div>
     </button>`;
@@ -9385,9 +9408,9 @@ function renderDuelInvite() {
       <div class="top3">
         <div class="k2"><b>${duelEsc(o.name)}</b> fordert dich zum Duell</div>
         <div class="pair">
-          <div class="pl">${duelCrest(o.name, "lg")}<b>${duelEsc(o.name)}</b><span>${duelEsc(o.rank)} · Lvl ${o.level}</span></div>
+          <div class="pl" style="--pc:${duelColor(o.deviceId)}"><i class="pbar"></i>${duelPersonHTML(o.name, o.handle)}<span>${duelEsc(o.rank)} · Lvl ${o.level}</span></div>
           <div class="vs2">VS</div>
-          <div class="pl">${duelCrest(profile.duelName || "?", "lg me")}<b>Du</b><span>${duelEsc(me.rank)} · Lvl ${me.level}</span></div>
+          <div class="pl" style="--pc:${duelColor(profile.deviceId)}"><i class="pbar"></i>${duelPersonHTML(me.name, me.handle)}<span>${duelEsc(me.rank)} · Lvl ${me.level}</span></div>
         </div>
       </div>
       <div class="strip"><div><b>${duelFormatLabel(d.settings.rounds)}</b><span>Format</span></div><div><b>${d.settings.seconds / 60} Min</b><span>pro Spiel</span></div><div><b>${duelLevelLabel(d.settings.difficulty)}</b><span>Schwierigkeit</span></div></div>
@@ -9541,7 +9564,7 @@ function maybeShowInstallTip() {
 function duelNameRowHTML() {
   const s = profile.duelStats;
   const stats = `<div class="duel-name-row"><span>⚔️ Duelle</span><b>${s.wins} : ${s.losses}${s.draws ? " · " + s.draws + " Remis" : ""}${s.streak ? " · 🔥 " + s.streak : ""}</b></div>`;
-  return stats + `<div class="duel-name-row"><span>⚔️ Duell-Name</span><b>${profile.duelName ? duelEsc(profile.duelName) : "noch nicht festgelegt"}</b><button type="button" id="duelNameEdit">${profile.duelName ? "ändern" : "festlegen"}</button></div>`;
+  return stats + `<div class="duel-name-row"><span>⚔️ Duell-Name</span><b>${profile.duelName ? duelEsc(profile.duelName) + (profile.duelHandle ? ` <small style="font-weight:300;color:var(--muted)">@${duelEsc(profile.duelHandle)}</small>` : "") : "noch nicht festgelegt"}</b><button type="button" id="duelNameEdit">${profile.duelName ? "ändern" : "festlegen"}</button></div>`;
 }
 function bindDuelNameRow() {
   const b = document.getElementById("duelNameEdit");
@@ -10522,7 +10545,7 @@ function renderDuelResult() {
     root.innerHTML = head + `
       <div class="res2 ${won ? "" : "lost"}"><div class="k3">${duelFormatLabel(d.settings.rounds)} gegen ${name}</div>
         <div class="big2">${won ? "<span>Sieg!</span>" : res.outcome === "loss" ? "Niederlage" : "Unentschieden"}</div>
-        <div class="sb"><div class="p">${duelCrest(me.name, "me")}<em>Du</em></div><div class="flip xl">${duelFlip(res.mw + ":" + res.ow)}</div><div class="p">${duelCrest(o ? o.name : "?")}<em>${name}</em></div></div>
+        <div class="sb"><div class="p" style="--pc:${duelColor(me.deviceId)}"><i class="pbar"></i>${duelPersonHTML(me.name, me.handle)}</div><div class="flip xl">${duelFlip(res.mw + ":" + res.ow)}</div><div class="p" style="--pc:${duelColor(o ? o.deviceId : "")}"><i class="pbar"></i>${duelPersonHTML(o ? o.name : "Freund", o && o.handle)}</div></div>
         <div class="why2">${why}</div></div>
       <div class="rr">${rr}</div>
       <div class="fpl"><span class="${fairMe ? "" : "warn"}">${fairMe ? "🤝 Du hast fair gespielt" : "Du hast die App verlassen"}</span><span class="${fairOp ? "" : "warn"}">${fairOp ? "🤝 " + name + " hat fair gespielt" : name + " hat die App verlassen"}</span></div>
