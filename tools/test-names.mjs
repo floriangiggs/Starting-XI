@@ -79,5 +79,28 @@ near(KOL, "RIV", "Martinez", false);
 near(KOL, "ST", "Martinez", false);
 near(COPA, "RST", "Martinez", false);
 
+// ---- Teil 2: Nachname allein (B), Initialen bei Namensgleichheit (A/C) ----
+const B = [
+  ["barcelona-frankfurt-2022-barcelona", "LV", ["alba", "Jordi Alba"]], ["barcelona-frankfurt-2022-barcelona", "LIV", ["garcia", "Eric Garcia"]],
+  ["barcelona-frankfurt-2022-barcelona", "LA", ["torres", "Ferran Torres"]], ["spanien-schweiz-2010-spanien", "LZM", ["alonso", "Xabi Alonso"]],
+  ["em-finale-2016-portugal", "TW", ["patricio", "Rui Patricio"]], ["psg-arsenal-2026", "LV", ["mendes", "Nuno Mendes", "nuno"]],
+  ["cl-finale-la-decima-2014-atletico", "RM", ["garcia", "Raul Garcia"]], ["cl-finale-la-decima-2014-atletico", "LV", ["filipe", "Filipe Luis"]],
+  ["sevilla-rom-el-finale-2023", "ZOM", ["torres", "Oliver Torres"]], ["sevilla-rom-el-finale-2023", "LOM", ["gil", "Bryan Gil"]],
+  ["costarica-uruguay-2014-uruguay", "RV", ["pereira", "Maxi Pereira"]], ["costarica-uruguay-2014-uruguay", "RZM", ["arevalo", "Arevalo Rios"]],
+  ["costarica-uruguay-2014", "LV", ["diaz", "Junior Diaz", "junior"]],
+  // Initial-Anzeige: Nachname allein, Initial+Nachname und voller Vorname+Nachname gelten
+  ["island-england-2016", "LIV", ["sigurdsson", "R. Sigurdsson", "Ragnar Sigurdsson"]], ["island-england-2016", "LZM", ["bjarnason", "B. Bjarnason", "Birkir Bjarnason"]],
+  ["wales-belgien-2016", "ZIV", ["williams", "A. Williams", "Ashley Williams"]], ["brasilien-belgien-2018-belgien", "LOM", ["hazard", "E. Hazard", "Eden Hazard"]],
+  ["deutschland-japan-2022", "RM", ["ito", "J. Ito", "Junya Ito"]], ["villarreal-manutd-2021", "RST", ["moreno", "G. Moreno", "Gerard Moreno"]],
+  ["freiburg-leipzig-2022", "LIV", ["schlotterbeck", "N. Schlotterbeck", "Nico Schlotterbeck"]],
+];
+for (const [id, abbr, names] of B) for (const t of names) acc(id, abbr, t, true);
+// bewusst NICHT: Heuer Fernandes nur mit vollem Namen, João Mário nicht als "Mário"
+acc("hsv-ulm-2025", "TW", "Fernandes", false); acc("hsv-ulm-2025", "TW", "Heuer Fernandes", true);
+acc("em-finale-2016-portugal", "LM", "Mario", false); acc("em-finale-2016-portugal", "LM", "Joao Mario", true);
+// Nachname allein gilt nur auf der eigenen Position
+acc("brasilien-belgien-2018-belgien", "TW", "hazard", false);
+acc("barcelona-frankfurt-2022-barcelona", "LA", "alba", false);
+
 console.log(fails ? `\n${fails} von ${total} Prüfungen FEHLGESCHLAGEN` : `OK - ${total} Namensprüfungen bestanden`);
 process.exit(fails ? 1 : 0);
