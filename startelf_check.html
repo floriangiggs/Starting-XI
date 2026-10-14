@@ -9734,7 +9734,8 @@ function dzOpenNew(pre) {
   if (pre) Object.assign(duelDraft, pre.settings || {});
   duelDraft.fair = false;
   let friend = pre && pre.friend !== undefined ? pre.friend : "";
-  const friends = Object.entries(profile.duelStats.perOpponent).filter(([, f]) => f.w + f.l + f.d > 0).sort((a, b) => (b[1].w + b[1].l + b[1].d) - (a[1].w + a[1].l + a[1].d)).slice(0, 6);
+  let friends = Object.entries(profile.duelStats.perOpponent).filter(([, f]) => f.w + f.l + f.d > 0).sort((a, b) => (b[1].w + b[1].l + b[1].d) - (a[1].w + a[1].l + a[1].d)).slice(0, 6);
+  if (friend && !friends.some(([dev]) => dev === friend) && profile.duelStats.perOpponent[friend]) friends = [[friend, profile.duelStats.perOpponent[friend]], ...friends.slice(0, 5)]; // Revanche gegen jemanden ausserhalb der Top 6
   const build = () => `<h3>Schnell-Duell</h3><p class="dz-lead2">Ihr spielt dieselben Aufstellungen mit derselben Uhr. Mehr Richtige gewinnen die Runde.</p>
     <div class="dz-fld"><small>Gegen wen?</small><div class="dz-friends">${friends.map(([dev, f]) => `<button class="dz-friend" type="button" data-fr="${dev}" style="--fc:${duelColor(dev)}" aria-pressed="${friend === dev}"><i></i>${duelEsc(f.name)}${f.handle ? `<small>@${duelEsc(f.handle)}</small>` : ""}</button>`).join("")}<button class="dz-friend dz-add" type="button" data-fr="" aria-pressed="${friend === ""}">+ Neuer Freund</button></div></div>
     <div class="dz-fld"><small>Format</small><div class="dz-seg" data-g="rounds">${DUEL_FORMATS.map(f => `<button type="button" data-v="${f.rounds}" aria-pressed="${duelDraft.rounds === f.rounds}">${f.label}<small>${f.sub}</small></button>`).join("")}</div></div>
@@ -9882,9 +9883,105 @@ function dzBind(root) {
   };
 }
 // Historie klappt an Ort und Stelle auf (nur eine Kachel offen); Details baut dzDetailHTML (Prompt 39, Paket 4)
-function dzToggleHist(id) { activeResultId = id; navigate("duelresult"); }
-function dzDetailHTML() { return ""; }
-function dzBindDetail() {}
+// ---- Historie-Detail (Prompt 39, Paket 4): klappt an Ort und Stelle auf, nur eine Kachel offen ----
+const dzSecs = (arr) => arr.reduce((s, r) => s + (r.seconds || 0), 0);
+function dzWhy(d, p) {
+  const res = d.result, hasOp = d.theirs && d.theirs.length, name = duelEsc(p.name);
+  const ta = dzSecs(d.mine), tb = hasOp ? dzSecs(d.theirs) : 0, win = res.outcome === "win";
+  if (res.by === "rounds") return `${win ? "Du hast" : name + " hat"} mehr Aufstellungen gewonnen`;
+  if (res.by === "correct") return `Gleich viele Aufstellungen – ${win ? "du hast" : name + " hat"} insgesamt mehr Richtige`;
+  if (res.by === "time") return `Gleich viele Richtige, ${Math.abs(ta - tb)} s schneller${win ? "" : " war " + name}`;
+  return "Runden, Richtige und Zeit gleichauf";
+}
+function dzRoundOutcome(d, i) { const w = d.result && d.result.rounds && d.result.rounds[i]; return w ? (w.w === "me" ? "w" : w.w === "op" ? "l" : "d") : "d"; }
+function dzRoundHTML(d, i) {
+  const m = dailyMatchById(d.lineups[i]), a = d.mine[i], b = d.theirs && d.theirs[i], p = dzPerson(d), me = duelMeInfo();
+  if (!m || !a) return `<div class="dz-mt"><b>Runde ${i + 1}</b><span>Diese Aufstellung kennt deine App-Version nicht.</span></div>`;
+  const side = m.side.replace(/^Aufstellung (?:von|des|der)\s+/i, "");
+  const lay = PITCH_LAYOUTS[m.formation] || [];
+  const cmpOk = a.mask !== undefined && b && b.mask !== undefined && lay.length === 11; // Vergleichsfeld nur, wenn BEIDE Seiten Maske haben
+  const bit = (r, k) => !!(r && r.mask !== undefined && (r.mask >> k) & 1);
+  const limit = d.settings.seconds;
+  const dots = (r, who) => (r && r.solvedAt ? lay.map((q, k) => r.solvedAt[k] == null ? "" : `<span class="dz-pt" style="left:${Math.min(100, r.solvedAt[k] / limit * 100).toFixed(1)}%;--t:${Math.round(Math.min(1, r.solvedAt[k] / limit) * 900) + 200}ms" title="${q.abbr} nach ${r.solvedAt[k]} s"></span>`).join("") : "");
+  const firstOf = (r) => { const v = r && r.solvedAt ? r.solvedAt.filter(x => x != null) : []; return v.length ? Math.min(...v) : null; };
+  const bench = benchOf(m);
+  const nameOf = (f) => (m.players && m.players[f]) || f;
+  const subs = bench ? bench.filter(x => x.in).sort((x, y) => x.in - y.in || (x.inExtra || 0) - (y.inExtra || 0)) : [], rest = bench ? bench.filter(x => !x.in) : [];
+  const min = (x) => (x.inExtra ? x.in + "+" + x.inExtra : x.in) + "'";
+  const pitch = cmpOk ? `<div class="dz-pitch" data-pitch><svg class="dz-lines" viewBox="0 0 100 125" preserveAspectRatio="none" aria-hidden="true"><g fill="none" stroke="rgba(244,241,232,0.4)" stroke-width="0.5"><line x1="0" y1="62.5" x2="100" y2="62.5"/><circle cx="50" cy="62.5" r="11"/><rect x="24" y="0" width="52" height="16"/><rect x="24" y="109" width="52" height="16"/></g></svg>
+      ${lay.map((q, k) => { const my = bit(a, k), op = bit(b, k); return `<div class="dz-ps dz-${my && op ? "both" : my ? "me" : op ? "op" : "none"}" style="left:${q.x}%;top:${q.y}%;--d:${k}"><button type="button" data-ab="${q.abbr}" data-k="${k}"><span class="dz-nm">${duelEsc(m.players[q.abbr])}</span><span class="dz-mk"><i class="${my ? "dz-y" : "dz-x"}">${my ? "✓" : "–"}</i><i class="${op ? "dz-o" : "dz-x"}">${op ? "✓" : "–"}</i></span></button></div>`; }).join("")}</div>
+    <div class="dz-legend"><span><i style="--bg:#F4F1E8"></i>beide richtig</span><span><i style="--bg:linear-gradient(135deg,#F7D98E,#E8B23D)"></i>nur du</span><span><i style="--bg:linear-gradient(135deg,#C3E2FF,#8CC8FF)"></i>nur ${duelEsc(p.name)}</span><span><i style="--bg:rgba(10,17,24,0.72)"></i>beide falsch</span></div>`
+    : `<p class="dz-note">${b ? "Für dieses ältere Duell gibt es kein Vergleichsfeld – hier stehen nur die Zahlen." : duelEsc(p.name) + "s Ergebnis fehlt noch."}</p>`;
+  const f1 = firstOf(a), f2 = firstOf(b);
+  const tl = cmpOk && a.solvedAt && b.solvedAt ? `<div class="dz-tl"><b>Wer war schneller?</b>
+      <div class="dz-track dz-y"><span class="dz-who2">Du</span>${dots(a)}</div><div class="dz-track dz-o"><span class="dz-who2">${duelEsc(p.name.slice(0, 7))}</span>${dots(b)}</div>
+      <div class="dz-axis"><span>0:00</span><span>${fmtMS(Math.round(limit / 2))}</span><span>${fmtMS(limit)}</span></div>
+      <div class="dz-fastest">Erste gelöste Position: du nach ${f1 != null ? f1 + " s" : "–"}, ${duelEsc(p.name)} nach ${f2 != null ? f2 + " s" : "–"}.</div></div>` : "";
+  return `<div class="dz-mt"><small>${d.lineups.length > 1 ? `Runde ${i + 1} · ` : ""}${duelEsc(m.comp)}</small><b>${duelEsc(m.teams)}</b><span>Gesucht: ${duelEsc(side)} · ${duelEsc(m.formation)}</span></div>
+    <div class="dz-cmp"><div class="dz-me"><small>${duelEsc(me.name)}</small><b>${a.correct} von 11<em>${fmtMS(a.seconds)}</em></b></div>${b ? `<div class="dz-op"><small>${duelEsc(p.name)}</small><b>${b.correct} von 11<em>${fmtMS(b.seconds)}</em></b></div>` : `<div class="dz-op"><small>${duelEsc(p.name)}</small><b>–</b></div>`}</div>
+    ${pitch}${tl}
+    ${bench ? `<details class="dz-bank"><summary><span class="dz-tile">${DZ_ICON.bench}</span>Ersatzbank<em>${bench.length} Spieler</em></summary><div class="dz-blist">
+      ${subs.map(x => `<div><span class="dz-nr">${duelEsc(x.nr)}</span><span>${duelEsc(x.name)}${x.for ? ` <small>für ${duelEsc(nameOf(x.for))}</small>` : ""}</span><span class="dz-in">⇡ ${min(x)}</span></div>`).join("")}
+      ${rest.map(x => `<div><span class="dz-nr">${duelEsc(x.nr)}</span><span>${duelEsc(x.name)}</span><span></span></div>`).join("")}</div></details>` : ""}`;
+}
+function dzDetailHTML(id, d) {
+  if (!d || !d.result) return "";
+  const me = duelMeInfo(), p = dzPerson(d), res = d.result, k = dzOutcomeKey(d), hasOp = !!(d.theirs && d.theirs.length);
+  const a = d.mine.reduce((x, r) => x + r.correct, 0), b = hasOp ? d.theirs.reduce((x, r) => x + r.correct, 0) : 0, ta = dzSecs(d.mine), tb = hasOp ? dzSecs(d.theirs) : 0;
+  const rounds = d.mine.length;
+  return `<div class="dz-det"><div class="dz-board">
+      <div class="dz-bnames"><div class="dz-me"><b>${duelEsc(me.name)}</b><span>${me.handle ? "@" + duelEsc(me.handle) : ""}</span></div><div class="dz-op"><b style="color:${p.color}">${duelEsc(p.name)}</b><span>${duelEsc(p.handle)}</span></div></div>
+      <div class="dz-bscore">${dzFlip(res.mw + ":" + res.ow, "xl", true)}</div>
+      <div class="dz-verdict dz-${k}">${DZ_LBL[k]}</div><div class="dz-why">${duelEsc(dzMeta(d))} · ${dzWhy(d, p)}</div>
+      <div class="dz-totals"><span class="dz-v ${a > b ? "dz-best" : ""}">${a}</span><span class="dz-k">Richtige</span><span class="dz-v dz-r ${b > a ? "dz-best" : ""}">${hasOp ? b : "–"}</span>
+        <span class="dz-bar2"><i style="flex:${a}"></i><u style="flex:${b}"></u></span>
+        <span class="dz-v ${ta < tb ? "dz-best" : ""}">${fmtMS(ta)}</span><span class="dz-k">Zeit gesamt</span><span class="dz-v dz-r ${tb < ta ? "dz-best" : ""}">${hasOp ? fmtMS(tb) : "–"}</span></div></div>
+    ${rounds > 1 ? `<div class="dz-rtabs" data-rt>${d.mine.map((r, i) => `<button class="dz-rtab dz-${dzRoundOutcome(d, i)}" type="button" data-r="${i}" aria-pressed="${i === dzDetRound}"><small><i></i>Runde ${i + 1}</small><b>${r.correct}:${d.theirs && d.theirs[i] ? d.theirs[i].correct : "?"}</b></button>`).join("")}</div>` : ""}
+    <div data-round>${dzRoundHTML(d, dzDetRound)}</div>
+    <div class="dz-acts"><button class="dz-cta" type="button" data-rev="${id}">Revanche gegen ${duelEsc(p.name)}</button><button class="dz-delbtn" type="button" data-hdel="${id}">${DZ_ICON.trash}Löschen</button></div>
+    <p class="dz-note">Löschen entfernt nur die Details. Die Bilanz gegen ${duelEsc(p.name)} bleibt.</p></div>`;
+}
+function dzShowTip(btn) {
+  const id = dzOpenHist, d = id && profile.duels[id];
+  if (!d) return;
+  const m = dailyMatchById(d.lineups[dzDetRound]), a = d.mine[dzDetRound], b = d.theirs && d.theirs[dzDetRound], pitch = btn.closest("[data-pitch]"), p = dzPerson(d);
+  if (!m || !pitch) return;
+  const key = btn.dataset.ab, k = +btn.dataset.k, q = PITCH_LAYOUTS[m.formation][k];
+  const had = pitch.querySelector(".dz-tip");
+  pitch.querySelectorAll(".dz-tip").forEach(t => t.remove());
+  if (had && had.dataset.k === String(k)) return; // zweites Antippen schliesst den Hinweis
+  const row = (name, r) => `<div><span>${name}</span><span>${r && r.mask !== undefined && (r.mask >> k) & 1 ? "✓ nach " + (r.solvedAt && r.solvedAt[k] != null ? r.solvedAt[k] + " s" : "–") : "nicht gelöst"}</span></div>`;
+  const t = document.createElement("div"); t.className = "dz-tip"; t.dataset.k = String(k);
+  t.style.left = Math.min(76, Math.max(24, q.x)) + "%"; t.style.top = q.y + "%";
+  t.innerHTML = `<b>${duelEsc(key)} · ${duelEsc(m.players[key])}</b>${row("Du", a)}${row(duelEsc(p.name), b)}`;
+  pitch.appendChild(t);
+}
+function dzBindDetail(root) {
+  root.onclick = (e) => {
+    const box = e.target.closest(".dz-det"); if (!box) return;
+    const id = dzOpenHist, d = id && profile.duels[id];
+    if (!d) return;
+    const r = e.target.closest("[data-r]");
+    if (r) { dzDetRound = +r.dataset.r; box.querySelectorAll("[data-r]").forEach(x => x.setAttribute("aria-pressed", String(x === r))); box.querySelector("[data-round]").innerHTML = dzRoundHTML(d, dzDetRound); return; }
+    const ab = e.target.closest("[data-ab]"); if (ab) { dzShowTip(ab); return; }
+    const rv = e.target.closest("[data-rev]");
+    if (rv) {
+      const o = d.opponent;
+      dzOpenNew({ settings: { rounds: d.settings.rounds, seconds: d.settings.seconds, difficulty: d.settings.difficulty }, friend: o ? o.deviceId : "" });
+      return;
+    }
+    if (e.target.closest("[data-hdel]")) { const nm = dzPerson(d).name; dzOpenHist = null; dzDeleteWithUndo([id], `Duell gegen ${duelEsc(nm)} aus der Historie gelöscht`); }
+  };
+}
+function dzToggleHist(id) {
+  const was = dzOpenHist; dzOpenHist = was === id ? null : id; dzDetRound = 0;
+  document.querySelectorAll("#duelsView .dz-hc").forEach(c => {
+    const k = c.dataset.hc, body = c.querySelector(".dz-hc-body > div"), row = c.querySelector(".dz-hc-row");
+    if (k === dzOpenHist) { body.innerHTML = dzDetailHTML(k, profile.duels[k]); requestAnimationFrame(() => c.classList.add("dz-open")); row.setAttribute("aria-expanded", "true"); }
+    else if (c.classList.contains("dz-open")) { c.classList.remove("dz-open"); row.setAttribute("aria-expanded", "false"); setTimeout(() => { if (!c.classList.contains("dz-open")) body.innerHTML = ""; }, 520); } // erst nach dem Zuklappen leeren
+  });
+  if (dzOpenHist) setTimeout(() => { const c = document.querySelector(`#duelsView .dz-hc[data-hc="${dzOpenHist}"]`); if (c) document.getElementById("screen-duels").scrollTo({ top: c.offsetTop - 60, behavior: REDUCED_MOTION ? "auto" : "smooth" }); }, 120);
+}
 
 // Gemeinsamer Abschluss nach erfolgreichem handleDuelInput (Feld "Code einfuegen"): Einladung oeffnen bzw. Rueckmeldung melden.
 function finishDuelOpen(res) {
