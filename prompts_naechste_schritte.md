@@ -3015,6 +3015,9 @@ TV-Bilder, Vereinslogos oder Original-Trikots – stattdessen App-Aufnahmen
      - Namen (festgelegt 14.10.): "Division 10 … Division 1", oberste
        Stufe "Legenden-Division" (bewusst nicht "Elite"). Begriffe:
        Aufstiegsleiter, Sprossen, Klassenerhalt. 6 Sprossen je Division.
+       Ligen-Stufen mit eigener Farbe (Vorschlag 14.10., Prototyp v3):
+       Bolzplatz (Div. 10–8, Kupfer), Flutlicht (7–5, Smaragd/Mint),
+       Arena (4–2, Gold), Olymp (1, Violett), Legenden (Schwarz-Gold).
        Sieg +1, Remis 0, Niederlage −1; ab 3. Sieg in Folge +2.
        Klassenerhalt-Marke in der Mitte; Divisionen 10–8 ohne Abstieg; oben
        angekommen = Aufstieg mit Meister-Animation.
