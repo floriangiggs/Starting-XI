@@ -378,6 +378,11 @@ if ($idxLC -lt 0) {
                     $otherName = $displayNameByAbbr[$otherAbbr]
                     $otherAliases = if ($aliasMap.ContainsKey($otherAbbr)) { $aliasMap[$otherAbbr] } else { @() }
                     if ($aVal -eq $otherName -or $otherAliases -contains $aVal) {
+                      # Prompt 38: ein gemeinsamer Nachname (z. B. dreimal Martinez bei Argentinien) ist bewusst positionsgebunden
+                      # geregelt (Emiliano im Tor, Lisandro in der Innenverteidigung, Lautaro im Sturm) - keine Mehrdeutigkeit.
+                      $surOwn = (($displayNameByAbbr[$aKey] -replace '^[A-Za-z\u00C0-\u00FF]\.\s+', '') -split '\s+')[-1]
+                      $surOther = (($otherName -replace '^[A-Za-z\u00C0-\u00FF]\.\s+', '') -split '\s+')[-1]
+                      if ($aVal -ieq $surOwn -and $aVal -ieq $surOther) { continue }
                       $warnings.Add("[LINEUP_CHALLENGES] Eintrag '$entryId': Alias '$aVal' von '$aKey' passt auch auf Position '$otherAbbr' ('$otherName') - Mehrdeutigkeit, Cross-Match wird dafuer automatisch abgelehnt.")
                     }
                   }
