@@ -2993,7 +2993,12 @@ TV-Bilder, Vereinslogos oder Original-Trikots – stattdessen App-Aufnahmen
      - Liga-Duell (neu, Arbeitstitel; Quizduell-Prinzip, Ping-Pong):
        6 Runden (evtl. 4/6/8 einstellbar), wer dran ist bekommt 3
        zufällige Kategorien und wählt eine, beide spielen dieselbe
-       Aufstellung, Wahl wechselt jede Runde. Wertung: Summe aller
+       Aufstellung, Wahl wechselt jede Runde. Nach der Kategorie-Wahl (und
+       beim Nachspielen durch den Gegner) startet der Walkout "Spielertunnel"
+       aus Prompt 36 – im Liga-Duell mit einer zusätzlichen ersten Tafel
+       "Runde n von 6 · Kategorie X · gewählt von …" und dem Liga-Spielstand
+       im Duo-Auftritt; danach Anpfiff wie gewohnt. Gilt ebenso für Ranked
+       ("Ranked · Division 7 · Match 1 von 3"). Wertung: Summe aller
        Richtigen, bei Gleichstand Gesamtzeit. Fest ca. 2 min je
        Aufstellung. Gegner-Ergebnis einer Runde erst sichtbar, wenn man
        sie selbst gespielt hat.
