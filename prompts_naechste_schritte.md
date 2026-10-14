@@ -49,8 +49,9 @@ vorige umgesetzt, getestet und committet ist.
 | 35 | Aufstellungen: alles vor 2008 ersetzen (12 Kampagne inkl. St. Pauli, 6 Tag), neue bevorzugt 2015–2026 | ✅ erledigt (59 Kampagne, 45 Tages-Pool; Wolfsburg-2009-Formation geklärt: 4-4-2 laut ESPN-Positionen) |
 | 36 | Duell: Walkout v2 „Spielertunnel“ – langsamer, Merkliste, Countdown als Stadionuhr | ✅ erledigt |
 | 37 | Ersatzbank im Spiel: Knopf „Bank“ unten rechts im Feld, Regeln ergänzen, Bank recherchieren (in Paketen) | ✅ erledigt (Teil A + Teil B: alle 104 Aufstellungen mit Bank; einzelne Banken nur von ESPN belegt, siehe `benchSource`) |
+| 38 | Namen eindeutig: Argentinien-Martínez, Nachname allein zählt (Alba, Alonso …), Initialen bei Namensgleichheit mit der Bank | – |
 
-**Empfohlene Reihenfolge ab jetzt:** weitere Offline-Feinschliffe (u. a. Jahres-Lücken im Ideen-Speicher auffüllen) → Planung Online-Duell (inkl. 28/29) → 8 (Capacitor, erst wenn die App final ist; vorher Duell-Pflichtpunkt aus CLAUDE.md ansprechen)
+**Empfohlene Reihenfolge ab jetzt:** 38 → weitere Offline-Feinschliffe (u. a. Jahres-Lücken im Ideen-Speicher auffüllen) → Planung Online-Duell (inkl. 28/29) → 8 (Capacitor, erst wenn die App final ist; vorher Duell-Pflichtpunkt aus CLAUDE.md ansprechen)
 
 Prompt 7 steht bewusst vor der Tages-Challenge: Nur mit der neuen
 Update-Strategie kommen neue Tages-Aufstellungen zuverlässig auf dem iPhone an.
@@ -2933,6 +2934,137 @@ den Knöpfen erscheint einmal und verschwindet nach dem Öffnen; Sterne/XP
 unverändert gegenüber ohne Bank; alle Formationen ohne Überdeckung
 (Screenshot-Serie 360/375/402/430); Entwurf bleibt erhalten; keine
 Konsolenfehler.
+```
+
+---
+
+## Prompt 38 – Namen eindeutig: dreimal „Martínez“ und weitere Fälle
+
+```
+Lies CLAUDE.md. Beobachtung Florian: In den Argentinien-Aufstellungen gibt
+es drei Martínez – Emiliano (TW), Lisandro (Innenverteidiger) und Lautaro
+(Stürmer). Wer nur "Martinez" eintippt, soll auf der jeweils passenden
+Position richtig liegen. Erst prüfen, Ergebnis zeigen, dann umsetzen.
+
+Stand im Code (geprüft am 14.10.2026 auf main):
+- wm-finale-2022 (Argentinien): TW "Martínez" (Emiliano) → "Martinez"
+  im Tor wird schon akzeptiert. Lisandro/Lautaro nur auf der Bank.
+- argentinien-kolumbien-2024: TW "Martínez", LIV "Lisandro Martínez" mit
+  alias nur "Lisandro" → "Martinez" auf LIV wird NICHT akzeptiert (Fehler).
+- argentinien-brasilien-copa-2021: TW "Martínez", LST "Lautaro Martínez"
+  mit aliases ["Lautaro","Martínez"] → passt bereits.
+- Alle weiteren Einträge mit Argentinien (Kampagne + Tages-Pool, beide
+  Seiten über pairedWith) per Skript suchen und mit auflisten.
+
+Regel (Florian, verbindlich), nur für die argentinische Mannschaft:
+- TW-Position (TW): "Martínez" allein = Emiliano Martínez.
+- Innenverteidiger (RIV, LIV, ZIV): "Martínez" allein = Lisandro Martínez.
+- Stürmer (ST, RST, LST): "Martínez" allein = Lautaro Martínez.
+- Akzeptiert wird "Martínez" nur dort, wo der jeweilige Spieler in DIESER
+  Aufstellung auch wirklich auf einer dieser Positionen steht. Steht z. B.
+  Romero im Tor, ist "Martinez" im Tor falsch.
+- Steht derselbe Martínez in einer Aufstellung ausnahmsweise auf einer
+  anderen Position (z. B. Lisandro als LV), gilt dort ebenfalls der
+  Nachname – Florian vorher fragen und Fall zeigen.
+
+Umsetzung (datengetrieben, kein Sonderfall im Prüf-Code):
+1. In jedem betroffenen Eintrag aliases ergänzen: "Martínez" auf der
+   Position des jeweiligen Spielers; dazu die Vornamen "Emiliano"
+   (zusätzlich zu "Dibu"), "Lisandro", "Lautaro".
+2. Anzeige der Lösung: Stehen in derselben Startelf mehrere Martínez,
+   Vornamen bzw. Initial zeigen, damit es eindeutig ist (TW
+   "E. Martínez" o. ä. – acceptedNames() akzeptiert Initial-Namen schon).
+   Gilt auch für Kontext-Sätze, Scout-Rad-Hinweise, Bank-Blatt (Prompt
+   37) und Teilen: überall eindeutig, nirgends Vor-/Nachname vertauscht.
+3. Tippfehler-Hilfe ("Fast richtig") darf "Martinez" nicht auf eine
+   falsche Martínez-Position umbiegen.
+4. Prüfskript/Hook check-lineups erweitern: Warnung, wenn in einer
+   Startelf zwei Spieler denselben Nachnamen haben und der reine Nachname
+   nicht je Position eindeutig als alias geregelt ist. Gesamte Datenbasis
+   einmal durchlaufen lassen und weitere Fälle (z. B. gleiche Nachnamen bei
+   anderen Teams) auflisten – nur melden, nicht eigenmächtig ändern.
+5. Gilt überall, wo Namen geprüft werden: Kampagne, Freispiel, Tages-
+   Challenge und Duell.
+6. Anzeige bei richtiger Eingabe (Florian): Sobald eine Eingabe als
+   richtig erkannt wird und grün wird, steht im Feld der eindeutige
+   Lösungsname aus players – also z. B. "Martinez" auf LIV → Feld wird grün
+   und zeigt "L. Martínez"; "Lautaro" auf LST → "Lautaro Martínez" bzw.
+   die gewählte Kurzform. Bisher bleibt im normalen Spiel der getippte
+   Text stehen (input-Handler ~Z. 8306 und Auswerten ~Z. 8417), nur im
+   Duell und beim automatischen Einsortieren in ein anderes Feld wird der
+   Lösungsname gesetzt – das jetzt überall einheitlich machen.
+   - Ersetzen erst, wenn die Eingabe eindeutig richtig ist (nicht bei
+     jedem Tastendruck vorher), Cursor/Fokus sauber, kein Springen des
+     Layouts (applyNameFit danach).
+   - Gilt für alle Spieler, nicht nur Martínez (z. B. "Dibu" → "E.
+     Martínez", Akzente werden ergänzt: "Alvarez" → "Álvarez").
+   - Entwürfe (Prompt 34) speichern weiter, was im Feld steht.
+
+Teil 2 – Weitere Namensfälle (Prüfung vom 14.10.2026 über alle 104
+Aufstellungen, mit Florian abgestimmt). Vor dem Ändern per Skript
+gegenprüfen und Ergebnis zeigen; Vornamen/Initialen per Quelle bestätigen.
+
+A. Gleicher Nachname zweimal in einer Startelf
+   - island-england-2016: LIV "Sigurðsson" → "R. Sigurðsson" (Ragnar),
+     RM bleibt "G. Sigurðsson". Nachname allein zählt weiter je Position.
+   - wales-belgien-2016-belgien (J./R. Lukaku) und
+     afcon-finale-2024-elfenbeinkueste (Y./S. Fofana): bleiben, sind ok.
+
+B. Vorname + Nachname: Nachname allein soll AUCH zählen (aliases
+   ergänzen; voller Name und vorhandene Vornamen-Aliase bleiben gültig):
+   - barcelona-frankfurt-2022-barcelona: "Jordi Alba" → "Alba",
+     "Eric García" → "García", "Ferran Torres" → "Torres"
+   - spanien-schweiz-2010-spanien: "Xabi Alonso" → "Alonso"
+   - em-finale-2016-portugal: "Rui Patrício" → "Patrício"
+   - psg-arsenal-2026: "Nuno Mendes" → "Mendes"
+   - cl-finale-la-decima-2014-atletico: "Raúl García" → "García";
+     "Filipe Luís" → alias "Filipe" ergänzen (wie im Kampagnen-Eintrag)
+   - sevilla-rom-el-finale-2023: "Óliver Torres" → "Torres",
+     "Bryan Gil" → "Gil"
+   - costarica-uruguay-2014-uruguay: "Maxi Pereira" → "Pereira";
+     "Arévalo Ríos" → "Arévalo"
+   - costarica-uruguay-2014: "Junior Díaz" → "Díaz"
+   - Achtung Eindeutigkeit: Gibt es in derselben Startelf einen zweiten
+     Spieler mit diesem Nachnamen (z. B. zwei García/Torres), dann NICHT
+     ergänzen, sondern Florian fragen.
+   - NICHT ändern (Florian): "Heuer Fernandes" (HSV) bleibt nur mit vollem
+     Namen; "João Mário" bleibt ohne "Mário" allein. Namen mit Vorsatz
+     (De Bruyne, van Dijk, Di María, Mac Allister, Ter Stegen, De Gea …)
+     bleiben wie sie sind.
+
+C. Gleicher Nachname in Startelf und Bank → Startelf-Anzeige eindeutig
+   (Nachname allein zählt weiter):
+   - wales-belgien-2016: "Williams" → "A. Williams"
+   - brasilien-belgien-2018-belgien: "Hazard" → "E. Hazard"
+   - deutschland-japan-2022 (Japan): "Ito" → "J. Ito"
+   - villarreal-manutd-2021: "Moreno" → "G. Moreno"
+   - freiburg-leipzig-2022: "Schlotterbeck" → "N. Schlotterbeck"
+   - island-england-2016: "Bjarnason" → "B. Bjarnason"
+   Danach Kontext-Sätze, Bank-"für"-Angaben und Scout-Rad-Hinweise
+   prüfen, dass sie zu den neuen Anzeigenamen passen.
+
+D. Prüfskript/Hook dauerhaft erweitern (meldet, ändert nicht):
+   - Startelf mit doppeltem Nachnamen ohne eindeutige Anzeige
+   - Startelf-Nachname, der auch auf der Bank derselben Seite vorkommt,
+     ohne Initial/Vorname in der Startelf
+   - Mehrteiliger Name "Vorname Nachname" ohne Nachnamen-Alias (Namen mit
+     Vorsatz wie de/van/di/mac/ter/le ausgenommen; Ausnahmen-Liste im
+     Skript: "Heuer Fernandes", "João Mário").
+
+sw.js CACHE_NAME erhöhen. Test (Konsole/Skript mit isAcceptedFor):
+- argentinien-kolumbien-2024: TW "Martinez" ✓, LIV "Martinez" ✓,
+  RIV "Martinez" ✗ (dort Romero), ST "Martinez" ✗.
+- argentinien-brasilien-copa-2021: TW "Martinez" ✓, LST "Martinez" ✓,
+  RST "Martinez" ✗ (dort Messi), LIV "Martinez" ✗ (dort Otamendi).
+- wm-finale-2022: TW "Martinez" ✓, ST "Martinez" ✗ (Álvarez).
+- "Martínez", "martinez", "MARTINEZ", "Lisandro Martinez", "E. Martinez"
+  jeweils passend; Vornamen-Aliase greifen.
+- Kampagne/Freispiel/Tag: "martinez" auf LIV (Copa 2024) → Feld sofort grün
+  mit "L. Martínez"; "alvarez" → "Álvarez"; Duell unverändert.
+- Teil 2: "alba" (Barcelona 2022) ✓ → Feld zeigt "Jordi Alba"; "fernandes"
+  (HSV) ✗; "mario" (Portugal 2016) ✗; "hazard" (Belgien 2018) ✓ → "E. Hazard";
+  Prüfskript läuft ohne Meldungen außer den bewusst erlaubten Ausnahmen. Hook-Ergebnis zeigen; keine
+  Konsolenfehler.
 ```
 
 ---
