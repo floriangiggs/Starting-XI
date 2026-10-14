@@ -8214,13 +8214,31 @@ function renderPitch() {
     if (changed && activePosAbbr === abbr) renderPositionPanel(abbr);
   }
 
+  // Richtig erkannter Name -> eindeutiger Loesungsname im Feld (Prompt 38): "martinez" auf LIV wird zu "Lisandro Martínez",
+  // "alvarez" zu "Álvarez", "Dibu" zu "E. Martínez". NIE bei jedem Tastendruck (sonst wuerde aus "Kim" mitten im Tippen
+  // "Kim Min-Jae" und der Rest haengte sich an): erst nach einer Tipppause, bei Blur oder Enter, und nur wenn die
+  // Eingabe dann immer noch richtig ist. XP/Kombo/Sterne laufen davon unabhaengig schon beim ersten Erkennen.
+  const settleTimers = new Map();
+  const SETTLE_MS = 600;
+  function settleName(input) {
+    const abbr = input.dataset.abbr;
+    clearTimeout(settleTimers.get(abbr));
+    if (!input.classList.contains("ok") || input.classList.contains("revealed") || input.classList.contains("prefilled") || input.disabled) return;
+    const target = m.players[abbr];
+    if (!target || input.value === target || !isAcceptedFor(m, abbr, input.value)) return;
+    input.value = target;
+    applyNameFit(input);
+    if (typeof scheduleDraft === "function") scheduleDraft();
+  }
+
   pitchView.querySelectorAll(".pos-input").forEach(input => {
     input.addEventListener("focus", () => setActivePosition(input.dataset.abbr));
     input.addEventListener("blur", () => {
       if (input.value.trim().length > 0 && !input.classList.contains("ok")) resetCombo();
       runFuzzyCheck(input);
+      settleName(input);
     });
-    input.addEventListener("keydown", (e) => { if (e.key === "Enter") runFuzzyCheck(input); });
+    input.addEventListener("keydown", (e) => { if (e.key === "Enter") { runFuzzyCheck(input); settleName(input); } });
   });
 
   // Panel-Buttons nehmen dem Namensfeld beim Antippen weder Fokus noch Tastatur (mousedown-
@@ -8339,8 +8357,10 @@ function renderPitch() {
           newlyUnlocked.forEach(showAchievementToast);
         }
         if (activePosAbbr === input.dataset.abbr) renderPositionPanel(activePosAbbr);
+        settleTimers.set(input.dataset.abbr, setTimeout(() => settleName(input), SETTLE_MS));
         return;
       }
+      clearTimeout(settleTimers.get(input.dataset.abbr));
       input.classList.remove("ok");
       if (typed.trim().length === 0) return;
 
@@ -8423,6 +8443,7 @@ function evaluatePitch() {
     input.classList.remove("ok", "bad");
     input.classList.add(isCorrect ? "ok" : "bad");
     input.disabled = true;
+    if (isCorrect && input.value !== target) input.value = target; // eindeutiger Loesungsname auch hier (Prompt 38)
     // Kampagne (Prompt 33): Loesung bleibt verdeckt - leere Felder zeigen "?", eigene falsche Eingaben bleiben stehen.
     if (!isCorrect) { if (!hideSolution) input.value = target; else if (!input.value.trim()) input.value = "?"; }
     applyNameFit(input); // nach Auswertung (Klasse + ggf. eingeblendeter Name)
