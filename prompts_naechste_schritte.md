@@ -3000,7 +3000,26 @@ TV-Bilder, Vereinslogos oder Original-Trikots – stattdessen App-Aufnahmen
      14.10.: CL 30, WM 19, EM 14, Deutschland 12, Europa League 9,
      Premier League 7, LaLiga 6, Serie A 4. Ergänzungen wählen Florian
      und Claude gemeinsam aus (Vorschläge → Auswahl), Vorrat oben nutzen.
-  5. Letzter Punkt von Florian folgt noch.
+  5. Ranked-Modus (Idee nach Division Rivals, später mit Server/Accounts):
+     - Stufen-Leiter je Klasse (Name offen: Vorschlag "Klasse 10 … 1",
+       oben "Meisterklasse"; Alternative "Staffel"), 6 Sprossen je Klasse.
+       Sieg +1, Remis 0, Niederlage −1; ab 3. Sieg in Folge +2.
+       Klassenerhalt-Marke in der Mitte; Klassen 10–8 ohne Abstieg; oben
+       angekommen = Aufstieg mit Meister-Animation.
+     - Wochen-Tabelle: Sieg 3 / Remis 1 / Niederlage 0 Punkte; 15 bzw. 30
+       Punkte = Wochenbelohnung (nur XP/Kosmetik, keine Token).
+     - Ranked-Match: 3 Aufstellungen à 2 min, Summe der Richtigen;
+       Schwierigkeit steigt mit der Klasse (unten Stufe 1–2, oben 4–5).
+       Gleichstand-Regel offen (Vorschlag: Richtige → Zeit, Remis wenn
+       Zeitunterschied < 5 s).
+     - Saison 4 Wochen (festgelegt), danach 2 Klassen zurück.
+     - Trophäen: Meister jeder Klasse, Ungeschlagen aufgestiegen,
+       Last-Minute-Klassenerhalt, Serien 5/10, Meisterklasse erreicht,
+       Top 100, Saison-Vitrine.
+     - Gegner bei wenig Traffic: aufgezeichnete Läufe echter Spieler
+       derselben Klasse ("Lisa (aufgezeichnet)"), später Live-Suche.
+     - Reihenfolge: Historie/Löschen/Zeiten (offline) → Online-Duell +
+       Accounts + Liga-Duell → Ranked mit Aufzeichnungen → Live-Suche.
 
 - **Jahres-Lücken im Blick behalten** (Stand nach Prompt 35, geplant,
   Kampagne + Tag zusammen, 104 Aufstellungen):
