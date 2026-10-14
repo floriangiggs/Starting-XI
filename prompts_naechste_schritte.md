@@ -53,8 +53,9 @@ vorige umgesetzt, getestet und committet ist.
 | 39 | Duell-Zentrale v2 (One-Pager): Namen statt Wappen, Schnell-Duell 1/2/3/5 Min, Löschen/Aufräumen, Spielhistorie mit Vergleichs-Spielfeld | – |
 | 40 | Online-Duell-Spezifikation: Liga-Duell + Ranked (Divisionen) – NICHT ausführen, Grundlage für den Online-Plan | ⏸ wartet auf Server/Accounts |
 | 41 | Level-Vorschau „Taktiktafel“ (Kampagne), Scout-Münze als Token-Symbol überall, spoilerfreie Vorschau-Texte | – |
+| 42 | Spiel-Ansicht „Taktiktafel“ als One-Pager in allen Modi (inkl. Duell): Holzreiter, Holzleiste mit Werkzeugen, Korrigieren per Stift, Tastatur-Leiste, Regeln anpassen | 41 |
 
-**Empfohlene Reihenfolge ab jetzt:** 38 → 39 → 41 → weitere Offline-Feinschliffe (u. a. Jahres-Lücken im Ideen-Speicher auffüllen) → Planung Online-Duell (inkl. 28/29) → 8 (Capacitor, erst wenn die App final ist; vorher Duell-Pflichtpunkt aus CLAUDE.md ansprechen)
+**Empfohlene Reihenfolge ab jetzt:** 38 → 39 → 41 → 42 → weitere Offline-Feinschliffe (u. a. Jahres-Lücken im Ideen-Speicher auffüllen) → Planung Online-Duell (inkl. 28/29) → 8 (Capacitor, erst wenn die App final ist; vorher Duell-Pflichtpunkt aus CLAUDE.md ansprechen)
 
 Prompt 7 steht bewusst vor der Tages-Challenge: Nur mit der neuen
 Update-Strategie kommen neue Tages-Aufstellungen zuverlässig auf dem iPhone an.
@@ -72,7 +73,8 @@ Welten-Ausschmückung), `prototypes/ladescreen.html` (Prompt 11d) und
 `prototypes/walkout.html` (Prompt 36 – nur die Bühne, nicht das Regie-Pult) und
 `prototypes/bank.html` (Prompt 37 – nur Variante C und das Blatt) und
 `prototypes/duell-ausbau.html` (Prompts 39/40 – Duell-Zentrale v3) und
-`prototypes/level-vorschau.html` (Prompt 41 – nur Variante C „Taktiktafel“ + Kopfzeile).
+`prototypes/level-vorschau.html` (Prompt 41 – nur Variante C „Taktiktafel“ + Kopfzeile) und
+`prototypes/spiel-ansicht.html` (Prompt 42 – nur Standard: Holzreiter + Holzrahmen).
 
 **Wichtig nach jeder Änderung:** Der Service Worker liefert die App aus dem
 Cache. Jeder Prompt erhöht deshalb `CACHE_NAME` in `sw.js` – sonst sieht die
@@ -3296,9 +3298,14 @@ B. Taktiktafel-Vorschau (nur Kampagne)
       Gold). Schriftgröße per Messung so wählen, dass der längere Name in
       die Breite links neben der Anzeigetafel passt (max 34 px, wie fit()
       im Prototyp). Heimteam hell, Gast etwas gedämpft.
-   4. Anzeigetafel rechts oben (.score): Ergebnis groß in Anton Gold
-      (46 px), Klappziffer-Linie, darunter "n. V." / "i. E." bzw.
-      "Endstand"; einmalige Stempel-Animation beim Öffnen.
+   4. Anzeigetafel rechts oben (.score): Ergebnis groß in Anton (46 px),
+      darunter "n. V." / "i. E." bzw. "Endstand"; einmalige Stempel-
+      Animation beim Öffnen. NACHTRAG 14.10.: Die Tafel ist NICHT dunkel
+      wie im Prototyp, sondern ein Holzbrettchen wie .score in
+      prototypes/spiel-ansicht.html (Holz-Verlauf + feine Maserung,
+      dunkelbrauner Rand #3E2A16, Ziffern cremefarben #FFF1C8 mit
+      Präge-Schatten, keine Klappziffer-Linie) – gleiche Optik in
+      Vorschau und Spiel.
       Ergebnis + Zusatz aus m.teams parsen ("A gegen B 1:0 n.V.").
       Alle 59 Kampagnen-Einträge per Skript prüfen; wo das Muster nicht
       greift, Liste zeigen und den Eintrag in m.teams vereinheitlichen
@@ -3391,6 +3398,198 @@ Abschluss:
   Entwurf, mit 1–2 Sternen, mit 3 Sternen) bei 375×812 und 360×667 zeigen.
 - Prüfskript aus D zeigen (0 Treffer), Hook-Ergebnis zeigen.
 - Status-Tabelle in prompts_naechste_schritte.md: Prompt 41 erledigt.
+```
+
+---
+
+## Prompt 42 – Spiel-Ansicht „Taktiktafel“ (One-Pager, alle Modi)
+
+```
+Lies CLAUDE.md. Großer Umbau des wichtigsten Bildschirms → Plan Mode,
+Plan zeigen, dann in Paketen A–F umsetzen (je Paket Commit + Test).
+Voraussetzung: Prompt 41 ist erledigt (Scout-Münze tokenCoin(), Holz-
+Anzeigetafel, Kopfzeile .topbar).
+Optische Vorlage: prototypes/spiel-ansicht.html, NUR die Standard-
+Einstellung (Positions-Kennzeichnung "Holzreiter" .posB, leere Schilder
+"Holzrahmen" .empB). Optik, Maße, Farben, Schrift und Bewegungen 1:1
+übernehmen. Die anderen Varianten, die Tastatur-Attrappe (.kbd), das
+Regie-Pult und die Demo-Logik gehören NICHT in die App. Florian hat die
+Vorlage am 14.10.2026 freigegeben.
+
+Grundsatz: Inhaltlich ändert sich NICHTS an Spielregeln, XP, Sternen,
+Kombo, Token-Kosten, Live-Prüfung (isAcceptedFor, Einsortieren auf die
+richtige Position, Fast-richtig nach Tipppause), Entwürfen (Prompt 34),
+Vorgaben (Prompt 9), Bank (Prompt 37) und Scout-Rad-Logik
+(mountScoutWheel). Es ändert sich die Optik und die Anordnung.
+Alle Modi bekommen dieselbe Ansicht: Kampagne, Frei spielen, Tages-
+Challenge und die Duell-Runde (#duelPlayView) – Florian: "überall
+gleich". Gemeinsame Bausteine also als EINE Render-Funktion/CSS, die
+alle Modi nutzen (Duell mit seinen Besonderheiten: Uhr, kein Scout-Rad/
+Aufdecken, sofern es dort heute keine Hilfen gibt – vorher im Code
+prüfen und im Plan zeigen).
+
+A. Aufbau (One-Pager, ohne Scrollen)
+   Von oben nach unten wie Prototyp (Maße bei 390×844):
+   1. Kopfzeile .topbar: "✕ Abbrechen" (exitMatch bzw. Duell-Abbruch
+      wie heute), Token-Chip mit Scout-Münze + Zahl (Anton Gold),
+      "Regeln" mit Info-Symbol + Hinweis-Punkt (rules-dot wie heute).
+      Das alte rote/rötliche .bonus-panel samt Rahmen entfällt.
+   2. Tafel mit Holzrahmen (.frame) – oben ein kompakter Kopf (.head):
+      - Zeile 1: Kampagne "<Welt> · Level n von N" + Level-Punkte;
+        Frei spielen "Frei spielen · Stufe n · <Stufenname>"; Tag
+        "Tages-Challenge · <Datum>"; Duell "Duell gegen <Name> · Runde
+        n" (genaue Texte im Plan vorschlagen).
+      - "Aufstellen:" + Mannschaft groß in Anton Gold (Größe per
+        Messung, max 26 px) + Formations-Pille.
+      - "gegen <Gegner> · <Wettbewerb> <Jahr>" einzeilig mit Ellipsis –
+        Gegner zuerst, damit er nie abgeschnitten wird.
+      - rechts die Ergebnis-Tafel als Holzbrettchen (.score, Optik
+        wie Prompt 41 Nachtrag).
+   3. Kreide-Spielfeld (.pitch) füllt den Rest der Tafel: Linien aus
+      SVG (pathLength="1", zeichnen sich einmalig), Positionen aus
+      PITCH_LAYOUTS. Je Position:
+      - Holzreiter (.ptag) mit dem Kürzel, bündig auf dem Schild, KEIN
+        Überlappen; Schrift Oswald 500 ~12 px, cremefarben #FFF1C8,
+        höchstens 0.02em Sperrung (nicht "maschinell"). Gewählte
+        Position: Reiter golden. Reiter antippen = Position wählen.
+      - Namensschild = das bisherige .pos-input (gleiche data-abbr,
+        damit die ganze Logik weiter greift), Höhe 30 px, Schrift
+        Oswald 500 14 px, Breite je Formation aus dem kleinsten
+        Abstand benachbarter Positionen (plateWidth() im Prototyp,
+        52–70 px); lange Namen erst kleiner (min. 10.5 px), dann darf
+        das Schild breiter werden (fitPlate()/applyNameFit anpassen).
+      - Zustände (Klassen wie heute, nur neue Optik):
+        leer = Holzrahmen (2 px #7A5532, innen dunkel, leicht vertieft),
+        getippt = hellerer Holzrahmen, gewählt = Goldrand + Schein,
+        .ok = grün mit weißem Häkchen-Abzeichen (+ einmaliger Pop),
+        .near = gold mit Stift-Abzeichen (siehe C),
+        .revealed = dunkel mit Goldrand + Münz-Abzeichen,
+        .prefilled = cremefarbenes Kärtchen + Geschenk-Abzeichen
+        (ersetzt "✓ gratis" unter dem Feld).
+        .bad (nach dem Auswerten) bleibt rot (Fehlerzustand, erlaubt).
+      - Kombo-Chip links oben im Feld (Flammen-SVG statt 🔥, Text
+        "3er-Kombo", einmaliger Pop bei jeder Erhöhung).
+      - Bank-Knopf unten rechts im Feld als Holzbrettchen (Holz-Verlauf,
+        cremefarbene Schrift "Bank", Bank-Symbol auf cremefarbenem
+        Kärtchen) – Funktion und Blatt aus Prompt 37 bleiben.
+   4. Holzleiste (.tray mit .felt) = das bisherige Positions-Panel
+      (renderPositionPanel), jetzt fest unter der Tafel:
+      - Holzreiter mit Kürzel + ausgeschriebener Positionsname (Oswald
+        500 16 px, z. B. "Mittelstürmer"; Liste POSN im Prototyp, für
+        alle Kürzel aus PITCH_LAYOUTS ergänzen) + gezogene Tipps als
+        goldene Chips ("Rückennummer 11", "1. Buchstabe K…", "Nation
+        Deutschland") bzw. "Noch keine Tipps für diese Position".
+      - rechts runder Knopf "Felder leeren" (Pfeil-Symbol) – öffnet die
+        bestehende Rückfrage (askSheet), ersetzt den Text-Link.
+      - Knöpfe: "Scout-Rad" (grün, Goldrand, Münze + Kosten) und
+        "Aufdecken" (Auge, Münze + Kosten); ohne Token "Zu wenig
+        Token", alle gezogen "Alle Tipps gezogen" (wie heute).
+      - Fast richtig: Text "Fast richtig: „<Eingabe>“ – Schreibweise
+        prüfen", Knöpfe "Korrigieren" (Gold) + Scout-Rad + Aufdecken
+        (nur Symbol + Kosten).
+      - Position gelöst: "✓ <Name> · richtig eingetragen / aufgedeckt /
+        gratis vorgegeben" + Knopf "Nächste freie Position →".
+      - Alle besetzt: "Alle Positionen besetzt – Bereit? Unten
+        auswerten."
+      Panel-Knöpfe nehmen dem Feld weiter nicht den Fokus (mousedown-
+      preventDefault wie heute).
+   5. "Auswerten" (Gold, volle Breite) mit Unterzeile "n von 11
+      eingetragen · k gratis" bzw. "Alle 11 eingetragen – ab zur
+      Auswertung" (dann einmaliger Glanz). Die bestehende Rückfrage
+      bei leeren Feldern bleibt, im Holz-Blatt-Stil (siehe E).
+   6. Hintergrund grün wie Level-Vorschau. Kein Scrollen bei 390×844,
+      375×812, 430×932; bei 375×667 (iPhone SE) darf das Spielfeld
+      schrumpfen (Positionen in % bleiben), nie abgeschnitten, nichts
+      überlappt (tools/check-overlap.mjs für alle Formationen in
+      PITCH_LAYOUTS, auch mit langen Namen und allen Abzeichen).
+
+B. Tippen mit iPhone-Tastatur
+   - Beim Fokus eines Namensschilds: Kopfzeile blendet aus, die Tafel
+     rutscht so weit hoch, dass das gewählte Schild sicher über der
+     Tastatur sichtbar ist (shiftBoard() im Prototyp, Ziel ca. 250 px
+     von oben, über visualViewport ermitteln statt fester Werte).
+   - Die Holzleiste wird zur schmalen Zubehörleiste direkt über der
+     Tastatur (.acc, 60 px): Reiter, Positionsname + Tipps, Scout-Rad-
+     und Aufdecken-Symbolknopf mit Kosten-Münze, bei Fast richtig
+     "Korrigieren", bei gelöst "→" zur nächsten freien Position, rechts
+     "Fertig" (Tastatur zu). Position per visualViewport (resize/
+     scroll) an die Tastatur-Oberkante heften; auf iOS testen, dass
+     nichts springt und kein Zoom ausgelöst wird.
+   - Ohne Tastatur (Desktop/Tastatur zu): normale Ansicht aus A.
+   - Scout-Rad aus der Zubehörleiste: Tastatur schließen, dann Blatt.
+
+C. Korrigieren per Stift (neu, Florian-Wunsch)
+   - Das Stift-Abzeichen am .near-Schild ist ein echter Knopf (22 px,
+     Gold, Trefferfläche min. 42 px): ein Tipp korrigiert SOFORT diese
+     Position – auch wenn gerade eine andere Position gewählt ist –
+     mit genau der bestehenden Korrigieren-Logik (fuzzyCorrected, XP,
+     Kombo-Reset, Entwurf). Danach kurzer Hinweis "Korrigiert: <Name>".
+   - Beim ersten "Fast richtig" pro Aufstellung einmal der Hinweis
+     "Fast richtig – tipp auf den Stift, um zu korrigieren".
+   - Der Korrigieren-Knopf in Holzleiste/Zubehörleiste bleibt.
+   - Hinweise (showToast) auf diesem Bildschirm unterhalb des Tafel-
+     Kopfs anzeigen, nicht über Mannschaft/Ergebnis.
+
+D. Scout-Rad-Blatt im Holz-Stil
+   - Blatt mit Holzrahmen + grünem Filz (wie Prototyp .sheet/.in):
+     Titel "Scout-Rad" (Anton), darunter "<Positionsname> · Dreh für
+     einen Tipp", Schließen-X, gezogene Tipps als Chips, Rad, Ergebnis-
+     Karte (Gold, "Rückennummer / 11"), Jackpot trägt ein und schließt.
+   - Das Rad selbst (Canvas, Segmente, Lämpchen, Zeiger, Nabe "Drehen ·
+     Münze 1 Token") bleibt technisch wie heute; nur Farben/Schrift an
+     den Prototyp angleichen (Segment-Beschriftung in normaler
+     Schreibweise statt Versalien, z. B. "1. Buchstabe", "Rückennummer",
+     "Nation", "Name"; Kosten mit Scout-Münze). Lämpchen laufen nur
+     während der Drehung.
+   - Rückfragen auf diesem Bildschirm (Felder leeren, leere Felder vor
+     dem Auswerten) im gleichen Holz-Blatt-Stil (.ask).
+
+E. Ergebnis nach dem Auswerten
+   - Die Schilder zeigen nach dem Auswerten ihre Zustände in der neuen
+     Optik (.ok grün, .bad rot, Kampagne ohne Lösung wie Prompt 33:
+     leere Felder "?"); Ersatzbank-Pfeile (Prompt 37) bleiben sichtbar.
+   - Alles unterhalb (Ergebnis, Sterne, Token-Quittung, Teilen, Lösung
+     anzeigen, Weiter) darf vorerst wie heute bleiben, aber nicht mehr
+     im roten Panel: im gleichen grünen/Holz-Stil einbetten; wenn das
+     Ergebnis länger wird als ein Bildschirm, darf HIER gescrollt
+     werden. Vorschlag für ein eigenes Ergebnis-Design im Plan nur
+     skizzieren, nicht bauen (kommt als eigener Prompt mit Prototyp).
+
+F. Regeln und Texte anpassen (Florian: "falls Änderungen die Regeln
+   beeinflussen, bitte anpassen")
+   - "So geht's" → Reiter "Spielen": Punkt 3 "Fast richtig": "Kleiner
+     Tippfehler? Das Feld wird gold und bekommt einen Stift. Tipp auf
+     den Stift (oder unten auf „Korrigieren“), um die richtige
+     Schreibweise zu übernehmen – für etwas weniger XP."
+     GUIDE_PITCH_SKETCH an die neue Optik angleichen (Holzreiter +
+     Schilder), falls dort Felder/Kürzel gezeichnet sind.
+   - Reiter "Hilfen": Einleitung ergänzen "Tipp eine Position an – unten
+     auf der Holzleiste findest du ihre Tipps, das Scout-Rad und
+     Aufdecken." Token-Symbol = Scout-Münze (Prompt 41). Bank-Text:
+     prüfen, ob "Unten rechts im Spielfeld … BANK" noch stimmt
+     (Knopf heißt jetzt "Bank", normale Schreibweise).
+   - Ladescreen-Tipps (SPLASH_TIPS): Fast-richtig-Tipp auf den Stift
+     umformulieren; alle übrigen Tipps gegen die neue Ansicht prüfen.
+   - Alle anderen Stellen per grep prüfen, die "Felder leeren",
+     "Positions-Panel", "✓ gratis", "🎁 … vorgegeben", "Kombo ×" o. ä.
+     erwähnen, und anpassen. Liste der geänderten Texte im Abschluss
+     zeigen.
+
+Schriften/Bewegung nach CLAUDE.md: Anton nur für Mannschaft, Ergebnis,
+Token-Zahl, Kombo-Zahl, Knopf "Auswerten", Scout-Rad-Titel; sonst
+Oswald; keine gesperrten Versal-Labels (auch nicht im Rad); kein
+JetBrains Mono. Bewegung nur einmalig (Aufbau beim Öffnen, Pop bei
+richtig, Kombo), keine Dauerschleifen; prefers-reduced-motion.
+
+Abschluss:
+- CACHE_NAME in sw.js erhöhen.
+- Screenshots: je Modus (Kampagne W1–W5, Frei, Tag, Duell-Runde) bei
+  375×812 und 375×667; Zustände leer / mitten im Spiel (ok, near,
+  revealed, prefilled, Kombo, Tipps) / Tastatur offen (iOS-Simulation
+  oder echter Test) / Scout-Rad-Blatt / nach dem Auswerten.
+- Overlap-Check-Ergebnis zeigen; Hook-Ergebnis zeigen.
+- Liste der angepassten Regel-/Hilfe-Texte zeigen.
+- Status-Tabelle in prompts_naechste_schritte.md: Prompt 42 erledigt.
 ```
 
 ---
@@ -3495,10 +3694,13 @@ TV-Bilder, Vereinslogos oder Original-Trikots – stattdessen App-Aufnahmen
      - Reihenfolge: Historie/Löschen/Zeiten (offline) → Online-Duell +
        Accounts + Liga-Duell → Ranked mit Aufzeichnungen → Live-Suche.
 
-- **Taktiktafel auch für Freispiel und Tages-Challenge?** (nach Prompt 41
-  mit Florian klären): gleiche Vorschau, Kopfzeile "Frei spielen · Stufe n"
-  bzw. "Tages-Challenge · Datum"; Sterne-Leiste nur in der Tages-Challenge
-  (Freispiel hat seit 13b keine Sterne).
+- **Taktiktafel-VORSCHAU auch für Freispiel und Tages-Challenge?** (nach
+  Prompt 41 mit Florian klären; die Spiel-Ansicht selbst ist mit Prompt 42
+  schon überall gleich): Kopfzeile "Frei spielen · Stufe n" bzw. "Tages-
+  Challenge · Datum"; Sterne-Leiste nur in der Tages-Challenge (Freispiel
+  hat seit 13b keine Sterne).
+- **Ergebnis-Bildschirm nach dem Auswerten neu gestalten** (Prototyp im
+  Taktiktafel-Stil, eigener Prompt nach 42).
 
 - **Jahres-Lücken im Blick behalten** (Stand nach Prompt 35, geplant,
   Kampagne + Tag zusammen, 104 Aufstellungen):
