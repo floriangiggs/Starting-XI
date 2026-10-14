@@ -50,7 +50,7 @@ vorige umgesetzt, getestet und committet ist.
 | 36 | Duell: Walkout v2 „Spielertunnel“ – langsamer, Merkliste, Countdown als Stadionuhr | ✅ erledigt |
 | 37 | Ersatzbank im Spiel: Knopf „Bank“ unten rechts im Feld, Regeln ergänzen, Bank recherchieren (in Paketen) | ✅ erledigt (Teil A + Teil B: alle 104 Aufstellungen mit Bank; einzelne Banken nur von ESPN belegt, siehe `benchSource`) |
 | 38 | Namen eindeutig: Argentinien-Martínez, Nachname allein zählt (Alba, Alonso …), Initialen bei Namensgleichheit mit der Bank | ✅ erledigt (Anzeige des Lösungsnamens nach 600 ms Tipppause/Blur/Enter; Prüfskript `tools/test-names.mjs`; Hook meldet Namenshinweise) |
-| 39 | Duell-Zentrale v2 (One-Pager): Namen statt Wappen, Schnell-Duell 1/2/3/5 Min, Löschen/Aufräumen, Spielhistorie mit Vergleichs-Spielfeld | – |
+| 39 | Duell-Zentrale v2 (One-Pager): Namen statt Wappen, Schnell-Duell 1/2/3/5 Min, Löschen/Aufräumen, Spielhistorie mit Vergleichs-Spielfeld | ✅ erledigt (Link-Format v2 mit Handle/60 s/Maske+Lösungszeiten, v1 bleibt lesbar; Löschen/Aufräumen ändert die Bilanz nie; Prüfskript `tools/test-duell.mjs`; Liga/Ranked nur als „bald“-Hinweis) |
 | 40 | Online-Duell-Spezifikation: Liga-Duell + Ranked (Divisionen) – NICHT ausführen, Grundlage für den Online-Plan | ⏸ wartet auf Server/Accounts |
 | 41 | Level-Vorschau „Taktiktafel“ (Kampagne), Scout-Münze als Token-Symbol überall, spoilerfreie Vorschau-Texte | – |
 | 42 | Spiel-Ansicht „Taktiktafel“ als One-Pager in allen Modi (inkl. Duell): Holzreiter, Holzleiste mit Werkzeugen, Korrigieren per Stift, Tastatur-Leiste, Regeln anpassen | 41 |

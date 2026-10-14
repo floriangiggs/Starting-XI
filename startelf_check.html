@@ -817,42 +817,7 @@
     background: linear-gradient(160deg, #9CCBFF, #5E95D6); clip-path: path("M19 0 L38 6 L38 22 C38 33 29 39 19 42 C9 39 0 33 0 22 L0 6 Z"); }
     clip-path: path("M11 0 L22 3.5 L22 12.5 C22 19 17 23 11 25 C5 23 0 19 0 12.5 L0 3.5 Z"); }
   /* Mini-Tickets */
-  .dl .tk { --stub: 92px; position: relative; display: grid; grid-template-columns: minmax(0, 1fr) var(--stub); min-height: 66px; text-align: left; width: 100%; padding: 0; border: none; background: none; color: inherit; font-family: inherit; }
   .dl button.tk { cursor: pointer; }
-  .dl .tk .m, .dl .tk .s { border: 1.5px solid var(--line); }
-  .dl .tk .m { border-right: none; border-radius: 12px 0 0 12px; background: var(--ink-2); padding: 9px 10px 9px 12px; display: flex; align-items: center; gap: 10px; min-width: 0; }
-  .dl .tk .s { border-left: none; border-radius: 0 12px 12px 0; position: relative; display: grid; place-items: center; text-align: center; background: var(--ink-3); }
-  .dl .tk .s::before { content: ""; position: absolute; left: -1px; top: 9px; bottom: 9px; border-left: 2.5px dotted rgba(242,239,230,0.25); }
-  .dl .tk .nt { position: absolute; right: var(--stub); width: 14px; height: 14px; margin-right: -7px; border-radius: 50%; background: var(--ink); border: 1.5px solid var(--line); z-index: 2; }
-  .dl .tk .nt.t { top: -7px; clip-path: inset(50% 0 0 0); } .dl .tk .nt.b { bottom: -7px; clip-path: inset(0 0 50% 0); }
-  .dl .tk.hot .m, .dl .tk.hot .s, .dl .tk.hot .nt { border-color: rgba(232,178,61,0.7); }
-  .dl .tk.hot .m { background: repeating-linear-gradient(90deg, rgba(255,255,255,0.03) 0 14px, transparent 14px 28px), linear-gradient(150deg, #27603F, #173F2B 85%); }
-  .dl .tk.hot .s { background: linear-gradient(160deg, #F6DA9C, #E8B23D 70%); }
-  .dl .tk.hot .s::before { border-left-color: rgba(20,32,43,0.45); }
-  .dl .tk .t2 { min-width: 0; display: flex; flex-direction: column; gap: 4px; }
-  .dl .tk .trow { display: flex; align-items: center; gap: 6px; min-width: 0; }
-  .dl .tk .edit { flex-shrink: 0; border: 1px solid var(--line); background: rgba(255,255,255,0.05); border-radius: 8px; width: 22px; height: 20px; font-size: 11px; line-height: 1; cursor: pointer; padding: 0; }
-  .dl .tk .when { font-family: 'Oswald', sans-serif; font-weight: 300; font-size: 11.5px; color: rgba(242,239,230,0.6); }
-  .dl .rounds { display: flex; flex-wrap: wrap; gap: 4px; }
-  .dl .rounds span { font-family: 'Oswald', sans-serif; font-weight: 500; font-size: 11px; padding: 1px 7px; border-radius: 8px; background: rgba(0,0,0,0.25); border: 1px solid rgba(242,239,230,0.14); color: rgba(242,239,230,0.9); max-width: 100%; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
-  .dl .rounds span b { font-family: 'Anton', Impact, sans-serif; font-weight: 400; font-size: 12px; color: var(--gold-2); }
-  .dl .lastlist { display: flex; flex-direction: column; gap: 6px; }
-  .dl .last { display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 8px; align-items: center; text-align: left; width: 100%; padding: 9px 11px; border-radius: 12px; border: 1px solid var(--line); background: var(--ink-2); color: inherit; font-family: inherit; cursor: pointer; }
-  .dl .last .m2 { display: flex; align-items: center; gap: 10px; min-width: 0; }
-  .dl .last .lt { display: flex; flex-direction: column; gap: 3px; min-width: 0; }
-  .dl .last .lt b { font-family: 'Oswald', sans-serif; font-weight: 600; font-size: 14px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
-  .dl .last .lt em { font-style: normal; font-family: 'Oswald', sans-serif; font-weight: 300; font-size: 12px; color: var(--muted); }
-  .dl .last .lr { text-align: center; font-family: 'Oswald', sans-serif; font-weight: 600; font-size: 12px; color: var(--muted); line-height: 1.15; }
-  .dl .last .lr b { display: block; font-family: 'Anton', Impact, sans-serif; font-weight: 400; font-size: 20px; }
-  .dl .last .lr.win { color: #8FE3B0; } .dl .last .lr.loss { color: #F2A497; }
-  .dl .tk .t2 b { font-family: 'Oswald', sans-serif; font-weight: 600; font-size: 15px; line-height: 1.1; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
-  .dl .tk .chips { display: flex; gap: 4px; flex-wrap: wrap; }
-  .dl .tk .chips span { font-family: 'Oswald', sans-serif; font-weight: 500; font-size: 11.5px; padding: 1px 7px; border-radius: 8px; background: rgba(0,0,0,0.22); color: rgba(242,239,230,0.85); white-space: nowrap; }
-  .dl .tk .s .play { font-family: 'Anton', Impact, sans-serif; font-size: 18px; color: var(--ink); line-height: 1; }
-  .dl .tk .s .play small { display: block; font-family: 'Oswald', sans-serif; font-weight: 500; font-size: 11px; color: rgba(20,32,43,0.75); margin-top: 3px; }
-  .dl .tk .s .wait { font-family: 'Oswald', sans-serif; font-weight: 400; font-size: 12px; line-height: 1.25; color: var(--muted); padding: 0 4px; }
-  .dl .tk .s .wait b { display: block; font-size: 16px; }
-  .dl .tk .s .remind { margin-top: 3px; border: 1px solid var(--line); background: transparent; color: var(--gold-2); border-radius: 8px; padding: 2px 8px; font-family: 'Oswald', sans-serif; font-weight: 600; font-size: 11.5px; cursor: pointer; }
   /* Freunde-Bilanz */
   .dl .fr { display: flex; flex-direction: column; gap: 6px; }
   .dl .fr .r { display: grid; grid-template-columns: 6px 1fr auto; gap: 10px; align-items: center; }
