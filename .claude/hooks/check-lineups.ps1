@@ -350,6 +350,7 @@ if ($idxLC -lt 0) {
 
           # --- aliases (Prompt 3): optionales Feld, Kuerzel muessen zu 'players' dieser
           # Aufstellung passen, Arrays duerfen nicht leer sein, Kollisionen sind nur eine Warnung.
+          $aliasMapHint = @{}
           $aliasesKeyMatch = [regex]::Match($entry, '\baliases\s*:\s*\{')
           if ($aliasesKeyMatch.Success) {
             $aOpen = $aliasesKeyMatch.Index + $aliasesKeyMatch.Length - 1
@@ -370,6 +371,7 @@ if ($idxLC -lt 0) {
                   $errors.Add("[LINEUP_CHALLENGES] Eintrag '$entryId': aliases['$aKey'] ist leer.")
                 }
                 $aliasMap[$aKey] = @($aValues)
+                $aliasMapHint[$aKey] = @($aValues)
               }
               foreach ($aKey in $aliasMap.Keys) {
                 foreach ($aVal in $aliasMap[$aKey]) {
@@ -425,6 +427,42 @@ if ($idxLC -lt 0) {
                   }
                 }
               }
+            }
+          }
+
+          # --- Namenshinweise (Prompt 38, Teil 2 D): nur Warnungen, es wird nichts geaendert.
+          #   1) doppelter Nachname in der Startelf, bei dem eine Anzeige weder Vorname noch Initial hat
+          #   2) Startelf-Nachname (ohne Initial/Vorname), der auch auf der Bank derselben Seite steht
+          #   3) mehrteiliger Name "Vorname Nachname" ohne Nachnamen-Alias (Namen mit Vorsatz und Ausnahmen ausgenommen)
+          $surOf = { param($n) (($n -replace '^[A-Za-z\u00C0-\u00FF]\.\s+', '') -split '\s+')[-1] }
+          $nameExceptions = @('Heuer Fernandes', 'João Mário', 'Kim Min-Jae', 'Arévalo Ríos', 'Filipe Luís')
+          $particleRx = '^(de|van|von|di|da|dos|del|della|le|la|lo|el|al|mac|mc|ter|ben|bin|du|dal)$'
+          $hintBench = @()
+          $hbm = [regex]::Match($entry, '\bbench\s*:\s*\[')
+          if ($hbm.Success) {
+            $hbo = $hbm.Index + $hbm.Length - 1
+            $hbc = Get-MatchingBracket $entry $hbo '[' ']'
+            if ($hbc -gt $hbo) { $hintBench = @([regex]::Matches($entry.Substring($hbo + 1, $hbc - $hbo - 1), 'name\s*:\s*"([^"]*)"') | ForEach-Object { $_.Groups[1].Value }) }
+          }
+          $surGroups = @{}
+          foreach ($hk in $displayNameByAbbr.Keys) {
+            $hn = $displayNameByAbbr[$hk]
+            $sk = (& $surOf $hn).ToLower()
+            if (-not $surGroups.ContainsKey($sk)) { $surGroups[$sk] = New-Object System.Collections.Generic.List[string] }
+            $surGroups[$sk].Add("${hk}:$hn")
+            $hw = @($hn.Trim() -split '\s+')
+            if ($hw.Count -eq 1) {
+              $twin = @($hintBench | Where-Object { ((& $surOf $_).ToLower()) -eq $sk })
+              if ($twin.Count -gt 0) { $warnings.Add("[LINEUP_CHALLENGES] Eintrag '$entryId': Startelf ${hk}:'$hn' hat denselben Nachnamen wie Bank $($twin -join ', ') - Startelf mit Initial anzeigen.") }
+            } elseif ($hn -notmatch '^[A-Za-z\u00C0-\u00FF]\.\s' -and $nameExceptions -notcontains $hn -and -not ($hw[0] -match $particleRx) -and -not (@($hw[0..($hw.Count - 2)] | Where-Object { $_ -cmatch $particleRx }).Count -gt 0)) {
+              $lastW = $hw[-1]
+              $al = if ($aliasMapHint.ContainsKey($hk)) { @($aliasMapHint[$hk]) } else { @() }
+              if (-not ($al | Where-Object { $_ -ieq $lastW })) { $warnings.Add("[LINEUP_CHALLENGES] Eintrag '$entryId': ${hk}:'$hn' hat keinen Nachnamen-Alias '$lastW'.") }
+            }
+          }
+          foreach ($g in $surGroups.GetEnumerator()) {
+            if ($g.Value.Count -gt 1 -and (@($g.Value | Where-Object { (($_ -split ':', 2)[1].Trim() -split '\s+').Count -eq 1 }).Count -gt 0)) {
+              $warnings.Add("[LINEUP_CHALLENGES] Eintrag '$entryId': gleicher Nachname in der Startelf ohne eindeutige Anzeige: $($g.Value -join ' | ').")
             }
           }
 

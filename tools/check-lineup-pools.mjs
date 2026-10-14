@@ -38,6 +38,8 @@ const LAYOUTS = grabConst("PITCH_LAYOUTS", "{", "}");
 const NAT = grabConst("NAT_NAMES", "{", "}");
 const errors = [], notes = [];
 const err = (m) => errors.push(m);
+const hints = [];
+const hint = (m) => hints.push(m);
 
 const yearOf = (m) => { const r = m.comp.match(/\d{4}/g); return +r[r.length - 1]; };
 const dateOf = (m) => { const r = m.comp.match(/(\d{2})\.(\d{2})\.(\d{4})/); return r ? `${r[3]}-${r[2]}-${r[1]}` : null; };
@@ -78,6 +80,38 @@ function checkBench(w, m, abbrs, startNames) {
   if (used > limit) err(`${w}: ${used} Einwechslungen, erlaubt wären ${limit}`);
 }
 
+
+// Namenshinweise (Prompt 38, Teil 2 D) - nur Meldungen, nichts wird geändert:
+// 1) Startelf mit doppeltem Nachnamen, bei dem mindestens eine Anzeige weder Vorname noch Initial hat
+// 2) Startelf-Nachname ohne Initial/Vorname, der auch auf der Bank derselben Seite steht
+// 3) mehrteiliger Name "Vorname Nachname" ohne Nachnamen-Alias (Vorsätze und Ausnahmen ausgenommen)
+const NAME_EXCEPTIONS = new Set(["Heuer Fernandes", "João Mário", "Kim Min-Jae", "Arévalo Ríos", "Filipe Luís"]); // bewusst so (Florian) bzw. Familienname vorn
+const PARTICLE = /^(de|van|von|di|da|dos|del|della|le|la|lo|el|al|mac|mc|ter|ben|bin|du|dal)$/i;
+const isInitialForm = (n) => /^[A-Za-zÀ-ÿ]\.\s+\S/.test(n);
+const surnameOf = (n) => n.replace(/^[A-Za-zÀ-ÿ]\.\s+/, "").trim().split(/\s+/).slice(-1)[0];
+function checkNameHints(w, m) {
+  const ent = Object.entries(m.players);
+  const groups = {};
+  for (const [a, n] of ent) (groups[norm(surnameOf(n))] ||= []).push([a, n]);
+  for (const g of Object.values(groups)) {
+    if (g.length > 1 && g.some(([, n]) => n.trim().split(/\s+/).length === 1)) hint(`${w}: gleicher Nachname in der Startelf ohne eindeutige Anzeige: ${g.map(([a, n]) => a + ":" + n).join(" | ")}`);
+  }
+  if (Array.isArray(m.bench)) {
+    for (const [a, n] of ent) {
+      if (n.trim().split(/\s+/).length > 1) continue; // Vorname/Initial vorhanden
+      const twins = m.bench.filter((b) => norm(surnameOf(b.name)) === norm(n));
+      if (twins.length) hint(`${w}: Startelf ${a}:"${n}" hat denselben Nachnamen wie Bank ${twins.map((b) => b.name).join(", ")} - Startelf mit Initial anzeigen`);
+    }
+  }
+  for (const [a, n] of ent) {
+    const words = n.trim().split(/\s+/);
+    if (words.length < 2 || isInitialForm(n) || NAME_EXCEPTIONS.has(n)) continue;
+    if (words.slice(0, -1).some((x) => PARTICLE.test(x)) || PARTICLE.test(words[0])) continue; // Namen mit Vorsatz bleiben wie sie sind
+    const al = (m.aliases && m.aliases[a]) || [];
+    if (!al.some((x) => norm(x) === norm(words[words.length - 1]))) hint(`${w}: ${a}:"${n}" hat keinen Nachnamen-Alias "${words[words.length - 1]}"`);
+  }
+}
+
 for (const [label, arr] of [["Kampagne", LINEUPS], ["Tag", DAILY]]) {
   const ids = new Set(), games = new Set();
   for (const m of arr) {
@@ -97,6 +131,7 @@ for (const [label, arr] of [["Kampagne", LINEUPS], ["Tag", DAILY]]) {
     const names = abbrs.map((a) => norm(m.players[a])); if (new Set(names).size !== names.length) err(`${w}: doppelter Spielername`);
     if (!/^Aufstellung (von|des|der) /.test(m.side)) err(`${w}: side ungewöhnlich: ${m.side}`);
     if (m.bench !== undefined) checkBench(w, m, abbrs, names);
+    checkNameHints(w, m);
     if (label === "Tag") {
       if (m.pairedWith && !LINEUPS.some((x) => x.id === m.pairedWith) && !DAILY.some((x) => x.id === m.pairedWith)) err(`${w}: pairedWith ${m.pairedWith} unbekannt`);
     }
@@ -154,5 +189,6 @@ notes.push(`120 Tage simuliert: erste Wiederholung an Tag ${firstRepeat} (Pool $
 notes.push(`  Stufen der ersten 45 Tage: ${JSON.stringify(cnt(days.slice(0, 45), (m) => m.difficulty))}`);
 
 console.log(notes.join("\n"));
+if (hints.length) console.log("\nNAMENSHINWEISE (" + hints.length + ", nur Meldungen):\n" + hints.map((e) => " - " + e).join("\n"));
 if (errors.length) { console.log("\nFEHLER (" + errors.length + "):\n" + errors.map((e) => " - " + e).join("\n")); process.exit(1); }
 console.log("\nOK - keine Fehler");
