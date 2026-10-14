@@ -468,8 +468,14 @@ ausgeliefert wird.
 >    beginnt der andere usw. Beginner einer Runde wählt aus 3 zufälligen
 >    Vorschlägen den Wettbewerb/die Stufe (wie die Kategorie-Wahl).
 >    Zwischenstand nach jeder Runde für BEIDE, Push „Du bist dran“, Frist
->    pro Zug (z. B. 48 h, sonst Sieg für den Gegner). Ersetzt dann das
->    heutige „erst alles A, dann alles B“ aus Prompt 25/26/29.
+>    pro Zug (z. B. 48 h, sonst Sieg für den Gegner). Update 14.10.2026:
+>    Das wird der eigene Modus „Liga-Duell“ (6 Runden, Kategorie-Wahl aus
+>    3); das bisherige Schnell-Duell bleibt daneben bestehen (siehe
+>    Ideen-Speicher „Duell-Ausbau“).
+> 7. **Markenrecherche** (DPMA + EUIPO, kostenlos) für App-Name und
+>    Modus-Begriffe, u. a. „Division Rivals“; im Ranked-Modus kein
+>    „Rivals“, kein „Elite Division“, kein „Champions“ (UEFA), keine
+>    Kopie fremder Optik. Dazu Impressum/Datenschutz.
 > Hochprofessionell und vollständig getestet umsetzen – dafür einen eigenen
 > Plan mit Prompts schreiben, BEVOR Prompt 8 ausgeführt wird.
 
@@ -3001,23 +3007,25 @@ TV-Bilder, Vereinslogos oder Original-Trikots – stattdessen App-Aufnahmen
      Premier League 7, LaLiga 6, Serie A 4. Ergänzungen wählen Florian
      und Claude gemeinsam aus (Vorschläge → Auswahl), Vorrat oben nutzen.
   5. Ranked-Modus (Idee nach Division Rivals, später mit Server/Accounts):
-     - Stufen-Leiter je Klasse (Name offen: Vorschlag "Klasse 10 … 1",
-       oben "Meisterklasse"; Alternative "Staffel"), 6 Sprossen je Klasse.
+     - Namen (festgelegt 14.10.): "Division 10 … Division 1", oberste
+       Stufe "Legenden-Division" (bewusst nicht "Elite"). Begriffe:
+       Aufstiegsleiter, Sprossen, Klassenerhalt. 6 Sprossen je Division.
        Sieg +1, Remis 0, Niederlage −1; ab 3. Sieg in Folge +2.
-       Klassenerhalt-Marke in der Mitte; Klassen 10–8 ohne Abstieg; oben
+       Klassenerhalt-Marke in der Mitte; Divisionen 10–8 ohne Abstieg; oben
        angekommen = Aufstieg mit Meister-Animation.
      - Wochen-Tabelle: Sieg 3 / Remis 1 / Niederlage 0 Punkte; 15 bzw. 30
        Punkte = Wochenbelohnung (nur XP/Kosmetik, keine Token).
      - Ranked-Match: 3 Aufstellungen à 2 min, Summe der Richtigen;
-       Schwierigkeit steigt mit der Klasse (unten Stufe 1–2, oben 4–5).
-       Gleichstand-Regel offen (Vorschlag: Richtige → Zeit, Remis wenn
-       Zeitunterschied < 5 s).
-     - Saison 4 Wochen (festgelegt), danach 2 Klassen zurück.
-     - Trophäen: Meister jeder Klasse, Ungeschlagen aufgestiegen,
-       Last-Minute-Klassenerhalt, Serien 5/10, Meisterklasse erreicht,
+       Schwierigkeit steigt mit der Division (unten Stufe 1–2, oben 4–5).
+       Gleichstand (festgelegt): mehr Richtige gewinnt; bei gleich vielen
+       entscheidet die Gesamtzeit, wenn der Unterschied ≥ 5 s ist; sonst
+       Remis (Schwelle später anhand echter Daten justierbar).
+     - Saison 4 Wochen (festgelegt), danach 2 Divisionen zurück.
+     - Trophäen: Meister jeder Division, Ungeschlagen aufgestiegen,
+       Last-Minute-Klassenerhalt, Serien 5/10, Legenden-Division erreicht,
        Top 100, Saison-Vitrine.
      - Gegner bei wenig Traffic: aufgezeichnete Läufe echter Spieler
-       derselben Klasse ("Lisa (aufgezeichnet)"), später Live-Suche.
+       derselben Division ("Lisa (aufgezeichnet)"), später Live-Suche.
      - Reihenfolge: Historie/Löschen/Zeiten (offline) → Online-Duell +
        Accounts + Liga-Duell → Ranked mit Aufzeichnungen → Live-Suche.
 
