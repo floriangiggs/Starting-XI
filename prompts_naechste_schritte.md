@@ -52,8 +52,9 @@ vorige umgesetzt, getestet und committet ist.
 | 38 | Namen eindeutig: Argentinien-Martínez, Nachname allein zählt (Alba, Alonso …), Initialen bei Namensgleichheit mit der Bank | – |
 | 39 | Duell-Zentrale v2 (One-Pager): Namen statt Wappen, Schnell-Duell 1/2/3/5 Min, Löschen/Aufräumen, Spielhistorie mit Vergleichs-Spielfeld | – |
 | 40 | Online-Duell-Spezifikation: Liga-Duell + Ranked (Divisionen) – NICHT ausführen, Grundlage für den Online-Plan | ⏸ wartet auf Server/Accounts |
+| 41 | Level-Vorschau „Taktiktafel“ (Kampagne), Scout-Münze als Token-Symbol überall, spoilerfreie Vorschau-Texte | – |
 
-**Empfohlene Reihenfolge ab jetzt:** 38 → 39 → weitere Offline-Feinschliffe (u. a. Jahres-Lücken im Ideen-Speicher auffüllen) → Planung Online-Duell (inkl. 28/29) → 8 (Capacitor, erst wenn die App final ist; vorher Duell-Pflichtpunkt aus CLAUDE.md ansprechen)
+**Empfohlene Reihenfolge ab jetzt:** 38 → 39 → 41 → weitere Offline-Feinschliffe (u. a. Jahres-Lücken im Ideen-Speicher auffüllen) → Planung Online-Duell (inkl. 28/29) → 8 (Capacitor, erst wenn die App final ist; vorher Duell-Pflichtpunkt aus CLAUDE.md ansprechen)
 
 Prompt 7 steht bewusst vor der Tages-Challenge: Nur mit der neuen
 Update-Strategie kommen neue Tages-Aufstellungen zuverlässig auf dem iPhone an.
@@ -70,7 +71,8 @@ Welten-Ausschmückung), `prototypes/ladescreen.html` (Prompt 11d) und
 `prototypes/welt-animation.html` (Prompt 31, Fassung v2 vom 10.10.2026 – nur die Bühne, nicht das Regie-Pult) und
 `prototypes/walkout.html` (Prompt 36 – nur die Bühne, nicht das Regie-Pult) und
 `prototypes/bank.html` (Prompt 37 – nur Variante C und das Blatt) und
-`prototypes/duell-ausbau.html` (Prompts 39/40 – Duell-Zentrale v3).
+`prototypes/duell-ausbau.html` (Prompts 39/40 – Duell-Zentrale v3) und
+`prototypes/level-vorschau.html` (Prompt 41 – nur Variante C „Taktiktafel“ + Kopfzeile).
 
 **Wichtig nach jeder Änderung:** Der Service Worker liefert die App aus dem
 Cache. Jeder Prompt erhöht deshalb `CACHE_NAME` in `sw.js` – sonst sieht die
@@ -3236,6 +3238,163 @@ C. Rechtliches vor dem Store: Markenrecherche (DPMA/EUIPO), kein "Rivals",
 
 ---
 
+## Prompt 41 – Level-Vorschau „Taktiktafel“, Scout-Münze, spoilerfreie Texte
+
+```
+Lies CLAUDE.md. Struktureller Umbau eines Bildschirms + Datenpflege →
+Plan Mode, Plan zeigen, dann in Paketen A–D umsetzen (je Paket Commit
++ Test). Optische Vorlage: prototypes/level-vorschau.html – NUR Variante
+C (.C) und die Kopfzeile (.topbar). Optik, Abstände, Farben und
+Bewegungen 1:1 übernehmen; Varianten A/B, Regie-Pult (.desk) und die
+Beispieldaten gehören NICHT in die App. Florian hat die Vorlage am
+14.10.2026 freigegeben.
+
+Ausgangslage: Tippt man im Kampagnen-Pfad ein Level an, zeigt startMatch()
+das schlichte .bonus-panel (Wettbewerb, Teams, Level-Badge, side +
+context, Knopf "Aufstellung eintragen"). Dieses Panel wird für die
+Kampagne (currentLevelContext gesetzt) durch die Taktiktafel ersetzt.
+Freispiel, Tages-Challenge und alles andere behalten vorerst das alte
+Panel – bekommen aber in Paket D die spoilerfreien Texte.
+
+A. Kopfzeile + Scout-Münze (App-weit)
+   1. Neue Kopfzeile der Vorschau wie .topbar im Prototyp:
+      - links "Pfad" mit gezeichnetem Chevron (SVG, vertikal exakt mittig
+        zur Schrift, Innenabstand links/rechts optisch gleich) → wie bisher
+        exitMatch() zurück zum Pfad.
+      - rechts Token-Chip: goldene Münze (.coin, SVG-Lupe in Dunkelbraun)
+        + Zahl in Anton Gold; daneben "Regeln" mit gezeichnetem Info-
+        Symbol (SVG statt ℹ️-Emoji), öffnet openRulesModal (Regeln-Punkt
+        rules-dot wie bisher).
+   2. Scout-Münze als EINHEITLICHES Token-Symbol in der ganzen App
+      (Florian: "das können wir überall implementieren"):
+      - eine Hilfsfunktion tokenCoin(size) liefert die Münze als Inline-
+        SVG (Größe an Schrift anpassbar, aria-hidden, daneben bleibt
+        "Scout-Token" als Text/aria-label wo heute vorhanden).
+      - Ersetzen: Token-Chip im Spiel-Kopf (#gameTokChip, .tok-chip –
+        Farbe von Blau auf Gold umstellen, Stil wie .tb.tok), Startseite/
+        Scout-Ausweis (.tok), Scout-Rad-Kosten, Hilfen-Reiter in "So
+        geht's", Regeln-Fußzeile, Token-Quittung, Toasts ("+n"),
+        Level-up-Meldung, Trophäen-Toasts – überall wo heute 🔍 als
+        Token-Symbol steht. Innerhalb von Fließtext die kleine Münze
+        (ca. 1em, baseline-bündig).
+      - KEIN Austausch, wo 🔍 etwas anderes bedeutet (z. B. Such-
+        Funktionen) – vorher per grep alle Stellen auflisten und im Plan
+        zeigen. Teilen-Bilder (Canvas) nur anpassen, wenn dort ein
+        Token-Symbol vorkommt.
+      - Das alte Blau (--token) wird nicht mehr für Token benutzt; prüfen,
+        ob es anderswo gebraucht wird, sonst entfernen.
+
+B. Taktiktafel-Vorschau (nur Kampagne)
+   Aufbau von oben nach unten wie Prototyp (Holzrahmen .frame mit
+   Innen-Tafel, darunter die Holzleiste .tray, darunter der Knopf):
+   1. Kopfzeile der Tafel: "<Weltname> · Level n von N" links, Level-
+      Punkte (wie renderLevelBadge, Farbe = DIFF_COLOR der Welt) rechts.
+   2. Wettbewerb + Datum einzeilig (nowrap, Ellipsis), z. B.
+      "WM-Finale · So., 13. Juli 2014" – Datum aus m.comp parsen
+      (Muster TT.MM.JJJJ), Wochentag kurz, Monat ausgeschrieben.
+   3. Teams untereinander in Anton, dazwischen klein "gegen" (Oswald 300,
+      Gold). Schriftgröße per Messung so wählen, dass der längere Name in
+      die Breite links neben der Anzeigetafel passt (max 34 px, wie fit()
+      im Prototyp). Heimteam hell, Gast etwas gedämpft.
+   4. Anzeigetafel rechts oben (.score): Ergebnis groß in Anton Gold
+      (46 px), Klappziffer-Linie, darunter "n. V." / "i. E." bzw.
+      "Endstand"; einmalige Stempel-Animation beim Öffnen.
+      Ergebnis + Zusatz aus m.teams parsen ("A gegen B 1:0 n.V.").
+      Alle 59 Kampagnen-Einträge per Skript prüfen; wo das Muster nicht
+      greift, Liste zeigen und den Eintrag in m.teams vereinheitlichen
+      (nur Schreibweise, keine Fakten ändern).
+   5. Links unter den Teams: "Aufstellen:" + Mannschaft (m.side ohne
+      "Aufstellung von/des/der") groß in Gold + Pille mit der Formation
+      (z. B. 4-2-3-1). KEIN Hinweis auf die Ersatzbank (Florian: die ist
+      im Spiel immer da, unnötige Info).
+   6. Rechts daneben der gelbe Zettel "Wusstest du?" (leicht gedreht,
+      rote Pinnnadel, Eselsohr, fällt einmalig herein) mit dem Text aus
+      Paket D (spoilerfrei). Der Zettel muss den Text immer komplett
+      zeigen – Länge aller Texte prüfen (bei 360/375/430 px Breite), nie
+      abschneiden; ggf. Schrift minimal kleiner statt Kürzen.
+   7. Kreide-Spielfeld unten in der Tafel: Linien zeichnen sich einmalig
+      (SVG mit pathLength="1", damit ALLE Linien vollständig gezogen
+      werden), dazu die drei goldenen Kreide-Pfeile. Magnete an den
+      Positionen aus PITCH_LAYOUTS[m.formation] mit Positions-Kürzel,
+      in der Weltfarbe; TW-Magnet weiß. Magnete fallen nacheinander ein
+      (einmalig). Spielfeld nutzt die gesamte restliche Tafelhöhe.
+   8. Holzleiste unter der Tafel = Sterne-Leiste (.tray mit .rail/.chip):
+      drei kleine Chips "★ 7/11", "★★ 9/11", "★★★ 11/11 ohne Hilfe",
+      verbunden durch eine Rille. Geholte Sterne (profile.campaign.stars
+      [m.id]) = goldener Chip, die Rille bis dorthin füllt sich golden;
+      das nächste Ziel hat einen goldenen Rand; noch offene Ziele dunkel.
+      Werte aus PASS_THRESHOLD bzw. den echten Sterne-Regeln ableiten,
+      nicht fest eintippen. Keine XP-Texte auf diesem Bildschirm.
+   9. Knopf (Gold, volle Breite) mit Unterzeile, je nach Zustand:
+      - Entwurf vorhanden (profile.drafts["c:"+id]): "Weiter aufstellen"
+        / "n von 11 schon eingetragen" (n = ausgefüllte Felder im Entwurf)
+      - 3 Sterne: "Nochmal aufstellen" / "Alle Sterne geholt – trainieren
+        macht trotzdem Spaß"
+      - 1–2 Sterne: "Nochmal aufstellen" / "Bestwert n von 11 · nächster
+        Stern wartet" (n = profile.best[id].correct)
+      - neu: "Aufstellen" / "Ziehe die Startelf an die Tafel"
+      Tippen → renderPitch() wie bisher (Entwurf-Fortsetzung aus Prompt
+      34 muss weiter funktionieren).
+   10. Hintergrund des Bildschirms grün wie Prototyp (.C), alles als ein
+       Bildschirm ohne Scrollen bei 667 px Höhe (iPhone SE) – dort darf
+       das Spielfeld schrumpfen, Zettel und Knopf nie abgeschnitten,
+       nichts überlappt (Overlap-Check wie tools/check-overlap.mjs bei 360×667,
+       375×812, 430×932, alle 5 Welten).
+   11. Bewegung nur einmalig beim Öffnen, keine Dauerschleifen;
+       prefers-reduced-motion: alles sofort im Endzustand.
+
+C. Weltfarben und Schriften
+   - Weltfarbe als CSS-Variable (--wc = DIFF_COLOR[tier]) für Level-
+     Punkte, Magnete, Weltfarben-Akzente.
+   - Schriften nach CLAUDE.md: Anton für Teams, Ergebnis, Mannschaft,
+     Chip-Zahlen, Knopf; Oswald für alles andere; keine gesperrten
+     Versal-Labels; kein JetBrains Mono auf diesem Bildschirm.
+
+D. Spoilerfreie Vorschau-Texte (Daten)
+   Problem: viele context-Texte verraten Spieler der gefragten Startelf
+   (z. B. EM-Eröffnung 2024: "Wirtz, Musiala, Havertz, Füllkrug").
+   Florian hat entschieden: vor dem Spielen nur ein spoilerfreier
+   Hinweis, die ganze Geschichte erst danach.
+   1. Neues Feld teaser in jedem Eintrag von LINEUP_CHALLENGES (59) und
+      DAILY_CHALLENGES (45): ein bis zwei Sätze, die NUR Fakten aus dem
+      bestehenden context verwenden (keine neuen Fakten → keine neue
+      Recherche nötig), aber KEINEN Namen eines Spielers der gefragten
+      Mannschaft enthalten – weder Startelf noch Bank. Erlaubt: Gegner-
+      Spieler, Trainer, Stadion, Ergebnis-Verlauf, Bedeutung des Spiels.
+      Beispiel EM 2024: "Das DFB-Team eröffnete die Heim-EM mit dem
+      höchsten Sieg in einem EM-Eröffnungsspiel – Schottland gelang nur
+      ein Eigentor zum Ehrentreffer." (hier ohne "Rüdiger", da er in der
+      deutschen Startelf steht).
+   2. Prüfskript: für jeden Eintrag alle akzeptierten Namen der gefragten
+      Seite (players + bench, über acceptedNames/normalizeName inkl.
+      Aliasse) gegen den teaser prüfen; Treffer = Fehler. Ergebnis als
+      Tabelle zeigen (id, gefundener Name). Ausnahme nur, wenn ein Name
+      gleichzeitig Teil eines Vereins-/Ortsnamens ist – dann einzeln
+      begründen. Den Prüfschritt in den bestehenden Konsistenz-Hook bzw.
+      check-lineups aufnehmen (teaser Pflichtfeld + spoilerfrei).
+   3. Anzeige:
+      - Vorschau (Taktiktafel UND altes Panel in Freispiel/Tag): teaser.
+        Ausnahme Kampagne mit 3 Sternen: voller context.
+      - Nach dem Auswerten: voller context als "Wusstest du?"-Zettel
+        (Optik wie Vorschau-Zettel, kleiner) unter dem Ergebnis – in
+        Freispiel und Tag immer; in der Kampagne nur, wenn das Level
+        bestanden ist (≥ 1 Stern) oder "Lösung anzeigen" benutzt wurde
+        (Prompt 33: sonst verrät der Text die Lösung für den nächsten
+        Versuch). Im Duell bleibt alles wie es ist.
+   4. CLAUDE.md, Abschnitt "Pflichtfelder pro Aufstellung": teaser
+      ergänzen ("spoilerfreier Vorschau-Text, kein Name der gefragten
+      Mannschaft").
+
+Abschluss:
+- CACHE_NAME in sw.js erhöhen.
+- Screenshots der Vorschau in allen 5 Welten (je ein Level neu, mit
+  Entwurf, mit 1–2 Sternen, mit 3 Sternen) bei 375×812 und 360×667 zeigen.
+- Prüfskript aus D zeigen (0 Treffer), Hook-Ergebnis zeigen.
+- Status-Tabelle in prompts_naechste_schritte.md: Prompt 41 erledigt.
+```
+
+---
+
 ## Fahrplan (Stand 04.10.2026)
 
 1. **App fertig machen:** Feinschliff nach Beobachtungen, dann Prompt 8
@@ -3335,6 +3494,11 @@ TV-Bilder, Vereinslogos oder Original-Trikots – stattdessen App-Aufnahmen
        derselben Division ("Lisa (aufgezeichnet)"), später Live-Suche.
      - Reihenfolge: Historie/Löschen/Zeiten (offline) → Online-Duell +
        Accounts + Liga-Duell → Ranked mit Aufzeichnungen → Live-Suche.
+
+- **Taktiktafel auch für Freispiel und Tages-Challenge?** (nach Prompt 41
+  mit Florian klären): gleiche Vorschau, Kopfzeile "Frei spielen · Stufe n"
+  bzw. "Tages-Challenge · Datum"; Sterne-Leiste nur in der Tages-Challenge
+  (Freispiel hat seit 13b keine Sterne).
 
 - **Jahres-Lücken im Blick behalten** (Stand nach Prompt 35, geplant,
   Kampagne + Tag zusammen, 104 Aufstellungen):
