@@ -2960,6 +2960,48 @@ TV-Bilder, Vereinslogos oder Original-Trikots – stattdessen App-Aufnahmen
 
 ## Ideen-Speicher (noch nicht ausgearbeitet)
 
+- **Duell-Ausbau – Planung mit Florian (14.10.2026, noch kein Prompt)**
+  Gestaltung: Duell ist der wichtigste Modus → optisch Meisterwerk,
+  mindestens Quizduell-Niveau. Erst Gesamt-Prototyp, dann Prompts.
+  1. Spielhistorie (wie Kampflog bei Clash Royale): Knopf "Spielhistorie"
+     in der Duell-Übersicht, letzte 10 beendeten Duelle als Kacheln
+     (Gegner, Datum, Format, Ergebnis groß in Sieg/Niederlage/Remis-Farbe,
+     Runden-Chips "WM 2014 · 9:7"), "Ältere anzeigen", gespeichert 30.
+     Detail: Endstand, Richtige + Zeit beider, je Runde Karte mit Partie
+     und Vergleichs-Spielfeld (beide richtig / nur ich / nur Gegner /
+     beide falsch, alle Lösungsnamen), Bank, Knopf "Revanche".
+     Nur beendete Duelle. Datenbasis: je Runde zusätzlich mask (11 Bits
+     richtig/falsch) und solvedAt (Sekunde je Position), auch im
+     Rückmelde-Link; alte Duelle ohne diese Daten nur mit Ergebnis/Zeiten.
+     Gegner-Details erst nach seinem Rückmelde-Link (offline).
+  2. Löschen: Kachel nach links wischen oder "⋯" → Löschen, sofort weg
+     mit 5 s "Rückgängig" (kein Dialog). Nach 14 Tagen ohne Reaktion
+     "abgelaufen" (grau, nach unten) + Knopf "x abgelaufene Duelle
+     aufräumen"; nach weiteren 30 Tagen automatisch gelöscht. Löschen
+     ändert nie Bilanz/XP (Bilanz gegen Freund bleibt auch bei gelöschten
+     beendeten Duellen). Später gelöschtes Duell per Link → Hinweis
+     "Dieses Duell hast du gelöscht", Link ignorieren.
+  3. Zwei Duell-Arten:
+     - Schnell-Duell (bisher): Einzel/Bo3/Bo5, Zeit je Aufstellung NEU
+       1, 2, 3 oder 5 min.
+     - Liga-Duell (neu, Arbeitstitel; Quizduell-Prinzip, Ping-Pong):
+       6 Runden (evtl. 4/6/8 einstellbar), wer dran ist bekommt 3
+       zufällige Kategorien und wählt eine, beide spielen dieselbe
+       Aufstellung, Wahl wechselt jede Runde. Wertung: Summe aller
+       Richtigen, bei Gleichstand Gesamtzeit. Fest ca. 2 min je
+       Aufstellung. Gegner-Ergebnis einer Runde erst sichtbar, wenn man
+       sie selbst gespielt hat.
+     - Liga-Duell wird als erstes Feature des Online-Duells gebaut
+       (Server + "Du bist dran"-Push); ohne Server wären 6–7 Links nötig.
+       Schnell-Duell-Zeiten, Historie und Löschen gehen schon offline.
+  4. Kategorien (Start): Champions League, WM, EM, Deutschland
+     (Bundesliga + DFB-Pokal), England, Europa (Spanien/Italien/
+     Frankreich). Ziel je Kategorie mind. ~20 Aufstellungen. Stand
+     14.10.: CL 30, WM 19, EM 14, Deutschland 12, Europa League 9,
+     Premier League 7, LaLiga 6, Serie A 4. Ergänzungen wählen Florian
+     und Claude gemeinsam aus (Vorschläge → Auswahl), Vorrat oben nutzen.
+  5. Letzter Punkt von Florian folgt noch.
+
 - **Jahres-Lücken im Blick behalten** (Stand nach Prompt 35, geplant,
   Kampagne + Tag zusammen, 104 Aufstellungen):
   2008: 3 · 2009: 3 · 2010: 3 · 2011: 1 · 2012: 5 · 2013: 1 · 2014: 12 ·
