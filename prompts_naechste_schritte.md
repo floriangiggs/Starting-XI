@@ -2979,6 +2979,20 @@ Umsetzung (datengetrieben, kein Sonderfall im Prüf-Code):
    anderen Teams) auflisten – nur melden, nicht eigenmächtig ändern.
 5. Gilt überall, wo Namen geprüft werden: Kampagne, Freispiel, Tages-
    Challenge und Duell.
+6. Anzeige bei richtiger Eingabe (Florian): Sobald eine Eingabe als
+   richtig erkannt wird und grün wird, steht im Feld der eindeutige
+   Lösungsname aus players – also z. B. "Martinez" auf LIV → Feld wird grün
+   und zeigt "L. Martínez"; "Lautaro" auf LST → "Lautaro Martínez" bzw.
+   die gewählte Kurzform. Bisher bleibt im normalen Spiel der getippte
+   Text stehen (input-Handler ~Z. 8306 und Auswerten ~Z. 8417), nur im
+   Duell und beim automatischen Einsortieren in ein anderes Feld wird der
+   Lösungsname gesetzt – das jetzt überall einheitlich machen.
+   - Ersetzen erst, wenn die Eingabe eindeutig richtig ist (nicht bei
+     jedem Tastendruck vorher), Cursor/Fokus sauber, kein Springen des
+     Layouts (applyNameFit danach).
+   - Gilt für alle Spieler, nicht nur Martínez (z. B. "Dibu" → "E.
+     Martínez", Akzente werden ergänzt: "Alvarez" → "Álvarez").
+   - Entwürfe (Prompt 34) speichern weiter, was im Feld steht.
 
 sw.js CACHE_NAME erhöhen. Test (Konsole/Skript mit isAcceptedFor):
 - argentinien-kolumbien-2024: TW "Martinez" ✓, LIV "Martinez" ✓,
@@ -2987,7 +3001,9 @@ sw.js CACHE_NAME erhöhen. Test (Konsole/Skript mit isAcceptedFor):
   RST "Martinez" ✗ (dort Messi), LIV "Martinez" ✗ (dort Otamendi).
 - wm-finale-2022: TW "Martinez" ✓, ST "Martinez" ✗ (Álvarez).
 - "Martínez", "martinez", "MARTINEZ", "Lisandro Martinez", "E. Martinez"
-  jeweils passend; Vornamen-Aliase greifen. Hook-Ergebnis zeigen; keine
+  jeweils passend; Vornamen-Aliase greifen.
+- Kampagne/Freispiel/Tag: "martinez" auf LIV (Copa 2024) → Feld sofort grün
+  mit "L. Martínez"; "alvarez" → "Álvarez"; Duell unverändert. Hook-Ergebnis zeigen; keine
   Konsolenfehler.
 ```
 
