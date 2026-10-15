@@ -1493,77 +1493,57 @@
   .levelup-rank-name { font-family: 'Oswald', sans-serif; font-weight: 700; font-size: 20px; margin-bottom: 22px; }
   .levelup-close { background: var(--gold); color: var(--ink); border: none; border-radius: 8px; padding: 13px 30px; font-family: 'Oswald', sans-serif; font-weight: 700; text-transform: uppercase; letter-spacing: 0.03em; cursor: pointer; }
 
-  /* ---- Ladescreen (Prompt 11d, Optik 1:1 aus prototypes/ladescreen.html) ----
-     Alle Regeln unter #splash genamespaced: der Prototyp nutzt Klassennamen wie
-     .pitch/.dot/.kicker, die in dieser App bereits fuer das Eingabe-Spielfeld
-     belegt sind - ohne Scope wuerde der Ladescreen das echte Spielfeld verstellen. */
-  #splash { position: absolute; inset: 0; z-index: 100; display: flex; flex-direction: column; align-items: center; justify-content: space-between; padding: max(18px, env(safe-area-inset-top)) 20px max(16px, env(safe-area-inset-bottom)); overflow: hidden; cursor: pointer;
-    background:
-      radial-gradient(ellipse 70% 40% at 50% 0%, rgba(232,178,61,0.16), transparent 70%),
-      radial-gradient(ellipse 60% 30% at 50% 100%, rgba(31,77,54,0.55), transparent 75%),
-      repeating-linear-gradient(90deg, rgba(255,255,255,0.02) 0 2px, transparent 2px 40px),
-      var(--ink);
-    transition: opacity 0.5s ease, transform 0.5s ease; }
-  #splash.out { opacity: 0; transform: scale(1.04); pointer-events: none; }
-
-  #splash .beam { position: absolute; top: -40px; width: 60%; height: 80%; pointer-events: none; opacity: 0; transition: opacity 1.2s ease; -webkit-mask-image: linear-gradient(180deg, #000 30%, transparent 100%); mask-image: linear-gradient(180deg, #000 30%, transparent 100%); }
-  #splash .beam.l { left: -18%; background: conic-gradient(from 160deg at 0% 0%, transparent 0deg, rgba(255,246,200,0.10) 12deg, transparent 30deg); }
-  #splash .beam.r { right: -18%; background: conic-gradient(from 170deg at 100% 0%, transparent 0deg, rgba(255,246,200,0.10) 18deg, transparent 36deg); }
-  #splash.on .beam { opacity: 1; }
-
-  #splash .brand { text-align: center; position: relative; z-index: 2; opacity: 0; transform: translateY(-10px); transition: opacity 0.6s ease, transform 0.6s ease; }
-  #splash.on .brand { opacity: 1; transform: none; }
-  #splash .badge { width: clamp(44px, 7vh, 58px); aspect-ratio: 1; margin: 0 auto 8px; border-radius: 50%; background: radial-gradient(circle at 35% 30%, #2c6b48, var(--pitch)); border: 2px solid var(--gold); display: grid; place-items: center; font-size: clamp(20px, 3.3vh, 27px); box-shadow: 0 0 0 6px rgba(232,178,61,0.08), 0 8px 22px rgba(0,0,0,0.45); }
-  #splash .kicker { font-family: 'Oswald', sans-serif; font-weight: 500; font-size: 11.5px; letter-spacing: 0.26em; text-transform: uppercase; color: var(--gold); margin-bottom: 0; }
-  #splash .claim { font-family: 'Oswald', sans-serif; font-weight: 300; font-size: 14px; color: var(--muted); margin-top: 6px; }
-
-  #splash .pitch-holder { position: relative; z-index: 1; flex: 1; min-height: 0; width: 100%; display: grid; place-items: center; margin-block: clamp(10px, 2vh, 18px); container-type: size; }
-  #splash .pitch { position: relative; height: min(100cqh, 100cqw * 1.3); aspect-ratio: 200 / 260; }
-  #splash .pitch svg { position: absolute; inset: 0; width: 100%; height: 100%; overflow: visible; }
-  #splash .grass { opacity: 0; transition: opacity 0.8s ease; }
-  #splash.on .grass { opacity: 1; }
-  #splash .chalkline { fill: none; stroke: rgba(242,239,230,0.55); stroke-width: 1.3; stroke-dasharray: 1; stroke-dashoffset: 1; }
-  #splash.on .chalkline { animation: splashDraw 1s ease forwards; }
-  #splash.on .chalkline.d2 { animation-delay: 0.15s; } #splash.on .chalkline.d3 { animation-delay: 0.3s; } #splash.on .chalkline.d4 { animation-delay: 0.45s; }
-  @keyframes splashDraw { to { stroke-dashoffset: 0; } }
-  #splash .dot { transition: transform 0.55s cubic-bezier(.2,1.3,.4,1), opacity 0.3s ease; opacity: 0; }
-  #splash .dot.in { opacity: 1; }
-  #splash .dot circle.o { fill: var(--gold); stroke: #9C7422; stroke-width: 1; }
-  #splash .dot circle.h { fill: none; stroke: rgba(232,178,61,0.35); stroke-width: 2; transform-box: fill-box; transform-origin: center; }
-  #splash .dot.in circle.h { animation: splashHalo 0.7s ease-out 1; }
-  @keyframes splashHalo { from { transform: scale(0.6); opacity: 1; } to { transform: scale(2.2); opacity: 0; } }
-  #splash .dot text { font-family: 'Oswald', sans-serif; font-weight: 700; font-size: 6.4px; fill: var(--ink); text-anchor: middle; dominant-baseline: central; }
-  #splash .formation-tag { position: absolute; right: 7%; top: 5%; font-family: 'Oswald', sans-serif; font-weight: 600; font-size: 11px; letter-spacing: 0.1em; color: rgba(242,239,230,0.55); background: rgba(0,0,0,0.25); border-radius: 10px; padding: 1px 7px; white-space: nowrap; }
-
-  #splash .meter { width: 100%; max-width: 360px; position: relative; z-index: 2; display: flex; flex-direction: column; align-items: center; gap: 8px; }
-  #splash .pct { font-family: 'Anton', sans-serif; font-size: clamp(44px, 7.5vh, 64px); line-height: 0.9; color: var(--gold-2); text-shadow: 0 0 22px rgba(232,178,61,0.35); font-variant-numeric: tabular-nums; }
-  #splash .pct small { font-size: 0.45em; color: var(--gold); margin-left: 2px; }
-  #splash .bar { width: 100%; height: 8px; border-radius: 6px; background: rgba(255,255,255,0.08); overflow: hidden; position: relative; }
-  #splash .bar i { position: absolute; inset: 0 auto 0 0; width: 0%; border-radius: 6px; background: linear-gradient(90deg, var(--pitch), #3fae63 40%, var(--gold) 100%); box-shadow: 0 0 12px rgba(232,178,61,0.45); }
-  #splash .ticks { width: 100%; display: flex; justify-content: space-between; margin-top: -2px; }
-  #splash .ticks span { width: 1px; height: 5px; background: rgba(242,239,230,0.2); }
-  #splash .status { font-family: 'Oswald', sans-serif; font-weight: 500; font-size: 15px; letter-spacing: 0.02em; min-height: 22px; transition: opacity 0.25s ease; }
-  #splash .status.fade { opacity: 0; }
-
-  #splash .tip { position: relative; z-index: 2; width: 100%; max-width: 380px; margin-top: clamp(12px, 2vh, 18px); border: 1px solid var(--line); background: rgba(28,43,56,0.8); border-radius: 12px; padding: 10px 14px; display: flex; gap: 11px; align-items: center; opacity: 0; transition: opacity 0.6s ease 0.6s; }
-  #splash.on .tip { opacity: 1; }
-  #splash .tip .ic { font-size: 20px; }
-  #splash .tip .k { font-family: 'Oswald', sans-serif; font-weight: 600; font-size: 11.5px; letter-spacing: 0.1em; text-transform: uppercase; color: var(--gold-2); }
-  #splash .tip .t { font-family: 'Oswald', sans-serif; font-weight: 300; font-size: 13.5px; line-height: 1.35; color: rgba(242,239,230,0.85); }
-  #splash .skip { position: relative; z-index: 2; margin-top: 10px; font-family: 'Oswald', sans-serif; font-weight: 300; font-size: 12px; color: rgba(242,239,230,0.5); text-align: center; opacity: 0; transition: opacity 0.9s ease 1.2s; }
-  #splash.on .skip { opacity: 1; }
-  #splash .foot { font-family: 'Oswald', sans-serif; font-weight: 300; font-size: 11.5px; color: rgba(242,239,230,0.42); margin-top: 6px; text-align: center; }
-
-  #splash .kickoff { position: absolute; inset: 0; display: grid; place-items: center; pointer-events: none; z-index: 5; }
-  #splash .kickoff span { font-family: 'Anton', sans-serif; font-size: clamp(54px, 13vw, 84px); text-transform: uppercase; color: var(--gold-2); text-shadow: 0 0 40px rgba(232,178,61,0.6); opacity: 0; transform: scale(0.7); }
-  #splash .kickoff.go span { animation: splashKo 0.9s cubic-bezier(.2,1.2,.3,1) forwards; }
-  @keyframes splashKo { 0% { opacity: 0; transform: scale(0.7); } 35% { opacity: 1; transform: scale(1.05); } 70% { opacity: 1; transform: scale(1); } 100% { opacity: 0; transform: scale(1.15); } }
-
-  @media (prefers-reduced-motion: reduce) {
-    #splash .chalkline { stroke-dashoffset: 0; animation: none !important; }
-    #splash .dot { transition: opacity 0.2s; }
-    #splash .kickoff { display: none; }
-  }
+  /* ---- Ladebildschirm "Kabinentafel" (Prompt 46, Optik/Zeitplan 1:1 aus prototypes/ladescreen-v2.html; alles unter #splash, Klassen ld-) ----
+     Buehne 390x844 wird auf die verfuegbare Flaeche (ohne Safe-Areas) skaliert; die Bewegung kommt aus render(t) (ein rAF-Takt), keine CSS-Schleifen. */
+  #splash { --cream: #FFF1C8; --gold-hi: #F7D98E; --muted: rgba(244,241,232,0.8);
+    --wood: linear-gradient(180deg, rgba(255,255,255,0.10), transparent 40%), repeating-linear-gradient(92deg, rgba(0,0,0,0.06) 0 2px, transparent 2px 7px), linear-gradient(180deg, #9A6C40, #6B4828);
+    --wood-edge: inset 0 0 0 1.5px #3E2A16, inset 0 2px 0 rgba(255,236,200,0.22);
+    --f-display: Anton, Impact, "Arial Narrow", sans-serif; --f-text: Oswald, "Arial Narrow", system-ui, sans-serif;
+    position: absolute; inset: 0; z-index: 100; overflow: hidden; transform-origin: 50% 45%; will-change: transform, opacity; font-family: var(--f-text); color: var(--chalk); text-align: left;
+    background: radial-gradient(130% 60% at 50% 0%, #3B7F59 0%, #235A3E 45%, #173A29 100%); }
+  #splash::before { content: ""; position: absolute; inset: 0; pointer-events: none; opacity: 0.55; background: repeating-linear-gradient(180deg, rgba(255,255,255,0.025) 0 38px, rgba(0,0,0,0.03) 38px 76px); }
+  #splash .ld-beam { position: absolute; top: -60px; width: 70%; height: 90%; pointer-events: none; opacity: 0; -webkit-mask-image: linear-gradient(180deg, #000 20%, transparent); mask-image: linear-gradient(180deg, #000 20%, transparent); }
+  #splash .ld-beam.l { left: -24%; background: conic-gradient(from 150deg at 0% 0%, transparent 0deg, rgba(255,246,214,0.16) 14deg, transparent 32deg); }
+  #splash .ld-beam.r { right: -24%; background: conic-gradient(from 178deg at 100% 0%, transparent 0deg, rgba(255,246,214,0.16) 18deg, transparent 36deg); }
+  #splash .ld-stage { position: absolute; left: 0; top: 0; width: 390px; height: 844px; transform-origin: 0 0; }
+  #splash .ld-stage > * { opacity: 0; }
+  #splash .ld-brand { position: absolute; left: 0; right: 0; top: 72px; text-align: center; }
+  #splash .ld-brand h1 { margin: 0; font-family: var(--f-display); font-weight: 400; font-size: 58px; line-height: 1; text-transform: none; letter-spacing: 0; color: #FBF7EC; text-shadow: 0 3px 0 rgba(0,0,0,0.25), 0 0 30px rgba(255,246,214,0.15); }
+  #splash .ld-brand h1 em { font-style: normal; color: var(--gold-hi); }
+  #splash .ld-claim { position: absolute; left: 0; right: 0; top: 140px; text-align: center; font-weight: 300; font-size: 16px; color: rgba(244,241,232,0.86); }
+  #splash .ld-board { position: absolute; left: 40px; top: 184px; width: 310px; height: 388px; border-radius: 16px 16px 6px 6px; overflow: hidden;
+    background: radial-gradient(110% 70% at 50% 15%, #33704D, #1D4530 78%);
+    box-shadow: inset 0 0 0 7px #7A5532, inset 0 0 0 9px #3E2A16, inset 0 0 40px rgba(0,0,0,0.38), 0 20px 44px rgba(0,0,0,0.45); }
+  #splash .ld-board::after { content: ""; position: absolute; inset: 9px; border-radius: 10px; pointer-events: none; background: radial-gradient(60% 40% at 18% 8%, rgba(255,255,255,0.08), transparent 70%); }
+  #splash .ld-board svg { position: absolute; left: 22px; top: 22px; width: 266px; height: 344px; overflow: visible; }
+  #splash .ld-ln { fill: none; stroke: rgba(244,241,232,0.62); stroke-width: 1.5; stroke-linecap: round; stroke-linejoin: round; stroke-dasharray: 1 1; stroke-dashoffset: 1; }
+  #splash .ld-ar { fill: none; stroke: rgba(247,217,142,0.9); stroke-width: 1.7; stroke-linecap: round; stroke-linejoin: round; stroke-dasharray: 1 1; stroke-dashoffset: 1; }
+  #splash .ld-mag { position: absolute; width: 24px; height: 24px; margin: -12px 0 0 -12px; border-radius: 50%; opacity: 0; will-change: transform, opacity;
+    background: radial-gradient(circle at 35% 30%, #FFF4CF, var(--gold) 58%, #8C6214); box-shadow: 0 3px 6px rgba(0,0,0,0.45), inset 0 -2px 3px rgba(0,0,0,0.2); }
+  #splash .ld-mag.tw { background: radial-gradient(circle at 35% 30%, #fff, #E8E4D8 60%, #A9A493); }
+  #splash .ld-mag i { position: absolute; left: 50%; top: 50%; width: 24px; height: 24px; margin: -12px 0 0 -12px; border-radius: 50%; box-shadow: 0 0 0 2px rgba(247,217,142,0.7); opacity: 0; }
+  #splash .ld-shadow { position: absolute; width: 22px; height: 8px; margin: 6px 0 0 -11px; border-radius: 50%; background: rgba(0,0,0,0.35); filter: blur(2px); opacity: 0; }
+  #splash .ld-ledge { position: absolute; left: 30px; width: 330px; top: 570px; height: 24px; border-radius: 4px 4px 9px 9px; background: linear-gradient(180deg, #8A6038 0 3px, #6B4828 3px, #4A3119); box-shadow: 0 8px 14px rgba(0,0,0,0.4), inset 0 -3px 0 rgba(0,0,0,0.25); }
+  #splash .ld-groove { position: absolute; left: 12px; right: 12px; top: 8px; height: 7px; border-radius: 4px; background: rgba(20,12,4,0.55); box-shadow: inset 0 1px 2px rgba(0,0,0,0.6); overflow: hidden; }
+  #splash .ld-groove i { position: absolute; left: 0; top: 0; bottom: 0; width: 0; border-radius: 4px; background: linear-gradient(90deg, #E8DFC6, #FFF8E6); box-shadow: 0 0 6px rgba(255,248,230,0.5); }
+  #splash .ld-stick { position: absolute; top: -9px; width: 34px; height: 10px; margin-left: -17px; border-radius: 3px; background: linear-gradient(180deg, #FFFDF6, #E6DECA); box-shadow: 0 2px 3px rgba(0,0,0,0.35); }
+  #splash .ld-pieces span { position: absolute; top: -9px; height: 9px; width: 22px; border-radius: 3px; box-shadow: 0 2px 3px rgba(0,0,0,0.3); }
+  #splash .ld-meter { position: absolute; left: 0; right: 0; top: 608px; display: flex; align-items: baseline; justify-content: center; gap: 14px; }
+  #splash .ld-pct { font-family: var(--f-display); font-size: 46px; line-height: 1; color: var(--cream); text-shadow: 0 2px 0 rgba(0,0,0,0.25); font-variant-numeric: tabular-nums; min-width: 92px; text-align: right; }
+  #splash .ld-pct small { font-size: 22px; color: var(--gold-hi); margin-left: 2px; }
+  #splash .ld-status { min-width: 190px; font-weight: 400; font-size: 16px; color: rgba(244,241,232,0.9); }
+  #splash .ld-note { position: absolute; left: 34px; right: 34px; bottom: 50px; padding: 14px 16px 13px; color: #3A3010; background: linear-gradient(170deg, #FFEB8F, #F6D65A); box-shadow: 0 12px 22px rgba(0,0,0,0.38); transform-origin: 50% 0; }
+  #splash .ld-note::before { content: ""; position: absolute; top: -8px; left: 50%; margin-left: -8px; width: 16px; height: 16px; border-radius: 50%; background: radial-gradient(circle at 35% 30%, #ff8a73, #b23a26); box-shadow: 0 2px 4px rgba(0,0,0,0.4); }
+  #splash .ld-note::after { content: ""; position: absolute; right: 0; bottom: 0; width: 16px; height: 16px; background: linear-gradient(135deg, rgba(0,0,0,0.12) 50%, #E8C548 50%); }
+  #splash .ld-note b { display: block; font-weight: 600; font-size: 14px; }
+  #splash .ld-note span { display: block; margin-top: 3px; font-weight: 400; font-size: 14px; line-height: 1.4; }
+  #splash .ld-ver { position: absolute; left: 0; right: 0; bottom: 18px; text-align: center; font-weight: 300; font-size: 12.5px; color: rgba(244,241,232,0.5); }
+  #splash .ld-kick { position: absolute; left: 50%; top: 340px; width: 236px; height: 92px; margin-left: -118px; border-radius: 16px; display: grid; place-items: center; z-index: 5;
+    background: var(--wood); box-shadow: var(--wood-edge), 0 0 0 3px rgba(247,217,142,0.85), 0 20px 40px rgba(0,0,0,0.5); }
+  #splash .ld-kick b { font-family: var(--f-display); font-weight: 400; font-size: 52px; line-height: 1; color: var(--cream); text-shadow: 0 -2px 0 rgba(0,0,0,0.45), 0 0 18px rgba(255,214,120,0.35); }
+  #splash .ld-burst { position: absolute; left: 50%; top: 386px; width: 0; height: 0; z-index: 4; }
+  #splash .ld-burst i { position: absolute; left: -2px; top: 0; width: 4px; height: 30px; border-radius: 2px; background: linear-gradient(180deg, rgba(247,217,142,0), var(--gold-hi)); transform-origin: 2px 0; }
+  #splash .ld-flash { position: absolute; inset: 0; z-index: 3; pointer-events: none; opacity: 0; background: radial-gradient(60% 40% at 50% 46%, rgba(255,236,170,0.55), transparent 70%); }
 
   /* ===== Welt geschafft (Prompt 31) - Buehne aus prototypes/welt-animation.html ===== */
   #worldCelebration { position: fixed; inset: 0; z-index: 80; display: grid; place-items: center; overflow: hidden; background: #0A1118; touch-action: manipulation;
@@ -2007,50 +1987,31 @@
     <div id="pitchView"></div>
   </section>
 
-  <!-- LADESCREEN (Prompt 11d) - eigenes Overlay ueber allen Screens, kein Nav-Eintrag -->
+  <!-- LADESCREEN "Kabinentafel" (Prompt 46) - eigenes Overlay ueber allen Screens, kein Nav-Eintrag, nicht ueberspringbar -->
   <div class="splash" id="splash" role="status" aria-live="polite" aria-label="Starting XI wird geladen">
-    <div class="beam l"></div><div class="beam r"></div>
-    <div class="brand">
-      <div class="badge" aria-hidden="true">⚽</div>
-      <div class="kicker">Football Lineup Trivia</div>
-      <h1>Starting<span> XI</span></h1>
-      <div class="claim">Elf Namen. Ein Spiel. Dein Fußballwissen.</div>
-    </div>
-    <div class="pitch-holder">
-      <div class="pitch">
-        <svg viewBox="0 0 200 260" aria-hidden="true">
-          <defs>
-            <linearGradient id="splashGrass" x1="0" x2="0" y1="0" y2="1"><stop offset="0" stop-color="#1f5c3d"/><stop offset="1" stop-color="#163d29"/></linearGradient>
-            <pattern id="splashStripes" width="200" height="40" patternUnits="userSpaceOnUse"><rect width="200" height="20" fill="rgba(255,255,255,0.035)"/></pattern>
-          </defs>
-          <g class="grass"><rect x="0" y="0" width="200" height="260" rx="8" fill="url(#splashGrass)"/><rect x="0" y="0" width="200" height="260" rx="8" fill="url(#splashStripes)"/></g>
-          <rect class="chalkline" pathLength="1" x="8" y="8" width="184" height="244" rx="2"/>
-          <path class="chalkline d2" pathLength="1" d="M8 130 H192"/>
-          <circle class="chalkline d2" pathLength="1" cx="100" cy="130" r="24"/>
-          <path class="chalkline d3" pathLength="1" d="M52 8 V42 H148 V8 M78 8 V20 H122 V8"/>
-          <path class="chalkline d3" pathLength="1" d="M52 252 V218 H148 V252 M78 252 V240 H122 V252"/>
-          <path class="chalkline d4" pathLength="1" d="M84 42 A18 18 0 0 0 116 42 M84 218 A18 18 0 0 1 116 218"/>
-          <g id="splashDots"></g>
+    <div class="ld-beam l" id="ldBl"></div><div class="ld-beam r" id="ldBr"></div>
+    <div class="ld-flash" id="ldFlash"></div>
+    <div class="ld-stage" id="ldStage">
+      <div class="ld-brand" id="ldBrand"><h1>Starting <em>XI</em></h1></div>
+      <div class="ld-claim" id="ldClaim">Elf Namen. Ein Spiel. Dein Fußballwissen.</div>
+      <div class="ld-board" id="ldBoard">
+        <svg viewBox="0 0 200 260" preserveAspectRatio="none" aria-hidden="true">
+          <rect class="ld-ln" id="ldL0" pathLength="1" x="2" y="2" width="196" height="256" rx="3"/>
+          <path class="ld-ln" id="ldL1" pathLength="1" d="M2 130 H198"/><circle class="ld-ln" id="ldL2" pathLength="1" cx="100" cy="130" r="22"/>
+          <path class="ld-ln" id="ldL3" pathLength="1" d="M52 2 V40 H148 V2 M78 2 V16 H122 V2"/><path class="ld-ln" id="ldL4" pathLength="1" d="M52 258 V220 H148 V258 M78 258 V244 H122 V258"/>
+          <path class="ld-ln" id="ldL5" pathLength="1" d="M84 40 A18 18 0 0 0 116 40 M84 220 A18 18 0 0 1 116 220"/>
+          <path class="ld-ar" id="ldA0" pathLength="1" d="M40 186 Q 30 150 48 118"/><path class="ld-ar" id="ldA1" pathLength="1" d="M160 186 Q 170 150 152 118"/><path class="ld-ar" id="ldA2" pathLength="1" d="M100 96 Q 112 70 100 46"/>
+          <path class="ld-ar" id="ldA3" pathLength="1" d="M42 124 l6 -6 l2 8"/><path class="ld-ar" id="ldA4" pathLength="1" d="M158 124 l-6 -6 l-2 8"/><path class="ld-ar" id="ldA5" pathLength="1" d="M95 52 l5 -6 l5 6"/>
         </svg>
-        <div class="formation-tag" id="splashFormationTag">4-3-3</div>
+        <div id="ldMags"></div>
       </div>
+      <div class="ld-burst" id="ldBurst"></div>
+      <div class="ld-kick" id="ldKick"><b>Anpfiff!</b></div>
+      <div class="ld-ledge" id="ldLedge"><span class="ld-pieces"><span style="left:18px;background:var(--gold)"></span><span style="right:20px;background:#7fd99a"></span></span><div class="ld-groove"><i id="ldFill"></i></div><span class="ld-stick" id="ldStick"></span></div>
+      <div class="ld-meter" id="ldMeter"><span class="ld-pct" id="ldPct">0<small>%</small></span><span class="ld-status" id="ldStatus">Rasen wird gemäht …</span></div>
+      <div class="ld-note" id="ldNote"><b>Wusstest du?</b><span id="ldTip"></span></div>
+      <div class="ld-ver" id="ldVer"></div>
     </div>
-    <div class="meter">
-      <div class="pct" id="splashPct">0<small>%</small></div>
-      <div class="bar" aria-hidden="true"><i id="splashBar"></i></div>
-      <div class="ticks" id="splashTicks" aria-hidden="true"></div>
-      <div class="status" id="splashStatus">Rasen wird gemäht …</div>
-    </div>
-    <div class="tip">
-      <span class="ic" aria-hidden="true">💡</span>
-      <div>
-        <div class="k">Wusstest du?</div>
-        <div class="t" id="splashTip"></div>
-      </div>
-    </div>
-    <div class="skip" aria-hidden="true">Tippen zum Überspringen</div>
-    <div class="foot" id="splashVersion"></div>
-    <div class="kickoff" id="splashKickoff"><span>Anpfiff!</span></div>
   </div>
 
 </div>
@@ -9989,18 +9950,10 @@ function evaluatePitch() {
   }
 }
 
-/* ================= LADESCREEN (Prompt 11d) =================
-   Eigenes Overlay ueber allen Screens, kein Eintrag im Navigations-Stack aus
-   Prompt 11b - laeuft nur einmal beim initialen Skript-Start, nie bei
-   Bildschirmwechseln. Optik/Ablauf/Texte aus prototypes/ladescreen.html;
-   die Formation kommt aus PITCH_LAYOUTS["4-3-3"] (keine zweite Koordinaten-
-   liste) - TW steht dort bereits zuerst, LA zuletzt, passt exakt zur
-   gewuenschten Einlauf-Reihenfolge. */
+/* ================= LADESCREEN (Prompt 11d, ab Prompt 46 "Kabinentafel") =================
+   Eigenes Overlay ueber allen Screens, kein Eintrag im Navigations-Stack - laeuft nur einmal beim Skript-Start,
+   nie bei Bildschirmwechseln; nicht ueberspringbar. Optik/Zeitplan aus prototypes/ladescreen-v2.html. */
 const SPLASH_REDUCED_MOTION = matchMedia("(prefers-reduced-motion: reduce)").matches;
-// Zeitwerte (Prompt 21): counterMs = Dauer des Prozent-Zaehlers, kickoffHoldMs = Anpfiff-Einblendung,
-// bevor der Ladescreen ausblendet. Gesamtdauer normal ca. 4,1 s. Spieler-Einlauf, Statustexte und
-// Fortschrittsbalken haengen an der Prozentkurve und strecken sich automatisch mit.
-const SPLASH_TIMING = SPLASH_REDUCED_MOTION ? { counterMs: 800, kickoffHoldMs: 100 } : { counterMs: 3200, kickoffHoldMs: 900 };
 const SPLASH_STATUS = [
   [0, "Rasen wird gemäht …"], [14, "Linien werden gekreidet …"], [28, "Trikots werden verteilt …"],
   [45, "Taktiktafel wird vorbereitet …"], [62, "Startelf wird aufgestellt …"], [84, "Kapitänsbinde wird angelegt …"], [97, "Gleich geht's los!"]
@@ -10008,90 +9961,113 @@ const SPLASH_STATUS = [
 // Nur Tipps zu Funktionen, die es bereits gibt.
 const SPLASH_TIPS = [
   "Tippst du einen Namen in die falsche Zeile, landet er automatisch auf seiner richtigen Position.",
-  "Kleiner Tippfehler? Das Feld wird gold und bekommt einen Stift - tipp ihn an, dann steht die richtige Schreibweise im Feld.",
-  "Drei Sterne gibt's nur in Kampagne und Tages-Challenge, für 11 von 11 - ganz ohne Scout-Rad, Aufdecken oder Korrigieren.",
-  "Beim Scout-Rad ist der ganze Name der Jackpot - selten, aber möglich.",
+  "Kleiner Tippfehler? Das Feld wird gold und bekommt einen Stift – ein Tipp darauf korrigiert.",
+  "Drei Sterne gibt's nur in Kampagne und Tages-Challenge, für 11 von 11 – ganz ohne Scout-Rad, Aufdecken oder Korrigieren.",
+  "Beim Scout-Rad ist der ganze Name der Jackpot – selten, aber möglich.",
   "Richtige Positionen ohne Hilfe in Folge erhöhen deine Kombo und damit dein Positions-XP.",
   "Ab Level 15 schaltest du den Hardcore-Modus mit den schwersten Aufstellungen frei.",
-  "Jeden Tag wartet eine neue Tages-Challenge - dein 🔥-Streak gibt bis zu 50% mehr XP."
+  "Jeden Tag wartet eine neue Tages-Challenge – deine Serie gibt bis zu 50 % mehr XP."
 ];
-
-function buildSplashDots() {
-  const xi = PITCH_LAYOUTS["4-3-3"];
-  document.getElementById("splashDots").innerHTML = xi.map(({ abbr }, i) => `
-    <g class="dot" id="splashDot${i}" style="transform: translate(100px, 290px)">
-      <circle class="h" cx="0" cy="0" r="8"></circle>
-      <circle class="o" cx="0" cy="0" r="8"></circle>
-      <text x="0" y="0.3">${abbr}</text>
-    </g>`).join("");
-}
-
-let splashRaf, splashPlaced;
+/* ---- Ladebildschirm "Kabinentafel" (Prompt 46, Zeitplan T und render(t) aus prototypes/ladescreen-v2.html) ----
+   Ein rAF-Takt, jedes Bild wird aus der Zeit t berechnet. Nicht ueberspringbar. Fortschritt 100 % erst ab 3,6 s UND wenn Schriften
+   geladen sind (profile ist beim Aufruf schon da); bis dahin wartet die Anzeige bei 99 %. Sicherheitsnetz: nach 8 s wird beendet.
+   Bei "Bewegung reduzieren": kurze, ruhige Fassung (ca. 1 s). */
+const SPLASH_T = { beams: [0, 700], brand: [150, 700], claim: [480, 950], board: [80, 620], lines: [[520, 1100], [780, 1250], [820, 1300], [950, 1450], [1000, 1500], [1150, 1600]],
+  mag0: 1350, magStep: 135, magDur: 300, arrows: [[2950, 3300], [3020, 3370], [3090, 3440]], heads: [[3250, 3380], [3320, 3450], [3390, 3520]],
+  note: [1750, 2250], kick: [3650, 3950], out: [4050, 4500], END: 4500, HOLD: 3600 };
+const SPLASH_RT = { END: 1100, OUT: 800 };
+let splashRaf = 0, splashOutDone = false;
 function runSplash() {
-  const splash = document.getElementById("splash");
-  document.getElementById("splashVersion").textContent = "Version " + APP_VERSION;
-  document.getElementById("splashTip").textContent = SPLASH_TIPS[Math.floor(Math.random() * SPLASH_TIPS.length)];
-  buildSplashDots();
-  splashPlaced = 0;
-  void splash.offsetWidth;
-  splash.classList.add("on");
-  splash.addEventListener("click", skipSplash, { once: true });
-
-  const xi = PITCH_LAYOUTS["4-3-3"];
-  const DUR = SPLASH_TIMING.counterMs;
-  const curve = t => { const e = t < 0.5 ? 2 * t * t : 1 - Math.pow(-2 * t + 2, 2.4) / 2; return Math.min(1, e + 0.03 * Math.sin(t * 14) * (1 - t)); };
+  const splash = document.getElementById("splash"), $ = (id) => document.getElementById("ld" + id), S = (id) => $(id).style;
+  const R = SPLASH_REDUCED_MOTION, T = SPLASH_T, END = R ? SPLASH_RT.END : T.END, outStart = R ? SPLASH_RT.OUT : T.out[0];
+  $("Ver").textContent = "Version " + APP_VERSION;
+  $("Tip").textContent = SPLASH_TIPS[Math.floor(Math.random() * SPLASH_TIPS.length)];
+  const clamp = (v) => Math.max(0, Math.min(1, v)), seg = (t, a, b) => clamp((t - a) / (b - a));
+  const eo3 = (x) => 1 - Math.pow(1 - x, 3), eo5 = (x) => 1 - Math.pow(1 - x, 5), eio = (x) => x < 0.5 ? 4 * x * x * x : 1 - Math.pow(-2 * x + 2, 3) / 2;
+  const back = (x, s = 1.7) => 1 + (s + 1) * Math.pow(x - 1, 3) + s * Math.pow(x - 1, 2), lerp = (a, b, x) => a + (b - a) * x;
+  // Magnete: Positionen aus PITCH_LAYOUTS["4-3-3"] (TW zuerst, wie im Spiel)
+  const BX = 22, BY = 22, BW = 266, BH = 344, XI = PITCH_LAYOUTS["4-3-3"];
+  $("Mags").innerHTML = XI.map(({ x, y }, i) => `<span class="ld-shadow" id="ldSh${i}" style="left:${BX + x / 100 * BW}px;top:${BY + y / 100 * BH}px"></span><span class="ld-mag ${i ? "" : "tw"}" id="ldM${i}" style="left:${BX + x / 100 * BW}px;top:${BY + y / 100 * BH}px"><i id="ldH${i}"></i></span>`).join("");
+  $("Burst").innerHTML = Array.from({ length: 14 }, (_, i) => `<i style="transform:rotate(${i * (360 / 14)}deg)"></i>`).join("");
+  // Buehne 390x844 auf die Flaeche ohne Safe-Areas einpassen
+  const probe = document.createElement("div");
+  probe.style.cssText = "position:absolute;visibility:hidden;pointer-events:none;padding:env(safe-area-inset-top,0px) env(safe-area-inset-right,0px) env(safe-area-inset-bottom,0px) env(safe-area-inset-left,0px)";
+  splash.appendChild(probe);
+  function fit() {
+    const cs = getComputedStyle(probe), sT = parseFloat(cs.paddingTop) || 0, sB = parseFloat(cs.paddingBottom) || 0, sL = parseFloat(cs.paddingLeft) || 0, sR = parseFloat(cs.paddingRight) || 0;
+    const aw = splash.clientWidth - sL - sR, ah = splash.clientHeight - sT - sB, sc = Math.min(aw / 390, ah / 844);
+    const st = $("Stage").style; st.transform = "scale(" + sc + ")"; st.left = (sL + (aw - 390 * sc) / 2) + "px"; st.top = (sT + (ah - 844 * sc) / 2) + "px";
+  }
+  fit(); window.addEventListener("resize", () => { if (splash.isConnected) fit(); });
+  // Fortschritt wie bisher (curve()): zuegig, kurz vor Ende ruhiger
+  const curve = (x) => { const e = x < 0.5 ? 2 * x * x : 1 - Math.pow(-2 * x + 2, 2.4) / 2; return Math.min(1, e + 0.03 * Math.sin(x * 14) * (1 - x)); };
+  let ready = false, lastSt = -1, lastP = -1;
   const t0 = performance.now();
-  let lastStatus = -1;
-  const minDurationDone = new Promise((resolve) => {
-    const step = (now) => {
-      const t = Math.min(1, (now - t0) / DUR);
-      const p = Math.max(0, Math.min(100, Math.round(curve(t) * 100)));
-      document.getElementById("splashPct").innerHTML = p + "<small>%</small>";
-      document.getElementById("splashBar").style.width = p + "%";
-      if (!SPLASH_REDUCED_MOTION) {
-        const shouldBe = Math.min(xi.length, Math.floor((p - 8) / 8) + 1);
-        while (splashPlaced < shouldBe) {
-          const { x, y } = xi[splashPlaced];
-          const g = document.getElementById("splashDot" + splashPlaced);
-          g.classList.add("in");
-          g.style.transform = `translate(${(x / 100 * 200).toFixed(1)}px, ${(y / 100 * 260).toFixed(1)}px)`;
-          splashPlaced++;
-        }
-      }
-      let si = 0;
-      SPLASH_STATUS.forEach(([th], i) => { if (p >= th) si = i; });
-      if (si !== lastStatus) {
-        lastStatus = si;
-        const s = document.getElementById("splashStatus");
-        s.classList.add("fade");
-        setTimeout(() => { s.textContent = SPLASH_STATUS[si][1]; s.classList.remove("fade"); }, 180);
-      }
-      if (t < 1) { splashRaf = requestAnimationFrame(step); } else { resolve(); }
-    };
-    splashRaf = requestAnimationFrame(step);
-  });
-
-  // 100% erst wenn Mindestanimation UND Schriften wirklich fertig geladen sind - profile
-  // ist zu diesem Zeitpunkt (loadProfile() lief synchron weiter oben) bereits vollstaendig da.
-  Promise.all([minDurationDone, document.fonts ? document.fonts.ready : Promise.resolve()]).then(finishSplash);
+  Promise.resolve(document.fonts ? document.fonts.ready : null).then(() => { ready = true; });
+  const render = (t) => {
+    let p = Math.round(100 * (R ? eio(seg(t, 0, 800)) : curve(seg(t, 200, 3600))));
+    if (!ready || (!R && t < T.HOLD)) p = Math.min(p, 99);
+    if (p !== lastP) { lastP = p; $("Pct").innerHTML = p + "<small>%</small>"; const gw = 306 - 24; S("Fill").width = (p / 100 * gw) + "px"; S("Stick").left = (12 + p / 100 * gw) + "px"; }
+    let si = 0; SPLASH_STATUS.forEach(([th], i) => { if (p >= th) si = i; });
+    const done = p >= 100 && t >= (R ? 800 : T.kick[0]);
+    if (si !== lastSt || done) { lastSt = si; $("Status").textContent = done ? "Aufstellung steht." : SPLASH_STATUS[si][1]; }
+    if (R) { // kurze, ruhige Fassung: alles steht, nur Zaehler + sanftes Ausblenden
+      ["Brand", "Claim", "Board", "Note", "Ledge", "Meter", "Ver"].forEach((id) => { S(id).opacity = 1; S(id).transform = "none"; });
+      S("Bl").opacity = 1; S("Br").opacity = 1;
+      for (let i = 0; i < 6; i++) { S("L" + i).strokeDashoffset = 0; S("A" + i).strokeDashoffset = 0; }
+      XI.forEach((_, i) => { S("M" + i).opacity = 1; S("M" + i).transform = "none"; S("Sh" + i).opacity = 1; S("H" + i).opacity = 0; });
+      S("Kick").opacity = 0; S("Flash").opacity = 0; S("Burst").opacity = 0;
+      const o = seg(t, SPLASH_RT.OUT, SPLASH_RT.END); splash.style.opacity = 1 - o; splash.style.transform = "none";
+      return;
+    }
+    const bm = eo3(seg(t, ...T.beams)); S("Bl").opacity = bm; S("Br").opacity = bm;
+    const br = eo5(seg(t, ...T.brand)); S("Brand").opacity = br; S("Brand").transform = `translateY(${(22 * (1 - br)).toFixed(1)}px) scale(${lerp(0.94, 1, br).toFixed(3)})`;
+    const cl = eo3(seg(t, ...T.claim)); S("Claim").opacity = cl; S("Claim").transform = `translateY(${(10 * (1 - cl)).toFixed(1)}px)`;
+    const bo = seg(t, ...T.board), boE = back(bo, 1.2); S("Board").opacity = eo3(bo); S("Board").transform = `translateY(${(48 * (1 - boE)).toFixed(1)}px) scale(${lerp(1.05, 1, eo3(bo)).toFixed(3)})`;
+    const le = eo3(seg(t, 280, 760)); S("Ledge").opacity = le; S("Ledge").transform = `translateY(${(30 * (1 - le)).toFixed(1)}px)`;
+    const me = eo3(seg(t, 420, 900)); S("Meter").opacity = me; S("Ver").opacity = me;
+    T.lines.forEach(([a, b], i) => { S("L" + i).strokeDashoffset = (1 - eio(seg(t, a, b))).toFixed(4); });
+    XI.forEach((_, i) => {
+      const a = T.mag0 + i * T.magStep, x = seg(t, a, a + T.magDur), e = back(x, 2.2);
+      S("M" + i).opacity = clamp(x * 3); S("M" + i).transform = `translateY(${(-34 * (1 - e)).toFixed(1)}px) scale(${lerp(1.45, 1, eo3(x)).toFixed(3)})`;
+      S("Sh" + i).opacity = clamp(x * 2).toFixed(2); S("Sh" + i).transform = `scale(${lerp(1.8, 1, eo3(x)).toFixed(3)})`;
+      const h = seg(t, a + T.magDur * 0.7, a + T.magDur + 380); S("H" + i).opacity = (h > 0 && h < 1 ? 1 - h : 0).toFixed(2); S("H" + i).transform = `scale(${lerp(1, 2.1, eo3(h)).toFixed(3)})`;
+    });
+    T.arrows.forEach(([a, b], i) => { S("A" + i).strokeDashoffset = (1 - eio(seg(t, a, b))).toFixed(4); });
+    T.heads.forEach(([a, b], i) => { S("A" + (i + 3)).strokeDashoffset = (1 - eio(seg(t, a, b))).toFixed(4); });
+    const no = seg(t, ...T.note), noE = back(no, 1.6); S("Note").opacity = clamp(no * 2.5); S("Note").transform = `translateY(${(-26 * (1 - noE)).toFixed(1)}px) rotate(${lerp(-12, -1.5, noE).toFixed(2)}deg)`;
+    const k = seg(t, T.kick[0], T.kick[1]), kE = back(k, 2.4);
+    S("Kick").opacity = clamp(k * 3); S("Kick").transform = `scale(${lerp(1.9, 1, eo3(k)).toFixed(3)}) rotate(${lerp(-14, -3, kE).toFixed(2)}deg)`;
+    const bu = seg(t, T.kick[0] + 160, T.kick[0] + 700); S("Burst").opacity = (bu > 0 && bu < 1 ? 1 - eo3(bu) : 0).toFixed(2); S("Burst").transform = `scale(${lerp(0.6, 2.2, eo3(bu)).toFixed(3)})`;
+    const fl = seg(t, T.kick[0] + 120, T.kick[0] + 600); S("Flash").opacity = (fl > 0 && fl < 1 ? Math.sin(fl * Math.PI) : 0).toFixed(2);
+    const o = eio(seg(t, ...T.out)); splash.style.opacity = (1 - o).toFixed(3); splash.style.transform = `scale(${lerp(1, 1.08, o).toFixed(4)})`;
+  };
+  // Zeitachse: wartet bei HOLD (bzw. 790 ms reduziert), bis Schriften geladen sind; nach 8 s wird trotzdem beendet
+  let t = 0, last = t0, outFired = false;
+  const holdAt = R ? 790 : T.HOLD - 1;
+  const frame = (now) => {
+    const dt = Math.min(now - last, 100); last = now;
+    if (!ready && now - t0 > 8000) ready = true; // Sicherheitsnetz
+    if (!ready && t >= holdAt) t = holdAt; else t += dt;
+    if (!outFired && t >= outStart - 60) { outFired = true; splashOut(); }
+    if (t >= END) { t = END; render(t); finishSplash(); return; }
+    render(t); splashRaf = requestAnimationFrame(frame);
+  };
+  if (typeof window.SPLASH_TEST_T === "number") { ready = true; render(window.SPLASH_TEST_T); return; } // nur fuer Screenshot-Serien (ohne Wirkung im Normalbetrieb)
+  render(0);
+  splashRaf = requestAnimationFrame(frame);
 }
-
-function skipSplash() {
-  cancelAnimationFrame(splashRaf);
-  finishSplash();
+// Die Startseite startet ihre Einblend-Animation genau beim Ausblenden des Ladebildschirms (Prompt 44/46)
+function splashOut() {
+  if (splashOutDone) return;
+  splashOutDone = true;
+  document.dispatchEvent(new Event("splashout"));
 }
-
 function finishSplash() {
+  cancelAnimationFrame(splashRaf);
   const splash = document.getElementById("splash");
-  if (!splash || splash.classList.contains("out")) return;
-  document.getElementById("splashPct").innerHTML = "100<small>%</small>";
-  document.getElementById("splashBar").style.width = "100%";
-  document.getElementById("splashStatus").textContent = "Aufstellung steht.";
-  if (!SPLASH_REDUCED_MOTION) document.getElementById("splashKickoff").classList.add("go");
-  setTimeout(() => {
-    splash.classList.add("out");
-    setTimeout(() => splash.remove(), 520);
-  }, SPLASH_TIMING.kickoffHoldMs);
+  splashOut();
+  if (splash) splash.remove();
 }
 
 /* ================= DUELL GEGEN FREUNDE (Prompt 25, Teil 1) =================
@@ -12614,7 +12590,7 @@ renderDailyCard();
 renderModeTiles();
 setInterval(tickDailyTimer, 1000);
 document.getElementById("soloLine").onclick = () => navigate("freeplay");
-whenSplashGone(() => { const sc = document.getElementById("screen-start"); sc.classList.remove("hm-wait"); setTimeout(() => sc.classList.remove("hm-intro"), 2800); }); // Einblend-Animation der Startseite einmalig nach dem Ladebildschirm (Prompt 44)
+{ let homeGo = false; const go = () => { if (homeGo) return; homeGo = true; const sc = document.getElementById("screen-start"); sc.classList.remove("hm-wait"); setTimeout(() => sc.classList.remove("hm-intro"), 2800); }; document.addEventListener("splashout", go, { once: true }); whenSplashGone(go); } // Einblend-Animation der Startseite einmalig nach dem Ladebildschirm (Prompt 44)
 duelMaintenance(); // Prompt 39: abgelaufene/alte Duelle aufraeumen (Bilanz bleibt)
 handleIncomingHash(INITIAL_HASH); // Duell-Link beim App-Start
 if (profile.hasSeenGuide && profile.seenRulesBench) document.getElementById("helpDot").classList.add("hidden");
