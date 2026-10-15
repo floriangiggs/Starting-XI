@@ -40,6 +40,9 @@ Jeder Eintrag in `LINEUP_CHALLENGES` braucht:
 - `teams`
 - `side` – welches Team wird abgefragt
 - `context` – kurzer Hintergrund
+- `teaser` – spoilerfreier Vorschau-Text (1–2 Sätze, nur Fakten aus `context`, kein Name
+  eines Spielers der gefragten Mannschaft – weder Startelf noch Bank). Wird vor dem Spielen
+  angezeigt; der volle `context` erst nach dem Auswerten. Prüft `tools/check-lineup-pools.mjs`.
 - `formation` – muss zu einem Eintrag in `PITCH_LAYOUTS` passen
 - `difficulty` – 1–5
 - `players` – Objekt mit Positions-Kürzel als Key, Nachname als Value

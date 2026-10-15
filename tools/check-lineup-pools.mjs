@@ -5,7 +5,7 @@
 import fs from "fs";
 import vm from "vm";
 
-const file = process.argv[2] || new URL("../startelf_check.html", import.meta.url).pathname;
+const file = process.argv.slice(2).find((a) => !a.startsWith("--")) || new URL("../startelf_check.html", import.meta.url).pathname;
 const html = fs.readFileSync(file, "utf8");
 const script = html.slice(html.indexOf("<script>") + 8, html.lastIndexOf("</script>"));
 
@@ -112,6 +112,41 @@ function checkNameHints(w, m) {
   }
 }
 
+// Spoilerfreie Vorschau-Texte (Prompt 41): teaser darf KEINEN Namen eines Spielers der gefragten Seite enthalten
+// (Startelf, Bank, Aliasse). Geprueft wird wortweise (Woerter >= 4 Zeichen aus Anzeigename, Alias, Bankname;
+// Treffer bei Gleichheit oder Genitiv-s). Ausnahme nur, wenn ein Name zugleich Vereins-/Ortsname ist - hier einzeln begruendet.
+const TEASER_OK = {
+  // id: ["wort", ...]   // Begruendung
+};
+const TEASER_MAX = 210; // Zeichen; Vorschau-Zettel zeigt den Text immer komplett (Schrift passt sich an)
+function nameTokens(m) {
+  const toks = new Map();
+  const add = (full, who) => { for (const t of norm(full).split(" ")) if (t.length >= 4 && !PARTICLE.test(t)) toks.set(t, who); };
+  for (const [a, n] of Object.entries(m.players)) { add(n, `${a}:${n}`); for (const x of (m.aliases && m.aliases[a]) || []) add(x, `${a}:${n}`); }
+  for (const b of m.bench || []) add(b.name, `Bank:${b.name}`);
+  return toks;
+}
+function spoilerHits(text, m) {
+  const toks = nameTokens(m), ok = new Set((TEASER_OK[m.id] || []).map(norm));
+  const hits = [];
+  for (const w of norm(text).split(" ")) {
+    const t = toks.has(w) ? w : w.endsWith("s") && toks.has(w.slice(0, -1)) ? w.slice(0, -1) : null;
+    if (t && !ok.has(t)) hits.push(`${t} (${toks.get(t)})`);
+  }
+  return [...new Set(hits)];
+}
+const spoilerRows = [];
+function checkTeaser(w, m, field) {
+  const t = m[field];
+  if (typeof t !== "string" || !t.trim()) { err(`${w}: Pflichtfeld ${field} fehlt`); return; }
+  if (field === "teaser") {
+    if (t.length > TEASER_MAX) err(`${w}: teaser ${t.length} Zeichen (max ${TEASER_MAX})`);
+    if ((t.match(/(?<!\d)[.!?]\s+(?=[A-ZÄÖÜ„"])/g) || []).length > 1) err(`${w}: teaser hat mehr als 2 Saetze`);
+  }
+  const h = spoilerHits(t, m);
+  if (h.length) { spoilerRows.push([m.id, h.join(", ")]); err(`${w}: ${field} nennt Spieler der gefragten Seite: ${h.join(", ")}`); }
+}
+
 for (const [label, arr] of [["Kampagne", LINEUPS], ["Tag", DAILY]]) {
   const ids = new Set(), games = new Set();
   for (const m of arr) {
@@ -132,6 +167,7 @@ for (const [label, arr] of [["Kampagne", LINEUPS], ["Tag", DAILY]]) {
     if (!/^Aufstellung (von|des|der) /.test(m.side)) err(`${w}: side ungewöhnlich: ${m.side}`);
     if (m.bench !== undefined) checkBench(w, m, abbrs, names);
     checkNameHints(w, m);
+    checkTeaser(w, m, process.argv.includes("--context") ? "context" : "teaser"); // --context: zeigt die Treffer des alten Textes (Vorher-Stand)
     if (label === "Tag") {
       if (m.pairedWith && !LINEUPS.some((x) => x.id === m.pairedWith) && !DAILY.some((x) => x.id === m.pairedWith)) err(`${w}: pairedWith ${m.pairedWith} unbekannt`);
     }
@@ -189,6 +225,7 @@ notes.push(`120 Tage simuliert: erste Wiederholung an Tag ${firstRepeat} (Pool $
 notes.push(`  Stufen der ersten 45 Tage: ${JSON.stringify(cnt(days.slice(0, 45), (m) => m.difficulty))}`);
 
 console.log(notes.join("\n"));
+if (spoilerRows.length) console.log("\nSPOILER-TREFFER (" + spoilerRows.length + " Einträge):\n" + spoilerRows.map(([id, h]) => "  " + id.padEnd(38) + h).join("\n"));
 if (hints.length) console.log("\nNAMENSHINWEISE (" + hints.length + ", nur Meldungen):\n" + hints.map((e) => " - " + e).join("\n"));
 if (errors.length) { console.log("\nFEHLER (" + errors.length + "):\n" + errors.map((e) => " - " + e).join("\n")); process.exit(1); }
 console.log("\nOK - keine Fehler");

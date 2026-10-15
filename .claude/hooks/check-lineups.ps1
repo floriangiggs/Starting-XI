@@ -322,6 +322,29 @@ if ($idxLC -lt 0) {
         }
       }
 
+      # --- teaser (Prompt 41): Pflichtfeld, spoilerfreier Vorschau-Text ohne Namen der gefragten Seite (Startelf/Bank).
+      # Vereinfachte Pruefung (Woerter >= 4 Zeichen, ohne Akzente); die vollstaendige Pruefung macht tools/check-lineup-pools.mjs.
+      $teaserMatch = [regex]::Match($entry, '\bteaser\s*:\s*"((?:[^"\\]|\\.)*)"')
+      if (-not $teaserMatch.Success -or $teaserMatch.Groups[1].Value.Trim().Length -eq 0) {
+        $errors.Add("[LINEUP_CHALLENGES] Eintrag '$entryId': Pflichtfeld 'teaser' fehlt (spoilerfreier Vorschau-Text).")
+      } else {
+        $fold = { param($t) (($t.ToLowerInvariant().Normalize([System.Text.NormalizationForm]::FormD)) -replace '\p{Mn}', '' -replace 'ß', 'ss' -replace "[-'’`]", ' ') }
+        $teaserWords = @((& $fold $teaserMatch.Groups[1].Value) -split '[^a-z0-9]+' | Where-Object { $_.Length -ge 4 })
+        $nameSources = New-Object System.Collections.Generic.List[string]
+        $pm = [regex]::Match($entry, '\bplayers\s*:\s*\{([^}]*)\}')
+        if ($pm.Success) { foreach ($pv in [regex]::Matches($pm.Groups[1].Value, ':\s*"([^"]*)"')) { $nameSources.Add($pv.Groups[1].Value) } }
+        $bm = [regex]::Match($entry, '(?s)\bbench\s*:\s*\[(.*?)\]\s*,\s*benchSource')
+        if ($bm.Success) { foreach ($bv in [regex]::Matches($bm.Groups[1].Value, '\bname\s*:\s*"([^"]*)"')) { $nameSources.Add($bv.Groups[1].Value) } }
+        $spoiler = New-Object System.Collections.Generic.List[string]
+        foreach ($ns in $nameSources) {
+          foreach ($nw in ((& $fold $ns) -split '[^a-z0-9]+' | Where-Object { $_.Length -ge 4 })) {
+            if ($nw -match '^(van|von|dos|della|inter|real|city|united|bayern)$') { continue }
+            if (($teaserWords -contains $nw) -or ($teaserWords -contains ($nw + 's'))) { if (-not $spoiler.Contains($nw)) { $spoiler.Add($nw) } }
+          }
+        }
+        if ($spoiler.Count -gt 0) { $errors.Add("[LINEUP_CHALLENGES] Eintrag '$entryId': 'teaser' nennt Spieler der gefragten Seite: $($spoiler -join ', ').") }
+      }
+
       $playersKeyMatch = [regex]::Match($entry, '\bplayers\s*:\s*\{')
       if (-not $playersKeyMatch.Success) {
         $errors.Add("[LINEUP_CHALLENGES] Eintrag '$entryId': kein 'players'-Objekt gefunden.")
