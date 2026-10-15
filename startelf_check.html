@@ -474,7 +474,7 @@
   .sp-ib:disabled { opacity: 0.42; cursor: default; }
   /* Holz-Blatt (Scout-Rad, Rueckfragen) - Prototyp spiel-ansicht.html .sheet/.in/.ask */
   .modal-backdrop.sp-sbd { background: rgba(5,12,8,0.62); }
-  .sp-sheet { --gold-hi: #F7D98E; width: calc(100% - 12px); max-width: 548px; margin: 0 auto 6px; border-radius: 22px; padding: 7px; max-height: calc(100dvh - 12px); overflow-y: auto;
+  .sp-sheet { --gold-hi: #F7D98E; width: calc(100% - 12px); max-width: 548px; margin: 0 auto max(6px, env(safe-area-inset-bottom, 0px)); border-radius: 22px; padding: 7px; max-height: calc(100dvh - 12px); overflow-y: auto;
     background: linear-gradient(180deg, #8A6038, #4A3119); box-shadow: 0 -10px 40px rgba(0,0,0,0.5); animation: spSheetIn 0.42s cubic-bezier(.25,1.15,.35,1) both; }
   @keyframes spSheetIn { from { transform: translateY(110%); } }
   .sp-sheet .in { border-radius: 16px; padding: 16px; background: radial-gradient(110% 70% at 50% 0%, #33704D, #1D4530 80%); box-shadow: inset 0 2px 8px rgba(0,0,0,0.45); color: var(--chalk); }
@@ -699,7 +699,7 @@
   @keyframes toastOut { to { opacity: 0; transform: translateY(-10px); } }
 
   .modal-backdrop { position: fixed; inset: 0; background: rgba(0,0,0,0.65); z-index: 40; display: flex; align-items: flex-end; justify-content: center; }
-  .modal-sheet { background: var(--ink-2); border: 1px solid var(--line); border-radius: 14px 14px 0 0; padding: 22px 20px 28px; width: 100%; max-width: 560px; max-height: 82vh; overflow-y: auto; }
+  .modal-sheet { background: var(--ink-2); border: 1px solid var(--line); border-radius: 14px 14px 0 0; padding: 22px 20px max(28px, calc(env(safe-area-inset-bottom, 0px) + 14px)); width: 100%; max-width: 560px; max-height: 82vh; overflow-y: auto; }
   .modal-close { display: block; margin: 0 auto 16px; background: transparent; border: 1px solid var(--line); color: var(--chalk); border-radius: 20px; padding: 8px 18px; font-family: 'Oswald', sans-serif; font-weight: 600; font-size: 11px; text-transform: uppercase; cursor: pointer; }
 
   /* ---- Scout-Profil Bottom-Sheet (Prompt 12, Optik 1:1 aus prototypes/scout-profil.html) ---- */
@@ -1467,7 +1467,7 @@
   :where(.dz-root, .dz-ov) button { font-family: inherit; color: inherit; cursor: pointer; border: none; background: none; padding: 0; text-align: inherit; }
   .dz-root button:focus-visible, .dz-ov button:focus-visible { outline: 2px solid var(--dz-gold-hi); outline-offset: 2px; }
   .dz-page { min-height: 100%; padding-bottom: max(34px, calc(env(safe-area-inset-bottom) + 20px)); background: linear-gradient(180deg, var(--dz-grass-3) 0, var(--dz-ink) 520px, var(--dz-ink) 100%); }
-  .dz-hero { padding-top: env(safe-area-inset-top, 0px); text-align: left; }
+  .dz-hero { text-align: left; }
   .dz-who h1 { text-transform: none; }
   .dz-ov { font-family: var(--dz-f-text); color: var(--dz-chalk); }
   /* Bewegung: einmalig beim Laden, gestaffelt */
@@ -1475,14 +1475,14 @@
   @keyframes dz-rise { from { opacity: 0; transform: translateY(18px); } }
   
   /* ---------- Kopf (Stadion) ---------- */
-  .dz-hero { position: relative; padding: 0 18px 22px; overflow: hidden;
+  .dz-hero { position: relative; padding: max(14px, calc(env(safe-area-inset-top, 0px) + 10px)) 18px 22px; overflow: hidden; /* gleiche Formel wie .screen (Prompt 43) */
     background: repeating-linear-gradient(180deg, rgba(255,255,255,0.035) 0 46px, rgba(0,0,0,0.035) 46px 92px),
       radial-gradient(60% 50% at 12% 0%, rgba(255,246,214,0.28), transparent 70%), radial-gradient(60% 50% at 88% 0%, rgba(255,246,214,0.22), transparent 70%),
       linear-gradient(180deg, var(--dz-grass-1), var(--dz-grass-3)); }
   .dz-hero::after { content: ""; position: absolute; left: -20%; right: -20%; bottom: -1px; height: 60px; background: linear-gradient(180deg, transparent, var(--dz-grass-3)); pointer-events: none; }
   .dz-hero .dz-sweep { position: absolute; top: 0; bottom: 0; width: 40%; left: -60%; background: linear-gradient(100deg, transparent, rgba(255,250,230,0.22), transparent); transform: skewX(-16deg); animation: dz-sweep 1.6s 0.5s ease-out 1 both; pointer-events: none; }
   @keyframes dz-sweep { to { left: 130%; } }
-  .dz-top { position: relative; z-index: 2; display: flex; align-items: center; justify-content: space-between; padding-top: 16px; }
+  .dz-top { position: relative; z-index: 2; display: flex; align-items: center; justify-content: space-between; padding-top: 4px; }
   .dz-chipbtn { display: inline-flex; align-items: center; gap: 6px; height: 36px; padding: 0 14px; border-radius: 18px; background: rgba(10,17,24,0.35); box-shadow: inset 0 0 0 1px rgba(244,241,232,0.22); font-weight: 500; font-size: 14.5px; backdrop-filter: blur(6px); }
   .dz-chipbtn.dz-gold { background: linear-gradient(160deg, var(--dz-gold-hi), var(--dz-gold)); color: var(--dz-ink); box-shadow: 0 3px 0 #9C7422; font-weight: 600; }
   .dz-who { position: relative; z-index: 2; margin-top: 22px; }
@@ -1684,9 +1684,19 @@
   /* Overlays */
   .dz-shade { position: fixed; inset: 0; z-index: 90; background: rgba(5,10,8,0.62); opacity: 0; pointer-events: none; transition: opacity 0.3s; }
   .dz-shade.dz-on { opacity: 1; pointer-events: auto; }
-  .dz-sheet { position: absolute; left: 0; right: 0; bottom: 0; z-index: 21; max-height: 92%; overflow-y: auto; border-radius: 26px 26px 0 0; padding: 10px 18px 22px; transform: translateY(105%); transition: transform 0.45s cubic-bezier(.2,.9,.25,1);
+  .dz-sheet { position: absolute; left: 0; right: 0; bottom: 0; z-index: 21; max-height: 92%; overflow-y: auto; border-radius: 26px 26px 0 0; padding: 10px 18px max(22px, calc(env(safe-area-inset-bottom, 0px) + 12px)); transform: translateY(105%); transition: transform 0.45s cubic-bezier(.2,.9,.25,1);
     background: radial-gradient(90% 30% at 50% 0%, rgba(232,178,61,0.18), transparent 70%), var(--dz-ink); box-shadow: 0 -12px 40px rgba(0,0,0,0.5), inset 0 1px 0 rgba(244,241,232,0.1); }
   .dz-sheet.dz-on { transform: none; }
+  /* Blaetter (Prompt 43): Schliessen-Knopf, Abdunkel-Streifen oben bleibt antippbar, kein Mit-Scrollen */
+  .sheet-x { position: absolute; top: 6px; right: 8px; z-index: 5; width: 44px; height: 44px; padding: 0; border: none; background: none; display: grid; place-items: center; color: var(--chalk, #F2EFE6); cursor: pointer; -webkit-tap-highlight-color: transparent; }
+  .sheet-x::before { content: ""; position: absolute; inset: 5px; border-radius: 50%; background: rgba(10,17,24,0.45); box-shadow: inset 0 0 0 1px rgba(244,241,232,0.28); }
+  .sheet-x svg { position: relative; width: 15px; height: 15px; }
+  .modal-sheet, .sp-sheet { position: relative; overscroll-behavior: contain; }
+  .modal-sheet { max-height: calc(100dvh - env(safe-area-inset-top, 0px) - 24px); }
+  .sp-sheet { max-height: calc(100dvh - env(safe-area-inset-top, 0px) - 24px); }
+  .dz-sheet { max-height: calc(100% - env(safe-area-inset-top, 0px) - 24px); overscroll-behavior: contain; }
+  .dz-sheet .sheet-x { top: 4px; }
+  .sheet-drag { touch-action: none; }
   .dz-grab { width: 42px; height: 4px; border-radius: 2px; background: rgba(244,241,232,0.28); margin: 0 auto 14px; }
   .dz-sheet h3 { margin: 0; font-family: var(--dz-f-display); font-weight: 400; font-size: 32px; }
   .dz-sheet .dz-lead2 { margin: 4px 0 6px; font-weight: 300; font-size: 15px; color: var(--dz-muted); line-height: 1.45; }
@@ -3660,6 +3670,7 @@ function markHistoryNavPending() {
 // nur so loest auch die Android-/iOS-Zurücktaste (die immer ein echtes popstate
 // erzeugt) automatisch dieselbe Logik aus wie unsere eigenen Zurück-Buttons.
 function goBack() {
+  if (typeof sheetCloseTop === "function" && sheetCloseTop()) return; // offenes Blatt zuerst schliessen (Prompt 43)
   if (historyNavPending) return;
   markHistoryNavPending();
   window.history.back();
@@ -3679,6 +3690,10 @@ function goBackTo(id) {
 }
 
 window.addEventListener("popstate", (e) => {
+  if (sheetStack.some(x => x.el.isConnected)) { // Zurueck-Taste/-Geste schliesst zuerst das Blatt: Verlaufseintrag wieder vorschieben (Prompt 43)
+    history.pushState({ stack: navStack.slice() }, "", "#" + navStack[navStack.length - 1]);
+    historyNavPending = false; sheetCloseTop(); return;
+  }
   if (duelBackGuard(e)) return; // laufendes Duell: Rueckfrage statt Verlassen (Prompt 26)
   historyNavPending = false;
   navStack = (e.state && e.state.stack) || ["start"];
@@ -10380,6 +10395,76 @@ function dzPageHTML() {
     </section>
   </div>`;
 }
+
+/* ================= BLAETTER-BAUKASTEN (Prompt 43) =================
+   Alle Blaetter (.modal-backdrop > .modal-sheet/.sp-sheet und .dz-sheet) bekommen automatisch: Schliessen-Knopf (44 px), Herunterwischen
+   (am Griff/Kopf immer, im Inhalt nur bei scrollTop = 0), Escape, Zurueck-Taste/-Geste schliesst zuerst das Blatt, Fokus rein/zurueck.
+   Geschlossen wird ueber den vorhandenen Weg jedes Blatts (Klick auf den Abdunkel-Bereich), damit dessen Aufraeumen weiterlaeuft. */
+const sheetStack = []; // { el (Backdrop bzw. .dz-sheet), sheet, close(), opener }
+const SHEET_X_SVG = '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18" stroke="currentColor" stroke-width="2.8" stroke-linecap="round"/></svg>';
+function sheetCloseTop() {
+  while (sheetStack.length && !sheetStack[sheetStack.length - 1].el.isConnected) sheetStack.pop();
+  const top = sheetStack[sheetStack.length - 1];
+  if (!top) return false;
+  top.close();
+  return true;
+}
+function sheetEnhance(el) {
+  if (el.dataset.sheetKit) return;
+  const isDz = el.classList.contains("dz-sheet");
+  const sheet = isDz ? el : el.querySelector(":scope > .modal-sheet, :scope > .sp-sheet");
+  if (!sheet) return;
+  el.dataset.sheetKit = "1";
+  const opener = document.activeElement && document.activeElement !== document.body && !(document.activeElement.classList || {}).contains?.("pos-input") ? document.activeElement : null;
+  const close = () => {
+    if (isDz) { const shade = document.querySelector(".dz-shade"); if (shade) shade.click(); else dzCloseSheet(); return; }
+    el.dispatchEvent(new MouseEvent("click", { bubbles: true })); // der eigene Abdunkel-Klick des Blatts raeumt auf
+    if (el.isConnected) el.remove(); // Blatt ohne Abdunkel-Klick (z. B. Rueckfrage): einfach weg
+  };
+  const entry = { el, sheet, close, opener };
+  sheetStack.push(entry);
+  // Schliessen-Knopf, falls das Blatt noch keinen hat
+  if (!sheet.querySelector(".modal-close, .sp-x, .sheet-x, [data-sheet-x]")) {
+    const x = document.createElement("button"); x.type = "button"; x.className = "sheet-x"; x.setAttribute("aria-label", "Schließen"); x.innerHTML = SHEET_X_SVG;
+    x.addEventListener("click", (e) => { e.stopPropagation(); close(); });
+    sheet.insertBefore(x, sheet.firstChild);
+  }
+  // Fokus ins Blatt (ohne Tastatur zu oeffnen), beim Schliessen zurueck zum Ausloeser
+  sheet.setAttribute("tabindex", "-1"); sheet.style.outline = "none";
+  try { sheet.focus({ preventScroll: true }); } catch (e) {}
+  const obs = new MutationObserver(() => {
+    if (!el.isConnected) { obs.disconnect(); const i = sheetStack.indexOf(entry); if (i >= 0) sheetStack.splice(i, 1); if (opener && opener.isConnected && !opener.disabled) { try { opener.focus({ preventScroll: true }); } catch (e) {} } }
+  });
+  obs.observe(document.body, { childList: true, subtree: true });
+  // Herunterwischen (Touch; Maus als Ersatz fuer Desktop/Tests)
+  const base = isDz ? (dy) => `translate(-50%, ${dy}px)` : (dy) => `translateY(${dy}px)`;
+  let y0 = null, t0 = 0, dy = 0, dragging = false, fromTop = false;
+  const hdr = (t) => { const r = sheet.getBoundingClientRect(); return t.clientY - r.top < 56; }; // Griff/Kopf
+  const start = (pt) => { y0 = pt.clientY; t0 = performance.now(); dy = 0; dragging = false; fromTop = hdr(pt) || sheet.scrollTop <= 0; };
+  const move = (pt, ev) => {
+    if (y0 === null) return;
+    const d = pt.clientY - y0;
+    if (!dragging && d > 8 && fromTop && (hdr({ clientY: y0 }) || sheet.scrollTop <= 0)) { dragging = true; sheet.style.transition = "none"; }
+    if (dragging) { dy = Math.max(0, d); sheet.style.transform = base(dy); if (ev && ev.cancelable) ev.preventDefault(); }
+  };
+  const end = () => {
+    if (y0 === null) return;
+    const v = dy / Math.max(1, performance.now() - t0);
+    const was = dragging; y0 = null; dragging = false;
+    if (!was) return;
+    sheet.style.transition = "";
+    if (dy > 90 || (v > 0.6 && dy > 30)) { sheet.style.transform = base(sheet.offsetHeight + 40); close(); }
+    else sheet.style.transform = isDz ? "" : "";
+  };
+  sheet.addEventListener("touchstart", (e) => start(e.touches[0]), { passive: true });
+  sheet.addEventListener("touchmove", (e) => move(e.touches[0], e), { passive: false });
+  sheet.addEventListener("touchend", end); sheet.addEventListener("touchcancel", end);
+  sheet.addEventListener("mousedown", (e) => { if (e.button === 0 && hdr(e)) { start(e); const mm = (ev) => move(ev, ev), mu = () => { end(); document.removeEventListener("mousemove", mm); document.removeEventListener("mouseup", mu); }; document.addEventListener("mousemove", mm); document.addEventListener("mouseup", mu); } });
+}
+new MutationObserver((recs) => {
+  recs.forEach(r => r.addedNodes.forEach(n => { if (n.nodeType === 1 && (n.classList.contains("modal-backdrop") || n.classList.contains("dz-sheet"))) sheetEnhance(n); }));
+}).observe(document.body, { childList: true });
+document.addEventListener("keydown", (e) => { if (e.key === "Escape" && sheetStack.length) { if (sheetCloseTop()) e.preventDefault(); } });
 
 /* ---- Overlays: Sheet, Menue, Rueckgaengig-Hinweis ---- */
 let dzToastTimer = null;
