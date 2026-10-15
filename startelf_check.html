@@ -240,6 +240,85 @@
   .lv-top .tb.tok svg.tcoin { width: 28px; height: 28px; vertical-align: 0; }
   .lv-top .tb.tok b { font-size: 19px; }
   .lv-top .tb .rules-dot { top: 2px; right: 2px; }
+  /* ---- Level-Vorschau "Taktiktafel" (Prompt 41, Prototyp level-vorschau.html Variante C; alles unter .lv) ---- */
+  #screen-game.lv-on { overflow: hidden; padding: max(12px, calc(env(safe-area-inset-top) + 8px)) 12px max(18px, calc(env(safe-area-inset-bottom) + 10px));
+    background: repeating-radial-gradient(circle at 30% 20%, rgba(255,255,255,0.025) 0 2px, transparent 2px 6px), radial-gradient(120% 70% at 50% 25%, #357652, #1A3D2B 70%), #1A3D2B; }
+  #screen-game.lv-on #pitchView { flex: 1; min-height: 0; display: flex; flex-direction: column; }
+  .lv { --wc: #7fd99a; --gold-hi: #F7D98E; flex: 1; min-height: 0; display: flex; flex-direction: column; color: var(--chalk); font-family: 'Oswald', sans-serif; }
+  @keyframes lvRise { from { opacity: 0; transform: translateY(22px); } }
+  @keyframes lvFromL { from { opacity: 0; transform: translateX(-60px); } }
+  @keyframes lvStamp { from { opacity: 0; transform: rotate(-12deg) scale(1.8); } }
+  @keyframes lvNoteIn { from { opacity: 0; transform: rotate(-20deg) translateY(-30px); } }
+  @keyframes lvDraw { to { stroke-dashoffset: 0; } }
+  @keyframes lvMagnet { from { opacity: 0; transform: translateY(-30px) scale(1.4); } }
+  @keyframes lvChipIn { from { opacity: 0; transform: scale(0.6); } }
+  @keyframes lvFill { to { transform: scaleX(1); } }
+  @keyframes lvSweep { to { left: 130%; } }
+  .lv .lv-top { margin-bottom: 14px; }
+  .lv-frame { position: relative; flex: 1; min-height: 0; display: flex; flex-direction: column; padding: 18px 22px 14px; border-radius: 18px 18px 6px 6px; overflow: hidden;
+    background: radial-gradient(110% 70% at 50% 15%, #33704D, #1D4530 75%);
+    box-shadow: inset 0 0 0 6px #7A5532, inset 0 0 0 8px #3E2A16, inset 0 0 40px rgba(0,0,0,0.35), 0 18px 40px rgba(0,0,0,0.4); }
+  .lv-frame::after { content: ""; position: absolute; inset: 8px; border-radius: 12px; background: radial-gradient(60% 40% at 20% 10%, rgba(255,255,255,0.06), transparent 70%); pointer-events: none; }
+  .lv-kick { display: flex; align-items: center; justify-content: space-between; gap: 8px; flex-shrink: 0; font-weight: 500; font-size: 14px; line-height: 20px; color: rgba(244,241,232,0.88); animation: lvRise 0.6s 0.15s both; }
+  .lv-kick .t { white-space: nowrap; min-width: 0; }
+  .lv-dots { display: inline-flex; align-items: center; gap: 2px; flex-shrink: 1; min-width: 0; }
+  .lv-dots i { width: 6px; height: 6px; border-radius: 50%; background: rgba(244,241,232,0.25); flex-shrink: 1; }
+  .lv-dots i.done { background: var(--wc); }
+  .lv-dots i.now { width: 14px; border-radius: 5px; background: #fff; box-shadow: 0 0 0 2px var(--wc); flex-shrink: 0; }
+  .lv-comp { display: flex; flex-shrink: 0; margin-top: 8px; white-space: nowrap; font-weight: 400; font-size: 14.5px; line-height: 20px; color: rgba(244,241,232,0.8); animation: lvRise 0.6s 0.25s both; }
+  .lv-comp .n { min-width: 0; overflow: hidden; text-overflow: ellipsis; }
+  .lv-comp .d { flex-shrink: 0; }
+  .lv-head { position: relative; flex-shrink: 0; display: flex; align-items: flex-start; justify-content: space-between; gap: 8px; margin-top: 6px; }
+  .lv-teams { flex: 1; min-width: 0; font-family: 'Anton', Impact, 'Arial Narrow', sans-serif; line-height: 1; color: #F8F5EC; text-shadow: 0 0 1px rgba(255,255,255,0.6), 0 0 10px rgba(255,255,255,0.12); }
+  .lv-teams span { display: block; white-space: nowrap; }
+  .lv-teams .h { animation: lvFromL 0.6s 0.3s cubic-bezier(.2,1.1,.3,1) both; }
+  .lv-teams .a { color: rgba(248,245,236,0.78); animation: lvFromL 0.6s 0.42s cubic-bezier(.2,1.1,.3,1) both; }
+  .lv-teams em { display: block; font-style: normal; font-family: 'Oswald', sans-serif; font-weight: 300; font-size: 14px; line-height: 1.2; color: var(--gold-hi); margin: 3px 0 4px; }
+  /* Anzeigetafel als Holzbrettchen (Optik wie .score in spiel-ansicht.html), Ziffern gepraegt */
+  .lv-score { position: relative; flex-shrink: 0; width: 96px; padding: 10px 6px 8px; border-radius: 12px; text-align: center;
+    background: linear-gradient(180deg, rgba(255,255,255,0.10), transparent 40%), repeating-linear-gradient(92deg, rgba(0,0,0,0.06) 0 2px, transparent 2px 7px), linear-gradient(180deg, #9A6C40, #6B4828);
+    box-shadow: inset 0 0 0 1.5px #3E2A16, inset 0 2px 0 rgba(255,236,200,0.22), 0 8px 18px rgba(0,0,0,0.45); animation: lvStamp 0.6s 0.7s cubic-bezier(.3,1.6,.5,1) both; }
+  .lv-score b { display: block; font-family: 'Anton', Impact, sans-serif; font-weight: 400; font-size: 46px; line-height: 1; color: #FFF1C8; text-shadow: 0 -1px 0 rgba(0,0,0,0.45), 0 1px 0 rgba(255,236,200,0.25); }
+  .lv-score small { display: block; margin-top: 4px; font-weight: 400; font-size: 12.5px; line-height: 1.2; color: rgba(255,241,200,0.88); }
+  .lv-mid { position: relative; z-index: 3; flex-shrink: 0; display: flex; align-items: flex-start; gap: 10px; margin: 12px -4px 0 0; }
+  .lv-wanted { flex: 1; min-width: 0; animation: lvRise 0.6s 0.6s both; }
+  .lv-wanted small { display: block; font-weight: 400; font-size: 14px; line-height: 1.3; color: rgba(244,241,232,0.82); }
+  .lv-wanted b { display: block; font-family: 'Anton', Impact, sans-serif; font-weight: 400; font-size: 25px; line-height: 1.05; color: var(--gold-hi); overflow-wrap: anywhere; }
+  .lv-wanted .pills { display: flex; gap: 5px; flex-wrap: wrap; margin-top: 8px; }
+  .lv-wanted .pills span { padding: 2px 9px; border: 1.5px solid rgba(244,241,232,0.55); border-radius: 12px; font-weight: 500; font-size: 13px; line-height: 1.3; }
+  .lv-note { position: relative; flex-shrink: 0; width: clamp(150px, 49%, 178px); margin-top: 4px; padding: 14px 12px 14px; background: linear-gradient(170deg, #FFEB8F, #F6D65A); color: #3A3010; font-weight: 400; font-size: 12.8px; line-height: 1.42;
+    box-shadow: 0 12px 20px rgba(0,0,0,0.35); transform: rotate(2.5deg); transform-origin: 50% 0; animation: lvNoteIn 0.7s 1.5s cubic-bezier(.3,1.4,.5,1) both; }
+  .lv-note b { display: block; font-weight: 600; font-size: 13.5px; margin-bottom: 3px; }
+  .lv-note::before { content: ""; position: absolute; top: -8px; left: 50%; margin-left: -8px; width: 16px; height: 16px; border-radius: 50%; background: radial-gradient(circle at 35% 30%, #ff8a73, #b23a26); box-shadow: 0 2px 4px rgba(0,0,0,0.4); }
+  .lv-note::after { content: ""; position: absolute; right: 0; bottom: 0; width: 18px; height: 18px; background: linear-gradient(135deg, rgba(0,0,0,0.12) 50%, #E8C548 50%); }
+  .lv-pitch { position: relative; flex: 1; min-height: 110px; margin: 8px -2px 0; --mag: 32px; }
+  .lv-chalk { position: absolute; inset: 0; width: 100%; height: 100%; overflow: visible; }
+  .lv-chalk .ln { fill: none; stroke: rgba(244,241,232,0.6); stroke-width: 1.8; stroke-linecap: round; stroke-dasharray: 1; stroke-dashoffset: 1; animation: lvDraw 1s ease-out forwards; }
+  .lv-chalk .ar { stroke: rgba(247,217,142,0.75); }
+  .lv-mag { position: absolute; width: var(--mag); height: var(--mag); margin: calc(var(--mag) / -2) 0 0 calc(var(--mag) / -2); border-radius: 50%; display: grid; place-items: center; font-weight: 600; font-size: calc(var(--mag) * 0.3); line-height: 1; color: #13202A;
+    background: radial-gradient(circle at 35% 30%, #fff, var(--wc) 60%, color-mix(in srgb, var(--wc) 60%, #000)); box-shadow: 0 4px 8px rgba(0,0,0,0.45), inset 0 -2px 3px rgba(0,0,0,0.2); animation: lvMagnet 0.45s cubic-bezier(.3,1.6,.5,1) both; }
+  .lv-mag.tw { background: radial-gradient(circle at 35% 30%, #fff, #E8E4D8 60%, #A9A493); }
+  .lv-tray { position: relative; z-index: 2; flex-shrink: 0; height: 36px; margin: -4px -6px 0; border-radius: 6px 6px 12px 12px; background: linear-gradient(180deg, #8A6038 0 3px, #6B4828 3px, #4A3119); box-shadow: 0 8px 14px rgba(0,0,0,0.4), inset 0 -3px 0 rgba(0,0,0,0.25); }
+  .lv-rail { position: absolute; left: 10px; right: 10px; top: 6px; height: 26px; display: flex; align-items: center; }
+  .lv-rail .seg { flex: 1; height: 4px; margin: 0 -1px; border-radius: 2px; background: rgba(0,0,0,0.35); box-shadow: 0 1px 0 rgba(255,255,255,0.08); position: relative; overflow: hidden; }
+  .lv-rail .seg i { position: absolute; inset: 0; background: linear-gradient(90deg, var(--gold), var(--gold-hi)); transform-origin: 0 50%; transform: scaleX(0); animation: lvFill 0.35s ease-out forwards; }
+  .lv-chip { position: relative; z-index: 1; display: inline-flex; align-items: center; gap: 5px; height: 26px; padding: 0 10px 0 8px; border-radius: 13px; white-space: nowrap; flex-shrink: 0;
+    background: #2A1C0F; box-shadow: inset 0 0 0 1.5px rgba(244,241,232,0.22), 0 2px 0 rgba(0,0,0,0.3); animation: lvChipIn 0.45s cubic-bezier(.3,1.6,.5,1) both; }
+  .lv-chip .st { font-size: 11px; letter-spacing: -0.5px; color: rgba(247,217,142,0.55); }
+  .lv-chip b { font-family: 'Anton', Impact, sans-serif; font-weight: 400; font-size: 15px; line-height: 1; color: #F4F1E8; }
+  .lv-chip small { font-weight: 300; font-size: 12px; color: rgba(244,241,232,0.78); }
+  .lv-chip.next { box-shadow: inset 0 0 0 1.5px rgba(247,217,142,0.85); }
+  .lv-chip.got { background: linear-gradient(170deg, var(--gold-hi), var(--gold)); box-shadow: 0 3px 0 #9C7422, 0 6px 12px rgba(0,0,0,0.3); }
+  .lv-chip.got .st { color: #6B4A0E; } .lv-chip.got b { color: var(--ink); } .lv-chip.got small { color: rgba(19,32,42,0.75); }
+  .lv-bottom { flex-shrink: 0; margin-top: 10px; animation: lvRise 0.6s 1.15s both; }
+  .lv-cta { width: 100%; height: 58px; border: none; border-radius: 17px; font-family: 'Anton', Impact, sans-serif; font-weight: 400; font-size: 22px; line-height: 1.1; color: var(--ink); background: linear-gradient(160deg, var(--gold-hi), var(--gold)); box-shadow: 0 5px 0 #9C7422, 0 14px 30px rgba(0,0,0,0.3); position: relative; overflow: hidden; cursor: pointer; }
+  .lv-cta small { display: block; font-family: 'Oswald', sans-serif; font-weight: 500; font-size: 13px; margin-top: -2px; color: rgba(19,32,42,0.75); }
+  .lv-cta::after { content: ""; position: absolute; top: 0; bottom: 0; width: 40%; left: -60%; background: linear-gradient(100deg, transparent, rgba(255,255,255,0.6), transparent); transform: skewX(-18deg); animation: lvSweep 1.1s 1.4s ease-out 1 both; }
+  .lv-cta:active { transform: translateY(3px); box-shadow: 0 2px 0 #9C7422; }
+  @media (max-width: 380px) { .lv-chip { padding: 0 8px 0 6px; gap: 4px; } .lv-chip small { font-size: 11px; } .lv-chip b { font-size: 14px; } }
+  @media (prefers-reduced-motion: reduce) { .lv *, .lv *::before, .lv *::after { animation: none !important; } .lv-chalk .ln { stroke-dashoffset: 0; } .lv-rail .seg i { transform: scaleX(1); } }
+  .lv.lv-still *, .lv.lv-still *::before, .lv.lv-still *::after { animation: none !important; }
+  .lv.lv-still .lv-chalk .ln { stroke-dashoffset: 0; } .lv.lv-still .lv-rail .seg i { transform: scaleX(1); }
   .tcoin { display: inline-block; width: 1em; height: 1em; vertical-align: -0.17em; flex-shrink: 0; overflow: visible; }
   .rules-dot { position: absolute; top: -3px; right: -3px; width: 9px; height: 9px; border-radius: 50%; background: var(--gold); border: 2px solid var(--ink); }
 
@@ -5280,20 +5359,128 @@ function exitMatch() {
   goBack();
 }
 
+/* ---- Level-Vorschau "Taktiktafel" (Prompt 41): ersetzt in der Kampagne das schlichte Panel von startMatch() ---- */
+const STAR2_THRESHOLD = 9; // von 11 Positionen richtig fuer den 2. Stern (3. Stern = 11/11 ohne Hilfe)
+function lvInfo(m) {
+  const dm = m.comp.match(/(\d{1,2})\.(\d{1,2})\.(\d{4})/);
+  const date = dm ? new Date(+dm[3], +dm[2] - 1, +dm[1]).toLocaleDateString("de-DE", { weekday: "short", day: "numeric", month: "long", year: "numeric" }) : "";
+  const tm = m.teams.match(/^(.+?) gegen (.+?) (\d+:\d+)(.*)$/);
+  const extra = tm ? tm[4].replace(/^,?\s*/, "").trim() : "";
+  const pens = extra.match(/(\d+:\d+)\s*i\.?\s?E\./); // "n.V., Frankfurt siegt 5:4 i.E." -> n. V. + 5:4 i. E.
+  return {
+    comp: m.comp.replace(/,?\s*\d{1,2}\.\d{1,2}\.\d{4}/, "").replace(/\s*\([^)]*\)/, "").trim(), date,
+    home: tm ? tm[1].trim() : m.teams, away: tm ? tm[2].trim() : "", score: tm ? tm[3] : "",
+    note: [/n\.\s?V\./.test(extra) ? "n. V." : "", pens ? pens[1] + " i. E." : ""].filter(Boolean),
+    side: m.side.replace(/^Aufstellung (von|des|der)\s+/i, "")
+  };
+}
+function lvDraftCount(m) {
+  const d = profile.drafts && profile.drafts["c:" + m.id];
+  if (!d) return null;
+  return Object.values(d.entries || {}).filter(e => (e.v && String(e.v).trim()) || e.s === "revealed" || e.s === "corrected").length;
+}
+const lvMeasure = document.createElement("canvas").getContext("2d");
+function lvFitAnton(text, max, avail, min) { // wie fit() im Prototyp: Groesse so, dass der Text (grosse Buchstaben gemessen = konservativ) in avail passt
+  lvMeasure.font = "400 100px Anton, Impact, sans-serif";
+  return Math.max(min, Math.min(max, Math.floor(avail * 100 / lvMeasure.measureText(text.toUpperCase()).width)));
+}
+function renderLevelPreview(m) {
+  const { tier, index } = currentLevelContext;
+  const matches = getMatchesByTier(tier), info = lvInfo(m), lay = PITCH_LAYOUTS[m.formation] || [];
+  const stars = (profile.campaign.stars && profile.campaign.stars[m.id]) || 0;
+  const draftN = lvDraftCount(m), best = profile.best[m.id] ? profile.best[m.id].correct : 0;
+  const goals = [[1, PASS_THRESHOLD + "/11", ""], [2, STAR2_THRESHOLD + "/11", ""], [3, "11/11", "ohne Hilfe"]];
+  const rail = goals.map(([n, b, sm], k) => {
+    const cls = stars >= n ? "got" : stars === n - 1 ? "next" : "";
+    return (k ? `<span class="seg">${stars >= n ? `<i style="animation-delay:${1.1 + k * 0.22}s"></i>` : ""}</span>` : "")
+      + `<span class="lv-chip ${cls}" style="animation-delay:${1.2 + k * 0.22}s"><span class="st">${"★".repeat(n)}</span><b>${b}</b>${sm ? `<small>${sm}</small>` : ""}</span>`;
+  }).join("");
+  const cta = draftN !== null ? ["Weiter aufstellen", draftN > 0 ? `${draftN} von 11 schon eingetragen` : "Weiter, wo du aufgehört hast"]
+    : stars >= 3 ? ["Nochmal aufstellen", "Alle Sterne geholt – trainieren macht trotzdem Spaß"]
+    : stars > 0 ? ["Nochmal aufstellen", `Bestwert ${best} von 11 · nächster Stern wartet`]
+    : ["Aufstellen", "Ziehe die Startelf an die Tafel"];
+  const dots = matches.map((x, i) => `<i class="${profile.campaign.levelPassed[x.id] ? "done" : ""}${i === index ? " now" : ""}"></i>`).join("");
+  const arrows = [[50, 90, 50, 64], [22, 40, 30, 22], [78, 40, 70, 22]];
+  return `<div class="lv" id="lvRoot" style="--wc:${DIFF_COLOR[tier]}">${lvTopbarHTML()}
+    <div class="lv-frame" id="lvFrame">
+      <div class="lv-kick" id="lvKick"><span class="t">${DIFF_LABEL[tier]} · Level ${index + 1} von ${matches.length}</span><span class="lv-dots" aria-hidden="true">${dots}</span></div>
+      <div class="lv-comp" id="lvComp"><span class="n">${duelEsc(info.comp)}</span><span class="d">${info.date ? "\u00A0·\u00A0" + duelEsc(info.date) : ""}</span></div>
+      <div class="lv-head"><div class="lv-teams" id="lvTeams"><span class="h">${duelEsc(info.home)}</span><em>gegen</em><span class="a">${duelEsc(info.away)}</span></div>
+        <div class="lv-score"><b>${duelEsc(info.score)}</b><small>${info.note.length ? info.note.map(duelEsc).join("<br>") : "Endstand"}</small></div></div>
+      <div class="lv-mid"><div class="lv-wanted" id="lvWanted"><small>Aufstellen:</small><b>${duelEsc(info.side)}</b><span class="pills"><span>${duelEsc(m.formation)}</span></span></div>
+        <div class="lv-note" id="lvNote"><b>Wusstest du?</b><span id="lvNoteText">${duelEsc(stars >= 3 && m.context ? m.context : (m.teaser || m.context))}</span></div></div>
+      <div class="lv-pitch" id="lvPitch" data-arrows='${JSON.stringify(arrows)}'><svg class="lv-chalk" id="lvChalk" aria-hidden="true"></svg>
+        ${lay.map((q, k) => `<span class="lv-mag ${q.abbr === "TW" ? "tw" : ""}" style="left:${q.x}%;top:${Math.max(7, Math.min(93, q.y))}%;animation-delay:${1000 + k * 70}ms">${q.abbr}</span>`).join("")}</div>
+    </div>
+    <div class="lv-tray"><div class="lv-rail" role="img" aria-label="Sterne: ${PASS_THRESHOLD} von 11 richtig, ${STAR2_THRESHOLD} von 11 richtig, 11 von 11 ohne Hilfe">${rail}</div></div>
+    <div class="lv-bottom"><button class="lv-cta" id="toPitchBtn" type="button">${cta[0]}<small>${cta[1]}</small></button></div></div>`;
+}
+// Messen und Anpassen (nach dem Einfuegen und bei Groessenaenderung): nichts wird abgeschnitten, nichts ueberlappt.
+function lvFit(root, still) {
+  const q = (s) => root.querySelector(s), frame = q("#lvFrame");
+  if (!frame) return;
+  if (still) root.classList.add("lv-still");
+  // Teams: laengerer Name passt neben die Anzeigetafel (max 34 px)
+  const teams = q("#lvTeams"), names = [...teams.querySelectorAll(".h,.a")].map(e => e.textContent);
+  const tsz = Math.min(...names.map(n => lvFitAnton(n, 34, teams.clientWidth, 16)));
+  teams.style.fontSize = tsz + "px";
+  // Kopfzeile / Wettbewerb + Datum: erst Schrift, dann CL/EL abkuerzen, dann Ellipsis (Datum bleibt immer stehen)
+  const kick = q("#lvKick"), kt = kick.querySelector(".t");
+  kick.style.fontSize = ""; for (let s = 14; kt.scrollWidth > kt.clientWidth + 0.5 && s > 11; s -= 0.5) kick.style.fontSize = s + "px";
+  const comp = q("#lvComp"), cn = comp.querySelector(".n"); comp.style.fontSize = "";
+  const compFits = () => comp.scrollWidth <= comp.clientWidth + 0.5 && cn.scrollWidth <= cn.clientWidth + 0.5;
+  for (let s = 14.5; !compFits() && s > 12.5; s -= 0.5) comp.style.fontSize = s + "px";
+  if (!compFits()) { cn.textContent = cn.textContent.replace(/^Champions-League-/, "CL-").replace(/^Europa-League-/, "EL-"); for (let s = 12.5; !compFits() && s > 11.5; s -= 0.5) comp.style.fontSize = s + "px"; }
+  // "Aufstellen:"-Mannschaft: laengstes Wort muss in die Spalte (Mehrwort-Namen duerfen umbrechen)
+  const wb = q("#lvWanted b"), words = wb.textContent.split(/\s+/);
+  wb.style.fontSize = Math.min(...words.map(w => lvFitAnton(w, 25, q("#lvWanted").clientWidth, 15))) + "px";
+  // Zettel: Text immer komplett; Schrift schrumpft (nie Kuerzen), bis das Spielfeld genug Hoehe behaelt
+  const note = q("#lvNote"), pitch = q("#lvPitch"), want = Math.max(150, Math.min(190, frame.clientHeight * 0.34));
+  note.style.fontSize = ""; note.querySelector("b").style.fontSize = "";
+  for (let s = 12.8; pitch.clientHeight < want && s > 10.4; s -= 0.3) { note.style.fontSize = s + "px"; note.querySelector("b").style.fontSize = Math.min(13.5, s + 0.7) + "px"; }
+  // Magnete wachsen/schrumpfen mit dem Spielfeld, Kreidelinien werden fuer die echte Groesse gezeichnet (Kreis bleibt rund)
+  const W = pitch.clientWidth, H = pitch.clientHeight;
+  pitch.style.setProperty("--mag", Math.max(22, Math.min(32, Math.round(H * 0.115 + 2))) + "px");
+  const arrows = JSON.parse(pitch.dataset.arrows), bw = Math.min(132, W * 0.43), bh = Math.min(40, H * 0.15);
+  q("#lvChalk").setAttribute("viewBox", `0 0 ${W} ${H}`);
+  q("#lvChalk").innerHTML = `<rect class="ln" pathLength="1" x="3" y="3" width="${W - 6}" height="${H - 6}" rx="6" style="animation-delay:0.2s"/>
+    <line class="ln" pathLength="1" x1="3" y1="${H / 2}" x2="${W - 3}" y2="${H / 2}" style="animation-delay:0.5s"/>
+    <circle class="ln" pathLength="1" cx="${W / 2}" cy="${H / 2}" r="${Math.min(30, H * 0.11)}" style="animation-delay:0.6s"/>
+    <rect class="ln" pathLength="1" x="${W / 2 - bw / 2}" y="3" width="${bw}" height="${bh}" style="animation-delay:0.7s"/>
+    <rect class="ln" pathLength="1" x="${W / 2 - bw / 2}" y="${H - bh - 3}" width="${bw}" height="${bh}" style="animation-delay:0.8s"/>
+    ${arrows.map(([x1, y1, x2, y2], k) => `<path class="ln ar" pathLength="1" d="M${x1 / 100 * W} ${y1 / 100 * H} Q${(x1 + x2) / 200 * W + 16} ${(y1 + y2) / 200 * H} ${x2 / 100 * W} ${y2 / 100 * H}" style="animation-delay:${1.9 + k * 0.15}s"/>`).join("")}`;
+}
+let lvResizeTimer = null;
+window.addEventListener("resize", () => {
+  clearTimeout(lvResizeTimer);
+  lvResizeTimer = setTimeout(() => { const r = document.getElementById("lvRoot"); if (r && !document.getElementById("screen-game").hidden) lvFit(r, true); }, 120);
+});
+
 function startMatch(m) {
   currentMatch = m;
   draftCtx = null; // bis renderPitch() die Aufstellung (neu) aufbaut
   if (navStack[navStack.length - 1] !== "game") navigate("game");
   const gameScreen = document.getElementById("screen-game");
+  gameScreen.classList.toggle("lv-on", !!currentLevelContext);
   if (gameScreen) gameScreen.scrollTop = 0;
   const pitchView = document.getElementById("pitchView");
+  if (currentLevelContext) { // Kampagne: Taktiktafel (Prompt 41)
+    pitchView.innerHTML = renderLevelPreview(m);
+    document.getElementById("toPitchBtn").onclick = renderPitch;
+    document.getElementById("lvBack").onclick = exitMatch;
+    document.getElementById("rulesBtn").onclick = openRulesModal;
+    const root = document.getElementById("lvRoot");
+    lvFit(root);
+    if (document.fonts && document.fonts.ready) document.fonts.ready.then(() => { if (document.getElementById("lvRoot") === root) lvFit(root, true); });
+    return;
+  }
   pitchView.innerHTML = `
     <div class="bonus-panel">
       <button class="back-btn" id="exitMatchBtn"><span class="back-arrow">←</span>Abbrechen</button>
       <div class="bonus-eyebrow">${m.comp}</div>
       <div class="bonus-title">${m.teams}</div>
-      <div class="badge-row${currentLevelContext ? " lvl" : ""}" style="text-align:center; margin-bottom:12px">${currentLevelContext ? renderLevelBadge(m) : renderDiffBadge(m.difficulty)}</div>
-      <div class="bonus-text"><b>${m.side}</b><br>${m.context}</div>
+      <div class="badge-row" style="text-align:center; margin-bottom:12px">${renderDiffBadge(m.difficulty)}</div>
+      <div class="bonus-text"><b>${m.side}</b><br>${m.teaser || m.context}</div>
       <button class="action btn-gold" id="toPitchBtn" style="width:100%">Aufstellung eintragen</button>
     </div>`;
   document.getElementById("toPitchBtn").onclick = renderPitch;
@@ -8147,6 +8334,7 @@ function scoutFxStep(fx, fctx, dpr) {
 
 function renderPitch() {
   const m = currentMatch;
+  document.getElementById("screen-game").classList.remove("lv-on");
   hintsUsed = new Set();
   tokenRevealed = new Set();
   fuzzyCorrected = new Set();
@@ -8873,7 +9061,7 @@ function evaluatePitch() {
   const isPerfect = correct === total && noHintsUsed && fuzzyCorrected.size === 0;
   // Sterne (Prompt 11): ⭐ bestanden, ⭐⭐ 9+, ⭐⭐⭐ 11/11 ganz ohne Hilfe. Vorgegebene
   // (prefilled) Positionen blockieren ⭐⭐⭐ nicht, da sie nie in hintsUsed/tokenRevealed landen.
-  const stars = correct < PASS_THRESHOLD ? 0 : isPerfect ? 3 : correct >= 9 ? 2 : 1;
+  const stars = correct < PASS_THRESHOLD ? 0 : isPerfect ? 3 : correct >= STAR2_THRESHOLD ? 2 : 1;
 
   // Level-System: Aufstellungs-Stats, Streak, neue Aufstellung entdeckt
   profile.stats.lineupsPlayed += 1;
