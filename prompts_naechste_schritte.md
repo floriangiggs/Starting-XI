@@ -58,8 +58,9 @@ vorige umgesetzt, getestet und committet ist.
 | 44 | Startseite + Scout-Profil im Taktiktafel-Stil (Scout-Pass, Tages-Challenge-Tafel, Kampagne/Duell-Tafeln, Frei spielen auf der Kreideablage; Profil-Blatt mit Holzreitern, Trophäenregal) | 41, 42, 43 |
 | 45 | Kampagne-Weltenansicht im Taktiktafel-Stil (Saison-Brett, fünf Mini-Stadien mit Fortschrittsring, Kreideweg, „Du“-Magnet, Holzleiste mit Ziel) | 44 |
 | 46 | Ladebildschirm v2 „Kabinentafel“ (Taktiktafel-Stil, nicht überspringbar, Übergang in die Startseite) | 44 |
+| 47 | Frei spielen im Taktiktafel-Stil (One-Pager: Wettbewerbs-Karten mit Flaggen/Zeichen, Stufen in Weltfarben, Hardcore-Schalter, Zähl-Brett + Auslosen mit verdeckter Karte, Tages-Archiv) | 44 |
 
-**Empfohlene Reihenfolge ab jetzt:** 39 → 41 → 42 → 43 → 44 → 45 → 46 → weitere Offline-Feinschliffe (u. a. Jahres-Lücken im Ideen-Speicher auffüllen) → Planung Online-Duell (inkl. 28/29) → 8 (Capacitor, erst wenn die App final ist; vorher Duell-Pflichtpunkt aus CLAUDE.md ansprechen)
+**Empfohlene Reihenfolge ab jetzt:** 39 → 41 → 42 → 43 → 44 → 45 → 46 → 47 → weitere Offline-Feinschliffe (u. a. Jahres-Lücken im Ideen-Speicher auffüllen) → Planung Online-Duell (inkl. 28/29) → 8 (Capacitor, erst wenn die App final ist; vorher Duell-Pflichtpunkt aus CLAUDE.md ansprechen)
 
 Prompt 7 steht bewusst vor der Tages-Challenge: Nur mit der neuen
 Update-Strategie kommen neue Tages-Aufstellungen zuverlässig auf dem iPhone an.
@@ -81,7 +82,8 @@ Welten-Ausschmückung), `prototypes/ladescreen.html` (Prompt 11d) und
 `prototypes/spiel-ansicht.html` (Prompt 42 – nur Standard: Holzreiter + Holzrahmen) und
 `prototypes/startseite.html` (Prompt 44 – Startseite + Scout-Profil, ohne Statusleisten-Attrappe) und
 `prototypes/weltenkarte.html` (Prompt 45 – Kampagne-Weltenansicht, ohne Statusleisten-Attrappe) und
-`prototypes/ladescreen-v2.html` (Prompt 46 – Ladebildschirm, nur .sp und Zeitplan; ersetzt prototypes/ladescreen.html).
+`prototypes/ladescreen-v2.html` (Prompt 46 – Ladebildschirm, nur .sp und Zeitplan; ersetzt prototypes/ladescreen.html) und
+`prototypes/freispiel-v2.html` (Prompt 47 – Frei spielen; ersetzt prototypes/freispiel.html).
 
 **Wichtig nach jeder Änderung:** Der Service Worker liefert die App aus dem
 Cache. Jeder Prompt erhöht deshalb `CACHE_NAME` in `sw.js` – sonst sieht die
@@ -3981,6 +3983,101 @@ Schriften. Die alte Vorlage prototypes/ladescreen.html gilt nicht mehr.
      bei 393×852 (Safe-Area simuliert) und 375×667, plus reduzierte
      Fassung. Gesamtdauer messen und zeigen.
    - CACHE_NAME in sw.js erhöhen, Status-Tabelle: Prompt 46 erledigt.
+```
+
+---
+
+## Prompt 47 – Frei spielen im Taktiktafel-Stil (One-Pager)
+
+```
+Lies CLAUDE.md. Optischer Umbau von #screen-freeplay (renderFreeplay)
+→ Plan Mode, Plan zeigen, dann umsetzen (Commit + Test).
+Voraussetzung: Prompts 41–44 erledigt (Holz-Bausteine, Scout-Münze,
+Safe-Area, Hintergrund).
+Optische Vorlage: prototypes/freispiel-v2.html (von Florian am
+15.10.2026 freigegeben) inkl. Ziehungs-Karte – Optik, Maße, Farben,
+Schriften, Bewegungen 1:1. NICHT übernehmen: angedeutete Statusleiste,
+Regie-Pult, Beispieldaten, eingebettete Schriften. Die alte Vorlage
+prototypes/freispiel.html gilt nicht mehr.
+
+Grundsatz: Logik bleibt – FREEPLAY_GROUPS/freeplayChipGroups(),
+selectedLeagues, selectedDifficulties, poolForActiveLeague(), Hardcore
+(profile.hardcoreMode ab Level 15), startFreeplayRandom(), matchQueue,
+Entwürfe "f:" (Prompt 34), Tages-Archiv (archivedDailyChallenges,
+startArchiveMatch), Formkurve (profile.freeplayForm), freeplaySource.
+
+1. Aufbau (One-Pager ohne Scrollen bei 393×852 / 430×932; bei 375×667
+   kompakter, nichts abgeschnitten)
+   - Kopf: "‹ Start" (gezeichneter Chevron), "Frei spielen" (Anton),
+     rechts die Form als Holzplakette "Form" + 5 kleine Magnete
+     (≥ 9 grün, 7–8 gold, < 7 hell/cremefarben – kein Rot; leere
+     Plätze vertieft; letzter mit hellem Ring). Ohne Spiele: Plakette
+     ausblenden.
+   - Angefangene Aufstellung (nur wenn vorhanden): cremefarbene
+     Karteikarte mit Goldkante, "Angefangen · n von 11 eingetragen",
+     Partie, grüner Knopf "Weiter ›", ✕ → bestehende Rückfrage
+     (Verwerfen/Behalten) im Holz-Blatt-Stil.
+   - Tafel (Filz + Holzrahmen) füllt den Raum bis zur Holzleiste:
+     a) "Wettbewerb" (Anton) + "mehrere möglich" + rechts "Alle n"
+        (aktiv golden, wenn nichts gewählt). Gruppen aus
+        freeplayChipGroups() mit Kreide-Trennlinie und Gruppenname.
+        Jeder Wettbewerb als Karte: Zeichen (SVG: WM Globus mit Pokal-
+        fuß, EM Sternenkranz, Copa/Europa League Pokal, Champions League
+        Sternball; Länder als kleine Flaggen in CSS/SVG – Deutschland,
+        England, Spanien, Italien, Niederlande; unbekannte "Weitere"
+        mit neutralem Pokal), Name, Anzahl auf Holzplättchen.
+        Ausgewählt = goldene Karte mit dunklem Zeichen. Anzahl je Karte
+        berücksichtigt gewählte Stufen + Hardcore; 0 = Karte blass (bleibt
+        antippbar zum Abwählen).
+     b) Kreide-Trennlinie, "Schwierigkeit" + Hardcore-Schalter rechts
+        im Kopf (Flamme, kleiner Schiebeschalter; nur ab Level 15;
+        Hardcore an = Stufe 1–3 deaktiviert und abgewählt). Fünf Kacheln
+        in Weltfarben (DIFF_COLOR): Farbstreifen oben, 5 Balken,
+        "Stufe n", "x Spiele" (x berücksichtigt gewählte Wettbewerbe).
+     c) unten in der Tafel eine Hinweiszeile (Oswald 300): "Nichts
+        gewählt = alle Wettbewerbe und Stufen" / "Tippe eine Auswahl
+        erneut an, um sie abzuwählen" / Hardcore-Hinweis.
+     Ohne Entwurfs-Karte bekommt die Tafel mehr Höhe (größere Karten/
+     Kacheln wie Prototyp .tall), mit Entwurf kompakter.
+   - Holzleiste (Filz-Einlage, Kreidestücke): links Holzbrett mit Anzahl
+     passender Aufstellungen (Anton, hüpft kurz bei Änderung) + "passen"
+     / "passt"; rechts goldener Knopf mit Würfel (SVG statt 🎲)
+     "Zufällige Aufstellung" / "Die Partie bleibt geheim, bis du sie
+     spielst"; bei 0: deaktiviert "Keine passt – wähle etwas ab".
+   - Tages-Archiv als cremefarbene Karte ganz unten (Kalenderblatt-SVG
+     mit Tageszahl, "Tages-Archiv", "Vergangene Tages-Challenges
+     nachspielen", Anzahl auf Holzplättchen, Chevron). Nur wenn
+     archivedDailyChallenges().length > 0; sonst bekommt die Tafel den
+     Platz.
+
+2. Auslosen mit verdeckter Karte (neu)
+   - Knopf → Würfel rollt einmal (ca. 0,9 s) → aus dem Pool wird wie
+     bisher eine Aufstellung gezogen (startFreeplayRandom-Logik, aber
+     noch nicht starten) → Abdunkeln + cremefarbene Karte klappt auf:
+     "Aufstellung gezogen", "Bereit?", Mini-Tafel mit "? ? ?", Chips
+     "Stufe n · <Weltname>" (Punkt in Weltfarbe) und Wettbewerb
+     (Kurzname wie Karte), "Die Partie siehst du erst beim Anpfiff.",
+     Knöpfe "Anpfiff" (gold) → startMatch wie heute, "Neu ziehen"
+     (Holz) → neue Ziehung aus demselben Pool (nicht dieselbe Partie
+     direkt wieder, solange Pool > 1).
+   - Schließen per Tipp daneben/Escape/Herunterwischen (Regeln aus 43)
+     = abbrechen, nichts gestartet. Teams/Ergebnis werden auf der Karte
+     NIE gezeigt (Spoiler).
+   - "Nochmal (zufällig)" im Ergebnis-Bildschirm nutzt dieselbe Karte.
+
+3. Bewegung einmalig beim Öffnen (Tafel, Holzleiste, Archiv steigen
+   auf; Glanz über den Knopf), Zähler-Hüpfer bei Änderung, Würfel-Rollen,
+   Karte klappt auf. prefers-reduced-motion beachten, keine Schleifen.
+
+4. Aufräumen + Abschluss
+   - Alte .fp-Stile (Chips, .levels, .count, .go, .secret, .arch alt)
+     und Emojis (🎲 📅 🔥) auf dieser Seite ersetzen/entfernen.
+   - "So geht's" → Text zu Frei spielen prüfen (Hardcore-Schalter,
+     verdeckte Karte erwähnen) und anpassen.
+   - Screenshots 393×852 (Safe-Area simuliert), 430×932, 375×667: ohne/
+     mit Entwurf, Level < 15 / ≥ 15 mit Hardcore an, Auswahl mit 0
+     Treffern, Ziehungs-Karte; Overlap-/Safe-Area-Check aus 43.
+   - CACHE_NAME in sw.js erhöhen, Status-Tabelle: Prompt 47 erledigt.
 ```
 
 ---
