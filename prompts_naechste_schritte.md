@@ -57,8 +57,9 @@ vorige umgesetzt, getestet und committet ist.
 | 43 | Duell-Zentrale: Kopf unter der iPhone-Statusleiste, Blätter (Schnell-Duell u. a.) per Wischen/✕ schließbar – Safe-Area-Check aller Bildschirme | – |
 | 44 | Startseite + Scout-Profil im Taktiktafel-Stil (Scout-Pass, Tages-Challenge-Tafel, Kampagne/Duell-Tafeln, Frei spielen auf der Kreideablage; Profil-Blatt mit Holzreitern, Trophäenregal) | 41, 42, 43 |
 | 45 | Kampagne-Weltenansicht im Taktiktafel-Stil (Saison-Brett, fünf Mini-Stadien mit Fortschrittsring, Kreideweg, „Du“-Magnet, Holzleiste mit Ziel) | 44 |
+| 46 | Ladebildschirm v2 „Kabinentafel“ (Taktiktafel-Stil, nicht überspringbar, Übergang in die Startseite) | 44 |
 
-**Empfohlene Reihenfolge ab jetzt:** 39 → 41 → 42 → 43 → 44 → 45 → weitere Offline-Feinschliffe (u. a. Jahres-Lücken im Ideen-Speicher auffüllen) → Planung Online-Duell (inkl. 28/29) → 8 (Capacitor, erst wenn die App final ist; vorher Duell-Pflichtpunkt aus CLAUDE.md ansprechen)
+**Empfohlene Reihenfolge ab jetzt:** 39 → 41 → 42 → 43 → 44 → 45 → 46 → weitere Offline-Feinschliffe (u. a. Jahres-Lücken im Ideen-Speicher auffüllen) → Planung Online-Duell (inkl. 28/29) → 8 (Capacitor, erst wenn die App final ist; vorher Duell-Pflichtpunkt aus CLAUDE.md ansprechen)
 
 Prompt 7 steht bewusst vor der Tages-Challenge: Nur mit der neuen
 Update-Strategie kommen neue Tages-Aufstellungen zuverlässig auf dem iPhone an.
@@ -79,7 +80,8 @@ Welten-Ausschmückung), `prototypes/ladescreen.html` (Prompt 11d) und
 `prototypes/level-vorschau.html` (Prompt 41 – nur Variante C „Taktiktafel“ + Kopfzeile) und
 `prototypes/spiel-ansicht.html` (Prompt 42 – nur Standard: Holzreiter + Holzrahmen) und
 `prototypes/startseite.html` (Prompt 44 – Startseite + Scout-Profil, ohne Statusleisten-Attrappe) und
-`prototypes/weltenkarte.html` (Prompt 45 – Kampagne-Weltenansicht, ohne Statusleisten-Attrappe).
+`prototypes/weltenkarte.html` (Prompt 45 – Kampagne-Weltenansicht, ohne Statusleisten-Attrappe) und
+`prototypes/ladescreen-v2.html` (Prompt 46 – Ladebildschirm, nur .sp und Zeitplan; ersetzt prototypes/ladescreen.html).
 
 **Wichtig nach jeder Änderung:** Der Service Worker liefert die App aus dem
 Cache. Jeder Prompt erhöht deshalb `CACHE_NAME` in `sw.js` – sonst sieht die
@@ -3907,6 +3909,78 @@ C. Aufräumen + Abschluss
      Welt 2 teilweise), fast fertig (Welt 1–4 komplett, Welt 5 offen);
      dazu je eine gesperrte und eine geschaffte Welt ausgewählt.
    - CACHE_NAME in sw.js erhöhen, Status-Tabelle: Prompt 45 erledigt.
+```
+
+---
+
+## Prompt 46 – Ladebildschirm v2 „Kabinentafel“ (nicht überspringbar)
+
+```
+Lies CLAUDE.md. Umbau des Ladebildschirms (#splash, runSplash/
+finishSplash) → Plan Mode, Plan zeigen, dann umsetzen (Commit + Test).
+Voraussetzung: Prompt 44 erledigt (neue Startseite, Hintergrund).
+Optische Vorlage: prototypes/ladescreen-v2.html (von Florian am
+15.10.2026 freigegeben) – nur der Ladebildschirm (.sp) mit seinem
+Zeitplan T und render(t). NICHT übernehmen: Regie-Pult, Zeitleiste,
+Zeitlupe, angedeutete Statusleiste, das Startseiten-Iframe, eingebettete
+Schriften. Die alte Vorlage prototypes/ladescreen.html gilt nicht mehr.
+
+1. Optik (1:1 Prototyp, ersetzt die alte Navy-Optik)
+   - Hintergrund wie Startseite (Rasen mit Mähstreifen) + zwei
+     Flutlichtkegel von oben.
+   - "Starting XI" (Anton, "XI" gold) + Claim "Elf Namen. Ein Spiel.
+     Dein Fußballwissen." (Oswald 300). Das ⚽-Abzeichen und der
+     gesperrte Kicker "Football Lineup Trivia" entfallen.
+   - Holz-Taktiktafel (Filz, Holzrahmen) mit Kreide-Spielfeld (SVG,
+     pathLength="1"), elf Magneten in der 4-3-3 aus PITCH_LAYOUTS (TW
+     weiß, Rest gold, ohne Kürzel), drei goldenen Kreide-Laufwegen mit
+     Pfeilspitzen.
+   - Kreideablage unter der Tafel als Fortschritt: Rille füllt sich
+     kreideweiß, das Kreidestück wandert mit; daneben Prozent (Anton
+     cremefarben, "%" gold) + Statustexte wie bisher (SPLASH_STATUS),
+     am Ende "Aufstellung steht.".
+   - Gelber "Wusstest du?"-Zettel mit roter Nadel und zufälligem Tipp
+     (SPLASH_TIPS; Fast-richtig-Tipp auf den Stift aus Prompt 42
+     umformulieren, 🔥 im Serien-Tipp als Wort "Serie").
+   - Version klein unten (APP_VERSION).
+   - "Anpfiff!" als Holzschild mit Goldrand, das sich mit goldenem
+     Strahlenkranz und kurzem Lichtblitz auf die Tafel stempelt
+     (ersetzt die bisherige .kickoff-Einblendung).
+   - Safe-Areas beachten (Prompt 43): nichts unter Statusleiste/Home-
+     Balken; Layout skaliert für 375×667 bis 430×932 (Tafel nach
+     verfügbarer Höhe).
+
+2. Ablauf (deterministisch über render(t) wie Prototyp, ein
+   requestAnimationFrame-Takt, keine CSS-Dauerschleifen)
+   0–0,7 s Flutlicht + Schrift; 0,1–0,6 s Tafel fällt ein; 0,5–1,6 s
+   Kreide zeichnet das Feld; ab 1,35 s fallen die Magnete (alle 135 ms
+   einer, mit Federn, Schatten, Lichtring); 1,75 s Zettel; 2,95–3,5 s
+   Laufwege; 3,65 s Anpfiff; 4,05–4,5 s Ausblenden mit leichtem Zoom
+   in die Startseite. Fortschrittskurve wie bisher (curve()), 100 % erst
+   ab 3,6 s UND wenn document.fonts.ready + Profil geladen sind; falls
+   das länger dauert, wartet der Bildschirm bei 97–99 % (kein Sprung).
+   Die Startseite startet ihre Einblend-Animation aus Prompt 44 genau
+   beim Ausblenden des Ladebildschirms (nicht vorher unsichtbar
+   abspielen).
+
+3. NICHT überspringbar (Florian-Wunsch)
+   - Klick-/Tipp-Handler zum Überspringen (skipSplash) entfernen, Text
+     "Tippen zum Überspringen" entfernen.
+   - Ausnahme nur technisch: Bei Duell-Links (#duel= / #duelr=) läuft
+     der Ladebildschirm ebenfalls vollständig; danach wie heute weiter.
+   - prefers-reduced-motion: kurze, ruhige Fassung (ca. 1 s): alles
+     steht sofort, nur Prozent zählt 0→100 und sanftes Ausblenden.
+   - Sicherheitsnetz: Wenn nach 8 s noch nicht fertig (z. B. Schriften
+     hängen), trotzdem beenden, damit niemand festhängt.
+
+4. Aufräumen + Abschluss
+   - Alte #splash-Stile (.badge, .kicker, .beam alt, .pitch-holder,
+     .dot, .bar, .ticks, .skip, .kickoff) entfernen, soweit ersetzt.
+   - "So geht's"/Hilfetexte prüfen, ob irgendwo "überspringen" steht.
+   - Screenshots zu den Zeitpunkten 0,5 / 1,5 / 2,5 / 3,3 / 3,8 / 4,3 s
+     bei 393×852 (Safe-Area simuliert) und 375×667, plus reduzierte
+     Fassung. Gesamtdauer messen und zeigen.
+   - CACHE_NAME in sw.js erhöhen, Status-Tabelle: Prompt 46 erledigt.
 ```
 
 ---
