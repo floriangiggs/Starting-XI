@@ -231,7 +231,7 @@
   /* Scout-Muenze (Prompt 41): einheitliches Token-Symbol, im Text ca. 1em und baseline-buendig */
   /* Kopfzeile der Level-Vorschau (Prompt 41, Prototyp level-vorschau.html .topbar/.tb) */
   .lv-top { display: flex; align-items: center; gap: 8px; flex-shrink: 0; }
-  .lv-top .sp { flex: 1; }
+  .lv-top .lv-sp { flex: 1; }
   .lv-top .tb { position: relative; height: 38px; padding: 0 14px; border-radius: 19px; display: inline-flex; align-items: center; gap: 6px; font-family: 'Oswald', sans-serif; font-weight: 500; font-size: 15px; line-height: 1; color: var(--chalk); background: rgba(10,17,24,0.4); border: none; box-shadow: inset 0 0 0 1px rgba(244,241,232,0.25); backdrop-filter: blur(6px); cursor: pointer; }
   .lv-top .tb svg { width: 18px; height: 18px; display: block; flex-shrink: 0; }
   .lv-top .tb:active { transform: scale(0.96); }
@@ -511,6 +511,18 @@
   .sp-sheet .save-btn { display: block; width: 100%; margin-top: 8px; height: 46px; border-radius: 14px; font-family: 'Oswald', sans-serif; font-weight: 500; font-size: 16px; color: var(--chalk); background: none; border: none; box-shadow: inset 0 0 0 1.5px rgba(244,241,232,0.3); cursor: pointer; }
   .sp-sheet .save-btn.main { height: 52px; font-family: 'Anton', Impact, sans-serif; font-weight: 400; font-size: 20px; color: var(--ink); background: linear-gradient(160deg, var(--gold-hi), var(--gold)); box-shadow: 0 5px 0 #9C7422, 0 14px 30px rgba(0,0,0,0.3); }
   .sp-sheet .save-btn.main:active { transform: translateY(3px); box-shadow: 0 2px 0 #9C7422; }
+  /* Duell-Runde in der Taktiktafel-Ansicht (Prompt 42) */
+  #screen-duelplay.sp-duel { overflow: hidden; padding: max(12px, calc(env(safe-area-inset-top) + 8px)) 12px max(16px, calc(env(safe-area-inset-bottom) + 8px));
+    background: repeating-radial-gradient(circle at 30% 20%, rgba(255,255,255,0.025) 0 2px, transparent 2px 6px), radial-gradient(120% 70% at 50% 25%, #357652, #1A3D2B 70%), #1A3D2B; }
+  #screen-duelplay.sp-duel #duelPlayView { flex: 1; min-height: 0; display: flex; flex-direction: column; }
+  .lv-top .tb.clock { padding: 0 10px; cursor: default; }
+  .lv-top .tb.clock .flip { display: inline-flex; align-items: center; gap: 2px; }
+  .lv-top .tb.clock .flip b { font-family: 'Anton', Impact, sans-serif; font-weight: 400; font-size: 21px; line-height: 1; min-width: 16px; padding: 3px 2px; text-align: center; border-radius: 4px; color: var(--gold-2); position: relative; background: linear-gradient(180deg, #24333F 0 50%, #1A2833 50% 100%); }
+  .lv-top .tb.clock .flip b::after { content: ""; position: absolute; left: 0; right: 0; top: 50%; height: 1px; background: rgba(0,0,0,0.6); }
+  .lv-top .tb.clock .flip i { font-style: normal; font-family: 'Anton', Impact, sans-serif; font-size: 18px; color: rgba(244,213,141,0.55); }
+  .lv-top .tb.clock #duelClock.low .flip b { color: #F2A497; }
+  .sp-big { font-family: 'Anton', Impact, sans-serif; font-weight: 400; font-size: 22px; line-height: 1; color: var(--gold-hi); }
+  .sp-big small { font-size: 13px; color: rgba(244,241,232,0.75); }
   .sp.done { display: block; flex: none; }
   .sp.done .sp-tray, .sp.done .sp-bottom { display: none; }
   .sp.done .sp-frame { flex: none; }
@@ -4163,9 +4175,9 @@ function lvTopbarHTML(o = {}) {
   const icon = b.icon === "x" ? '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18" stroke="currentColor" stroke-width="2.6" stroke-linecap="round"/></svg>'
     : '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M15 5l-7 7 7 7" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/></svg>';
   const dot = !profile.hasSeenPitchRules || !profile.seenRulesBench ? '<span class="rules-dot" id="rulesDot"></span>' : "";
-  return `<div class="lv-top"><button type="button" class="tb back" id="${b.id}">${icon}${b.label}</button><span class="sp"></span>`
-    + `<span class="tb tok" data-tokchip data-big role="img" aria-label="${profile.hintTokens} ${TOKEN_LABEL}">${tokenChipInner(profile.hintTokens, true)}</span>`
-    + `<button type="button" class="tb" id="rulesBtn"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9" fill="none" stroke="currentColor" stroke-width="2"/><path d="M12 11v6" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"/><circle cx="12" cy="7.6" r="1.4" fill="currentColor"/></svg>Regeln${dot}</button></div>`;
+  const right = o.tok === false ? "" : `<span class="tb tok" data-tokchip data-big role="img" aria-label="${profile.hintTokens} ${TOKEN_LABEL}">${tokenChipInner(profile.hintTokens, true)}</span>`
+    + `<button type="button" class="tb" id="rulesBtn"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9" fill="none" stroke="currentColor" stroke-width="2"/><path d="M12 11v6" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"/><circle cx="12" cy="7.6" r="1.4" fill="currentColor"/></svg>Regeln${dot}</button>`;
+  return `<div class="lv-top"><button type="button" class="tb back" id="${b.id}">${icon}${b.label}</button><span class="lv-sp"></span>${o.mid || ""}${right}</div>`;
 }
 function updateGameTokChip() {
   document.querySelectorAll("[data-tokchip]").forEach(chip => { chip.innerHTML = tokenChipInner(profile.hintTokens, chip.hasAttribute("data-big")); chip.setAttribute("aria-label", profile.hintTokens + " " + TOKEN_LABEL); });
@@ -8690,10 +8702,69 @@ let spKb = null; // Tastatur-Steuerung der laufenden Spiel-Ansicht (von renderPi
 if (window.visualViewport) ["resize", "scroll"].forEach(ev => window.visualViewport.addEventListener(ev, () => spKb && spKb.check()));
 document.addEventListener("focusin", () => { if (spKb) setTimeout(spKb.check, 0); });
 document.addEventListener("focusout", () => { if (spKb) setTimeout(spKb.check, 80); });
+// Abzeichen, Reiter-Klick und Kreidelinien einer Tafel verdrahten (Spiel und Duell). opts: { onChange, fix(abbr), select(abbr) }
+function spWireBoard(root, opts) {
+  const pitch = root.querySelector("#spPitch");
+  spFit(root);
+  root.querySelectorAll(".pos-input").forEach(i => spSyncSlot(i, false));
+  new MutationObserver(recs => {
+    recs.forEach(r => { if (r.target.classList && r.target.classList.contains("pos-input")) spSyncSlot(r.target, true); });
+    if (opts.onChange) opts.onChange();
+  }).observe(pitch, { subtree: true, attributes: true, attributeFilter: ["class"] });
+  pitch.addEventListener("focusin", (e) => { const sl = e.target.closest && e.target.closest(".sp-slot"); if (sl) { pitch.querySelectorAll(".sp-slot.on").forEach(x => x.classList.remove("on")); sl.classList.add("on"); } });
+  pitch.addEventListener("mousedown", (e) => { if (e.target.closest(".sp-bdg.near")) e.preventDefault(); }); // Stift nimmt dem Feld den Fokus nicht
+  pitch.addEventListener("click", (e) => {
+    const fix = e.target.closest(".sp-bdg.near");
+    if (fix) { if (opts.fix) opts.fix(fix.dataset.fix); return; }
+    const tag = e.target.closest(".sp-ptag");
+    if (tag && opts.select) opts.select(tag.dataset.a); // Reiter antippen = Position waehlen
+  });
+  setTimeout(() => root.classList.remove("intro"), 2600);
+}
+// Tastatur-Modus (Prompt 42): per visualViewport erkannt (iPhone-Safari verkleinert nur das sichtbare Fenster). Ohne Tastatur bleibt die normale Ansicht.
+// Kopfzeile aus, Tafel rutscht hoch, Holzleiste wird zur Zubehoerleiste (fixed am <body>, an die Unterkante des sichtbaren Fensters geheftet).
+// hooks: { fill(acc) fuellt die Zubehoerleiste, act(name) fuehrt data-act-Knoepfe aus }
+function spKbInit(root, hooks) {
+  const kb = { open: false };
+  const visVP = () => window.visualViewport;
+  // offen = sichtbares Fenster deutlich kleiner als die Seite (iPhone-Safari scrollt dabei oft das Dokument und verschiebt offsetTop - nicht darueber rechnen)
+  const isOpen = () => { const v = visVP(); return !!v && v.height < document.documentElement.clientHeight - 120; };
+  function place() {
+    const v = visVP(), acc = document.getElementById("spAcc");
+    if (!v || !acc) return;
+    const accH = acc.offsetHeight || 60;
+    acc.style.transform = `translateY(${Math.round(v.offsetTop + v.height - accH)}px)`;
+    acc.style.left = Math.round(v.offsetLeft) + "px"; acc.style.width = Math.round(v.width) + "px";
+    const frame = root.querySelector("#spFrame"), inp = root.querySelector(".pos-input.active-field") || document.activeElement;
+    if (!frame || !inp || !inp.getBoundingClientRect) return;
+    const r = inp.getBoundingClientRect(), ty = new DOMMatrix(getComputedStyle(frame).transform).m42;
+    const target = Math.min(250, Math.max(110, v.height - accH - 80)); // Schild ca. 250 px unter der Oberkante, immer ueber der Zubehoerleiste
+    const want = Math.max(0, Math.min((r.top + r.height / 2 - ty) - (v.offsetTop + target), 380));
+    frame.style.transform = want ? `translateY(${-Math.round(want)}px)` : "";
+  }
+  function check() {
+    if (!document.body.contains(root)) { const a = document.getElementById("spAcc"); if (a) a.remove(); return; }
+    const ae = document.activeElement, focused = !!(ae && ae.classList && ae.classList.contains("pos-input") && root.contains(ae));
+    const open = focused && isOpen();
+    if (open && !kb.open) {
+      kb.open = true; root.classList.add("sp-kb");
+      const acc = document.createElement("div"); acc.className = "sp-acc"; acc.id = "spAcc";
+      acc.addEventListener("mousedown", (e) => { if (e.target.closest("button")) e.preventDefault(); });
+      acc.addEventListener("click", (e) => { const b = e.target.closest("[data-act]"); if (b && !b.disabled) hooks.act(b.dataset.act); });
+      document.body.appendChild(acc); hooks.fill(acc);
+    } else if (!open && kb.open) {
+      kb.open = false; root.classList.remove("sp-kb");
+      const acc = document.getElementById("spAcc"); if (acc) acc.remove();
+      const frame = root.querySelector("#spFrame"); if (frame) frame.style.transform = "";
+    }
+    if (kb.open) place();
+  }
+  return { check };
+}
 let spResizeTimer = null;
 window.addEventListener("resize", () => {
   clearTimeout(spResizeTimer);
-  spResizeTimer = setTimeout(() => { const r = document.querySelector("#pitchView .sp"); if (r && !document.getElementById("screen-game").hidden && !r.classList.contains("sp-kb")) spFit(r); }, 150);
+  spResizeTimer = setTimeout(() => { document.querySelectorAll(".sp").forEach(r => { if (r.offsetParent && !r.classList.contains("sp-kb") && r.querySelector("#spPitch")) spFit(r); }); }, 150);
 });
 
 function renderPitch() {
@@ -9388,7 +9459,7 @@ function renderPitch() {
   document.getElementById("rulesBtn").onclick = openRulesModal;
 
   // Spiel-Ansicht (Prompt 42): Abzeichen, "Auswerten"-Unterzeile und Holzleiste folgen den Zustaenden der Schilder
-  const spRoot = pitchView.querySelector("#spRoot"), spPitchEl = pitchView.querySelector("#spPitch");
+  const spRoot = pitchView.querySelector("#spRoot");
   const allInputs = [...pitchView.querySelectorAll(".pos-input")];
   function spSyncCta() {
     const sub = document.getElementById("spCtaSub"), btn = document.getElementById("checkBtn");
@@ -9397,60 +9468,10 @@ function renderPitch() {
     sub.textContent = full ? `Alle ${f} eingetragen – ab zur Auswertung` : `${f} von ${allInputs.length} eingetragen${prefilledAbbrs.size ? " · " + prefilledAbbrs.size + " gratis" : ""}`;
     btn.classList.toggle("full", full);
   }
-  spFit(spRoot);
-  allInputs.forEach(i => spSyncSlot(i, false));
+  spWireBoard(spRoot, { onChange: spSyncCta, fix: applyCorrection, select: (a) => { const inp = inputOf(a); if (!inp.disabled) inp.focus(); else setActivePosition(a); } });
   spSyncCta();
-  new MutationObserver(recs => {
-    recs.forEach(r => { if (r.target.classList && r.target.classList.contains("pos-input")) spSyncSlot(r.target, true); });
-    spSyncCta();
-  }).observe(spPitchEl, { subtree: true, attributes: true, attributeFilter: ["class"] });
   pitchView.addEventListener("input", spSyncCta);
-  spPitchEl.addEventListener("mousedown", (e) => { if (e.target.closest(".sp-bdg.near")) e.preventDefault(); }); // Stift nimmt dem Feld den Fokus nicht
-  spPitchEl.addEventListener("click", (e) => {
-    const fix = e.target.closest(".sp-bdg.near");
-    if (fix) { applyCorrection(fix.dataset.fix); return; }
-    const tag = e.target.closest(".sp-ptag");
-    if (tag) { const inp = inputOf(tag.dataset.a); if (!inp.disabled) inp.focus(); else setActivePosition(tag.dataset.a); } // Reiter antippen = Position waehlen
-  });
-  setTimeout(() => spRoot.classList.remove("intro"), 2600);
-
-  // Tastatur (Prompt 42): per visualViewport erkannt (iPhone-Safari verkleinert nur das sichtbare Fenster). Ohne Tastatur bleibt die normale Ansicht.
-  const kb = { open: false };
-  const visVP = () => window.visualViewport;
-  // Tastatur offen = sichtbares Fenster deutlich kleiner als die Seite (iPhone-Safari scrollt dabei oft das Dokument und verschiebt offsetTop,
-  // deshalb nicht ueber offsetTop rechnen). Zubehoerleiste: fixed am <body>, an die Unterkante des sichtbaren Fensters geheftet.
-  const kbIsOpen = () => { const v = visVP(); return !!v && v.height < document.documentElement.clientHeight - 120; };
-  function placeKb() {
-    const v = visVP(), acc = document.getElementById("spAcc");
-    if (!v || !acc) return;
-    const accH = acc.offsetHeight || 60;
-    acc.style.transform = `translateY(${Math.round(v.offsetTop + v.height - accH)}px)`;
-    acc.style.left = Math.round(v.offsetLeft) + "px"; acc.style.width = Math.round(v.width) + "px";
-    const frame = spRoot.querySelector("#spFrame"), inp = spRoot.querySelector(".pos-input.active-field") || document.activeElement;
-    if (!frame || !inp || !inp.getBoundingClientRect) return;
-    const r = inp.getBoundingClientRect(), ty = new DOMMatrix(getComputedStyle(frame).transform).m42;
-    const target = Math.min(250, Math.max(110, v.height - accH - 80)); // Schild ca. 250 px unter der Oberkante, immer ueber der Zubehoerleiste
-    const want = Math.max(0, Math.min((r.top + r.height / 2 - ty) - (v.offsetTop + target), 380));
-    frame.style.transform = want ? `translateY(${-Math.round(want)}px)` : "";
-  }
-  function kbCheck() {
-    if (!document.body.contains(spRoot)) { const a = document.getElementById("spAcc"); if (a) a.remove(); return; }
-    const ae = document.activeElement, focused = !!(ae && ae.classList && ae.classList.contains("pos-input") && spRoot.contains(ae));
-    const open = focused && kbIsOpen();
-    if (open && !kb.open) {
-      kb.open = true; spRoot.classList.add("sp-kb");
-      const acc = document.createElement("div"); acc.className = "sp-acc"; acc.id = "spAcc";
-      acc.addEventListener("mousedown", (e) => { if (e.target.closest("button")) e.preventDefault(); });
-      acc.addEventListener("click", (e) => { const b = e.target.closest("[data-act]"); if (b && !b.disabled) spAct(b.dataset.act, activePosAbbr); });
-      document.body.appendChild(acc); renderPositionPanel(activePosAbbr);
-    } else if (!open && kb.open) {
-      kb.open = false; spRoot.classList.remove("sp-kb");
-      const acc = document.getElementById("spAcc"); if (acc) acc.remove();
-      const frame = spRoot.querySelector("#spFrame"); if (frame) frame.style.transform = "";
-    }
-    if (kb.open) placeKb();
-  }
-  spKb = { check: kbCheck };
+  spKb = spKbInit(spRoot, { fill: () => renderPositionPanel(activePosAbbr), act: (name) => spAct(name, activePosAbbr) }); // Tastatur-Modus mit Zubehoerleiste
 }
 
 function evaluatePitch() {
@@ -11656,12 +11677,6 @@ function runWalkout(d) {
 }
 
 /* ---- Runde ---- */
-function duelPitchHTML(m) {
-  return `<div class="pitch-wrap"><div class="pitch"><div class="halfway"></div><div class="center-circle"></div><div class="center-dot"></div><div class="box-top"></div><div class="box-bottom"></div>
-    ${PITCH_LAYOUTS[m.formation].map(p => `<div class="pos-slot" style="left:${p.x}%; top:${p.y}%;"><div class="pos-label">${p.abbr}</div><input type="text" class="pos-input" data-abbr="${p.abbr}" placeholder="Name" autocomplete="off" autocapitalize="words" autocorrect="off" spellcheck="false" aria-label="${p.abbr}"></div>`).join("")}
-  </div></div>`;
-}
-
 function duelClockHTML(s) {
   return `<span class="flip">${duelFlip(fmtMS(s))}</span>`;
 }
@@ -11783,7 +11798,7 @@ function duelBackGuard(e) {
 /* ---- Bildschirm "duelplay" (Walkout / Spiel / Zwischenkarte) ---- */
 function renderDuelPlay() {
   const root = document.getElementById("duelPlayView"), screen = document.getElementById("screen-duelplay");
-  if (!duelRun || !duelRun.active) { screen.classList.remove("walkout", "scroll-y"); setTimeout(() => { if (navStack[navStack.length - 1] === "duelplay") goBackTo("duels"); }, 0); return; }
+  if (!duelRun || !duelRun.active) { screen.classList.remove("walkout", "scroll-y", "sp-duel"); setTimeout(() => { if (navStack[navStack.length - 1] === "duelplay") goBackTo("duels"); }, 0); return; }
   const r = duelRun, d = profile.duels[r.id];
   const key = r.phase + ":" + r.round;
   if (r.view === key && root.firstChild) return; // laufende Runde nicht neu aufbauen
@@ -11791,8 +11806,10 @@ function renderDuelPlay() {
   r.view = key;
   const m = dailyMatchById(d.lineups[r.round]);
   screen.classList.toggle("walkout", r.phase === "walkout");
-  screen.classList.toggle("scroll-y", r.phase === "play");
-  root.className = r.phase === "walkout" ? "wkroot" : "dl dplay";
+  screen.classList.remove("scroll-y");
+  screen.classList.toggle("sp-duel", r.phase === "play"); // Prompt 42: Duell-Runde in der Taktiktafel-Ansicht
+  if (r.phase !== "play") spKb = null;
+  root.className = r.phase === "walkout" ? "wkroot" : r.phase === "play" ? "" : "dl dplay";
   if (r.phase === "walkout") {
     root.innerHTML = walkoutHTML(d, m);
     r.timers.forEach(clearTimeout); r.timers = [];
@@ -11800,18 +11817,19 @@ function renderDuelPlay() {
     return;
   }
   if (r.phase === "play") {
-    const o = d.opponent, i = duelMatchInfo(m);
-    root.innerHTML = `
-      <div class="hud">
-        <div class="side"><b>Du</b><span class="v" id="duelMyScore">0<small>/11</small></span></div>
-        <div class="clock2" id="duelClock">${duelClockHTML(r.limit)}</div>
-        <div class="side r"><b>${o ? duelEsc(o.name) : "Gegner"}</b><span class="lock">🔒 verdeckt</span></div>
-      </div>
-      <div class="series"><span class="rd">Runde ${r.round + 1} von ${d.settings.rounds}</span><span class="dots">${Array.from({ length: d.settings.rounds }, (_, k) => `<i class="${k === r.round ? "cur" : ""}"></i>`).join("")}</span><button type="button" class="cancel" id="duelCancelBtn">Abbrechen</button></div>
-      <div class="match"><b>${i.away ? duelEsc(i.home) + " – " + duelEsc(i.away) + " " + duelEsc(i.score.split(",")[0]) : duelEsc(m.teams)}</b><span>${duelEsc(i.league)} · ${duelEsc(i.date)} · ${duelEsc(m.side)}</span></div>
-      ${duelPitchHTML(m)}
-      <div class="givewrap"><button type="button" class="give" id="duelGive">⏹ Abgeben<small>Zeit stoppen und mit dem aktuellen Stand werten</small></button></div>`;
+    const o = d.opponent, oname = o ? duelEsc(o.name) : "Freund";
+    const kick = `<span class="t">Duell gegen ${oname} · Runde ${r.round + 1} von ${d.settings.rounds}</span><span class="sp-dots" aria-hidden="true">${Array.from({ length: d.settings.rounds }, (_, k) => `<i class="${k < r.round ? "done" : ""}${k === r.round ? " now" : ""}"></i>`).join("")}</span>`;
+    root.innerHTML = `<div class="sp intro" id="spRoot" style="--wc:#7fd99a">${lvTopbarHTML({ back: { id: "duelCancelBtn", label: "Abbrechen", icon: "x" }, tok: false, mid: `<span class="tb clock" role="timer" aria-label="Restzeit"><span id="duelClock">${duelClockHTML(r.limit)}</span></span>` })}
+      ${spBoardHTML(m, { kick, combo: false, bench: false })}
+      <div class="sp-tray" id="spTray"><div class="sp-felt"><div class="sp-ttop"><span class="sp-ttag">Du</span><div class="sp-ttxt"><b><span class="sp-big" id="duelMyScore">0<small>/11</small></span> richtig</b><div class="sp-tmsg">${oname} · 🔒 Ergebnis verdeckt</div></div></div>
+        <div class="sp-tbtns"><button type="button" class="sp-tbtn gold" id="duelGive">Abgeben – Zeit stoppen</button></div></div></div></div>`;
+    const spRoot = root.querySelector("#spRoot");
     bindDuelPitch(root, m);
+    spWireBoard(spRoot, { select: (a) => { const inp = root.querySelector('.pos-input[data-abbr="' + a + '"]'); if (inp && !inp.disabled) inp.focus(); } });
+    spKb = spKbInit(spRoot, {
+      fill: (acc) => { const n = root.querySelectorAll(".pos-input.ok").length; acc.innerHTML = `<span class="sp-ttag">Du</span><div class="sp-amid"><b>${n} von 11 richtig</b></div><button type="button" class="sp-ib gold" data-act="done">Fertig</button>`; },
+      act: () => { if (document.activeElement && document.activeElement.blur) document.activeElement.blur(); }
+    });
     document.getElementById("duelGive").onclick = () => finishDuelRound("give");
     document.getElementById("duelCancelBtn").onclick = confirmDuelAbort;
     r.shown = -1; clearInterval(r.tick); r.tick = setInterval(duelTick, 250); duelTick();
