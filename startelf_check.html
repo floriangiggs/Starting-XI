@@ -593,6 +593,152 @@
   .wm-intro .wm-tray { animation: hmRise 0.55s 0.5s cubic-bezier(.2,.9,.25,1) both; }
   @media (prefers-reduced-motion: reduce) { #screen-worldmap.wm *, #screen-worldmap.wm *::before, #screen-worldmap.wm *::after { animation: none !important; transition: none !important; } }
 
+  /* ---- Frei spielen "Taktiktafel" (Prompt 47, Prototyp freispiel-v2.html; alles unter #screen-freeplay.fpv, Klassen fp-) ---- */
+  #screen-freeplay.fpv { --cream: #FFF1C8; --gold-hi: #F7D98E; --mint: #7FE0A8; --ok: #49D98A; --flame: #E8632B; --muted: rgba(244,241,232,0.8); --dim: rgba(244,241,232,0.55);
+    --wood: linear-gradient(180deg, rgba(255,255,255,0.10), transparent 40%), repeating-linear-gradient(92deg, rgba(0,0,0,0.06) 0 2px, transparent 2px 7px), linear-gradient(180deg, #9A6C40, #6B4828);
+    --wood-edge: inset 0 0 0 1.5px #3E2A16, inset 0 2px 0 rgba(255,236,200,0.22); --felt: radial-gradient(110% 60% at 50% 8%, #33704D, #1D4530 80%);
+    --f-display: Anton, Impact, "Arial Narrow", sans-serif; --f-text: Oswald, "Arial Narrow", system-ui, sans-serif; font-family: var(--f-text); color: var(--chalk);
+    padding: max(14px, calc(env(safe-area-inset-top, 0px) + 10px)) 14px max(16px, calc(env(safe-area-inset-bottom, 0px) + 8px)); text-align: left; overflow: hidden;
+    background: radial-gradient(130% 60% at 50% 0%, #3B7F59 0%, #235A3E 45%, #173A29 100%); }
+  #screen-freeplay.fpv::before { content: ""; position: absolute; inset: 0; pointer-events: none; opacity: 0.55; background: repeating-linear-gradient(180deg, rgba(255,255,255,0.025) 0 38px, rgba(0,0,0,0.03) 38px 76px); }
+  #screen-freeplay.fpv > * { position: relative; z-index: 1; }
+  :where(#screen-freeplay.fpv button) { font-family: inherit; color: inherit; cursor: pointer; border: none; background: none; padding: 0; text-align: inherit; }
+  :where(#screen-freeplay.fpv button:disabled) { cursor: default; }
+  #screen-freeplay.fpv button:focus-visible { outline: 2px solid var(--gold-hi); outline-offset: 2px; }
+  #screen-freeplay .lv-top .tb.back { background: rgba(10,22,16,0.38); }
+  .fp { flex: 1; min-height: 0; display: flex; flex-direction: column; gap: 10px; margin-top: 10px; }
+  .fp-form { height: 38px; padding: 0 11px; border-radius: 11px; display: inline-flex; align-items: center; gap: 7px; flex-shrink: 0; background: var(--wood); box-shadow: var(--wood-edge), 0 3px 8px rgba(0,0,0,0.3); }
+  .fp-form:empty { display: none; }
+  .fp-form small { font-weight: 500; font-size: 13px; color: var(--cream); }
+  .fp-form span { display: inline-flex; gap: 3px; }
+  .fp-form i { width: 10px; height: 10px; border-radius: 50%; background: rgba(0,0,0,0.3); box-shadow: inset 0 1px 2px rgba(0,0,0,0.4); }
+  .fp-form i.w { background: radial-gradient(circle at 35% 30%, #D9FFE9, var(--ok) 60%, #1E8048); box-shadow: none; }
+  .fp-form i.m { background: radial-gradient(circle at 35% 30%, #FFF4CF, var(--gold) 60%, #8C6214); box-shadow: none; }
+  .fp-form i.l { background: radial-gradient(circle at 35% 30%, #fff, #CFC8B4 60%, #8B8574); box-shadow: none; }
+  .fp-form i.last { box-shadow: 0 0 0 1.5px var(--cream); }
+  .fp-draft { position: relative; flex-shrink: 0; height: 54px; border-radius: 13px; display: flex; align-items: center; gap: 10px; padding: 0 6px 0 14px; color: var(--ink);
+    background: radial-gradient(120% 120% at 0% 0%, #FFFDF6, #F6EED9 55%, #EADFC2); box-shadow: 0 2px 0 #C9BB98, 0 10px 22px rgba(0,0,0,0.35); }
+  .fp-draft::before { content: ""; position: absolute; left: 0; top: 0; bottom: 0; width: 6px; border-radius: 13px 0 0 13px; background: var(--gold); }
+  .fp-draft .tx { flex: 1; min-width: 0; text-align: left; }
+  .fp-draft small { display: block; font-weight: 500; font-size: 12px; color: #8A6420; }
+  .fp-draft b { display: block; font-weight: 500; font-size: 15px; color: #1C2B36; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .fp-draft .go2 { height: 38px; padding: 0 12px; border-radius: 11px; display: inline-flex; align-items: center; gap: 3px; font-weight: 500; font-size: 14.5px; color: #FFF1C8; background: linear-gradient(180deg, #2F7A50, #1F5A3A); box-shadow: 0 2px 0 #143A26; flex-shrink: 0; }
+  .fp-draft .go2 svg { width: 15px; height: 15px; }
+  .fp-draft .x { width: 34px; height: 34px; border-radius: 50%; display: grid; place-items: center; color: #6A5A3C; flex-shrink: 0; }
+  .fp-draft .x svg { width: 15px; height: 15px; }
+  .fp-board { position: relative; flex: 1; min-height: 0; margin: 0 -4px; border-radius: 18px 18px 8px 8px; overflow: hidden; background: var(--felt);
+    box-shadow: inset 0 0 0 6px #7A5532, inset 0 0 0 8px #3E2A16, inset 0 0 40px rgba(0,0,0,0.38), 0 16px 34px rgba(0,0,0,0.4); }
+  .fp-board::after { content: ""; position: absolute; inset: 8px; border-radius: 12px; pointer-events: none; background: radial-gradient(60% 30% at 20% 6%, rgba(255,255,255,0.07), transparent 70%); }
+  .fp-bin { position: absolute; inset: 0; padding: 18px 18px 16px; display: flex; flex-direction: column; overflow: hidden; }
+  .fp-sh { display: flex; align-items: center; gap: 10px; flex-shrink: 0; }
+  .fp-sh h2 { margin: 0; flex: 1; min-width: 0; font-family: var(--f-display); font-weight: 400; font-size: 22px; line-height: 1; text-transform: none; letter-spacing: 0; color: #FBF7EC; white-space: nowrap; }
+  .fp-sh h2 small { margin-left: 7px; font-family: var(--f-text); font-weight: 300; font-size: 13px; color: rgba(244,241,232,0.7); }
+  .fp-all { height: 32px; padding: 0 6px 0 12px; border-radius: 16px; display: inline-flex; align-items: center; gap: 7px; font-weight: 500; font-size: 14px; flex-shrink: 0; box-shadow: inset 0 0 0 1.5px rgba(244,241,232,0.35); transition: background 0.2s, color 0.2s; }
+  .fp-all .n { height: 22px; min-width: 26px; padding: 0 6px; border-radius: 11px; display: grid; place-items: center; font-family: var(--f-display); font-size: 13px; color: var(--cream); background: var(--wood); }
+  .fp-all.on { color: var(--ink); background: linear-gradient(170deg, var(--gold-hi), var(--gold)); box-shadow: 0 2px 0 #9C7422; }
+  .fp-grp { margin-top: 9px; flex-shrink: 0; }
+  .fp-gl { display: flex; align-items: center; gap: 8px; margin-bottom: 5px; font-weight: 400; font-size: 13px; color: rgba(244,241,232,0.72); }
+  .fp-gl::after { content: ""; flex: 1; height: 1px; background: repeating-linear-gradient(90deg, rgba(244,241,232,0.3) 0 4px, transparent 4px 8px); }
+  .fp-chips { display: grid; gap: 6px; }
+  .fp-chips.c3 { grid-template-columns: auto auto 1fr; } .fp-chips.c2 { grid-template-columns: 1.14fr 1fr; }
+  .fp-ch { position: relative; height: 36px; padding: 0 4px 0 7px; border-radius: 11px; display: flex; align-items: center; gap: 6px; min-width: 0; font-weight: 500; font-size: 14px;
+    background: rgba(8,18,12,0.38); box-shadow: inset 0 0 0 1.5px rgba(244,241,232,0.3); transition: background 0.2s, color 0.2s, box-shadow 0.2s, transform 0.1s; }
+  .fp-ch:active { transform: scale(0.97); }
+  .fp-ch .ic { width: 22px; height: 22px; flex-shrink: 0; display: grid; place-items: center; }
+  .fp-ch .ic svg { width: 22px; height: 22px; display: block; }
+  .fp-ch .nm { flex: 1; min-width: 0; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .fp-ch .n { height: 22px; min-width: 22px; padding: 0 5px; border-radius: 7px; display: grid; place-items: center; font-family: var(--f-display); font-size: 13px; color: var(--cream); background: var(--wood); box-shadow: inset 0 1px 0 rgba(255,236,200,0.2); flex-shrink: 0; }
+  .fp-ch.on { color: var(--ink); background: linear-gradient(170deg, var(--gold-hi), var(--gold)); box-shadow: 0 2px 0 #9C7422, 0 4px 10px rgba(0,0,0,0.25); }
+  .fp-ch.on .ic svg [stroke="#F7D98E"] { stroke: #13202A; } .fp-ch.on .ic svg [fill="#F7D98E"] { fill: #13202A; }
+  .fp-ch.on .n { background: rgba(19,32,42,0.85); color: var(--gold-hi); }
+  .fp-ch.zero { opacity: 0.45; }
+  .fp-flag { width: 22px; height: 15px; border-radius: 3px; overflow: hidden; box-shadow: 0 0 0 1px rgba(0,0,0,0.35); display: grid; }
+  .fp-sep { height: 2px; margin: 12px 0 11px; flex-shrink: 0; background: repeating-linear-gradient(90deg, rgba(244,241,232,0.35) 0 6px, transparent 6px 11px); border-radius: 1px; }
+  .fp-lv { display: grid; grid-template-columns: repeat(5, 1fr); gap: 6px; margin-top: 10px; flex-shrink: 0; }
+  .fp-lt { position: relative; height: 68px; border-radius: 12px; overflow: hidden; display: grid; justify-items: center; align-content: center; gap: 4px; background: rgba(8,18,12,0.38); box-shadow: inset 0 0 0 1.5px rgba(244,241,232,0.3); transition: background 0.2s, box-shadow 0.2s; }
+  .fp-lt::before { content: ""; position: absolute; left: 0; right: 0; top: 0; height: 5px; background: var(--c); }
+  .fp-lt .bars { display: flex; gap: 2px; } .fp-lt .bars i { width: 5px; height: 9px; border-radius: 2px; background: rgba(244,241,232,0.2); } .fp-lt .bars i.on { background: var(--c); }
+  .fp-lt b { font-family: var(--f-display); font-weight: 400; font-size: 17px; line-height: 1; }
+  .fp-lt span { font-weight: 300; font-size: 12px; color: rgba(244,241,232,0.78); white-space: nowrap; }
+  .fp-lt.on { background: linear-gradient(180deg, color-mix(in srgb, var(--c) 32%, transparent), rgba(8,18,12,0.3)); box-shadow: inset 0 0 0 2px var(--gold-hi), 0 4px 10px rgba(0,0,0,0.25); }
+  .fp-lt.on b { color: var(--gold-hi); }
+  .fp-lt:disabled { opacity: 0.4; }
+  .fp-hc { height: 32px; border-radius: 16px; display: inline-flex; align-items: center; gap: 6px; padding: 0 6px 0 8px; text-align: left; flex-shrink: 0; background: rgba(8,18,12,0.38); box-shadow: inset 0 0 0 1.5px rgba(255,170,100,0.45); }
+  .fp-hc svg { width: 17px; height: 17px; flex-shrink: 0; }
+  .fp-hc b { font-weight: 500; font-size: 14px; }
+  .fp-hc .sw { width: 34px; height: 20px; border-radius: 10px; background: rgba(0,0,0,0.35); position: relative; box-shadow: inset 0 0 0 1px rgba(244,241,232,0.25); transition: background 0.2s; }
+  .fp-hc .sw::after { content: ""; position: absolute; left: 3px; top: 3px; width: 14px; height: 14px; border-radius: 50%; background: #EDE6D3; transition: transform 0.2s; }
+  .fp-hc.on { background: linear-gradient(170deg, rgba(255,179,71,0.3), rgba(232,99,43,0.25)); box-shadow: inset 0 0 0 1.5px #FFB347; }
+  .fp-hc.on .sw { background: var(--flame); } .fp-hc.on .sw::after { transform: translateX(14px); }
+  .fp-bfill { flex: 1; min-height: 0; }
+  .fp-hint { flex-shrink: 0; font-weight: 300; font-size: 13px; color: rgba(244,241,232,0.7); text-align: center; }
+  .fp-board.tall .fp-ch { height: 42px; } .fp-board.tall .fp-grp { margin-top: 12px; } .fp-board.tall .fp-lt { height: 80px; } .fp-board.tall .fp-lt b { font-size: 18px; } .fp-board.tall .fp-sep { margin: 16px 0 14px; }
+  /* Dichte-Stufen, wenn der Platz knapp ist (per fpFit gesetzt) */
+  .fp-board.c1 .fp-bin { padding: 15px 16px 12px; } .fp-board.c1 .fp-ch { height: 32px; } .fp-board.c1 .fp-grp { margin-top: 6px; } .fp-board.c1 .fp-gl { margin-bottom: 3px; font-size: 12px; }
+  .fp-board.c1 .fp-lt { height: 58px; gap: 3px; } .fp-board.c1 .fp-lv { margin-top: 7px; } .fp-board.c1 .fp-sep { margin: 9px 0 8px; } .fp-board.c1 .fp-hint { font-size: 12px; } .fp-board.c1 .fp-sh h2 { font-size: 20px; }
+  .fp-board.c2 .fp-bin { padding: 13px 14px 10px; } .fp-board.c2 .fp-ch { height: 30px; font-size: 13.5px; } .fp-board.c2 .fp-ch .ic, .fp-board.c2 .fp-ch .ic svg { width: 20px; height: 20px; } .fp-board.c2 .fp-grp { margin-top: 5px; }
+  .fp-board.c2 .fp-lt { height: 50px; gap: 2px; } .fp-board.c2 .fp-lt b { font-size: 15px; } .fp-board.c2 .fp-lt span { font-size: 11px; } .fp-board.c2 .fp-sep { margin: 7px 0 6px; } .fp-board.c2 .fp-hint { display: none; } .fp-board.c2 .fp-all, .fp-board.c2 .fp-hc { height: 28px; }
+  .fp-board.c3 .fp-gl { display: none; } .fp-board.c3 .fp-grp { margin-top: 4px; } .fp-board.c3 .fp-lt { height: 44px; } .fp-board.c3 .fp-lt .bars { display: none; } .fp-board.c3 .fp-sep { margin: 5px 0 4px; }
+  .fp-tray { position: relative; z-index: 4; flex-shrink: 0; margin: 4px -8px 0; height: 84px; border-radius: 6px 6px 16px 16px; padding: 7px;
+    background: linear-gradient(180deg, #8A6038 0 3px, #6B4828 3px, #4A3119); box-shadow: 0 8px 14px rgba(0,0,0,0.4), inset 0 -3px 0 rgba(0,0,0,0.25); }
+  .fp-tray .ck { position: absolute; top: -9px; height: 9px; width: 26px; border-radius: 3px; background: #F4F1E8; box-shadow: 0 2px 3px rgba(0,0,0,0.3); }
+  .fp-felt { height: 100%; border-radius: 4px 4px 11px 11px; display: flex; align-items: center; gap: 10px; padding: 0 7px 0 8px; background: radial-gradient(120% 140% at 30% 0%, #23402F, #15291E); box-shadow: inset 0 2px 6px rgba(0,0,0,0.5); }
+  .fp-cnt { width: 76px; height: 56px; flex-shrink: 0; border-radius: 11px; display: grid; justify-items: center; align-content: center; background: var(--wood); box-shadow: var(--wood-edge), 0 3px 8px rgba(0,0,0,0.35); }
+  .fp-cnt b { font-family: var(--f-display); font-weight: 400; font-size: 28px; line-height: 1; color: var(--cream); text-shadow: 0 -1px 0 rgba(0,0,0,0.45); }
+  .fp-cnt b.pop { animation: fpPop 0.35s ease-out; }
+  .fp-cnt span { font-weight: 400; font-size: 12px; color: rgba(255,241,200,0.85); }
+  .fp-roll { position: relative; overflow: hidden; flex: 1; min-width: 0; height: 56px; border-radius: 14px; display: flex; align-items: center; justify-content: center; gap: 10px; text-align: left;
+    color: var(--ink); background: linear-gradient(160deg, var(--gold-hi), var(--gold)); box-shadow: 0 4px 0 #9C7422, 0 10px 20px rgba(0,0,0,0.3); }
+  .fp-roll::after { content: ""; position: absolute; top: 0; bottom: 0; width: 40%; left: -60%; background: linear-gradient(100deg, transparent, rgba(255,255,255,0.6), transparent); transform: skewX(-18deg); }
+  .fp-roll .dice { width: 32px; height: 32px; flex-shrink: 0; }
+  .fp-roll .dice.go { animation: fpRoll 0.9s cubic-bezier(.3,.7,.3,1); }
+  .fp-roll .tx { min-width: 0; }
+  .fp-roll b { display: block; font-family: var(--f-display); font-weight: 400; font-size: 20px; line-height: 1.05; white-space: nowrap; }
+  .fp-roll small { display: block; font-weight: 400; font-size: 12.5px; color: rgba(19,32,42,0.72); line-height: 1.15; }
+  .fp-roll:active:not(:disabled) { transform: translateY(3px); box-shadow: 0 1px 0 #9C7422; }
+  .fp-roll:disabled { color: rgba(244,241,232,0.7); background: rgba(8,18,12,0.5); box-shadow: inset 0 0 0 1.5px rgba(244,241,232,0.25); }
+  .fp-roll:disabled small { color: rgba(244,241,232,0.6); }
+  .fp-arch { position: relative; z-index: 3; flex-shrink: 0; height: 54px; border-radius: 14px; display: flex; align-items: center; gap: 12px; padding: 0 10px 0 12px; text-align: left; color: var(--ink);
+    background: radial-gradient(120% 120% at 0% 0%, #FFFDF6, #F6EED9 55%, #EADFC2); box-shadow: 0 2px 0 #C9BB98, 0 10px 22px rgba(0,0,0,0.35); }
+  .fp-arch .cal { width: 34px; height: 38px; flex-shrink: 0; }
+  .fp-arch .tx { flex: 1; min-width: 0; }
+  .fp-arch b { display: block; font-family: var(--f-display); font-weight: 400; font-size: 19px; line-height: 1.05; text-transform: none; letter-spacing: 0; color: #1C2B36; }
+  .fp-arch small { display: block; font-weight: 400; font-size: 13px; color: #5B4D33; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .fp-arch .n { height: 34px; min-width: 40px; padding: 0 8px; border-radius: 9px; display: grid; place-items: center; font-family: var(--f-display); font-size: 19px; color: var(--cream); background: var(--wood); box-shadow: var(--wood-edge); }
+  .fp-arch .chev { width: 18px; height: 18px; color: #6A5A3C; }
+  @media (max-height: 700px) { #screen-freeplay.fpv .fp { gap: 8px; margin-top: 8px; } .fp-tray { height: 72px; margin-top: 3px; } .fp-cnt { width: 70px; height: 50px; } .fp-cnt b { font-size: 25px; } .fp-roll { height: 50px; } .fp-roll b { font-size: 18px; }
+    .fp-draft { height: 48px; } .fp-arch { height: 48px; } .fp-arch b { font-size: 17px; } .fp-arch .cal { height: 34px; } }
+  @keyframes fpPop { 0% { transform: scale(1); } 40% { transform: scale(1.22); } 100% { transform: scale(1); } }
+  @keyframes fpRoll { 0% { transform: rotate(0) scale(1); } 50% { transform: rotate(380deg) scale(1.25); } 100% { transform: rotate(720deg) scale(1); } }
+  @keyframes fpCardIn { 0% { opacity: 0; transform: translateY(40px) rotateX(70deg) scale(0.8); } 100% { opacity: 1; transform: none; } }
+  /* Einmalige Bewegungen beim Oeffnen (fp-intro wird nach 2 s entfernt) */
+  .fp-intro .fp-draft { animation: hmRise 0.5s 0.1s cubic-bezier(.2,.9,.25,1) both; }
+  .fp-intro .fp-board { animation: hmRise 0.55s 0.15s cubic-bezier(.2,.9,.25,1) both; }
+  .fp-intro .fp-tray { animation: hmRise 0.55s 0.35s cubic-bezier(.2,.9,.25,1) both; }
+  .fp-intro .fp-arch { animation: hmRise 0.55s 0.45s cubic-bezier(.2,.9,.25,1) both; }
+  .fp-intro .fp-roll::after { animation: hmSweep 1s 1.2s ease-out 1 both; }
+  /* Ziehungs-Karte (Sheet-Baukasten: Tipp daneben, Escape, Herunterwischen, Zurueck schliessen) */
+  .modal-backdrop.fp-dim { align-items: center; padding: 0 34px; background: rgba(4,10,7,0.62); perspective: 800px; }
+  .modal-sheet.fp-ticket { --cream: #FFF1C8; --gold-hi: #F7D98E; position: relative; width: 100%; max-width: 360px; margin: 0 auto; border: none; border-radius: 18px; padding: 22px 20px 18px; text-align: center; overflow: visible; color: #13202A;
+    background: radial-gradient(120% 120% at 0% 0%, #FFFDF6, #F6EED9 55%, #EADFC2); box-shadow: 0 2px 0 #C9BB98, 0 24px 50px rgba(0,0,0,0.5); animation: fpCardIn 0.55s cubic-bezier(.2,1.1,.3,1) both;
+    font-family: Oswald, "Arial Narrow", system-ui, sans-serif; --wood: linear-gradient(180deg, rgba(255,255,255,0.10), transparent 40%), repeating-linear-gradient(92deg, rgba(0,0,0,0.06) 0 2px, transparent 2px 7px), linear-gradient(180deg, #9A6C40, #6B4828);
+    --wood-edge: inset 0 0 0 1.5px #3E2A16, inset 0 2px 0 rgba(255,236,200,0.22); --felt: radial-gradient(110% 60% at 50% 8%, #33704D, #1D4530 80%); }
+  .fp-ticket::before { content: ""; position: absolute; left: 50%; top: -9px; width: 18px; height: 18px; margin-left: -9px; border-radius: 50%; background: radial-gradient(circle at 35% 30%, #FFF1C2, #E8B23D 60%, #8C6214); box-shadow: 0 3px 5px rgba(0,0,0,0.4); }
+  .fp-ticket .sheet-x { top: 4px; right: 4px; color: #5B4D33; } .fp-ticket .sheet-x::before { background: rgba(60,40,10,0.08); box-shadow: inset 0 0 0 1px rgba(60,40,10,0.22); }
+  .fp-ticket small.k { display: block; font-weight: 500; font-size: 13px; color: #8A6420; }
+  .fp-ticket h3 { margin: 4px 0 0; font-family: Anton, Impact, "Arial Narrow", sans-serif; font-weight: 400; font-size: 34px; line-height: 1; text-transform: none; letter-spacing: 0; color: #1C2B36; }
+  .fp-ticket .q { margin: 14px auto 0; width: 150px; height: 92px; border-radius: 10px; display: grid; place-items: center; background: var(--felt); box-shadow: inset 0 0 0 4px #7A5532, inset 0 0 0 5px #3E2A16; font-family: Anton, Impact, sans-serif; font-size: 44px; color: rgba(244,241,232,0.85); letter-spacing: 4px; }
+  .fp-ticket .meta { margin-top: 12px; display: flex; justify-content: center; gap: 8px; flex-wrap: wrap; }
+  .fp-ticket .meta span { height: 26px; padding: 0 10px; border-radius: 13px; display: inline-flex; align-items: center; gap: 6px; font-weight: 500; font-size: 13.5px; background: rgba(60,40,10,0.08); box-shadow: inset 0 0 0 1px rgba(60,40,10,0.18); }
+  .fp-ticket .meta i { width: 9px; height: 9px; border-radius: 50%; background: var(--c); }
+  .fp-ticket p { margin: 10px 0 0; font-weight: 300; font-size: 14px; color: #5B4D33; }
+  .fp-ticket .bt { display: grid; grid-template-columns: 1fr auto; gap: 8px; margin-top: 16px; }
+  .fp-ticket .bt button { font-family: inherit; border: none; cursor: pointer; }
+  .fp-ticket .bt .cta { height: 50px; border-radius: 14px; font-family: Anton, Impact, sans-serif; font-size: 21px; color: #13202A; background: linear-gradient(160deg, #F7D98E, #E8B23D); box-shadow: 0 4px 0 #9C7422; }
+  .fp-ticket .bt .re { height: 50px; padding: 0 14px; border-radius: 14px; display: inline-flex; align-items: center; gap: 6px; font-weight: 500; font-size: 14.5px; color: var(--cream); background: var(--wood); box-shadow: var(--wood-edge); }
+  .fp-ticket .bt .re svg { width: 18px; height: 18px; }
+  @media (prefers-reduced-motion: reduce) { #screen-freeplay.fpv *, #screen-freeplay.fpv *::before, #screen-freeplay.fpv *::after, .fp-ticket { animation: none !important; transition: none !important; } }
+
   /* ---- Level-Vorschau "Taktiktafel" (Prompt 41, Prototyp level-vorschau.html Variante C; alles unter .lv) ---- */
   #screen-game.lv-on { overflow: hidden; padding: max(12px, calc(env(safe-area-inset-top) + 8px)) 12px max(18px, calc(env(safe-area-inset-bottom) + 10px));
     background: repeating-radial-gradient(circle at 30% 20%, rgba(255,255,255,0.025) 0 2px, transparent 2px 6px), radial-gradient(120% 70% at 50% 25%, #357652, #1A3D2B 70%), #1A3D2B; }
@@ -904,12 +1050,6 @@
   .level-node .seen-eye { position: absolute; top: -6px; right: -8px; font-size: 13px; line-height: 1; z-index: 3; pointer-events: none; }
   .level-node .draft-pen { position: absolute; top: -6px; left: -8px; font-size: 13px; line-height: 1; z-index: 3; pointer-events: none; }
   .level-node .draft-tag { position: absolute; left: 50%; transform: translateX(-50%); bottom: -13px; white-space: nowrap; font-family: 'Oswald', sans-serif; font-weight: 500; font-size: 11px; color: var(--gold-2); text-shadow: 0 1px 3px rgba(0,0,0,0.7); pointer-events: none; }
-  .fp .draft-card { display: flex; align-items: stretch; gap: 6px; flex-shrink: 0; border-radius: 12px; border: 1px solid rgba(232,178,61,0.6); background: rgba(232,178,61,0.1); }
-  .fp .draft-card .dc-go { flex: 1; min-width: 0; text-align: left; border: 0; background: transparent; color: inherit; font-family: 'Oswald', sans-serif; padding: 7px 4px 7px 12px; cursor: pointer; display: grid; grid-template-columns: 1fr auto; column-gap: 8px; }
-  .fp .draft-card small { grid-column: 1 / -1; font-weight: 500; font-size: 11px; letter-spacing: 0.08em; text-transform: uppercase; color: var(--gold-2); }
-  .fp .draft-card b { font-weight: 600; font-size: 13.5px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
-  .fp .draft-card span { font-weight: 600; font-size: 13px; color: var(--gold-2); white-space: nowrap; }
-  .fp .draft-card .dc-x { border: 0; background: transparent; color: var(--muted); font-size: 16px; padding: 0 12px; cursor: pointer; }
   /* ---- Ersatzbank (Prompt 37) - Optik aus prototypes/bank.html (Variante C + Blatt) ---- */
   .bench-ic { width: 26px; height: 26px; border-radius: 8px; display: inline-grid; place-items: center; background: linear-gradient(135deg, var(--gold), #f4d58d); box-shadow: 0 2px 5px rgba(0,0,0,0.35); flex-shrink: 0; }
   .bench-ic svg { width: 19px; height: 19px; display: block; }
@@ -1147,66 +1287,9 @@
     .gs .warn { padding: 7px 11px; }
   }
 
-  /* ---- Frei spielen (Prompt 20) - alles unter .fp gescoped ---- */
-  #screen-freeplay .fp { --muted: rgba(242,239,230,0.68); --dim: rgba(242,239,230,0.45);
-    flex: 1; min-height: 0; display: flex; flex-direction: column; gap: 12px; }
-  .fp .lab { display: flex; justify-content: space-between; align-items: baseline; }
-  .fp .lab.sep { margin-top: 4px; }
-  .fp .lab b { font-family: 'Anton', Impact, sans-serif; font-weight: 400; font-size: 16px; text-transform: uppercase; color: var(--gold-2); letter-spacing: 0.02em; }
-  .fp .lab span { font-family: 'Oswald', sans-serif; font-weight: 300; font-size: 12px; color: var(--dim); }
-  .fp .grp { display: grid; grid-template-columns: 74px 1fr; gap: 6px 8px; align-items: start; }
-  .fp .grp .gl { font-family: 'Oswald', sans-serif; font-weight: 500; font-size: 11.5px; color: var(--muted); padding-top: 6px; line-height: 1.15; }
-  .fp .chips { display: flex; flex-wrap: wrap; gap: 5px; }
-  .fp .ch { font-family: 'Oswald', sans-serif; border: 1px solid var(--line); background: var(--ink-2); border-radius: 16px; padding: 5px 10px; font-weight: 500; font-size: 13px; color: rgba(242,239,230,0.82); white-space: nowrap; cursor: pointer; }
-  .fp .ch small { color: var(--dim); font-weight: 400; margin-left: 3px; font-size: inherit; }
-  .fp .ch.on { background: rgba(232,178,61,0.16); border-color: rgba(232,178,61,0.6); color: var(--gold-2); }
-  .fp .ch.all { align-self: flex-start; }
-  .fp .ch.all.on { background: linear-gradient(160deg, #f6da9c, var(--gold)); color: var(--ink); border-color: var(--gold); }
-  .fp .ch.all.on small { color: rgba(20,32,43,0.6); }
-  .fp .levels { display: grid; grid-template-columns: repeat(5, 1fr); gap: 5px; }
-  .fp .lvl { font-family: 'Oswald', sans-serif; border: 1px solid var(--line); background: var(--ink-2); border-radius: 10px; padding: 7px 2px 6px; display: flex; flex-direction: column; align-items: center; gap: 4px; cursor: pointer; }
-  .fp .lvl .bars { display: flex; flex-direction: row; gap: 2px; }
-  .fp .lvl .bars i { width: 5px; height: 10px; border-radius: 2px; background: rgba(255,255,255,0.15); }
-  .fp .lvl .bars i.on { background: currentColor; }
-  .fp .lvl b { font-family: 'Anton', Impact, sans-serif; font-weight: 400; font-size: 13px; line-height: 1; }
-  .fp .lvl .n { font-weight: 400; font-size: 10px; color: var(--dim); }
-  .fp .lvl.on { border-color: currentColor; background: color-mix(in srgb, currentColor 14%, transparent); }
-  .fp .lvl:disabled { opacity: 0.3; cursor: not-allowed; }
-  .fp .hc { align-self: flex-start; font-family: 'Oswald', sans-serif; font-weight: 500; font-size: 12.5px; padding: 5px 12px; border-radius: 16px; border: 1px solid var(--line); background: transparent; color: rgba(242,239,230,0.7); cursor: pointer; }
-  .fp .hc.on { background: rgba(240,169,59,0.16); border-color: rgba(240,169,59,0.6); color: var(--flame); }
-  .fp .count { text-align: center; font-family: 'Oswald', sans-serif; font-weight: 300; font-size: 14px; color: var(--muted); margin-top: auto; }
-  .fp .count b { font-family: 'Anton', Impact, sans-serif; font-weight: 400; color: var(--chalk); font-size: 16px; }
-  .fp .count.none { color: #E37464; }
-  .fp .go { border: none; border-radius: 12px; padding: 14px; font-family: 'Anton', Impact, sans-serif; font-size: 19px; text-transform: uppercase; letter-spacing: 0.03em; color: var(--chalk); cursor: pointer;
-    background: repeating-linear-gradient(90deg, rgba(255,255,255,0.04) 0 14px, transparent 14px 28px), linear-gradient(150deg, #2F7A50, #1B4A32); box-shadow: 0 4px 0 #0E2A1C; }
-  .fp .go:active { transform: translateY(2px); box-shadow: 0 2px 0 #0E2A1C; }
-  .fp .go:disabled { opacity: 0.45; cursor: not-allowed; transform: none; }
-  .fp .secret { text-align: center; font-family: 'Oswald', sans-serif; font-weight: 300; font-size: 12px; color: var(--dim); margin-top: -6px; }
-  .fp .arch { display: flex; align-items: center; gap: 12px; border-radius: 12px; padding: 10px 12px; border: 1px dashed rgba(232,178,61,0.5); background: rgba(232,178,61,0.06); text-align: left; width: 100%; color: inherit; font-family: 'Oswald', sans-serif; cursor: pointer; }
-  .fp .arch .ai { font-size: 22px; }
-  .fp .arch b { font-family: 'Anton', Impact, sans-serif; font-weight: 400; font-size: 15px; text-transform: uppercase; display: block; color: var(--gold-2); }
-  .fp .arch .at span { font-weight: 300; font-size: 12.5px; color: var(--muted); }
-  .fp .arch .n { margin-left: auto; font-family: 'Anton', Impact, sans-serif; font-size: 20px; color: var(--gold); }
-  .fp button:focus-visible { outline: 2px solid var(--gold-2); outline-offset: 2px; }
-  /* Kurze Handys (375x667): etwas dichter, damit auch mit Hardcore-Schalter (ab Level 15) nichts scrollt. */
-  @media (max-height: 700px) {
-    #screen-freeplay .fp { gap: 9px; }
-    .fp .lab.sep { margin-top: 2px; }
-    .fp .go { padding: 12px; }
-  }
-
   /* ---- Duell gegen Freunde (Prompt 25) - Optik 1:1 aus prototypes/duell.html, strikt gescoped ---- */
 
   @media (max-height: 700px) { #screen-start { gap: 6px; } .solo-line { font-size: 13px; line-height: 1; padding: 0 6px; } }
-  /* Formkurve oben auf dem Frei-spielen-Bildschirm */
-  #screen-freeplay .fpform { margin-left: auto; display: flex; align-items: center; gap: 4px; }
-  #screen-freeplay .fpform small { font-family: 'Oswald', sans-serif; font-weight: 500; font-size: 11px; color: rgba(242,239,230,0.55); margin-right: 3px; }
-  #screen-freeplay .fpform i { width: 20px; height: 16px; border-radius: 4px; display: grid; place-items: center; font-style: normal; font-family: 'Anton', Impact, sans-serif; font-size: 11px; color: var(--ink); background: #4A5663; }
-  #screen-freeplay .fpform i.e { background: transparent; border: 1px dashed rgba(242,239,230,0.3); }
-  #screen-freeplay .fpform i.w { background: var(--ok); } #screen-freeplay .fpform i.m { background: var(--gold); }
-  #screen-freeplay .fpform i.last { box-shadow: 0 0 0 2px var(--chalk); }
-  #screen-freeplay .topbar-title { white-space: nowrap; }
-  @media (max-width: 389px) { #screen-freeplay .fpform { gap: 3px; } #screen-freeplay .fpform small { display: none; } #screen-freeplay .fpform i { width: 17px; } }
 
   /* Duell-Bildschirme: gemeinsame Wurzel .dl */
   .dl { --bad: #E0705F; --muted: rgba(242,239,230,0.7); --dim: rgba(242,239,230,0.45); display: flex; flex-direction: column; gap: 14px; min-height: 0; }
@@ -1967,12 +2050,8 @@
   </section>
 
   <!-- FREISPIEL -->
-  <section class="screen" id="screen-freeplay" aria-label="Frei spielen" hidden>
-    <div class="topbar">
-      <button class="back-btn" type="button" id="backFromFreeplay"><span class="back-arrow">←</span>Start</button>
-      <div class="topbar-title">Frei spielen</div>
-      <div class="fpform" id="fpForm" aria-label="Formkurve der letzten Freispiele"></div>
-    </div>
+  <section class="screen fpv" id="screen-freeplay" aria-label="Frei spielen" hidden>
+    <div class="lv-top"><button type="button" class="tb back" id="backFromFreeplay"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M15 5l-7 7 7 7" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/></svg>Start</button><h1 class="wm-h1">Frei spielen</h1><span class="fp-form" id="fpForm" role="img" aria-label="Formkurve der letzten Freispiele"></span></div>
     <div class="fp" id="freeplayBody"></div>
   </section>
 
@@ -3774,6 +3853,7 @@ function showScreen(id, dir) {
   refreshScreenContent(id);
   next.hidden = false;
   if (id === "worldmap") wmLayout();
+  if (id === "freeplay") fpFit();
   next.classList.add(dir === "fwd" ? "enter-right" : "enter-left");
   void next.offsetWidth;
   requestAnimationFrame(() => {
@@ -4833,109 +4913,188 @@ function archivedDailyChallenges() {
   return DAILY_CHALLENGES.filter(c => ids.has(c.id));
 }
 
-/* ================= FREI SPIELEN (Prompt 20) =================
-   Wettbewerbs-Chips in drei Gruppen. Ein Chip steht fuer mehrere league-Werte
-   aus LINEUP_CHALLENGES; selectedLeagues bleibt ein Set von league-Werten
-   (Chip an = alle seine Werte drin), damit poolForActiveLeague() und
-   trainWeakness() unveraendert funktionieren. Kurzlabels WM/EM nur hier. */
+/* ================= FREI SPIELEN (Prompt 20, ab Prompt 47 "Taktiktafel" nach prototypes/freispiel-v2.html) =================
+   Wettbewerbs-Karten in drei Gruppen. Eine Karte steht fuer mehrere league-Werte aus LINEUP_CHALLENGES; selectedLeagues
+   bleibt ein Set von league-Werten (Karte an = alle ihre Werte drin), damit poolForActiveLeague() und trainWeakness()
+   unveraendert funktionieren. Kurzlabels WM/EM nur hier; ic = Zeichen/Flagge der Karte (FP_IC). */
 const FREEPLAY_GROUPS = [
   { label: "Turniere", chips: [
-    { label: "WM", leagues: ["Weltmeisterschaft"] },
-    { label: "EM", leagues: ["Europameisterschaft"] },
-    { label: "Copa América", leagues: ["Copa América"] },
-    { label: "Afrika-Cup", leagues: ["Afrika-Cup"] }
+    { label: "WM", leagues: ["Weltmeisterschaft"], ic: "wm" },
+    { label: "EM", leagues: ["Europameisterschaft"], ic: "em" },
+    { label: "Copa América", leagues: ["Copa América"], ic: "cup" },
+    { label: "Afrika-Cup", leagues: ["Afrika-Cup"], ic: "cup" }
   ] },
   { label: "Europapokal", chips: [
-    { label: "Champions League", leagues: ["Champions League"] },
-    { label: "Europa League", leagues: ["Europa League"] }
+    { label: "Champions League", leagues: ["Champions League"], ic: "cl" },
+    { label: "Europa League", leagues: ["Europa League"], ic: "el" }
   ] },
   { label: "Ligen & Pokal", chips: [
-    { label: "Deutschland", leagues: ["Bundesliga", "2. Bundesliga", "Bundesliga / DFB-Pokal", "DFB-Pokal"] },
-    { label: "England", leagues: ["Premier League"] },
-    { label: "Spanien", leagues: ["LaLiga"] },
-    { label: "Italien", leagues: ["Serie A"] },
-    { label: "Niederlande", leagues: ["Eredivisie"] }
+    { label: "Deutschland", leagues: ["Bundesliga", "2. Bundesliga", "Bundesliga / DFB-Pokal", "DFB-Pokal"], ic: "de" },
+    { label: "England", leagues: ["Premier League"], ic: "en" },
+    { label: "Spanien", leagues: ["LaLiga"], ic: "es" },
+    { label: "Italien", leagues: ["Serie A"], ic: "it" },
+    { label: "Niederlande", leagues: ["Eredivisie"], ic: "nl" }
   ] }
 ];
+const fpFlag = (type, cols) => type === "h" ? `<span class="fp-flag" style="grid-template-rows:repeat(${cols.length},1fr)">${cols.map(c => `<i style="background:${c}"></i>`).join("")}</span>`
+  : type === "v" ? `<span class="fp-flag" style="grid-template-columns:repeat(${cols.length},1fr)">${cols.map(c => `<i style="background:${c}"></i>`).join("")}</span>`
+  : type === "es" ? `<span class="fp-flag" style="grid-template-rows:1fr 2fr 1fr"><i style="background:#C60B1E"></i><i style="background:#FFC400"></i><i style="background:#C60B1E"></i></span>`
+  : `<span class="fp-flag" style="background:#fff;position:relative"><i style="position:absolute;left:0;right:0;top:50%;height:3px;margin-top:-1.5px;background:#CE1124"></i><i style="position:absolute;top:0;bottom:0;left:50%;width:3px;margin-left:-1.5px;background:#CE1124"></i></span>`;
+const FP_IC = {
+  wm: '<svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="10" r="7" fill="none" stroke="#F7D98E" stroke-width="1.6"/><path d="M5 10h14M12 3c2.6 2.2 2.6 11.8 0 14M12 3c-2.6 2.2-2.6 11.8 0 14" fill="none" stroke="#F7D98E" stroke-width="1.3"/><path d="M8 21h8M12 17v4" stroke="#F7D98E" stroke-width="1.8" stroke-linecap="round"/></svg>',
+  em: '<svg viewBox="0 0 24 24" aria-hidden="true">' + Array.from({ length: 12 }, (_, i) => { const a = i / 12 * Math.PI * 2; return `<circle cx="${(12 + 8 * Math.cos(a)).toFixed(1)}" cy="${(12 + 8 * Math.sin(a)).toFixed(1)}" r="1.5" fill="#F7D98E"/>`; }).join("") + '</svg>',
+  cup: '<svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="#F7D98E" stroke-width="1.7" stroke-linejoin="round"><path d="M7 4h10v5a5 5 0 0 1-10 0z"/><path d="M7 6H4.5a2.5 2.5 0 0 0 3 3.6M17 6h2.5a2.5 2.5 0 0 1-3 3.6M12 14v4M8.5 20h7" stroke-linecap="round"/></svg>',
+  cl: '<svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9" fill="none" stroke="#F7D98E" stroke-width="1.5"/><path d="M12 6.2l1.7 3.5 3.8.5-2.8 2.6.7 3.8L12 14.8l-3.4 1.8.7-3.8-2.8-2.6 3.8-.5z" fill="#F7D98E"/></svg>',
+  el: '<svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="#F7D98E" stroke-width="1.7" stroke-linejoin="round"><path d="M8 3h8l-1 7a3 3 0 0 1-6 0z"/><path d="M8 4.5C5 4.5 4.5 8.5 8.6 9.5M16 4.5c3 0 3.5 4-.6 5M12 13v5M8.5 21h7l-1-3h-5z"/></svg>',
+  de: fpFlag("h", ["#000", "#DD0000", "#FFCE00"]), en: fpFlag("en"), es: fpFlag("es"), it: fpFlag("v", ["#009246", "#fff", "#CE2B37"]), nl: fpFlag("h", ["#AE1C28", "#fff", "#21468B"])
+};
+const FP_SV = {
+  chev: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M9 5l7 7-7 7" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/></svg>',
+  x: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18" stroke="currentColor" stroke-width="2.6" stroke-linecap="round"/></svg>',
+  flame: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2c1 4 6 6 6 12a6 6 0 0 1-12 0c0-3 1.5-4.5 3-6 0 2 1 3 2 3 0-3-1-6 1-9z" fill="#FFB347"/><path d="M12 12c.5 2 3 3 3 5.5a3 3 0 0 1-6 0c0-1.5 1-2.5 3-5.5z" fill="#E8632B"/></svg>',
+  dice: '<svg viewBox="0 0 36 36" aria-hidden="true"><rect x="4" y="4" width="28" height="28" rx="7" fill="#FBF8EF" stroke="#13202A" stroke-width="1.6"/><g fill="#13202A"><circle cx="11.5" cy="11.5" r="2.5"/><circle cx="24.5" cy="11.5" r="2.5"/><circle cx="18" cy="18" r="2.5"/><circle cx="11.5" cy="24.5" r="2.5"/><circle cx="24.5" cy="24.5" r="2.5"/></g></svg>',
+  reroll: '<svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 12a8 8 0 0 1 13.7-5.6M20 4v5h-5"/><path d="M20 12a8 8 0 0 1-13.7 5.6M4 20v-5h5"/></svg>',
+  cal: (d) => `<svg viewBox="0 0 40 44" aria-hidden="true"><rect x="2" y="6" width="36" height="36" rx="6" fill="#FFFDF6" stroke="#B9B19C" stroke-width="1.5"/><path d="M2 12a6 6 0 0 1 6-6h24a6 6 0 0 1 6 6v5H2z" fill="#2E7D52"/><rect x="10" y="2" width="4" height="9" rx="2" fill="#6B4828"/><rect x="26" y="2" width="4" height="9" rx="2" fill="#6B4828"/><text x="20" y="36" text-anchor="middle" font-family="Anton" font-size="16" fill="#1C2B36">${d}</text></svg>`
+};
 
 let freeplaySource = "filter"; // "filter" | "archive" - damit "Nochmal (zufällig)" im Ergebnis beim Quellmodus bleibt
+let fpIntroTimer = null, fpLastCount = null, fpRolling = false;
 
-// Gruppen mit nur den league-Werten, die es in LINEUP_CHALLENGES gibt, plus Zaehler; Chips ohne
-// Aufstellungen fallen weg. Ein neuer, noch nicht zugeordneter league-Wert bekommt automatisch
-// einen eigenen Chip unter "Weitere" (wird nie still weggelassen).
+// Gruppen mit nur den league-Werten, die es in LINEUP_CHALLENGES gibt; Karten ohne Aufstellungen fallen weg. Ein neuer, noch
+// nicht zugeordneter league-Wert bekommt automatisch eine eigene Karte unter "Weitere" (wird nie still weggelassen).
 function freeplayChipGroups() {
   const present = new Set(LINEUP_CHALLENGES.map(m => m.league));
   const mapped = new Set(FREEPLAY_GROUPS.flatMap(g => g.chips.flatMap(c => c.leagues)));
-  const groups = FREEPLAY_GROUPS.map(g => ({ label: g.label, chips: g.chips.map(c => ({ label: c.label, leagues: c.leagues.filter(l => present.has(l)) })) }));
+  const groups = FREEPLAY_GROUPS.map(g => ({ label: g.label, chips: g.chips.map(c => ({ label: c.label, ic: c.ic, leagues: c.leagues.filter(l => present.has(l)) })) }));
   const extra = [...present].filter(l => !mapped.has(l));
-  if (extra.length) groups.push({ label: "Weitere", chips: extra.map(l => ({ label: l, leagues: [l] })) });
+  if (extra.length) groups.push({ label: "Weitere", chips: extra.map(l => ({ label: l, ic: "cup", leagues: [l] })) });
   return groups
-    .map(g => ({ label: g.label, chips: g.chips.map(c => ({ ...c, count: LINEUP_CHALLENGES.filter(m => c.leagues.includes(m.league)).length })).filter(c => c.count > 0) }))
+    .map(g => ({ label: g.label, chips: g.chips.map(c => ({ ...c, total: LINEUP_CHALLENGES.filter(m => c.leagues.includes(m.league)).length })).filter(c => c.total > 0) }))
     .filter(g => g.chips.length > 0);
 }
+// Kurzname des Wettbewerbs wie auf den Karten (WM, EM, Deutschland ...) - fuer die Ziehungs-Karte
+function fpCompLabel(m) {
+  for (const g of FREEPLAY_GROUPS) for (const c of g.chips) if (c.leagues.includes(m.league)) return c.label;
+  return m.league;
+}
+const fpHardOn = () => profile.level >= 15 && !!profile.hardcoreMode;
 
-function renderFreeplay() {
-  // Formkurve (Prompt 18) bleibt sichtbar: klein oben rechts neben dem Titel (Duell-Kachel hat die Startseiten-Kachel abgeloest).
+function fpDraftInfo() {
+  const key = Object.keys(profile.drafts).filter(k => k.startsWith("f:")).sort((a, b) => profile.drafts[b].updated - profile.drafts[a].updated)[0];
+  const m = key && draftMatch(profile.drafts[key]);
+  if (!m) return null;
+  const n = Object.values(profile.drafts[key].entries || {}).filter(e => (e.v && String(e.v).trim()) || e.s === "revealed" || e.s === "corrected").length;
+  return { key, m, n };
+}
+
+function renderFreeplay(intro = true) {
+  const scr = document.getElementById("screen-freeplay");
+  // Form als Holzplakette (ohne Spiele: ausgeblendet)
   const form = profile.freeplayForm.slice(-5);
   document.getElementById("fpForm").innerHTML = form.length
-    ? `<small>Form</small>` + Array.from({ length: 5 }, (_, i) => { const n = form[i - (5 - form.length)]; return i < 5 - form.length ? `<i class="e"></i>` : `<i class="${n >= 9 ? "w" : n >= 7 ? "m" : "l"}${i === 4 ? " last" : ""}">${n}</i>`; }).join("")
+    ? `<small>Form</small><span>${Array.from({ length: 5 }, (_, i) => { const n = form[i - (5 - form.length)]; return i < 5 - form.length ? `<i></i>` : `<i class="${n >= 9 ? "w" : n >= 7 ? "m" : "l"}${i === 4 ? " last" : ""}"></i>`; }).join("")}</span>`
     : "";
-  const body = document.getElementById("freeplayBody");
-  const groups = freeplayChipGroups();
-  const pool = poolForActiveLeague();
-  const archiveCount = archivedDailyChallenges().length;
-  const chipOn = (c) => c.leagues.every(l => selectedLeagues.has(l));
-  const countText = pool.length === 0
-    ? "Keine Aufstellung passt – wähle etwas ab"
-    : `<b>${pool.length}</b> ${pool.length === 1 ? "Aufstellung passt" : "Aufstellungen passen"}`;
-
-  const fpDraftKey = Object.keys(profile.drafts).filter(k => k.startsWith("f:")).sort((a, b) => profile.drafts[b].updated - profile.drafts[a].updated)[0];
-  const fpDraftMatch = fpDraftKey && draftMatch(profile.drafts[fpDraftKey]);
-  const draftCard = fpDraftMatch ? `<div class="draft-card"><button type="button" class="dc-go" id="fpDraftGo"><small>Angefangen</small><b>${fpDraftMatch.teams}</b><span>Weiterspielen ›</span></button><button type="button" class="dc-x" id="fpDraftX" aria-label="Entwurf verwerfen">✕</button></div>` : "";
-  body.innerHTML = draftCard + `
-    <div class="lab"><b>Wettbewerb</b><span>Mehrfachauswahl möglich</span></div>
-    <button type="button" class="ch all${selectedLeagues.size === 0 ? " on" : ""}" id="fpAll">Alle Wettbewerbe <small>${LINEUP_CHALLENGES.length}</small></button>
-    <div class="grp">${groups.map((g, gi) => `
-      <div class="gl">${g.label}</div>
-      <div class="chips">${g.chips.map((c, ci) => `<button type="button" class="ch${chipOn(c) ? " on" : ""}" data-g="${gi}" data-c="${ci}" aria-pressed="${chipOn(c)}">${c.label} <small>${c.count}</small></button>`).join("")}</div>`).join("")}
-    </div>
-    <div class="lab sep"><b>Schwierigkeit</b><span>Mehrfachauswahl möglich</span></div>
-    <div class="levels">${[1, 2, 3, 4, 5].map(d => {
-      const n = LINEUP_CHALLENGES.filter(m => m.difficulty === d).length;
-      const on = selectedDifficulties.has(d);
-      return `<button type="button" class="lvl${on ? " on" : ""}" data-diff="${d}" style="color:${DIFF_COLOR[d]}" aria-pressed="${on}"${n === 0 ? " disabled" : ""}>
-        <span class="bars">${[1, 2, 3, 4, 5].map(j => `<i class="${j <= d ? "on" : ""}"></i>`).join("")}</span><b>Stufe ${d}</b><span class="n">${n} Spiele</span></button>`;
-    }).join("")}</div>
-    ${profile.level >= 15 ? `<button type="button" class="hc${profile.hardcoreMode ? " on" : ""}" id="fpHardcore" aria-pressed="${!!profile.hardcoreMode}">🔥 Hardcore · nur Stufe 4–5</button>` : ""}
-    <div class="count${pool.length === 0 ? " none" : ""}">${countText}</div>
-    <button type="button" class="go" id="fpGo"${pool.length === 0 ? " disabled" : ""}>🎲 Zufällige Aufstellung</button>
-    <div class="secret">Die Partie bleibt geheim, bis du sie spielst.</div>
-    ${archiveCount > 0 ? `<button type="button" class="arch" id="fpArchive"><span class="ai">📅</span><span class="at"><b>Tages-Archiv</b><span>Vergangene Tages-Challenges nachspielen</span></span><span class="n">${archiveCount}</span></button>` : ""}`;
-
-  const refresh = () => { matchQueue = []; renderFreeplay(); };
-  document.getElementById("fpAll").onclick = () => { selectedLeagues.clear(); refresh(); };
-  const fpDraftGo = document.getElementById("fpDraftGo");
-  if (fpDraftGo) fpDraftGo.onclick = () => { currentLevelContext = null; currentDailyChallenge = null; freeplaySource = "filter"; startMatch(fpDraftMatch); };
-  const fpDraftX = document.getElementById("fpDraftX");
-  if (fpDraftX) fpDraftX.onclick = () => askSheet(`<div class="t">Angefangene Aufstellung verwerfen?</div><p>Deine Eingaben und Hilfe-Markierungen gehen verloren. Verbrauchte Token werden nicht erstattet.</p>`, [
-    { label: "Verwerfen", cls: "main", fn: () => { delete profile.drafts[fpDraftKey]; saveProfile(profile); renderFreeplay(); } },
+  document.getElementById("fpForm").title = form.length ? "Deine Form: letzte " + form.length + " Spiele (" + form.join(", ") + ")" : "";
+  const dr = fpDraftInfo(), archiveCount = archivedDailyChallenges().length;
+  clearTimeout(fpIntroTimer); scr.classList.toggle("fp-intro", intro); if (intro) fpIntroTimer = setTimeout(() => scr.classList.remove("fp-intro"), 2000);
+  const d = new Date().getDate();
+  document.getElementById("freeplayBody").innerHTML = `
+    ${dr ? `<div class="fp-draft" id="fpDraft"><span class="tx"><small>Angefangen · ${dr.n} von 11 eingetragen</small><b>${duelEsc(dr.m.teams.replace(/\s+\d+:\d+.*$/, ""))}</b></span><button class="go2" type="button" id="fpDraftGo">Weiter${FP_SV.chev}</button><button class="x" type="button" id="fpDraftX" aria-label="Entwurf verwerfen">${FP_SV.x}</button></div>` : ""}
+    <div class="fp-board" id="fpBoard"><div class="fp-bin" id="fpBin"></div></div>
+    <div class="fp-tray"><span class="ck" style="left:40px"></span><span class="ck" style="left:74px;background:var(--gold)"></span><span class="ck" style="right:46px;background:#7fd99a"></span>
+      <div class="fp-felt"><span class="fp-cnt"><b id="fpCnt">0</b><span id="fpCntL">passen</span></span>
+        <button class="fp-roll" type="button" id="fpGo"><span class="dice" id="fpDice">${FP_SV.dice}</span><span class="tx"><b>Zufällige Aufstellung</b><small id="fpRollSub">Die Partie bleibt geheim, bis du sie spielst</small></span></button></div></div>
+    ${archiveCount > 0 ? `<button type="button" class="fp-arch" id="fpArchive"><span class="cal">${FP_SV.cal(d)}</span><span class="tx"><b>Tages-Archiv</b><small>Vergangene Tages-Challenges nachspielen</small></span><span class="n">${archiveCount}</span><span class="chev">${FP_SV.chev}</span></button>` : ""}`;
+  const goDraft = document.getElementById("fpDraftGo");
+  if (goDraft) goDraft.onclick = () => { currentLevelContext = null; currentDailyChallenge = null; freeplaySource = "filter"; startMatch(dr.m); };
+  const xDraft = document.getElementById("fpDraftX");
+  if (xDraft) xDraft.onclick = () => askSheet(`<div class="t">Angefangene Aufstellung verwerfen?</div><p>Deine Eingaben und Hilfe-Markierungen gehen verloren. Verbrauchte Token werden nicht erstattet.</p>`, [
+    { label: "Verwerfen", cls: "main", fn: () => { delete profile.drafts[dr.key]; saveProfile(profile); renderFreeplay(false); } },
     { label: "Behalten", cls: "quiet" }
   ]);
-  body.querySelectorAll("[data-g]").forEach(btn => btn.onclick = () => {
-    const c = groups[+btn.dataset.g].chips[+btn.dataset.c];
-    if (chipOn(c)) c.leagues.forEach(l => selectedLeagues.delete(l)); else c.leagues.forEach(l => selectedLeagues.add(l));
-    refresh();
-  });
-  body.querySelectorAll("[data-diff]").forEach(btn => btn.onclick = () => {
-    const d = +btn.dataset.diff;
-    if (selectedDifficulties.has(d)) selectedDifficulties.delete(d); else selectedDifficulties.add(d);
-    refresh();
-  });
-  const hc = document.getElementById("fpHardcore");
-  if (hc) hc.onclick = () => { profile.hardcoreMode = !profile.hardcoreMode; saveProfile(profile); refresh(); };
-  document.getElementById("fpGo").onclick = startFreeplayRandom;
-  const arch = document.getElementById("fpArchive");
-  if (arch) arch.onclick = startArchiveMatch;
+  document.getElementById("fpGo").onclick = fpRoll;
+  const arch = document.getElementById("fpArchive"); if (arch) arch.onclick = startArchiveMatch;
+  fpLastCount = null;
+  paintFpBoard(false);
+  fpFit();
+}
+function paintFpBoard(anim = true) {
+  const bin = document.getElementById("fpBin"); if (!bin) return;
+  const groups = freeplayChipGroups(), hard = fpHardOn(), lvl15 = profile.level >= 15;
+  const hardOK = (m) => !hard || m.difficulty >= 4, diffOK = (m) => selectedDifficulties.size === 0 || selectedDifficulties.has(m.difficulty), leagueOK = (m) => selectedLeagues.size === 0 || selectedLeagues.has(m.league);
+  const chipOn = (c) => c.leagues.every(l => selectedLeagues.has(l));
+  const chipN = (c) => LINEUP_CHALLENGES.filter(m => c.leagues.includes(m.league) && diffOK(m) && hardOK(m)).length;
+  const diffN = (d) => LINEUP_CHALLENGES.filter(m => m.difficulty === d && leagueOK(m)).length;
+  const hint = hard ? "Hardcore an: nur die schwersten Aufstellungen (Stufe 4 und 5)" : (selectedLeagues.size || selectedDifficulties.size) ? "Tippe eine Auswahl erneut an, um sie abzuwählen" : "Nichts gewählt = alle Wettbewerbe und Stufen";
+  bin.innerHTML = `
+    <div class="fp-sh"><h2>Wettbewerb<small>mehrere möglich</small></h2><button type="button" class="fp-all ${selectedLeagues.size === 0 ? "on" : ""}" id="fpAll" aria-pressed="${selectedLeagues.size === 0}">Alle<span class="n">${LINEUP_CHALLENGES.length}</span></button></div>
+    ${groups.map((g, gi) => `<div class="fp-grp"><div class="fp-gl">${g.label}</div><div class="fp-chips ${g.chips.length === 3 ? "c3" : "c2"}">${g.chips.map((c, ci) => { const n = chipN(c), on = chipOn(c); return `<button type="button" class="fp-ch ${on ? "on" : ""} ${n === 0 && !on ? "zero" : ""}" data-g="${gi}" data-c="${ci}" aria-pressed="${on}"><span class="ic">${FP_IC[c.ic] || FP_IC.cup}</span><span class="nm">${c.label}</span><span class="n">${n}</span></button>`; }).join("")}</div></div>`).join("")}
+    <div class="fp-sep"></div>
+    <div class="fp-sh"><h2>Schwierigkeit${lvl15 ? "" : "<small>mehrere möglich</small>"}</h2>${lvl15 ? `<button type="button" class="fp-hc ${hard ? "on" : ""}" id="fpHard" aria-pressed="${hard}" title="Hardcore: nur Stufe 4 und 5">${FP_SV.flame}<b>Hardcore</b><span class="sw"></span></button>` : ""}</div>
+    <div class="fp-lv">${[1, 2, 3, 4, 5].map(d => { const n = diffN(d), dis = hard && d < 4; return `<button type="button" class="fp-lt ${selectedDifficulties.has(d) ? "on" : ""}" data-d="${d}" style="--c:${DIFF_COLOR[d]}" aria-pressed="${selectedDifficulties.has(d)}" title="${DIFF_LABEL[d]}" ${dis ? "disabled" : ""}><span class="bars">${[1, 2, 3, 4, 5].map(j => `<i class="${j <= d ? "on" : ""}"></i>`).join("")}</span><b>Stufe ${d}</b><span>${n} ${n === 1 ? "Spiel" : "Spiele"}</span></button>`; }).join("")}</div>
+    <div class="fp-bfill"></div>
+    <div class="fp-hint" id="fpHint">${hint}</div>`;
+  const refresh = () => { matchQueue = []; paintFpBoard(true); };
+  document.getElementById("fpAll").onclick = () => { selectedLeagues.clear(); refresh(); };
+  bin.querySelectorAll(".fp-ch").forEach(b => b.onclick = () => { const c = groups[+b.dataset.g].chips[+b.dataset.c]; if (chipOn(c)) c.leagues.forEach(l => selectedLeagues.delete(l)); else c.leagues.forEach(l => selectedLeagues.add(l)); refresh(); });
+  bin.querySelectorAll(".fp-lt").forEach(b => b.onclick = () => { const d = +b.dataset.d; if (selectedDifficulties.has(d)) selectedDifficulties.delete(d); else selectedDifficulties.add(d); refresh(); });
+  const hc = document.getElementById("fpHard");
+  if (hc) hc.onclick = () => { profile.hardcoreMode = !profile.hardcoreMode; if (profile.hardcoreMode) [1, 2, 3].forEach(d => selectedDifficulties.delete(d)); saveProfile(profile); refresh(); };
+  paintFpCount(anim);
+  fpFit();
+}
+function paintFpCount(anim) {
+  const n = poolForActiveLeague().length, el = document.getElementById("fpCnt"); if (!el) return;
+  el.textContent = n; document.getElementById("fpCntL").textContent = n === 1 ? "passt" : "passen";
+  if (anim && n !== fpLastCount && !REDUCED_MOTION) { el.classList.remove("pop"); void el.offsetWidth; el.classList.add("pop"); }
+  fpLastCount = n;
+  const b = document.getElementById("fpGo"); b.disabled = n === 0 || fpRolling;
+  document.getElementById("fpRollSub").textContent = n === 0 ? "Keine passt – wähle etwas ab" : "Die Partie bleibt geheim, bis du sie spielst";
+}
+// Tafel passt sich der verfuegbaren Hoehe an: erst grosse Karten ("tall"), dann normal, dann drei Verdichtungsstufen
+function fpFit() {
+  const board = document.getElementById("fpBoard"), bin = document.getElementById("fpBin"); if (!board || !bin || !board.clientHeight) return;
+  const fits = () => bin.scrollHeight <= bin.clientHeight + 1;
+  board.classList.remove("tall", "c1", "c2", "c3");
+  board.classList.add("tall");
+  if (fits()) return;
+  board.classList.remove("tall"); if (fits()) return;
+  for (const c of ["c1", "c2", "c3"]) { board.classList.add(c); if (fits()) return; }
+}
+window.addEventListener("resize", () => fpFit());
+
+// Auslosen: Wuerfel rollt (ca. 0,9 s), danach klappt die verdeckte Karte auf; es wird noch nichts gestartet
+function fpRoll() {
+  if (fpRolling || poolForActiveLeague().length === 0) return;
+  fpRolling = true; paintFpCount(false);
+  const dice = document.getElementById("fpDice"); if (dice && !REDUCED_MOTION) { dice.classList.remove("go"); void dice.offsetWidth; dice.classList.add("go"); }
+  setTimeout(() => {
+    fpRolling = false; paintFpCount(false);
+    if (document.getElementById("screen-freeplay").hidden) return;
+    const m = pickRandomMatch(); if (m) fpOpenDraw(m);
+  }, REDUCED_MOTION ? 150 : 900);
+}
+function fpOpenDraw(m) {
+  document.querySelectorAll(".fp-dim").forEach(e => e.remove());
+  const b = document.createElement("div"); b.className = "modal-backdrop fp-dim"; b.style.zIndex = "45";
+  b.innerHTML = `<div class="modal-sheet fp-ticket" role="dialog" aria-modal="true" aria-label="Aufstellung gezogen"><small class="k">Aufstellung gezogen</small><h3>Bereit?</h3><div class="q" aria-hidden="true">? ? ?</div>
+    <div class="meta"><span style="--c:${DIFF_COLOR[m.difficulty]}"><i></i>Stufe ${m.difficulty} · ${DIFF_LABEL[m.difficulty]}</span><span>${duelEsc(fpCompLabel(m))}</span></div>
+    <p>Die Partie siehst du erst beim Anpfiff.</p>
+    <div class="bt"><button class="cta" type="button" id="fpKick">Anpfiff</button><button class="re" type="button" id="fpRe">${FP_SV.reroll}Neu ziehen</button></div></div>`;
+  document.body.appendChild(b);
+  b.onclick = (e) => { if (e.target === b) b.remove(); };
+  document.getElementById("fpKick").onclick = () => { b.remove(); currentLevelContext = null; currentDailyChallenge = null; freeplaySource = "filter"; startMatch(m); };
+  document.getElementById("fpRe").onclick = () => {
+    b.remove();
+    if (poolForActiveLeague().length === 0) return;
+    const onFree = !document.getElementById("screen-freeplay").hidden;
+    if (onFree) setTimeout(fpRoll, 150); else setTimeout(() => { const n = pickRandomMatch(); if (n) fpOpenDraw(n); }, 150);
+  };
+}
+// "Nochmal (zufaellig)" im Ergebnis-Bildschirm nutzt dieselbe verdeckte Karte (ohne Wuerfel)
+function fpDrawAgain() {
+  if (poolForActiveLeague().length === 0) { showToast("⚠️ Für diese Filterkombination gibt's noch keine Aufstellung - Filter anpassen."); goBackTo("freeplay"); return; }
+  const m = pickRandomMatch(); if (m) fpOpenDraw(m);
 }
 
 let campaignTier = null;
@@ -5340,11 +5499,8 @@ function dailyStarsTotal() {
 function poolForActiveLeague() {
   let pool = selectedLeagues.size === 0 ? LINEUP_CHALLENGES : LINEUP_CHALLENGES.filter(m => selectedLeagues.has(m.league));
   if (selectedDifficulties.size > 0) pool = pool.filter(m => selectedDifficulties.has(m.difficulty));
-  if (profile.level >= 15 && profile.hardcoreMode) {
-    const hardOnly = pool.filter(m => m.difficulty >= 4);
-    if (hardOnly.length > 0) pool = hardOnly;
-  }
-  return pool; // kann leer sein - das wird bewusst NICHT still aufgefüllt, siehe startFreeplayRandom()
+  if (profile.level >= 15 && profile.hardcoreMode) pool = pool.filter(m => m.difficulty >= 4); // Hardcore: nur Stufe 4-5 (seit Prompt 47 ohne stillen Rueckfall, Karten und Zaehler zeigen dasselbe)
+  return pool; // kann leer sein - das wird bewusst NICHT still aufgefuellt, siehe startFreeplayRandom()
 }
 
 function startFreeplayRandom() {
@@ -9933,13 +10089,7 @@ function evaluatePitch() {
     document.getElementById("backBtn").onclick = () => goBackTo("freeplay");
     document.getElementById("againBtn").onclick = () => {
       if (freeplaySource === "archive") { startArchiveMatch(); return; }
-      const pool = poolForActiveLeague();
-      if (pool.length === 0) {
-        showToast("⚠️ Für diese Filterkombination gibt's noch keine Aufstellung - Filter anpassen.");
-        goBackTo("freeplay");
-        return;
-      }
-      startMatch(pickRandomMatch());
+      fpDrawAgain(); // verdeckte Ziehungs-Karte (Prompt 47)
     };
   }
 
@@ -11046,7 +11196,7 @@ function askSheet(innerHTML, buttons) {
 function openSaveModal(inner) {
   const b = document.createElement("div");
   const gs = document.getElementById("screen-game");
-  const wood = !!(gs && !gs.hidden && gs.classList.contains("sp-on")); // Prompt 42: Rueckfragen im Spiel im Holz-Blatt-Stil
+  const fps = document.getElementById("screen-freeplay"); const wood = !!(gs && !gs.hidden && gs.classList.contains("sp-on")) || !!(fps && !fps.hidden); // Prompt 42: Rueckfragen im Spiel im Holz-Blatt-Stil
   b.className = "modal-backdrop" + (wood ? " sp-sbd" : "");
   b.style.zIndex = "45";
   b.innerHTML = wood ? `<div class="sp-sheet" role="dialog" aria-modal="true"><div class="in"><div class="save-box">${inner}</div></div></div>` : `<div class="modal-sheet" role="dialog" aria-modal="true"><div class="save-box">${inner}</div></div>`;

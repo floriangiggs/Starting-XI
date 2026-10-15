@@ -1,4 +1,4 @@
-const CACHE_NAME = "startingxi-v62";
+const CACHE_NAME = "startingxi-v63";
 const APP_SHELL = [
   "./startelf_check.html",
   "./manifest.json",
