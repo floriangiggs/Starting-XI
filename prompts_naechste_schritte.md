@@ -54,8 +54,9 @@ vorige umgesetzt, getestet und committet ist.
 | 40 | Online-Duell-Spezifikation: Liga-Duell + Ranked (Divisionen) – NICHT ausführen, Grundlage für den Online-Plan | ⏸ wartet auf Server/Accounts |
 | 41 | Level-Vorschau „Taktiktafel“ (Kampagne), Scout-Münze als Token-Symbol überall, spoilerfreie Vorschau-Texte | – |
 | 42 | Spiel-Ansicht „Taktiktafel“ als One-Pager in allen Modi (inkl. Duell): Holzreiter, Holzleiste mit Werkzeugen, Korrigieren per Stift, Tastatur-Leiste, Regeln anpassen | 41 |
+| 43 | Duell-Zentrale: Kopf unter der iPhone-Statusleiste, Blätter (Schnell-Duell u. a.) per Wischen/✕ schließbar – Safe-Area-Check aller Bildschirme | – |
 
-**Empfohlene Reihenfolge ab jetzt:** 39 → 41 → 42 → weitere Offline-Feinschliffe (u. a. Jahres-Lücken im Ideen-Speicher auffüllen) → Planung Online-Duell (inkl. 28/29) → 8 (Capacitor, erst wenn die App final ist; vorher Duell-Pflichtpunkt aus CLAUDE.md ansprechen)
+**Empfohlene Reihenfolge ab jetzt:** 39 → 41 → 42 → 43 → weitere Offline-Feinschliffe (u. a. Jahres-Lücken im Ideen-Speicher auffüllen) → Planung Online-Duell (inkl. 28/29) → 8 (Capacitor, erst wenn die App final ist; vorher Duell-Pflichtpunkt aus CLAUDE.md ansprechen)
 
 Prompt 7 steht bewusst vor der Tages-Challenge: Nur mit der neuen
 Update-Strategie kommen neue Tages-Aufstellungen zuverlässig auf dem iPhone an.
@@ -3590,6 +3591,80 @@ Abschluss:
 - Overlap-Check-Ergebnis zeigen; Hook-Ergebnis zeigen.
 - Liste der angepassten Regel-/Hilfe-Texte zeigen.
 - Status-Tabelle in prompts_naechste_schritte.md: Prompt 42 erledigt.
+```
+
+---
+
+## Prompt 43 – Duell-Zentrale: Statusleiste, Blätter schließen (Fund vom iPhone-Test 15.10.)
+
+```
+Lies CLAUDE.md. Fehlerbehebung nach iPhone-Test (installierte App,
+iPhone 16 Pro). Kleiner Umfang, kein Plan Mode nötig – aber erst die
+Ursachen im Code bestätigen und kurz zeigen, dann beheben.
+
+Befund von Florian:
+1. Duell-Zentrale: "← Start" sitzt auf Höhe der Uhrzeit, "+ Neues Duell"
+   überlappt Empfangs- und Akku-Anzeige.
+2. Schnell-Duell-Blatt (Gegner/Format/Zeit/Schwierigkeit): durch
+   Herunterwischen kommt man nicht mehr zurück – nur App schließen hilft.
+
+Vorab geprüfte Ursachen (Stand main 52feeec):
+- Zu 1: #screen-duels hat padding: 0. Die Regel .dz-hero { padding-top:
+  env(safe-area-inset-top) } (Zeile ~1246) wird von der SPÄTEREN Regel
+  .dz-hero { padding: 0 18px 22px; … } (Zeile ~1254) überschrieben → der
+  Kopf (.dz-top, padding-top 16px) beginnt ganz oben unter der
+  Statusleiste (black-translucent, viewport-fit=cover).
+- Zu 2: dzOpenSheet() baut ein Blatt mit Griff (.dz-grab), aber ohne
+  Wisch-Logik und ohne Schließen-Knopf. Das Blatt ist bis 92 % hoch;
+  der freie Abdunkel-Streifen oben (Tippen = schließen) liegt fast
+  komplett unter der Statusleiste/Dynamic Island und ist praktisch
+  nicht antippbar. Wischen nach unten scrollt nur den Blattinhalt.
+
+Umsetzung:
+A. Statusleiste Duell-Zentrale
+   - .dz-hero: padding-top = max(14px, env(safe-area-inset-top) + 10px)
+     (gleiche Formel wie .screen), Regeln zusammenführen statt doppelt.
+   - Prüfen, dass auch der Hintergrund-Rasen bis ganz oben reicht
+     (Statusleiste liegt über Grün, nicht über einem Streifen Ink).
+B. Blätter zuverlässig schließen (alle dzOpenSheet-Blätter: Schnell-
+   Duell, Liga/Ranked-Info, Löschen-Rückfragen usw.)
+   - Kopfzeile jedes Blatts: Griff + rechts ein ✕-Knopf (44 px
+     Trefferfläche, aria-label "Schließen").
+   - Herunterwischen schließt: Ziehen am Griff/Kopf jederzeit, im
+     Inhalt nur wenn scrollTop = 0; das Blatt folgt dem Finger
+     (translateY), ab ~90 px oder schnellem Wisch schließen, sonst
+     zurückfedern. overscroll-behavior: contain gegen Mit-Scrollen.
+   - max-height: calc(100% - env(safe-area-inset-top) - 24px), damit
+     oberhalb immer ein antippbarer Abdunkel-Streifen bleibt.
+   - Escape-Taste schließt; Zurück-Geste vom linken Rand (goBack) und
+     der Browser-/Android-Zurück-Knopf schließen zuerst das offene
+     Blatt statt den Bildschirm zu wechseln.
+   - Fokus beim Öffnen ins Blatt, beim Schließen zurück zum Auslöser.
+C. Gleiche Prüfung für die ganze App
+   - Alle Bildschirme mit eigenem padding/padding: 0 (grep nach
+     "padding: 0" bei #screen-*, eigenen Kopfzeilen, position: fixed-
+     Elementen oben) auf safe-area-inset-top prüfen – auch die neuen
+     Bildschirme aus Prompt 41/42 (Level-Vorschau, Spiel-Ansicht
+     .topbar) und Duell-Runde/Walkout.
+   - Alle übrigen Blätter/Modals (modal-sheet, askSheet, Scout-Rad,
+     Bank, Profil, Regeln, Neues-Duell) auf: ✕ vorhanden, Wischen nach
+     unten, Abdunkel-Tippen, Escape, kein "Gefangen-Sein". Einheitliche
+     Hilfsfunktion statt Einzellösungen, wo sinnvoll.
+D. Test
+   - tools/check-overlap.mjs (oder neues tools/check-safearea.mjs):
+     simulierte Safe-Area (z. B. top 59 px, bottom 34 px wie iPhone 16
+     Pro) per CSS-env-Ersatz/Playwright; prüfen, dass kein antippbares
+     Element in den oberen 59 px oder unteren 34 px liegt – für alle
+     Bildschirme und geöffnete Blätter.
+   - Playwright: Schnell-Duell-Blatt öffnen → per Wisch (touch-
+     Ereignisse) schließen, per ✕ schließen, per Escape schließen;
+     danach ist die Duell-Zentrale wieder bedienbar.
+   - Screenshots Duell-Zentrale oben + offenes Schnell-Duell-Blatt bei
+     393×852 mit simulierter Safe-Area zeigen.
+
+Abschluss: CACHE_NAME in sw.js erhöhen, Status-Tabelle: Prompt 43
+erledigt. Florian testet danach auf dem iPhone (App komplett schließen
+und neu öffnen).
 ```
 
 ---
