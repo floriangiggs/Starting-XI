@@ -389,11 +389,12 @@
   .sp .pos-input.revealed { border: 1.5px solid var(--gold); background: #1E2C37; color: var(--gold-hi); font-weight: 600; box-shadow: 0 3px 8px rgba(0,0,0,0.35); }
   .sp .pos-input.prefilled { border: none; background: linear-gradient(180deg, #FBF8EF, #E6E0CF); color: #2A3640; font-weight: 500; box-shadow: 0 2px 0 #B9B19C, 0 4px 8px rgba(0,0,0,0.25); }
   .sp .pos-input.bad, .sp .pos-input.miss { border: 1.5px solid #E0705F; background: rgba(193,57,43,0.42); color: var(--chalk); box-shadow: none; }
+  .sp .pos-input.sp-tight { padding: 0 1px; letter-spacing: -0.07em; }
   .sp .pos-input:disabled { opacity: 1; -webkit-text-fill-color: currentColor; }
-  .sp-bdg { position: absolute; z-index: 3; top: calc(var(--pt) - 7px); right: calc(var(--w, var(--pw)) / -2 - 6px); width: 17px; height: 17px; padding: 0; border: none; border-radius: 50%; display: grid; place-items: center; pointer-events: none; animation: spBadgeIn 0.35s cubic-bezier(.3,1.6,.5,1) both; }
+  .sp-bdg { position: absolute; z-index: 3; top: calc(var(--pt) - 7px); right: calc(var(--w, var(--pw)) / -2 - 4px); width: 17px; height: 17px; padding: 0; border: none; border-radius: 50%; display: grid; place-items: center; pointer-events: none; animation: spBadgeIn 0.35s cubic-bezier(.3,1.6,.5,1) both; }
   .sp-bdg svg { width: 11px; height: 11px; }
   .sp-bdg.ok { background: #fff; box-shadow: 0 1px 3px rgba(0,0,0,0.4); }
-  .sp-bdg.near { width: 22px; height: 22px; top: calc(var(--pt) - 9px); right: calc(var(--w, var(--pw)) / -2 - 9px); background: linear-gradient(170deg, var(--gold-hi), var(--gold)); box-shadow: 0 2px 0 #9C7422, 0 3px 6px rgba(0,0,0,0.4); pointer-events: auto; cursor: pointer; z-index: 6; }
+  .sp-bdg.near { width: 22px; height: 22px; top: calc(var(--pt) - 9px); right: calc(var(--w, var(--pw)) / -2 - 5px); background: linear-gradient(170deg, var(--gold-hi), var(--gold)); box-shadow: 0 2px 0 #9C7422, 0 3px 6px rgba(0,0,0,0.4); pointer-events: auto; cursor: pointer; z-index: 6; }
   .sp-bdg.near svg { width: 13px; height: 13px; }
   .sp-bdg.near::after { content: ""; position: absolute; inset: -10px; }
   .sp-bdg.near:active { transform: scale(0.9); }
@@ -8613,9 +8614,13 @@ function spTipsHTML(m, abbr, drawnSet, fresh, short) {
 function spPlateWidth(lay, PW) { // Schildbreite aus dem kleinsten Abstand benachbarter Positionen einer Reihe (52-70 px)
   let mn = 999;
   lay.forEach(p => lay.forEach(q => { if (p !== q && Math.abs(p.y - q.y) < 14) mn = Math.min(mn, Math.abs(p.x - q.x) / 100 * PW); }));
-  return Math.max(52, Math.min(70, Math.floor(mn - 6)));
+  return Math.max(44, Math.min(70, Math.floor(mn - 6)));
 }
 // Namensschild: Schrift erst kleiner (min. 10,5 px), dann darf das Schild breiter werden
+function spShortName(name) { // "N. Schlotterbeck" -> "Schlotterbeck", "Lisandro Martínez" -> "Martínez"
+  const t = name.replace(/^[A-Za-zÀ-ÿ]\.\s+/, "");
+  return t !== name ? t : name.includes(" ") ? name.split(/\s+/).slice(-1)[0] : name;
+}
 function spFitPlate(input) {
   const slot = input.closest(".sp-slot"), root = input.closest(".sp");
   if (!slot || !root) return;
@@ -8623,16 +8628,34 @@ function spFitPlate(input) {
   input.style.removeProperty("--fs"); slot.style.removeProperty("--w");
   const txt = input.value;
   if (!txt) return;
+  input.classList.remove("sp-tight");
   const wt = input.classList.contains("ok") || input.classList.contains("revealed") ? 600 : 500;
   spMeasure.font = `${wt} 14px Oswald, "Arial Narrow", sans-serif`;
   const w = spMeasure.measureText(txt).width, inner = pw - 10;
+  const maxw = Math.max(pw, +slot.dataset.maxw || 120); // breiter nur bis kurz vor den Nachbarn in derselben Reihe
   let fs = 14, width = pw;
   if (w > inner) {
     fs = Math.max(10.5, 14 * inner / w);
     spMeasure.font = `${wt} ${fs}px Oswald, "Arial Narrow", sans-serif`;
     const w2 = spMeasure.measureText(txt).width;
-    if (w2 > inner) width = Math.ceil(w2 + 12);
+    if (w2 > inner) {
+      width = Math.min(Math.ceil(w2 + 12), maxw);
+      if (w2 > width - 10) { // letzte Reserve (wie frueher): unter 10,5 px, engere Laufweite, weniger Polster - nie ueberlappen
+        const len = txt.length, tightInner = width - 6; // Polster 1 px + Rand bis 2 px
+        const eff = (f) => { spMeasure.font = `${wt} ${f}px Oswald, "Arial Narrow", sans-serif`; return spMeasure.measureText(txt).width - 0.07 * f * len; };
+        fs = Math.max(7, Math.min(fs, 14));
+        while (eff(fs) > tightInner && fs > 7) fs -= 0.25;
+        input.classList.add("sp-tight");
+        // Allerletzte Reserve bei geloesten Feldern: nur der Nachname im Schild (Initial/Vorname weg) - gueltig ist er auf der eigenen Position ohnehin;
+        // beim Auswerten steht wieder der volle Name im Feld.
+        if (eff(fs) > tightInner && input.matches(".ok, .revealed, .prefilled")) {
+          const short = spShortName(txt);
+          if (short !== txt) { input.value = short; spFitPlate(input); return; }
+        }
+      }
+    }
   }
+  if (w <= inner) input.classList.remove("sp-tight");
   input.style.setProperty("--fs", fs.toFixed(1) + "px");
   slot.style.setProperty("--w", width + "px");
 }
@@ -8652,15 +8675,13 @@ function spSyncSlot(input, anim) {
   if (anim && st === "near") { input.classList.remove("shake"); void input.offsetWidth; input.classList.add("shake"); }
 }
 function spRectsOverlap(a, b) { return a.left < b.right && b.left < a.right && a.top < b.bottom && b.top < a.bottom; }
-function spSlotBoxes(root) {
-  return [...root.querySelectorAll(".sp-slot")].map(s => {
-    const r1 = s.querySelector(".sp-ptag").getBoundingClientRect(), r2 = s.querySelector(".pos-input").getBoundingClientRect();
-    return { a: s.dataset.a, left: Math.min(r1.left, r2.left), right: Math.max(r1.right, r2.right), top: Math.min(r1.top, r2.top), bottom: Math.max(r1.bottom, r2.bottom) };
-  });
+function spSlotRects(root) { // je Position die getrennten Rechtecke von Reiter, Schild und Abzeichen (Leerraum neben dem Reiter zaehlt nicht)
+  return [...root.querySelectorAll(".sp-slot")].map(s => ["", ".sp-ptag", ".pos-input", ".sp-bdg"].slice(1).map(q => s.querySelector(q)).filter(Boolean).map(e => e.getBoundingClientRect()));
 }
 function spHasOverlap(root) {
-  const b = spSlotBoxes(root);
-  for (let i = 0; i < b.length; i++) for (let j = i + 1; j < b.length; j++) if (spRectsOverlap(b[i], b[j])) return true;
+  const slots = spSlotRects(root);
+  for (let i = 0; i < slots.length; i++) for (let j = i + 1; j < slots.length; j++)
+    for (const a of slots[i]) for (const b of slots[j]) if (spRectsOverlap(a, b)) return true;
   return false;
 }
 // Messen und Anpassen: Schildbreite, Dichte-Stufe (normal / kompakt / sehr kompakt) gegen Ueberlappen, Kreidelinien, Namen, Mannschafts-Schrift
@@ -8678,7 +8699,13 @@ function spFit(root) {
     side.style.fontSize = Math.max(16, Math.min(26, Math.floor(avail * 100 / (spMeasure.measureText(side.textContent.toUpperCase()).width + 1)))) + "px";
   }
   const run = () => {
-    root.dataset.pw = spPlateWidth(lay, pitch.clientWidth); root.style.setProperty("--pw", root.dataset.pw + "px");
+    const PW = pitch.clientWidth;
+    root.dataset.pw = spPlateWidth(lay, PW); root.style.setProperty("--pw", root.dataset.pw + "px");
+    root.querySelectorAll(".sp-slot").forEach(sl => { // wie weit darf ein langer Name das Schild verbreitern: Abstand zum naechsten Nachbarn in der Reihe
+      const me = lay.find(q => q.abbr === sl.dataset.a); let d = 999;
+      lay.forEach(q => { if (q !== me && Math.abs(q.y - me.y) < 14) d = Math.min(d, Math.abs(q.x - me.x) / 100 * PW); });
+      sl.dataset.maxw = Math.min(120, Math.floor(d - 6));
+    });
     root.querySelectorAll(".pos-input").forEach(spFitPlate);
   };
   for (const tier of ["", "d2", "d3"]) {

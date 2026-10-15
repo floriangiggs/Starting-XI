@@ -1,5 +1,5 @@
-// Prueft fuer jede Formation aus PITCH_LAYOUTS bei mehreren Viewport-Breiten,
-// ob sich .pos-slot-Elemente auf dem Spielfeld ueberlappen (Prompt 2).
+// Prueft fuer jede Formation aus PITCH_LAYOUTS bei mehreren Viewport-Groessen die Spiel-Ansicht (Taktiktafel, Prompt 42) auf Ueberlappungen,
+// abgeschnittene Namen und Scrollen; ausserdem den Level-Pfad (Prompt 11c).
 // Aufruf: node tools/check-overlap.mjs
 import { chromium } from "playwright";
 import { fileURLToPath } from "node:url";
@@ -21,42 +21,110 @@ const formations = await page.evaluate(() => Object.keys(PITCH_LAYOUTS));
 
 let totalIssues = 0;
 
+// Spiel-Ansicht "Taktiktafel" (Prompt 42): je Formation x Breite x Hoehe in drei Zustaenden (leer / alle richtig / lange Namen + alle Abzeichen):
+// Schild+Reiter duerfen sich nicht ueberlappen (auch nicht mit Abzeichen, Kombo-Chip, Bank-Knopf), nichts ausserhalb der Tafel, kein Scrollen,
+// Namen komplett im Schild (scrollWidth <= clientWidth), Tafel/Leiste/Auswerten ueberlappen sich nicht.
+const HEIGHTS = [667, 812, 932];
+const STATES = ["leer", "richtig", "lang+Abzeichen"]; // lang: die laengsten echten Namen auf den 4 engsten Positionen, alle Abzeichen
+const overlapRect = (a, b, pad = 0) => a.left < b.right - pad && b.left < a.right - pad && a.top < b.bottom - pad && b.top < a.bottom - pad;
 for (const width of WIDTHS) {
-  await page.setViewportSize({ width, height: 900 });
-  for (const formation of formations) {
-    const result = await page.evaluate((formationName) => {
-      const match = LINEUP_CHALLENGES.find((c) => c.formation === formationName);
-      if (!match) return { error: "keine Aufstellung mit dieser Formation gefunden" };
-      document.querySelectorAll(".screen").forEach((s) => { s.hidden = true; });
-      document.getElementById("screen-game").hidden = false;
-      currentMatch = match;
-      renderPitch();
-      const slots = Array.from(document.querySelectorAll(".pos-slot"));
-      return slots.map((el) => {
-        const r = el.getBoundingClientRect();
-        const abbr = el.querySelector(".pos-label").textContent;
-        return { abbr, left: r.left, top: r.top, width: r.width, height: r.height };
-      });
-    }, formation);
-
-    if (result.error) {
-      console.log(`[${width}px] ${formation}: ${result.error}`);
-      continue;
-    }
-
-    const issues = [];
-    for (let i = 0; i < result.length; i++) {
-      for (let j = i + 1; j < result.length; j++) {
-        if (overlap(result[i], result[j])) {
-          issues.push(`${result[i].abbr} <-> ${result[j].abbr}`);
+  for (const height of HEIGHTS) {
+    await page.setViewportSize({ width, height });
+    for (const formation of formations) {
+      for (const state of STATES) {
+        const r = await page.evaluate(({ formationName, state }) => {
+          const match = [...LINEUP_CHALLENGES, ...DAILY_CHALLENGES].find((c) => c.formation === formationName);
+          if (!match) return { error: "keine Aufstellung mit dieser Formation gefunden" };
+          profile.hintTokens = 9; profile.drafts = {}; currentLevelContext = null; currentDailyChallenge = null;
+          document.querySelectorAll(".screen").forEach((s) => { s.hidden = true; });
+          document.getElementById("screen-game").hidden = false;
+          navStack = ["start", "game"];
+          currentMatch = match;
+          startMatch(match);
+          renderPitch();
+          const root = document.getElementById("spRoot");
+          root.classList.remove("intro"); root.classList.add("fitting");
+          const inputs = [...root.querySelectorAll(".pos-input")];
+          const longNames = ["Lisandro Martínez", "N. Schlotterbeck", "Alexander-Arnold", "Heuer Fernandes", "Wright-Phillips", "Schweinsteiger", "Błaszczykowski"]; // die laengsten echten Namen der Datenbasis
+          inputs.forEach((inp, i) => {
+            if (state === "richtig") { inp.value = match.players[inp.dataset.abbr]; inp.classList.add("ok"); }
+            else if (state === "lang+Abzeichen") {
+              const tight = [...inputs].sort((x, y) => (+x.closest(".sp-slot").dataset.maxw) - (+y.closest(".sp-slot").dataset.maxw)).slice(0, 4).includes(inp);
+              const cls = ["ok", "near", "revealed", "prefilled"][i % 4];
+              inp.value = tight && cls !== "near" ? longNames[i % longNames.length] : match.players[inp.dataset.abbr]; // eigene (falsche) Eingaben koennen nicht gekuerzt werden - die Schild-Anzeige gilt fuer geloeste Namen
+              inp.classList.add(cls);
+            }
+            applyNameFit(inp);
+          });
+          spFit(root); // neu messen mit den Zustaenden (Dichte-Stufe, Schildbreite)
+          inputs.forEach((inp) => { applyNameFit(inp); spSyncSlot(inp, false); });
+          root.classList.add("fitting");
+          const R = (el) => { const b = el.getBoundingClientRect(); return { left: b.left, right: b.right, top: b.top, bottom: b.bottom }; };
+          const frame = R(root.querySelector("#spFrame")), pitch = R(root.querySelector("#spPitch"));
+          const boxes = [...root.querySelectorAll(".sp-slot")].map((s) => {
+            const t = R(s.querySelector(".sp-ptag")), i = R(s.querySelector(".pos-input")), bd = s.querySelector(".sp-bdg");
+            const inp = s.querySelector(".pos-input");
+            return { abbr: s.dataset.a, rects: [t, i, ...(bd ? [R(bd)] : [])], box: { left: Math.min(t.left, i.left), right: Math.max(t.right, i.right), top: Math.min(t.top, i.top), bottom: Math.max(t.bottom, i.bottom) }, textOk: inp.scrollWidth <= inp.clientWidth + 1 };
+          });
+          const extras = ["#benchBtn", "#comboChip.on"].map((q) => root.querySelector(q)).filter(Boolean).map((e) => R(e));
+          const gs = document.getElementById("screen-game");
+          return { boxes, extras, frame, pitch, tray: R(root.querySelector(".sp-tray")), cta: R(root.querySelector(".sp-bottom")), top: R(root.querySelector(".lv-top")),
+            scroll: gs.scrollHeight > gs.clientHeight + 1, density: root.className, vh: innerHeight, vw: innerWidth };
+        }, { formationName: formation, state });
+        if (r.error) { console.log(`[${width}x${height}] ${formation}: ${r.error}`); continue; }
+        const issues = [];
+        for (let i = 0; i < r.boxes.length; i++) {
+          const a = r.boxes[i];
+          if (!a.textOk) issues.push(`${a.abbr}: Name im Schild abgeschnitten`);
+          if (a.box.left < r.frame.left || a.box.right > r.frame.right || a.box.top < r.frame.top || a.box.bottom > r.frame.bottom) issues.push(`${a.abbr}: ausserhalb der Tafel`);
+          for (let j = i + 1; j < r.boxes.length; j++) {
+            const b = r.boxes[j];
+            if (a.rects.some((x) => b.rects.some((y) => overlapRect(x, y)))) issues.push(`${a.abbr} <-> ${b.abbr}`);
+          }
+          for (const ex of r.extras) if (overlapRect(a.box, ex)) issues.push(`${a.abbr} <-> Bank/Kombo`);
+        }
+        if (r.scroll) issues.push("Bildschirm scrollt");
+        if (overlapRect(r.frame, r.cta, 1) || overlapRect(r.tray, r.cta, 1)) issues.push("Tafel/Leiste und Auswerten ueberlappen");
+        if (r.cta.bottom > r.vh + 0.5) issues.push("Auswerten unter dem Bildschirmrand");
+        if (issues.length > 0) {
+          totalIssues += issues.length;
+          console.log(`[${width}x${height}] ${formation} (${state}, ${r.density}): ${[...new Set(issues)].join("; ")}`);
         }
       }
     }
-    if (issues.length > 0) {
-      totalIssues += issues.length;
-      console.log(`[${width}px] ${formation}: ${issues.length} Ueberlappung(en): ${issues.join(", ")}`);
+  }
+}
+
+// Alle echten Aufstellungen (Kampagne + Tag-Pool) mit ihren echten Namen, alle Positionen richtig (fette Schrift, Abzeichen), je Breite x Hoehe:
+// keine Ueberlappung, kein abgeschnittener Name.
+{
+  const ids = await page.evaluate(() => [...LINEUP_CHALLENGES, ...DAILY_CHALLENGES].map((m) => m.id));
+  let n = 0;
+  for (const [width, height] of [[360, 667], [375, 812], [402, 874], [430, 932]]) {
+    await page.setViewportSize({ width, height });
+    for (const id of ids) {
+      const r = await page.evaluate((id) => {
+        const match = [...LINEUP_CHALLENGES, ...DAILY_CHALLENGES].find((m) => m.id === id);
+        profile.hintTokens = 9; profile.drafts = {}; currentLevelContext = null; currentDailyChallenge = null;
+        document.querySelectorAll(".screen").forEach((s) => { s.hidden = true; });
+        document.getElementById("screen-game").hidden = false; navStack = ["start", "game"];
+        currentMatch = match; startMatch(match); renderPitch();
+        const root = document.getElementById("spRoot"); root.classList.remove("intro"); root.classList.add("fitting");
+        const inputs = [...root.querySelectorAll(".pos-input")];
+        inputs.forEach((inp, i) => { if (!inp.disabled) { inp.value = match.players[inp.dataset.abbr]; inp.classList.add(i % 3 === 0 ? "near" : "ok"); } applyNameFit(inp); spSyncSlot(inp, false); });
+        const R = (el) => { const b = el.getBoundingClientRect(); return { left: b.left, right: b.right, top: b.top, bottom: b.bottom }; };
+        const slots = [...root.querySelectorAll(".sp-slot")].map((s) => ({ a: s.dataset.a, rects: [".sp-ptag", ".pos-input", ".sp-bdg"].map((q) => s.querySelector(q)).filter(Boolean).map(R), ok: s.querySelector(".pos-input").scrollWidth <= s.querySelector(".pos-input").clientWidth + 1 }));
+        const bad = [];
+        slots.forEach((a, i) => { if (!a.ok) bad.push(`${a.a} abgeschnitten`); for (let j = i + 1; j < slots.length; j++) if (a.rects.some((x) => slots[j].rects.some((y) => x.left < y.right && y.left < x.right && x.top < y.bottom && y.top < x.bottom))) bad.push(`${a.a}<->${slots[j].a}`); });
+        const gs = document.getElementById("screen-game");
+        if (gs.scrollHeight > gs.clientHeight + 1) bad.push("scrollt");
+        return bad;
+      }, id);
+      n++;
+      if (r.length) { totalIssues += r.length; console.log(`[${width}x${height}] ${id}: ${[...new Set(r)].join("; ")}`); }
     }
   }
+  console.log(`Alle echten Aufstellungen: ${n} Pruefungen`);
 }
 
 // Level-Pfad (Prompt 11c): fuer jede der 5 Welten je einmal mit Level 1 aktuell
