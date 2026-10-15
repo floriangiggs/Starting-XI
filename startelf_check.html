@@ -33,7 +33,6 @@
     --ink-3: #243A4D;
     --muted: rgba(242,239,230,0.62);
     --faint: rgba(242,239,230,0.14);
-    --token: #7DB8FF;
     --ok: #2ECC71;
     --flame: #F0A93B;
   }
@@ -227,7 +226,21 @@
   .rules-btn { position: relative; display: inline-flex; align-items: center; gap: 6px; background: var(--ink-2); border: 1px solid var(--line); color: var(--chalk); font-family: 'Oswald', sans-serif; font-weight: 600; font-size: 12.5px; text-transform: uppercase; letter-spacing: 0.03em; cursor: pointer; padding: 9px 14px; border-radius: 24px; box-shadow: 0 4px 12px rgba(0,0,0,0.3); transition: transform 0.1s ease; }
   .rules-btn:active { transform: scale(0.96); }
   .pitch-header-row .hdr-right { display: flex; align-items: center; gap: 8px; flex-shrink: 0; }
-  .pitch-header-row .tok-chip { font-family: 'Oswald', sans-serif; font-weight: 700; font-size: 13px; color: var(--token); background: rgba(74,163,255,0.12); border: 1px solid rgba(74,163,255,0.3); border-radius: 20px; padding: 3px 9px; white-space: nowrap; }
+  .pitch-header-row .tok-chip { display: inline-flex; align-items: center; gap: 5px; height: 26px; padding: 0 10px 0 4px; border-radius: 13px; background: rgba(10,17,24,0.4); box-shadow: inset 0 0 0 1px rgba(244,241,232,0.25); white-space: nowrap; }
+  .tok-chip b, .profile-bar .tok b { font-family: 'Anton', Impact, sans-serif; font-weight: 400; font-size: 16px; line-height: 1; color: var(--gold-2); }
+  /* Scout-Muenze (Prompt 41): einheitliches Token-Symbol, im Text ca. 1em und baseline-buendig */
+  /* Kopfzeile der Level-Vorschau (Prompt 41, Prototyp level-vorschau.html .topbar/.tb) */
+  .lv-top { display: flex; align-items: center; gap: 8px; flex-shrink: 0; }
+  .lv-top .sp { flex: 1; }
+  .lv-top .tb { position: relative; height: 38px; padding: 0 14px; border-radius: 19px; display: inline-flex; align-items: center; gap: 6px; font-family: 'Oswald', sans-serif; font-weight: 500; font-size: 15px; line-height: 1; color: var(--chalk); background: rgba(10,17,24,0.4); border: none; box-shadow: inset 0 0 0 1px rgba(244,241,232,0.25); backdrop-filter: blur(6px); cursor: pointer; }
+  .lv-top .tb svg { width: 18px; height: 18px; display: block; flex-shrink: 0; }
+  .lv-top .tb:active { transform: scale(0.96); }
+  .lv-top .tb.back { padding: 0 16px 0 10px; gap: 4px; }
+  .lv-top .tb.tok { padding: 0 12px 0 5px; gap: 7px; cursor: default; }
+  .lv-top .tb.tok svg.tcoin { width: 28px; height: 28px; vertical-align: 0; }
+  .lv-top .tb.tok b { font-size: 19px; }
+  .lv-top .tb .rules-dot { top: 2px; right: 2px; }
+  .tcoin { display: inline-block; width: 1em; height: 1em; vertical-align: -0.17em; flex-shrink: 0; overflow: visible; }
   .rules-dot { position: absolute; top: -3px; right: -3px; width: 9px; height: 9px; border-radius: 50%; background: var(--gold); border: 2px solid var(--ink); }
 
   /* Spielstand sichern/laden + Speicher-Warnung + Home-Bildschirm-Tipp (Prompt 32) */
@@ -282,7 +295,7 @@
   .gs .help.bench-help { display: grid; grid-template-columns: 26px minmax(0,1fr); gap: 10px; align-items: start; padding: 7px 10px; }
   .gs .help.bench-help .bench-ic { width: 26px; height: 26px; margin-top: 1px; }
   .gs .help.bench-help b { display: flex; justify-content: space-between; align-items: baseline; gap: 8px; font-size: 15px; }
-  .gs .help.bench-help .cost { font-family: 'Anton', Impact, sans-serif; font-weight: 400; font-size: 14px; color: var(--token); }
+  .gs .help.bench-help .cost { font-family: 'Anton', Impact, sans-serif; font-weight: 400; font-size: 14px; color: var(--gold-2); }
   .gs .help.bench-help p { margin: 2px 0 0; font-size: 12px; line-height: 1.3; }
   .gs .help.bench-help .bk { font-weight: 600; color: var(--gold-2); letter-spacing: 0.05em; }
   .t-replay { display: block; margin-top: 8px; border: 1px solid rgba(232,178,61,0.6); background: rgba(232,178,61,0.1); color: var(--gold-2); border-radius: 18px; padding: 6px 14px; font-family: 'Oswald', sans-serif; font-weight: 600; font-size: 13px; cursor: pointer; }
@@ -351,7 +364,7 @@
   .sr-pointer.tick { animation: srTick 0.12s ease-out; }
   @keyframes srTick { 0% { transform: rotate(0); } 40% { transform: rotate(-16deg); } 100% { transform: rotate(0); } }
   .sr-hub { position: absolute; left: 50%; top: 50%; width: 27%; aspect-ratio: 1; transform: translate(-50%, -50%); border-radius: 50%; border: 3px solid var(--gold); background: radial-gradient(circle at 35% 30%, var(--ink-3), var(--ink) 70%); color: var(--chalk); font-family: 'Anton', Impact, sans-serif; font-size: clamp(11px, 3.5vw, 15px); letter-spacing: 0.05em; cursor: pointer; z-index: 2; box-shadow: 0 4px 14px rgba(0,0,0,0.55), inset 0 0 0 2px rgba(232,178,61,0.25); display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 1px; padding: 0; }
-  .sr-hub small { font-family: 'Oswald', sans-serif; font-weight: 600; font-size: 9px; color: var(--token); letter-spacing: 0.05em; }
+  .sr-hub small { font-family: 'Oswald', sans-serif; font-weight: 600; font-size: 9px; color: var(--gold-2); letter-spacing: 0.05em; }
   .sr-hub:disabled { cursor: default; opacity: 0.85; }
   .sr-stage.sr-win canvas { animation: srWinPop 0.6s cubic-bezier(.2,1.6,.4,1); }
   @keyframes srWinPop { 0% { transform: scale(1); } 40% { transform: scale(1.04); } 100% { transform: scale(1); } }
@@ -393,10 +406,10 @@
   .level-stars svg { width: 11px; height: 11px; }
   .world-star-total { font-family: 'Oswald', sans-serif; font-weight: 600; font-size: 11px; color: var(--gold); background: rgba(232,178,61,0.12); border: 1px solid rgba(232,178,61,0.3); border-radius: 20px; padding: 3px 10px; }
   .stadium-stars { font-family: 'Oswald', sans-serif; font-weight: 600; font-size: 9.5px; color: rgba(217,164,65,0.9); text-align: center; margin-top: 3px; }
-  .token-receipt { background: rgba(74,163,255,0.1); border: 1px solid rgba(74,163,255,0.3); border-radius: 10px; padding: 10px 12px; margin-bottom: 12px; font-family: 'Oswald', sans-serif; font-size: 12.5px; }
-  .token-receipt-title { color: var(--token); font-weight: 700; letter-spacing: 0.04em; margin-bottom: 6px; }
+  .token-receipt { background: rgba(232,178,61,0.1); border: 1px solid rgba(232,178,61,0.3); border-radius: 10px; padding: 10px 12px; margin-bottom: 12px; font-family: 'Oswald', sans-serif; font-size: 12.5px; }
+  .token-receipt-title { color: var(--gold-2); display: flex; align-items: center; gap: 6px; font-weight: 700; letter-spacing: 0.04em; margin-bottom: 6px; }
   .token-receipt-line { display: flex; justify-content: space-between; padding: 2px 0; color: rgba(242,239,230,0.85); }
-  .token-receipt-sum { border-top: 1px solid rgba(74,163,255,0.3); margin-top: 4px; padding-top: 5px; font-weight: 700; color: var(--token); }
+  .token-receipt-sum { border-top: 1px solid rgba(232,178,61,0.3); margin-top: 4px; padding-top: 5px; font-weight: 700; color: var(--gold-2); }
 
   .btn-row { display: flex; gap: 10px; margin-bottom: 10px; }
   button.action { flex: 1; font-family: 'Oswald', sans-serif; font-weight: 600; font-size: 14.5px; text-transform: uppercase; letter-spacing: 0.02em; padding: 15px 8px; border-radius: 8px; border: none; cursor: pointer; transition: transform 0.1s ease, box-shadow 0.15s ease; }
@@ -432,7 +445,7 @@
   .profile-bar .nx b { color: var(--gold-2); font-weight: 600; }
   .profile-bar .goal { font-family: 'Oswald', sans-serif; font-weight: 400; font-size: 12px; color: rgba(242,239,230,0.8); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
   .profile-bar .goal b { color: var(--gold-2); font-weight: 600; }
-  .profile-bar .tok { flex-shrink: 0; align-self: flex-start; font-family: 'Oswald', sans-serif; font-weight: 700; font-size: 13px; color: var(--token); background: rgba(74,163,255,0.12); border: 1px solid rgba(74,163,255,0.3); border-radius: 20px; padding: 3px 9px; }
+  .profile-bar .tok { flex-shrink: 0; align-self: flex-start; display: inline-flex; align-items: center; gap: 5px; height: 26px; padding: 0 10px 0 4px; border-radius: 13px; background: rgba(10,17,24,0.4); box-shadow: inset 0 0 0 1px rgba(244,241,232,0.25); }
   .profile-bar .foot { display: flex; align-items: center; gap: 12px; padding: 7px 12px; border-top: 1px solid rgba(232,178,61,0.25); background: rgba(0,0,0,0.18); font-family: 'Oswald', sans-serif; font-weight: 400; font-size: 13px; }
   .profile-bar .foot .st { display: inline-flex; align-items: center; gap: 4px; color: rgba(242,239,230,0.85); white-space: nowrap; }
   .profile-bar .foot .st b { font-family: 'Anton', Impact, sans-serif; font-weight: 400; font-size: 14px; color: var(--chalk); }
@@ -620,10 +633,10 @@
   .gs .field.gold { background: rgba(232,178,61,0.2); color: var(--gold-2); border: 1px solid rgba(232,178,61,0.6); }
 
   .gs .two { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
-  .gs .help { border-radius: 12px; border: 1px solid rgba(125,184,255,0.35); background: rgba(125,184,255,0.07); padding: 11px 11px 10px; display: flex; flex-direction: column; gap: 5px; }
+  .gs .help { border-radius: 12px; border: 1px solid rgba(232,178,61,0.35); background: rgba(232,178,61,0.07); padding: 11px 11px 10px; display: flex; flex-direction: column; gap: 5px; }
   .gs .help .top { display: flex; justify-content: space-between; align-items: center; }
   .gs .help .ic { font-size: 24px; }
-  .gs .cost { font-family: 'Anton', Impact, sans-serif; font-size: 17px; color: var(--token); white-space: nowrap; }
+  .gs .cost { font-family: 'Anton', Impact, sans-serif; font-size: 17px; color: var(--gold-2); white-space: nowrap; }
   .gs .help b { font-family: 'Anton', Impact, sans-serif; font-weight: 400; font-size: 17px; text-transform: uppercase; }
   .gs .help p { margin: 0; font-weight: 300; font-size: 13px; line-height: 1.4; color: rgba(242,239,230,0.85); }
   .gs .warn { display: flex; gap: 10px; align-items: center; border-radius: 12px; padding: 9px 12px; background: rgba(240,169,59,0.08); border: 1px solid rgba(240,169,59,0.35); }
@@ -646,7 +659,7 @@
   @media (max-height: 700px) { .gs:has(.stand) .two .help .ic { font-size: 17px; } .gs:has(.stand) .two .help b { font-size: 14px; } .gs:has(.stand) .two .help { padding: 6px 9px; gap: 2px; } .gs:has(.stand) .warn { padding: 5px 10px; } .gs:has(.stand) .help.bench-help { padding: 5px 9px; } .gs:has(.stand) .card .chips { gap: 4px; } .gs:has(.stand) .tk { padding: 3px 8px; } }
   .gs .chips { display: flex; flex-wrap: wrap; gap: 5px; }
   .gs .chips span { font-weight: 500; font-size: 12.5px; padding: 3px 9px; border-radius: 12px; background: rgba(255,255,255,0.05); border: 1px solid var(--line); white-space: nowrap; }
-  .gs .chips span.tk { color: var(--token); border-color: rgba(125,184,255,0.35); }
+  .gs .chips span.tk { color: var(--gold-2); border-color: rgba(232,178,61,0.35); }
   .gs .chips span.g { color: var(--gold-2); border-color: rgba(232,178,61,0.4); }
 
   .gs .modes { display: grid; grid-template-columns: 64px repeat(4, minmax(0,1fr)); border-radius: 12px; border: 1px solid var(--line); overflow: hidden; background: var(--ink-2); }
@@ -1531,6 +1544,7 @@
 </style>
 </head>
 <body>
+<svg width="0" height="0" style="position:absolute" aria-hidden="true" focusable="false"><defs><radialGradient id="tcoinG" cx="0.35" cy="0.3" r="0.85"><stop offset="0" stop-color="#FFF1C2"/><stop offset="0.6" stop-color="#E8B23D"/><stop offset="1" stop-color="#A8771A"/></radialGradient><symbol id="tcoinSym" viewBox="0 0 24 24"><circle cx="12" cy="12" r="12" fill="url(#tcoinG)"/><circle cx="12" cy="12" r="11.2" fill="none" stroke="rgba(255,255,255,0.45)" stroke-width="1.4"/><g transform="translate(4.7 4.7) scale(0.61)"><circle cx="10.5" cy="10.5" r="5.2" fill="none" stroke="#3A2A08" stroke-width="2.4"/><path d="M14.4 14.4l4.4 4.4" stroke="#3A2A08" stroke-width="2.8" stroke-linecap="round"/></g></symbol></defs></svg>
 <div class="stage" id="stage">
 
   <div class="toast-stack" id="toastStack"></div>
@@ -3797,10 +3811,25 @@ function loadProfile() {
   }
 }
 
+// Scout-Muenze (Prompt 41): EIN Token-Symbol fuer die ganze App (Inline-SVG, Symbol steht einmal im <body>).
+// size: Zahl = px, Text = CSS-Laenge, ohne Angabe 1em (im Fliesstext baseline-buendig).
+const TOKEN_LABEL = "Scout-Token";
+function tokenCoin(size) {
+  const w = size == null ? "" : ` style="width:${typeof size === "number" ? size + "px" : size};height:${typeof size === "number" ? size + "px" : size}"`;
+  return `<svg class="tcoin"${w} viewBox="0 0 24 24" aria-hidden="true" focusable="false"><use href="#tcoinSym"/></svg>`;
+}
+// Token-Chip (Muenze + Zahl): Spielfeld-Kopfzeile (Prompt 32), Scout-Ausweis, Vorschau-Kopfzeile
+const tokenChipInner = (n, big) => `${tokenCoin(big ? 28 : 22)}<b>${n}</b>`;
 // Token-Chip in der Spielfeld-Kopfzeile (Prompt 32) - existiert nur waehrend eines Kampagnen-/Freispiel-/Tages-Spiels
+// Kopfzeile der Level-Vorschau: "Pfad" (Chevron als SVG) | Token-Chip | "Regeln" (Info-Symbol als SVG)
+function lvTopbarHTML() {
+  const dot = !profile.hasSeenPitchRules || !profile.seenRulesBench ? '<span class="rules-dot" id="rulesDot"></span>' : "";
+  return `<div class="lv-top"><button type="button" class="tb back" id="lvBack"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M15 5l-7 7 7 7" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/></svg>Pfad</button><span class="sp"></span>`
+    + `<span class="tb tok" data-tokchip data-big role="img" aria-label="${profile.hintTokens} ${TOKEN_LABEL}">${tokenChipInner(profile.hintTokens, true)}</span>`
+    + `<button type="button" class="tb" id="rulesBtn"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9" fill="none" stroke="currentColor" stroke-width="2"/><path d="M12 11v6" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"/><circle cx="12" cy="7.6" r="1.4" fill="currentColor"/></svg>Regeln${dot}</button></div>`;
+}
 function updateGameTokChip() {
-  const chip = document.getElementById("gameTokChip");
-  if (chip) chip.textContent = "🔍 " + profile.hintTokens;
+  document.querySelectorAll("[data-tokchip]").forEach(chip => { chip.innerHTML = tokenChipInner(profile.hintTokens, chip.hasAttribute("data-big")); chip.setAttribute("aria-label", profile.hintTokens + " " + TOKEN_LABEL); });
 }
 function saveProfile(p) {
   try { localStorage.setItem(PROFILE_KEY, JSON.stringify(p)); return true; }
@@ -3981,7 +4010,7 @@ function showLevelUpToast(newLevel, levelsGained) {
       <div class="levelup-rank-icon" style="color:${DIFF_COLOR[Math.min(newLevel >= 30 ? 5 : Math.ceil(newLevel/6), 5)] || "#E8B23D"}">${rank.icon}</div>
       <div class="levelup-title">Level Up</div>
       <div class="levelup-level">${newLevel}</div>
-      <div class="levelup-rank-name">${(rankChanged ? "Neuer Rang: " + rank.name + " · " : "") + "🔍 +" + tokens + " Scout-Token verdient"}</div>
+      <div class="levelup-rank-name">${(rankChanged ? "Neuer Rang: " + rank.name + " · " : "") + tokenCoin() + " +" + tokens + " Scout-Token verdient"}</div>
       <button class="levelup-close" id="levelupClose">Weiter</button>
     </div>`;
   document.body.appendChild(overlay);
@@ -3991,12 +4020,12 @@ function showLevelUpToast(newLevel, levelsGained) {
   setTimeout(close, 4500);
 }
 function showAchievementToast(a) {
-  showToast(a.icon + " Trophäe gewonnen: <b>" + a.name + "</b>" + (a.title ? " (Titel: \"" + a.title + "\")" : "") + " · 🔍 +" + ECONOMY.earnAchievement);
+  showToast(a.icon + " Trophäe gewonnen: <b>" + a.name + "</b>" + (a.title ? " (Titel: \"" + a.title + "\")" : "") + " · " + tokenCoin() + " +" + ECONOMY.earnAchievement);
 }
 
 const TROPHY_KIND_ICON = { cup: "🏆", plate: "🥈", flame: "🔥", medal: "🎖️" };
 function showTrophyToast(t) {
-  showToast(TROPHY_KIND_ICON[t.kind] + " Trophäe gewonnen: <b>" + t.name + "</b>" + (t.noToken ? "" : " · 🔍 +" + ECONOMY.earnAchievement));
+  showToast(TROPHY_KIND_ICON[t.kind] + " Trophäe gewonnen: <b>" + t.name + "</b>" + (t.noToken ? "" : " · " + tokenCoin() + " +" + ECONOMY.earnAchievement));
 }
 
 // Gewonnene Trophaeen (gleiche Quelle wie der Trophaeen-Reiter im Scout-Profil).
@@ -4044,7 +4073,7 @@ function renderProfileBar() {
         <div class="nx">Noch <b>${remainingXP} XP</b> bis Level ${profile.level + 1}</div>
         <div class="goal">${goalHtml}</div>
       </div>
-      <span class="tok">🔍 ${profile.hintTokens}</span>
+      <span class="tok" role="img" aria-label="${profile.hintTokens} ${TOKEN_LABEL}">${tokenChipInner(profile.hintTokens)}</span>
     </div>
     <div class="foot"><span class="st">🏆 <b>${won.length}</b>/${TROPHIES.length}</span><span class="st">⭐ <b>${stars.earned}</b>/${stars.max}</span><span class="st">📊 <span class="wissen-txt">Wissen</span></span><span class="cta">${hasNewTrophy ? '<span class="new" title="Neue Trophäe"></span>' : ""}Scout-Profil ${chev}</span></div>`;
   bar.classList.toggle("gold-frame", profile.level >= 30);
@@ -4078,17 +4107,17 @@ const GUIDE_TABS = [
       <div class="num"><span class="n">2</span><div><b>Falsche Zeile? Kein Problem</b><p>Der Spieler rutscht automatisch auf seine richtige Position – sofern er zu keiner anderen offenen Position passt.</p></div></div>
       <div class="num"><span class="n">3</span><div><b>Fast richtig</b><p>Kleiner Tippfehler? Das Feld wird <span class="field gold">gold</span>. Mit „Korrigieren“ übernimmst du die richtige Schreibweise – für etwas weniger XP.</p></div></div>
     </div>` },
-  { id: "hilfen", icon: "🔍", label: "Hilfen", render: () => `
-    <p class="t">Du hängst fest? Gib <b>Scout-Token 🔍</b> aus und hol dir Hilfe.</p>
+  { id: "hilfen", icon: tokenCoin(), label: "Hilfen", render: () => `
+    <p class="t">Du hängst fest? Gib <b>Scout-Token ${tokenCoin()}</b> aus und hol dir Hilfe.</p>
     <div class="two">
-      <div class="help"><div class="top"><span class="ic">🎡</span><span class="cost">${ECONOMY.spinCost} 🔍</span></div><b>Scout-Rad</b><p>Dreh für einen Tipp: 1. Buchstabe, Rückennummer, Nationalität – oder als Jackpot der ganze Name. Position bringt weniger XP.</p></div>
-      <div class="help"><div class="top"><span class="ic">👁️</span><span class="cost">${ECONOMY.revealCost} 🔍</span></div><b>Aufdecken</b><p>Zeigt sofort den kompletten Namen. Zählt als richtig, bringt aber keine Positions-XP.</p></div>
+      <div class="help"><div class="top"><span class="ic">🎡</span><span class="cost">${ECONOMY.spinCost} ${tokenCoin()}</span></div><b>Scout-Rad</b><p>Dreh für einen Tipp: 1. Buchstabe, Rückennummer, Nationalität – oder als Jackpot der ganze Name. Position bringt weniger XP.</p></div>
+      <div class="help"><div class="top"><span class="ic">👁️</span><span class="cost">${ECONOMY.revealCost} ${tokenCoin()}</span></div><b>Aufdecken</b><p>Zeigt sofort den kompletten Namen. Zählt als richtig, bringt aber keine Positions-XP.</p></div>
     </div>
     <div class="help bench-help"><span class="ic bench-ic">${BENCH_SVG}</span><div><b>Ersatzbank <span class="cost">gratis</span></b><p>Unten rechts im Spielfeld öffnest du mit <span class="bk">BANK</span> die Ersatzbank – kostenlos, ohne Einfluss auf deine Sterne. Ein grüner Pfeil zeigt, wer eingewechselt wurde, für wen er kam siehst du nach dem Auswerten. Nicht bei jedem Spiel verfügbar.</p></div></div>
     <div class="warn"><span class="ic">⚠️</span><p>Jede Hilfe – auch Korrigieren – kostet dich <b>⭐⭐⭐</b> für dieses Spiel und deine <b>Kombo endet</b>. Gilt in allen Modi.</p></div>
     <div class="card"><div class="h">Token verdienen</div>
       <div class="chips">
-        <span class="tk">Zum Start: ${ECONOMY.startTokens} 🔍</span>
+        <span class="tk">Zum Start: ${ECONOMY.startTokens} ${tokenCoin()}</span>
         <span class="tk">+${ECONOMY.earnFirstPass} Erstmals gespielt</span>
         <span class="tk">+${ECONOMY.earnPerfect} Perfekte Aufstellung (einmalig)</span>
         <span class="tk">+${ECONOMY.earnDaily} Tages-Challenge</span>
@@ -4210,7 +4239,7 @@ function openRulesModal() {
     titleHTML: "Die <span>Regeln</span>",
     label: "Regeln",
     tabIds: ["spielen", "hilfen", "belohnung"],
-    footerHTML: `<div class="stand">🔍 Aktueller Stand: <b>${profile.hintTokens}</b> Scout-Token</div>`
+    footerHTML: `<div class="stand">${tokenCoin()} Aktueller Stand: <b>${profile.hintTokens}</b> Scout-Token</div>`
   });
   markBenchRulesSeen();
 }
@@ -8032,7 +8061,7 @@ function renderPitch() {
     <div class="bonus-panel">
       <div class="pitch-header-row">
         <button class="back-btn" id="exitMatchBtn"><span class="back-arrow">←</span>Abbrechen</button>
-        <div class="hdr-right"><span class="tok-chip" id="gameTokChip" title="Scout-Token">🔍 ${profile.hintTokens}</span><button class="rules-btn" id="rulesBtn">ℹ️ Regeln${!profile.hasSeenPitchRules || !profile.seenRulesBench ? '<span class="rules-dot" id="rulesDot"></span>' : ""}</button></div>
+        <div class="hdr-right"><span class="tok-chip" id="gameTokChip" data-tokchip role="img" aria-label="${profile.hintTokens} ${TOKEN_LABEL}">${tokenChipInner(profile.hintTokens)}</span><button class="rules-btn" id="rulesBtn">ℹ️ Regeln${!profile.hasSeenPitchRules || !profile.seenRulesBench ? '<span class="rules-dot" id="rulesDot"></span>' : ""}</button></div>
       </div>
       <div class="bonus-eyebrow">${m.formation} · ${m.comp}</div>
       <div class="bonus-title" style="font-size:19px">${m.teams}</div>
@@ -8195,7 +8224,7 @@ function renderPitch() {
             <circle cx="17" cy="12" r="4.5" fill="#14202B"/>
           </svg>
           <canvas id="srWheel" role="img" aria-label="Scout-Rad"></canvas>
-          <button type="button" class="sr-hub" id="srHub" aria-label="Scout-Rad drehen, kostet ${ECONOMY.spinCost} Token">DREHEN<small>${ECONOMY.spinCost} 🔍</small></button>
+          <button type="button" class="sr-hub" id="srHub" aria-label="Scout-Rad drehen, kostet ${ECONOMY.spinCost} Token">DREHEN<small>${ECONOMY.spinCost} ${tokenCoin()}</small></button>
         </div>
         <div class="sr-skip-hint" id="srSkipHint"></div>
         <div id="srResultSlot" aria-live="polite"></div>
@@ -8925,7 +8954,7 @@ function evaluatePitch() {
   if (receiptTotal > 0) {
     const receiptDiv = document.createElement("div");
     receiptDiv.className = "token-receipt";
-    receiptDiv.innerHTML = `<div class="token-receipt-title">🔍 Scout-Token verdient</div>` +
+    receiptDiv.innerHTML = `<div class="token-receipt-title">${tokenCoin(18)} Scout-Token verdient</div>` +
       receipt.map(r => `<div class="token-receipt-line"><span>${r.label}</span><span>+${r.amount}</span></div>`).join("") +
       `<div class="token-receipt-line token-receipt-sum"><span>Summe</span><span>+${receiptTotal}</span></div>`;
     panel.appendChild(receiptDiv);
