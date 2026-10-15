@@ -55,8 +55,9 @@ vorige umgesetzt, getestet und committet ist.
 | 41 | Level-Vorschau „Taktiktafel“ (Kampagne), Scout-Münze als Token-Symbol überall, spoilerfreie Vorschau-Texte | – |
 | 42 | Spiel-Ansicht „Taktiktafel“ als One-Pager in allen Modi (inkl. Duell): Holzreiter, Holzleiste mit Werkzeugen, Korrigieren per Stift, Tastatur-Leiste, Regeln anpassen | 41 |
 | 43 | Duell-Zentrale: Kopf unter der iPhone-Statusleiste, Blätter (Schnell-Duell u. a.) per Wischen/✕ schließbar – Safe-Area-Check aller Bildschirme | – |
+| 44 | Startseite + Scout-Profil im Taktiktafel-Stil (Scout-Pass, Tages-Challenge-Tafel, Kampagne/Duell-Tafeln, Frei spielen auf der Kreideablage; Profil-Blatt mit Holzreitern, Trophäenregal) | 41, 42, 43 |
 
-**Empfohlene Reihenfolge ab jetzt:** 39 → 41 → 42 → 43 → weitere Offline-Feinschliffe (u. a. Jahres-Lücken im Ideen-Speicher auffüllen) → Planung Online-Duell (inkl. 28/29) → 8 (Capacitor, erst wenn die App final ist; vorher Duell-Pflichtpunkt aus CLAUDE.md ansprechen)
+**Empfohlene Reihenfolge ab jetzt:** 39 → 41 → 42 → 43 → 44 → weitere Offline-Feinschliffe (u. a. Jahres-Lücken im Ideen-Speicher auffüllen) → Planung Online-Duell (inkl. 28/29) → 8 (Capacitor, erst wenn die App final ist; vorher Duell-Pflichtpunkt aus CLAUDE.md ansprechen)
 
 Prompt 7 steht bewusst vor der Tages-Challenge: Nur mit der neuen
 Update-Strategie kommen neue Tages-Aufstellungen zuverlässig auf dem iPhone an.
@@ -75,7 +76,8 @@ Welten-Ausschmückung), `prototypes/ladescreen.html` (Prompt 11d) und
 `prototypes/bank.html` (Prompt 37 – nur Variante C und das Blatt) und
 `prototypes/duell-ausbau.html` (Prompts 39/40 – Duell-Zentrale v3) und
 `prototypes/level-vorschau.html` (Prompt 41 – nur Variante C „Taktiktafel“ + Kopfzeile) und
-`prototypes/spiel-ansicht.html` (Prompt 42 – nur Standard: Holzreiter + Holzrahmen).
+`prototypes/spiel-ansicht.html` (Prompt 42 – nur Standard: Holzreiter + Holzrahmen) und
+`prototypes/startseite.html` (Prompt 44 – Startseite + Scout-Profil, ohne Statusleisten-Attrappe).
 
 **Wichtig nach jeder Änderung:** Der Service Worker liefert die App aus dem
 Cache. Jeder Prompt erhöht deshalb `CACHE_NAME` in `sw.js` – sonst sieht die
@@ -3665,6 +3667,155 @@ D. Test
 Abschluss: CACHE_NAME in sw.js erhöhen, Status-Tabelle: Prompt 43
 erledigt. Florian testet danach auf dem iPhone (App komplett schließen
 und neu öffnen).
+```
+
+---
+
+## Prompt 44 – Startseite und Scout-Profil im Taktiktafel-Stil
+
+```
+Lies CLAUDE.md. Großer optischer Umbau → Plan Mode, Plan zeigen, dann in
+Paketen A–E umsetzen (je Paket Commit + Test). Voraussetzung: Prompts
+41, 42 und 43 sind erledigt (Scout-Münze tokenCoin(), Holz-Bausteine,
+Safe-Area-/Blatt-Regeln aus 43).
+Optische Vorlage: prototypes/startseite.html (von Florian am 15.10.2026
+freigegeben). Optik, Maße, Farben, Schriften und Bewegungen 1:1
+übernehmen. NICHT übernehmen: die angedeutete iPhone-Statusleiste,
+Dynamic Island und Home-Balken (.sbar/.island/.homebar – das echte iPhone
+liefert sie; stattdessen Safe-Area-Abstände), Regie-Pult, Beispieldaten,
+eingebettete Schriften (App nutzt fonts/).
+
+Grundsatz: Inhalt und Logik bleiben – nur Optik und Anordnung ändern
+sich. Alle Zahlen kommen aus den bestehenden Daten/Funktionen (profile,
+rankForLevel, nextRankInfo, starsSummaryTotal, dailyStarsTotal,
+TROPHIES, Wissen-Auswertung, Duell-Daten aus Prompt 39). Gemeinsame Holz-
+Bausteine (Holz-Verlauf, Holzreiter, Holzbrettchen, Filz-Tafel mit
+Holzrahmen, Kreideablage) aus 41/42 wiederverwenden, nicht neu erfinden.
+
+A. Startseite (#screen-start) – One-Pager ohne Scrollen
+   Hintergrund wie Prototyp (grüner Rasen mit Mähstreifen + leichtes
+   Flutlicht oben). Reihenfolge von oben:
+   1. Kopf: App-Icon (icons/icon-192.png, Holzrand) + "Starting XI"
+      (Anton, "XI" gold) + Zeile "Echte Spiele. Deine Startelf."
+      (Oswald 300). Rechts Token-Chip mit Scout-Münze und "So geht's"
+      als Holz-Chip mit gezeichnetem ?-Symbol (statt 🎮); der Hinweis-
+      Punkt helpDot bleibt. Kopf beginnt unter der Statusleiste
+      (Safe-Area wie Prompt 43). Das bisherige ⚽-Abzeichen, der
+      gesperrte Kicker "Football Lineup Trivia" und der lange
+      Untertitel entfallen.
+   2. Scout-Pass (ersetzt den Scout-Ausweis aus Prompt 17, gleiche
+      Daten): cremefarbene Karte mit Rangfarbe als Randstreifen links
+      und zwei goldenen Pins oben. Rang-Medaille in Rangfarbe (RANKS
+      c1/c2) mit gezeichnetem Symbol statt Emoji (Ball, Medaille,
+      Stern, Krone wie Prototyp) und Holzreiter "Level n" darunter;
+      "Scout-Pass · <Duell-Name>" klein, Rang groß (Anton), XP-Balken
+      in Rasengrün, "Noch x XP bis Level n+1 · <nächster Rang> ab
+      Level m". Unten hinter einer gestrichelten Linie: Trophäen x/27,
+      Sterne x/177 und rechts der grüne Knopf "Scout-Profil ›" (dort
+      sitzt auch der goldene "neu"-Punkt für ungesehene Trophäen).
+      Zwischen XP-Zeile und gestrichelter Linie sichtbar Abstand –
+      nichts darf die Linie berühren (Florian-Hinweis). Ganze Karte
+      antippbar → openProfileSheet().
+   3. Tages-Challenge als große Tafel (Filz + Holzrahmen), Daten wie
+      renderDailyCard heute:
+      - "Tages-Challenge" (Anton, "Challenge" gold), darunter
+        "<Wochentag>, <Datum> · Spieltag n".
+      - Serie rechts als Flammen-Chip (Optik wie Kombo-Chip aus 42;
+        bei 0 gedämpft).
+      - kleines Kreide-Spielfeld mit Magneten der heutigen Formation
+        (PITCH_LAYOUTS, KEINE Namen, TW weiß; Magnete klein, ca. 10 px,
+        dürfen sich nicht berühren – Florian-Hinweis), daneben
+        Schwierigkeits-Punkte + "Stufe n · <Name>" + Formations-Pille
+        und der Countdown auf einem Holzbrettchen (Anton cremefarben)
+        mit "bis zur nächsten Challenge".
+      - Knopf "Starten" (Gold). Wenn heute erledigt: Ergebnisfeld
+        "9/11 · Heute erledigt" mit Sternen + goldener Teilen-Knopf
+        (bestehende Teilen-Funktion aus Prompt 24).
+   4. Zwei kleine Tafeln nebeneinander:
+      - Kampagne: "Kampagne", "<Welt> · Level n von N" (aktuelles
+        Level wie heute), darunter ein Kreideweg mit fünf Wimpeln in
+        den Weltfarben (DIFF_COLOR): geschaffte Welten mit Häkchen,
+        aktuelle Welt größer mit Nummer + goldenem Bodenring, kommende
+        nur als Kreide-Umriss mit gestricheltem Weg (SVG wie
+        campPath() im Prototyp). Knopf "Weiter spielen ›" bzw. "Los
+        geht's ›" (grün mit Goldrand) → wie heute.
+      - Duell: "Duell" + Unterzeile (Gegner · Runden des wichtigsten
+        offenen Duells). Namensschilder mit Holzreitern "Du"/"Gegner"
+        und Holz-Spielstand dazwischen (Duell-Namen statt Wappen,
+        Prompt 39); "● Du bist dran", wenn ein Duell auf dich wartet.
+        Ohne Duelle: gekreuzte Schwerter (SVG) + "Noch keine Duelle.
+        Fordere jemanden heraus!". Knopf "Jetzt spielen" / "Zur
+        Zentrale" / "Herausfordern" → wie heute (welches Duell als
+        "wichtigstes" gilt, im Plan vorschlagen).
+   5. Frei spielen auf der Kreideablage (Holzleiste mit Filz, drei
+      Kreidestücke obendrauf): Würfel-Symbol (SVG statt 🎲), "Frei
+      spielen", "Training ohne Druck – alle Wettbewerbe und Stufen",
+      runder Pfeil-Knopf. Ersetzt die Textzeile soloLine.
+   6. Install-Tipp (installTip) bleibt, im Holz-/Cremestil des Passes.
+   7. Passt ohne Scrollen bei 393×852 und 430×932; bei 375×667
+      (iPhone SE) darf es kompakter werden (Tagestafel-Spielfeld
+      kleiner, Abstände enger) – Overlap- und Safe-Area-Check aus 43
+      für alle Größen.
+
+B. Scout-Profil als Holz-Blatt (openProfileSheet)
+   - Blatt mit Holzrahmen + Filz, oben links drei Holzreiter
+     "Übersicht", "Trophäen", "Wissen" (aktiver Reiter golden),
+     oben rechts runder Holz-✕. Schließen per ✕, Tipp daneben,
+     Herunterziehen am Griff/Reiterbereich, Escape, Zurück-Geste
+     (Regeln aus Prompt 43, gleiche Hilfsfunktion).
+   - Übersicht: Pass-Kopf groß (Medaille, Name · @Benutzername, Rang,
+     XP-Balken, "x / y XP · noch n Level bis <Rang>"); "Statistik" als
+     Kreide-Tabelle (Absolviert, Ø Treffer, Perfekt, Tages-Sterne,
+     Kampagnen-Sterne breit, Serie in Orange, Längste Serie); "Letzte
+     7 Tage" als Magnete auf einer Kreidelinie (gespielt = Flammen-
+     Magnet, heute golden umrandet, "n von 7 gespielt"); "Deine
+     Karriere" als Liga-Tabelle aus RANKS (geschafft = grüne
+     Aufstiegszone mit "geschafft", aktueller Rang golden mit "Du",
+     kommende gedämpft mit Level-Spanne); Duell-Name mit "Ändern";
+     "Spielstand sichern" / "Spielstand laden" als Holzknöpfe (gleiche
+     Funktionen wie heute).
+   - Trophäen: Kopf "x/27 Trophäen im Schrank" bzw. Leer-Text; je
+     Gruppe (Kampagne, Serie & Tages-Challenge, Duell, Besondere
+     Leistungen) "n von m" + Holzregale mit gezeichneten Trophäen
+     (Pokal, Schale, Medaille, Flamme – trophySVG im Prototyp; ersetzt
+     die bisherige Zeichnung, falls gleichwertig, sonst angleichen),
+     gewonnen golden mit Lichtschein, offen dunkel mit Schloss. Tipp
+     → gelber Zettel mit Name, Beschreibung, Datum bzw. "Noch nicht
+     gewonnen" (bestehende Detail-Logik). seenTrophies wie heute.
+   - Wissen: zwei Zettel "Deine Stärke" (gelb) und "Da geht noch was"
+     (mint) aus der bestehenden Auswertung; "Trefferquote nach
+     Wettbewerb" als Kreide-Balken (bester golden), "Nach Jahrzehnt"
+     als Säulen; Hinweistext zur Grundlage aus der App übernehmen (die
+     Formulierung im Prototyp ist nur Beispiel). Leer-Zustand als
+     Kreide-Kasten mit Text wie Prototyp.
+   - Schriften nach CLAUDE.md, keine gesperrten Versal-Labels mehr im
+     Blatt (bisher "STATISTIK", "LETZTE 7 TAGE" usw.).
+
+C. Bewegung
+   - Einmalig beim Öffnen der Startseite: Pass fällt mit kleinem Ruck
+     ein, Pins ploppen, Tafeln steigen auf, Kreide zeichnet sich,
+     Magnete und Wimpel stellen sich auf, XP-Balken füllt sich, ein
+     Glanz über "Starten". Nur beim ersten Anzeigen pro App-Start bzw.
+     nach Rückkehr von einem anderen Bildschirm kurz (im Plan
+     vorschlagen) – nie in Dauerschleife. Countdown tickt wie heute.
+   - prefers-reduced-motion: alles sofort im Endzustand.
+
+D. Aufräumen
+   - Alte Startseiten-/Profil-Stile (Scout-Ausweis, Tages-Ticket-Optik
+     auf der Startseite, Modus-Kacheln, alte Profil-Kacheln) entfernen,
+     wenn nicht mehr genutzt; Emojis als Symbole auf diesen Flächen
+     durch SVGs ersetzen.
+   - Texte in "So geht's", die die Startseite beschreiben ("Scout-
+     Ausweis", "Kachel", "Frei spielen unten" o. ä.), per grep prüfen
+     und anpassen; Liste zeigen.
+
+E. Test und Abschluss
+   - Screenshots bei 393×852 (mit simulierter Safe-Area 59/34), 430×932
+     und 375×667: Startseite neu/fortgeschritten, Tages-Challenge
+     offen/erledigt, Duell leer/"Du bist dran"; Profil-Blatt alle drei
+     Reiter (auch gescrollt), Trophäen-Zettel.
+   - Overlap-/Safe-Area-Check (tools aus 43) ohne Befund.
+   - CACHE_NAME in sw.js erhöhen, Status-Tabelle: Prompt 44 erledigt.
 ```
 
 ---
