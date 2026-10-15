@@ -221,12 +221,6 @@
   .back-btn .back-arrow { color: var(--gold); font-size: 20px; line-height: 1; }
 
   /* ---- Spielfeld-Kopfzeile: Abbrechen links, Regeln rechts (Prompt 11c) ---- */
-  .pitch-header-row { display: flex; align-items: center; justify-content: space-between; gap: 10px; margin-bottom: 18px; }
-  .pitch-header-row .back-btn { margin-bottom: 0; }
-  .rules-btn { position: relative; display: inline-flex; align-items: center; gap: 6px; background: var(--ink-2); border: 1px solid var(--line); color: var(--chalk); font-family: 'Oswald', sans-serif; font-weight: 600; font-size: 12.5px; text-transform: uppercase; letter-spacing: 0.03em; cursor: pointer; padding: 9px 14px; border-radius: 24px; box-shadow: 0 4px 12px rgba(0,0,0,0.3); transition: transform 0.1s ease; }
-  .rules-btn:active { transform: scale(0.96); }
-  .pitch-header-row .hdr-right { display: flex; align-items: center; gap: 8px; flex-shrink: 0; }
-  .pitch-header-row .tok-chip { display: inline-flex; align-items: center; gap: 5px; height: 26px; padding: 0 10px 0 4px; border-radius: 13px; background: rgba(10,17,24,0.4); box-shadow: inset 0 0 0 1px rgba(244,241,232,0.25); white-space: nowrap; }
   .tok-chip b, .profile-bar .tok b { font-family: 'Anton', Impact, sans-serif; font-weight: 400; font-size: 16px; line-height: 1; color: var(--gold-2); }
   /* Scout-Muenze (Prompt 41): einheitliches Token-Symbol, im Text ca. 1em und baseline-buendig */
   /* Kopfzeile der Level-Vorschau (Prompt 41, Prototyp level-vorschau.html .topbar/.tb) */
@@ -527,7 +521,8 @@
   .sp.done { display: block; flex: none; }
   .sp.done .sp-tray, .sp.done .sp-bottom { display: none; }
   .sp.done .sp-frame { flex: none; }
-  .sp-res { padding: 14px 2px 26px; }
+  .sp-resw { margin: 12px 0 18px; padding: 7px; border-radius: 20px; background: linear-gradient(180deg, #8A6038, #4A3119); box-shadow: 0 8px 14px rgba(0,0,0,0.4), inset 0 -3px 0 rgba(0,0,0,0.25); }
+  .sp-res { padding: 16px 14px 8px; border-radius: 14px; background: radial-gradient(120% 140% at 30% 0%, #23402F, #15291E); box-shadow: inset 0 2px 6px rgba(0,0,0,0.5), inset 0 0 0 1px rgba(0,0,0,0.3); }
   .toast-stack.sp-below { top: var(--sp-toast-top, 150px); }
   .tcoin { display: inline-block; width: 1em; height: 1em; vertical-align: -0.17em; flex-shrink: 0; overflow: visible; }
   .rules-dot { position: absolute; top: -3px; right: -3px; width: 9px; height: 9px; border-radius: 50%; background: var(--gold); border: 2px solid var(--ink); }
@@ -550,7 +545,6 @@
   .level-node .seen-eye { position: absolute; top: -6px; right: -8px; font-size: 13px; line-height: 1; z-index: 3; pointer-events: none; }
   .level-node .draft-pen { position: absolute; top: -6px; left: -8px; font-size: 13px; line-height: 1; z-index: 3; pointer-events: none; }
   .level-node .draft-tag { position: absolute; left: 50%; transform: translateX(-50%); bottom: -13px; white-space: nowrap; font-family: 'Oswald', sans-serif; font-weight: 500; font-size: 11px; color: var(--gold-2); text-shadow: 0 1px 3px rgba(0,0,0,0.7); pointer-events: none; }
-  .clear-link { display: block; margin: 0 auto 10px; border: 0; background: transparent; color: var(--muted); font-family: 'Oswald', sans-serif; font-weight: 400; font-size: 13px; padding: 4px 8px; cursor: pointer; }
   .fp .draft-card { display: flex; align-items: stretch; gap: 6px; flex-shrink: 0; border-radius: 12px; border: 1px solid rgba(232,178,61,0.6); background: rgba(232,178,61,0.1); }
   .fp .draft-card .dc-go { flex: 1; min-width: 0; text-align: left; border: 0; background: transparent; color: inherit; font-family: 'Oswald', sans-serif; padding: 7px 4px 7px 12px; cursor: pointer; display: grid; grid-template-columns: 1fr auto; column-gap: 8px; }
   .fp .draft-card small { grid-column: 1 / -1; font-weight: 500; font-size: 11px; letter-spacing: 0.08em; text-transform: uppercase; color: var(--gold-2); }
@@ -558,11 +552,6 @@
   .fp .draft-card span { font-weight: 600; font-size: 13px; color: var(--gold-2); white-space: nowrap; }
   .fp .draft-card .dc-x { border: 0; background: transparent; color: var(--muted); font-size: 16px; padding: 0 12px; cursor: pointer; }
   /* ---- Ersatzbank (Prompt 37) - Optik aus prototypes/bank.html (Variante C + Blatt) ---- */
-  .pitch .bench-btn { position: absolute; right: 9px; bottom: 9px; z-index: 4; height: 38px; padding: 0 10px 0 5px; display: inline-flex; align-items: center; gap: 7px; border-radius: 12px;
-    background: linear-gradient(180deg, rgba(28,43,56,0.95), rgba(12,20,28,0.95)); border: 1.5px solid var(--gold);
-    box-shadow: 0 4px 14px rgba(0,0,0,0.45), 0 0 0 3px rgba(232,178,61,0.14), inset 0 1px 0 rgba(255,240,200,0.12);
-    color: var(--gold-2); font-family: 'Oswald', sans-serif; font-weight: 600; font-size: 14px; letter-spacing: 0.06em; text-transform: uppercase; cursor: pointer; transition: transform 0.12s ease; }
-  .pitch .bench-btn:active { transform: scale(0.95); }
   .bench-ic { width: 26px; height: 26px; border-radius: 8px; display: inline-grid; place-items: center; background: linear-gradient(135deg, var(--gold), #f4d58d); box-shadow: 0 2px 5px rgba(0,0,0,0.35); flex-shrink: 0; }
   .bench-ic svg { width: 19px; height: 19px; display: block; }
   .bench-sheet { display: flex; flex-direction: column; max-height: min(88vh, 640px); padding-top: 12px; }
@@ -617,34 +606,8 @@
   .bonus-text { font-size: 13px; color: rgba(242,239,230,0.75); line-height: 1.4; text-align: center; margin-bottom: 10px; }
   .bonus-text b { color: var(--chalk); }
 
-  .pitch-wrap { position: relative; width: 100%; padding-bottom: 138%; margin-bottom: 14px; container-type: inline-size; }
-  .pitch { position: absolute; inset: 0; background: linear-gradient(180deg, #1f5c3d, #163d29); border-radius: 10px; border: 2px solid rgba(255,255,255,0.3); overflow: hidden; box-shadow: 0 10px 28px rgba(0,0,0,0.35), inset 0 0 40px rgba(0,0,0,0.2); }
-  .pitch::before { content: ""; position: absolute; inset: 0; background: repeating-linear-gradient(180deg, rgba(255,255,255,0.035) 0 24px, transparent 24px 48px); pointer-events: none; }
-  .pitch .center-circle { position: absolute; width: 28%; padding-bottom: 28%; border: 2px solid rgba(255,255,255,0.28); border-radius: 50%; top: 50%; left: 50%; transform: translate(-50%,-50%); }
-  .pitch .center-dot { position: absolute; width: 6px; height: 6px; border-radius: 50%; background: rgba(255,255,255,0.28); top: 50%; left: 50%; transform: translate(-50%,-50%); }
-  .pitch .halfway { position: absolute; left: 0; right: 0; top: 50%; height: 2px; background: rgba(255,255,255,0.28); }
-  .pitch .box-top { position: absolute; top: 0; left: 28%; width: 44%; height: 13%; border: 2px solid rgba(255,255,255,0.24); border-top: none; }
-  .pitch .box-bottom { position: absolute; bottom: 0; left: 28%; width: 44%; height: 13%; border: 2px solid rgba(255,255,255,0.24); border-bottom: none; }
-  .pitch .pos-slot { position: absolute; transform: translate(-50%, -50%); display: flex; flex-direction: column; align-items: center; gap: clamp(2px, 0.8vw, 4px); z-index: 2; width: clamp(48px, 17cqw, 80px); }
-  .pitch .pos-label { font-family: 'Oswald', sans-serif; font-size: clamp(9px, 2.6vw, 12px); font-weight: 700; letter-spacing: 0.04em; color: var(--ink); background: linear-gradient(135deg, var(--gold), #f4d58d); padding: clamp(2px, 0.6vw, 3px) clamp(5px, 1.6vw, 8px); border-radius: 5px; box-shadow: 0 2px 5px rgba(0,0,0,0.3); }
-  .pitch .pos-input { width: 100%; text-align: center; font-size: clamp(10.5px, 3vw, 14px); padding: clamp(6px, 1.8vw, 9px) clamp(3px, 1vw, 5px); border-radius: 7px; border: 1px solid rgba(255,255,255,0.4); background: rgba(242,239,230,0.96); color: var(--ink); font-family: 'Oswald', sans-serif; font-weight: 500; box-shadow: 0 2px 6px rgba(0,0,0,0.25), inset 0 1px 0 rgba(255,255,255,0.6); }
-  .pitch .pos-input.ok { border-color: #2ecc71; background: rgba(46,204,113,0.4); color: var(--chalk); font-weight: 700; }
-  .pitch .pos-input.bad { border-color: var(--red); background: rgba(193,57,43,0.35); color: var(--chalk); }
-  .pitch .pos-input.revealed { border-color: #4aa3ff; background: rgba(74,163,255,0.3); color: var(--chalk); font-weight: 700; }
-  .pitch .pos-input.prefilled { border-color: #d9a441; background: rgba(217,164,65,0.28); color: var(--chalk); font-weight: 600; }
-  .pitch .pos-input.active-field { box-shadow: 0 0 0 3px var(--gold), 0 2px 6px rgba(0,0,0,0.25); }
-  .pitch .pos-input.near { border-color: var(--gold); background: rgba(232,178,61,0.28); color: var(--chalk); font-weight: 600; }
-  .pitch .pos-slot:has(.pos-input.near)::after { content: "✏️"; position: absolute; top: -4px; right: -4px; font-size: 10px; }
-  .pitch .prefill-tag { font-family: 'Oswald', sans-serif; font-weight: 500; font-size: clamp(8px, 2.2vw, 10px); color: rgba(217,164,65,0.9); text-align: center; margin-top: 2px; }
-  .prefill-note { font-family: 'Oswald', sans-serif; font-weight: 300; font-size: 10.5px; color: rgba(217,164,65,0.9); text-align: center; margin-bottom: 10px; }
-  .position-panel { background: rgba(242,239,230,0.06); border: 1px solid var(--line); border-radius: 10px; padding: 12px; margin-bottom: 14px; }
-  .position-panel .panel-title { font-family: 'Oswald', sans-serif; font-weight: 700; font-size: 13px; color: var(--gold); letter-spacing: 0.04em; margin-bottom: 8px; }
-  .position-panel .panel-solved { font-family: 'Oswald', sans-serif; font-size: 14px; color: rgba(242,239,230,0.75); text-align: center; padding: 6px 0; }
-  .position-panel .panel-near { font-family: 'Oswald', sans-serif; font-weight: 600; font-size: 14px; color: var(--gold); text-align: center; padding: 4px 0 8px; }
   /* ---- Scout-Rad (Prompt 6, Optik 1:1 aus prototypes/scout-rad.html) ---- */
   .sr-chips { display: flex; flex-wrap: wrap; gap: 6px; min-height: 26px; margin-bottom: 10px; }
-  .sr-chip-empty { font-size: 13px; color: var(--muted); align-self: center; }
-  .sr-chip { font-family: 'Oswald', sans-serif; font-size: 12px; font-weight: 700; padding: 4px 9px; border-radius: 20px; background: rgba(20,32,43,0.55); border: 1px solid rgba(232,178,61,0.45); color: var(--gold-2); animation: srChipIn 0.45s cubic-bezier(.2,1.4,.4,1); }
   @keyframes srChipIn { from { transform: scale(0.4); opacity: 0; } to { transform: scale(1); opacity: 1; } }
 
   .sr-stage { position: relative; width: min(280px, 100%); aspect-ratio: 1; margin: 6px auto 0; max-width: 100%; }
@@ -659,31 +622,13 @@
   @keyframes srWinPop { 0% { transform: scale(1); } 40% { transform: scale(1.04); } 100% { transform: scale(1); } }
   .sr-skip-hint { text-align: center; font-family: 'Oswald', sans-serif; font-weight: 300; font-size: 11px; color: var(--muted); min-height: 16px; letter-spacing: 0.04em; margin-top: 6px; }
 
-  .sr-result { position: relative; overflow: hidden; background: var(--ink-2); border: 1px solid rgba(232,178,61,0.4); border-radius: 12px; padding: 14px; display: flex; align-items: center; gap: 14px; animation: srResultIn 0.5s cubic-bezier(.2,1.2,.4,1); margin-top: 8px; }
-  .sr-result.sr-jackpot { background: linear-gradient(135deg, #3A2E12, var(--ink-2) 70%); border-color: var(--gold); }
   @keyframes srResultIn { from { transform: translateY(18px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
-  .sr-res-visual { flex: 0 0 auto; width: 72px; height: 72px; display: grid; place-items: center; }
-  .sr-res-letter { width: 62px; height: 72px; border-radius: 8px; background: var(--chalk); color: var(--ink); font-family: 'Anton', Impact, sans-serif; font-size: 46px; display: grid; place-items: center; box-shadow: 0 4px 0 var(--gold); }
-  .sr-res-flag { font-size: 50px; line-height: 1; }
-  .sr-res-text { display: flex; flex-direction: column; gap: 2px; min-width: 0; }
-  .sr-res-type { font-family: 'Oswald', sans-serif; font-weight: 600; font-size: 10px; letter-spacing: 0.12em; text-transform: uppercase; color: var(--gold); }
-  .sr-res-value { font-family: 'Anton', Impact, sans-serif; font-size: 24px; line-height: 1.05; letter-spacing: 0.02em; overflow-wrap: anywhere; }
-  .sr-res-note { font-size: 12.5px; color: var(--muted); }
-  .sr-stamp { position: absolute; right: -8px; top: 10px; transform: rotate(12deg); font-family: 'Anton', Impact, sans-serif; font-size: 14px; letter-spacing: 0.12em; color: var(--ink); background: var(--gold); padding: 3px 16px; animation: srStampIn 0.5s 0.2s both cubic-bezier(.2,1.8,.4,1); }
   @keyframes srStampIn { from { transform: rotate(12deg) scale(2.4); opacity: 0; } to { transform: rotate(12deg) scale(1); opacity: 1; } }
 
-  .sr-actions { display: flex; flex-direction: column; gap: 8px; margin-top: 10px; }
-  .sr-open-btn { width: 100%; display: flex; align-items: center; justify-content: center; gap: 10px; font-family: 'Oswald', sans-serif; font-weight: 700; font-size: 16px; letter-spacing: 0.02em; border: none; border-radius: 10px; padding: 14px 16px; cursor: pointer; color: var(--ink); background: linear-gradient(135deg, var(--gold), var(--gold-2)); box-shadow: 0 4px 0 #9C7422; animation: srOpenPulse 2.4s ease-in-out infinite; }
-  .sr-open-btn:active:not(:disabled) { transform: translateY(2px); box-shadow: 0 2px 0 #9C7422; }
-  .sr-open-btn:disabled { opacity: 0.4; cursor: not-allowed; animation: none; box-shadow: none; }
-  .sr-open-icon { display: inline-block; font-size: 19px; animation: srOpenSpin 3.5s linear infinite; }
   @keyframes srOpenPulse { 0%, 100% { box-shadow: 0 4px 0 #9C7422, 0 0 0 0 rgba(232,178,61,0.5); } 50% { box-shadow: 0 4px 0 #9C7422, 0 0 0 9px rgba(232,178,61,0); } }
   @keyframes srOpenSpin { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
-  .sr-modal-sheet .sr-chips { justify-content: center; }
 
   .score-badge { font-family: 'Anton', sans-serif; font-weight: 400; font-size: 15px; text-align: center; color: var(--gold); margin-bottom: 10px; }
-  .combo-chip { text-align: center; font-family: 'Anton', sans-serif; font-weight: 400; font-size: 15px; color: var(--gold); background: rgba(232,178,61,0.14); border: 1px solid rgba(232,178,61,0.4); border-radius: 20px; padding: 5px 14px; margin: 0 auto 10px; width: fit-content; }
-  .combo-chip.combo-pop { animation: srChipIn 0.35s cubic-bezier(.2,1.4,.4,1); }
   .stars-row { display: inline-flex; gap: 2px; }
   .stars-row svg { width: 15px; height: 15px; }
   .star-pop { display: inline-flex; animation: starPop 0.5s cubic-bezier(.2,1.6,.4,1); }
@@ -1299,29 +1244,6 @@
   
   /* Spiel */
   #screen-duelplay .dplay { gap: 10px; min-height: 100%; }
-  #screen-duelplay .dplay .hud { position: sticky; top: 0; z-index: 6; display: grid; grid-template-columns: 1fr auto 1fr; align-items: center; gap: 8px; padding: 4px 0 6px; background: var(--ink); }
-  #screen-duelplay .hud .side { display: flex; flex-direction: column; min-width: 0; }
-  #screen-duelplay .hud .side.r { align-items: flex-end; text-align: right; }
-  #screen-duelplay .hud .side b { font-family: 'Oswald', sans-serif; font-weight: 500; font-size: 13px; color: var(--muted); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; max-width: 100%; }
-  #screen-duelplay .hud .side .v { font-family: 'Anton', Impact, sans-serif; font-size: 22px; line-height: 1.05; }
-  #screen-duelplay .hud .side .v small { font-size: 13px; color: var(--muted); }
-  #screen-duelplay .hud .side .lock { font-family: 'Oswald', sans-serif; font-weight: 400; font-size: 12.5px; color: var(--muted); line-height: 1.6; }
-  #screen-duelplay .clock2 .flip b { font-size: 28px; min-width: 24px; padding: 5px 3px 4px; }
-  #screen-duelplay .clock2 .flip i { font-size: 24px; margin: 0 2px; }
-  #screen-duelplay .clock2.low .flip b { color: #F2A497; }
-  #screen-duelplay .series { display: flex; justify-content: center; align-items: center; gap: 10px; flex-shrink: 0; }
-  #screen-duelplay .series .rd { font-family: 'Oswald', sans-serif; font-weight: 500; font-size: 13.5px; color: var(--gold-2); }
-  #screen-duelplay .series .dots { display: flex; gap: 4px; } #screen-duelplay .series .dots i { width: 22px; height: 6px; border-radius: 3px; background: rgba(242,239,230,0.18); } #screen-duelplay .series .dots i.cur { background: var(--gold); }
-  #screen-duelplay .series .cancel { margin-left: 6px; background: none; border: none; font-family: 'Oswald', sans-serif; font-weight: 500; font-size: 12px; color: var(--dim); text-decoration: underline; text-underline-offset: 3px; cursor: pointer; padding: 2px 4px; }
-  #screen-duelplay .match { text-align: center; flex-shrink: 0; }
-  #screen-duelplay .match b { font-family: 'Anton', Impact, sans-serif; font-weight: 400; font-size: 17px; display: block; line-height: 1.15; }
-  #screen-duelplay .match span { font-family: 'Oswald', sans-serif; font-weight: 300; font-size: 12.5px; color: var(--muted); }
-  #screen-duelplay .dplay .pitch-wrap { margin-bottom: 4px; }
-  #screen-duelplay .pos-input.miss { border-color: rgba(224,112,95,0.8); background: rgba(224,112,95,0.28); color: var(--chalk); }
-  #screen-duelplay .givewrap { position: sticky; bottom: 0; z-index: 6; margin-top: auto; padding: 14px 0 2px; background: linear-gradient(180deg, transparent, var(--ink) 30%); }
-  #screen-duelplay .give { border: 1px solid rgba(232,178,61,0.6); background: rgba(232,178,61,0.12); color: var(--gold-2); border-radius: 12px; padding: 12px; font-family: 'Anton', Impact, sans-serif; font-size: 18px; width: 100%; cursor: pointer; }
-  #screen-duelplay .give small { font-family: 'Oswald', sans-serif; font-weight: 300; font-size: 12.5px; color: var(--muted); display: block; margin-top: 1px; }
-  #screen-duelplay .give:disabled { opacity: 0.5; }
   #screen-duelplay .between { text-align: center; align-items: center; justify-content: center; flex: 1; display: flex; flex-direction: column; gap: 14px; }
   #screen-duelplay .between .rb { font-family: 'Anton', Impact, sans-serif; font-size: 34px; line-height: 1.05; }
   #screen-duelplay .between .rb span { color: var(--gold); }
@@ -4448,11 +4370,11 @@ function applyUnlockedFeatures() {
    Stufe 4-5" (Hardcore) haben im Code keine Konstante und stehen hier als
    Literale wie in evaluatePitch() bzw. poolForActiveLeague(). */
 const GUIDE_PITCH_SKETCH = `<svg viewBox="0 0 96 120" aria-hidden="true">
-    <rect x="1" y="1" width="94" height="118" rx="6" fill="#1F4D36" stroke="rgba(242,239,230,.5)"/>
-    <line x1="1" y1="60" x2="95" y2="60" stroke="rgba(242,239,230,.35)"/><circle cx="48" cy="60" r="11" fill="none" stroke="rgba(242,239,230,.35)"/>
-    <rect x="28" y="100" width="40" height="19" fill="none" stroke="rgba(242,239,230,.35)"/><rect x="28" y="1" width="40" height="19" fill="none" stroke="rgba(242,239,230,.35)"/>
-    ${[[48,110,1],[18,88,1],[38,92,1],[58,92,0],[78,88,0],[22,62,1],[48,68,0],[74,62,2],[48,44,0],[30,24,0],[66,24,1]].map(([x, y, s]) =>
-      `<circle cx="${x}" cy="${y}" r="5.5" fill="${s === 1 ? "#2ECC71" : s === 2 ? "#E8B23D" : "rgba(242,239,230,.18)"}" stroke="${s ? "none" : "rgba(242,239,230,.6)"}" stroke-dasharray="${s ? "" : "2 2"}"/>`).join("")}
+    <rect x="1.5" y="1.5" width="93" height="117" rx="7" fill="#1D4530" stroke="#7A5532" stroke-width="3"/>
+    <g fill="none" stroke="rgba(242,239,230,.4)" stroke-width="1"><rect x="7" y="7" width="82" height="106" rx="3"/><line x1="7" y1="60" x2="89" y2="60"/><circle cx="48" cy="60" r="10"/><rect x="28" y="7" width="40" height="15"/><rect x="28" y="98" width="40" height="15"/></g>
+    ${[[48,104,1],[18,88,1],[38,91,1],[58,91,0],[78,88,0],[22,64,1],[48,70,0],[74,64,2],[48,46,0],[26,28,0],[70,28,1]].map(([x, y, st]) =>
+      `<rect x="${x - 5}" y="${y - 9}" width="10" height="4.5" rx="1.5" fill="#9A6C40"/><rect x="${x - 8.5}" y="${y - 4.5}" width="17" height="8.5" rx="2.2" fill="${st === 1 ? "#49D98A" : st === 2 ? "rgba(232,178,61,.45)" : "#0B1A11"}" stroke="${st === 1 ? "none" : st === 2 ? "#E8B23D" : "#7A5532"}" stroke-width="1.4"/>`).join("")}
+    <circle cx="82" cy="59" r="4" fill="#E8B23D"/><path d="M80.2 60.8l.5-1.9 3-3 1.4 1.4-3 3z" fill="#13202A"/>
   </svg>`;
 
 const GUIDE_TABS = [
@@ -4461,26 +4383,26 @@ const GUIDE_TABS = [
     <div class="card"><div class="h">So trägst du ein</div>
       <div class="num"><span class="n">1</span><div><b>Nachname reicht</b><p>Vorname brauchst du nicht – einfach den Nachnamen ins Feld tippen.</p></div></div>
       <div class="num"><span class="n">2</span><div><b>Falsche Zeile? Kein Problem</b><p>Der Spieler rutscht automatisch auf seine richtige Position – sofern er zu keiner anderen offenen Position passt.</p></div></div>
-      <div class="num"><span class="n">3</span><div><b>Fast richtig</b><p>Kleiner Tippfehler? Das Feld wird <span class="field gold">gold</span>. Mit „Korrigieren“ übernimmst du die richtige Schreibweise – für etwas weniger XP.</p></div></div>
+      <div class="num"><span class="n">3</span><div><b>Fast richtig</b><p>Kleiner Tippfehler? Das Feld wird <span class="field gold">gold</span> und bekommt einen Stift. Tipp auf den Stift (oder unten auf „Korrigieren“), um die richtige Schreibweise zu übernehmen – für etwas weniger XP.</p></div></div>
     </div>` },
   { id: "hilfen", icon: tokenCoin(), label: "Hilfen", render: () => `
-    <p class="t">Du hängst fest? Gib <b>Scout-Token ${tokenCoin()}</b> aus und hol dir Hilfe.</p>
+    <p class="t">Tipp eine Position an – unten auf der Holzleiste: Tipps, Scout-Rad, Aufdecken (<b>Scout-Token ${tokenCoin()}</b>).</p>
     <div class="two">
-      <div class="help"><div class="top"><span class="ic">🎡</span><span class="cost">${ECONOMY.spinCost} ${tokenCoin()}</span></div><b>Scout-Rad</b><p>Dreh für einen Tipp: 1. Buchstabe, Rückennummer, Nationalität – oder als Jackpot der ganze Name. Position bringt weniger XP.</p></div>
-      <div class="help"><div class="top"><span class="ic">👁️</span><span class="cost">${ECONOMY.revealCost} ${tokenCoin()}</span></div><b>Aufdecken</b><p>Zeigt sofort den kompletten Namen. Zählt als richtig, bringt aber keine Positions-XP.</p></div>
+      <div class="help"><div class="top"><span class="ic">🎡</span><span class="cost">${ECONOMY.spinCost} ${tokenCoin()}</span></div><b>Scout-Rad</b><p>Dreh für einen Tipp: Buchstabe, Nummer, Nation – oder als Jackpot der ganze Name. Weniger XP.</p></div>
+      <div class="help"><div class="top"><span class="ic">👁️</span><span class="cost">${ECONOMY.revealCost} ${tokenCoin()}</span></div><b>Aufdecken</b><p>Zeigt sofort den ganzen Namen. Zählt als richtig, aber ohne Positions-XP.</p></div>
     </div>
-    <div class="help bench-help"><span class="ic bench-ic">${BENCH_SVG}</span><div><b>Ersatzbank <span class="cost">gratis</span></b><p>Unten rechts im Spielfeld öffnest du mit <span class="bk">BANK</span> die Ersatzbank – kostenlos, ohne Einfluss auf deine Sterne. Ein grüner Pfeil zeigt, wer eingewechselt wurde, für wen er kam siehst du nach dem Auswerten. Nicht bei jedem Spiel verfügbar.</p></div></div>
-    <div class="warn"><span class="ic">⚠️</span><p>Jede Hilfe – auch Korrigieren – kostet dich <b>⭐⭐⭐</b> für dieses Spiel und deine <b>Kombo endet</b>. Gilt in allen Modi.</p></div>
+    <div class="help bench-help"><span class="ic bench-ic">${BENCH_SVG}</span><div><b>Ersatzbank <span class="cost">gratis</span></b><p>Unten rechts im Spielfeld öffnest du mit <span class="bk">Bank</span> die Ersatzbank – gratis, ohne Einfluss auf Sterne. Grüner Pfeil = eingewechselt, für wen siehst du nach dem Auswerten. Nicht bei jedem Spiel.</p></div></div>
+    <div class="warn"><span class="ic">⚠️</span><p>Jede Hilfe – auch Korrigieren – kostet <b>⭐⭐⭐</b> für dieses Spiel und beendet deine <b>Kombo</b>. Gilt in allen Modi.</p></div>
     <div class="card"><div class="h">Token verdienen</div>
       <div class="chips">
         <span class="tk">Zum Start: ${ECONOMY.startTokens} ${tokenCoin()}</span>
         <span class="tk">+${ECONOMY.earnFirstPass} Erstmals gespielt</span>
-        <span class="tk">+${ECONOMY.earnPerfect} Perfekte Aufstellung (einmalig)</span>
+        <span class="tk">+${ECONOMY.earnPerfect} Perfekt (einmalig)</span>
         <span class="tk">+${ECONOMY.earnDaily} Tages-Challenge</span>
         <span class="tk">+${ECONOMY.earnLevelUp} je Level-Up</span>
         <span class="tk">+${ECONOMY.earnAchievement} Trophäe</span>
       </div>
-      <p class="small">Rückennummer und Nationalität gibt es nur, wo Daten vorliegen. Bei Nationalteams keine Nationalität.</p>
+      <p class="small">Nummer/Nation nur, wo Daten da sind; Nationalteams ohne Nation.</p>
     </div>` },
   { id: "modi", icon: "🏟️", label: "Modi", render: () => `
     <div class="modes">
@@ -9694,9 +9616,12 @@ function evaluatePitch() {
   spRootEl.querySelectorAll(".sp-slot.on").forEach(sl => sl.classList.remove("on")); // keine gewaehlte Position mehr nach dem Auswerten
   spRootEl.querySelectorAll(".pos-input.active-field").forEach(i => i.classList.remove("active-field"));
   document.getElementById("screen-game").classList.add("sp-done");
+  const resWood = document.createElement("div"); // Ergebnis im Holz-/Filz-Stil unter der Tafel (Prompt 42 E)
+  resWood.className = "sp-resw";
   const panel = document.createElement("div");
   panel.className = "sp-res";
-  spRootEl.appendChild(panel);
+  resWood.appendChild(panel);
+  spRootEl.appendChild(resWood);
 
   if (campaignResult) {
     const banner = document.createElement("div");
@@ -9867,7 +9792,7 @@ const SPLASH_STATUS = [
 // Nur Tipps zu Funktionen, die es bereits gibt.
 const SPLASH_TIPS = [
   "Tippst du einen Namen in die falsche Zeile, landet er automatisch auf seiner richtigen Position.",
-  "Kleiner Tippfehler? Das Feld wird gold - mit \"Korrigieren\" trägst du die richtige Schreibweise ein.",
+  "Kleiner Tippfehler? Das Feld wird gold und bekommt einen Stift - tipp ihn an, dann steht die richtige Schreibweise im Feld.",
   "Drei Sterne gibt's nur in Kampagne und Tages-Challenge, für 11 von 11 - ganz ohne Scout-Rad, Aufdecken oder Korrigieren.",
   "Beim Scout-Rad ist der ganze Name der Jackpot - selten, aber möglich.",
   "Richtige Positionen ohne Hilfe in Folge erhöhen deine Kombo und damit dein Positions-XP.",
