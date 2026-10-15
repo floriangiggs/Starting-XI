@@ -321,6 +321,149 @@
   @media (prefers-reduced-motion: reduce) { .lv *, .lv *::before, .lv *::after { animation: none !important; } .lv-chalk .ln { stroke-dashoffset: 0; } .lv-rail .seg i { transform: scaleX(1); } }
   .lv.lv-still *, .lv.lv-still *::before, .lv.lv-still *::after { animation: none !important; }
   .lv.lv-still .lv-chalk .ln { stroke-dashoffset: 0; } .lv.lv-still .lv-rail .seg i { transform: scaleX(1); }
+  /* ---- Spiel-Ansicht "Taktiktafel" (Prompt 42, Prototyp spiel-ansicht.html: Holzreiter + Holzrahmen-Schilder; alles unter .sp) ---- */
+  #screen-game.sp-on { overflow: hidden; padding: max(12px, calc(env(safe-area-inset-top) + 8px)) 12px max(16px, calc(env(safe-area-inset-bottom) + 8px));
+    background: repeating-radial-gradient(circle at 30% 20%, rgba(255,255,255,0.025) 0 2px, transparent 2px 6px), radial-gradient(120% 70% at 50% 25%, #357652, #1A3D2B 70%), #1A3D2B; }
+  #screen-game.sp-on #pitchView { flex: 1; min-height: 0; display: flex; flex-direction: column; }
+  #screen-game.sp-on.sp-done { overflow-y: auto; -webkit-overflow-scrolling: touch; overscroll-behavior: contain; }
+  #screen-game.sp-on.sp-done #pitchView { display: block; }
+  .sp { --gold-hi: #F7D98E; --okg: #49D98A; --pw: 60px; --ph: 30px; --th: 18px; --pt: -9px; flex: 1; min-height: 0; display: flex; flex-direction: column; color: var(--chalk); font-family: 'Oswald', sans-serif; }
+  .sp.d2 { --ph: 26px; --th: 16px; --pt: -8px; }
+  .sp.d3 { --ph: 24px; --th: 14px; --pt: -7px; }
+  .sp .lv-top { margin-bottom: 8px; transition: transform 0.35s cubic-bezier(.3,.8,.3,1), opacity 0.25s; }
+  @keyframes spRise { from { opacity: 0; transform: translateY(22px); } }
+  @keyframes spFade { from { opacity: 0; } }
+  @keyframes spTagIn { from { opacity: 0; transform: translate(-50%, -26px) scale(1.4); } }
+  @keyframes spMagnet { from { opacity: 0; transform: translateY(-26px) scale(1.4); } }
+  @keyframes spPlateIn { from { opacity: 0; transform: scaleX(0.4); } }
+  @keyframes spOkPop { 0% { transform: scale(1); } 40% { transform: scale(1.18); } 100% { transform: scale(1); } }
+  @keyframes spBadgeIn { from { opacity: 0; transform: scale(0) rotate(-40deg); } }
+  @keyframes spShake { 20%, 60% { transform: translateX(-4px); } 40%, 80% { transform: translateX(4px); } }
+  @keyframes spDraw { to { stroke-dashoffset: 0; } }
+  @keyframes spCoin { 0% { transform: rotateY(0); } 100% { transform: rotateY(360deg); } }
+  .sp-frame { position: relative; z-index: 2; flex: 1; min-height: 0; display: flex; flex-direction: column; border-radius: 18px 18px 6px 6px; overflow: hidden;
+    background: radial-gradient(110% 70% at 50% 15%, #33704D, #1D4530 75%);
+    box-shadow: inset 0 0 0 6px #7A5532, inset 0 0 0 8px #3E2A16, inset 0 0 40px rgba(0,0,0,0.35), 0 18px 40px rgba(0,0,0,0.4); transition: transform 0.38s cubic-bezier(.3,.8,.3,1); }
+  .sp-frame::after { content: ""; position: absolute; inset: 8px; border-radius: 12px; background: radial-gradient(60% 40% at 20% 10%, rgba(255,255,255,0.06), transparent 70%); pointer-events: none; }
+  .sp-head { flex-shrink: 0; padding: 16px 20px 0 22px; }
+  .sp-kick { display: flex; align-items: center; justify-content: space-between; gap: 8px; font-weight: 500; font-size: 13.5px; line-height: 18px; color: rgba(244,241,232,0.88); }
+  .sp-kick .t { min-width: 0; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .sp-dots { display: inline-flex; align-items: center; gap: 2px; flex-shrink: 1; min-width: 0; }
+  .sp-dots i { width: 6px; height: 6px; border-radius: 50%; background: rgba(244,241,232,0.25); flex-shrink: 1; }
+  .sp-dots i.done { background: var(--wc, #7fd99a); } .sp-dots i.now { width: 14px; border-radius: 4px; background: #fff; box-shadow: 0 0 0 1.5px var(--wc, #7fd99a); flex-shrink: 0; }
+  .sp-row2 { display: flex; align-items: flex-start; gap: 10px; margin-top: 8px; }
+  .sp-who { flex: 1; min-width: 0; }
+  .sp-who small { display: block; font-weight: 400; font-size: 13px; color: rgba(244,241,232,0.78); line-height: 1.1; }
+  .sp-side { display: flex; align-items: center; gap: 8px; margin-top: 2px; }
+  .sp-side b { font-family: 'Anton', Impact, 'Arial Narrow', sans-serif; font-weight: 400; line-height: 1.05; color: var(--gold-hi); white-space: nowrap; }
+  .sp-pill { flex-shrink: 0; padding: 2px 9px; border: 1.5px solid rgba(244,241,232,0.55); border-radius: 12px; font-weight: 500; font-size: 13px; line-height: 1.3; }
+  .sp-vs { margin-top: 3px; font-weight: 300; font-size: 13.5px; color: rgba(244,241,232,0.82); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .sp-vs em { font-style: normal; font-weight: 400; color: var(--chalk); }
+  .sp-score { position: relative; flex-shrink: 0; width: 68px; padding: 7px 4px 6px; border-radius: 10px; text-align: center; margin-top: 2px;
+    background: linear-gradient(180deg, rgba(255,255,255,0.10), transparent 40%), repeating-linear-gradient(92deg, rgba(0,0,0,0.06) 0 2px, transparent 2px 7px), linear-gradient(180deg, #9A6C40, #6B4828); box-shadow: inset 0 0 0 1.5px #3E2A16, inset 0 2px 0 rgba(255,236,200,0.22), 0 6px 14px rgba(0,0,0,0.4); }
+  .sp-score b { display: block; font-family: 'Anton', Impact, sans-serif; font-weight: 400; font-size: 27px; line-height: 1; color: #FFF1C8; text-shadow: 0 -1px 0 rgba(0,0,0,0.45), 0 1px 0 rgba(255,236,200,0.25); }
+  .sp-score small { display: block; margin-top: 3px; font-weight: 400; font-size: 11.5px; line-height: 1.15; color: rgba(255,241,200,0.88); }
+  /* Kreide-Spielfeld */
+  .sp-pitch { position: relative; flex: 1; min-height: 0; margin: 10px 16px 14px; }
+  .sp-chalk { position: absolute; inset: 0; width: 100%; height: 100%; overflow: visible; pointer-events: none; }
+  .sp-chalk .ln { fill: none; stroke: rgba(244,241,232,0.5); stroke-width: 1.7; stroke-linecap: round; }
+  .sp.intro .sp-chalk .ln { stroke-dasharray: 1; stroke-dashoffset: 1; animation: spDraw 0.9s ease-out forwards; }
+  .sp-slot { position: absolute; z-index: 2; width: 0; height: 0; }
+  .sp-slot.on { z-index: 4; }
+  .sp-ptag { position: absolute; z-index: 1; left: 0; top: calc(var(--pt) + 1px - var(--th)); transform: translateX(-50%); height: var(--th); padding: 0 9px; border-radius: 7px 7px 0 0; display: grid; place-items: center; white-space: nowrap; cursor: pointer;
+    font-weight: 500; font-size: 12px; line-height: 1; letter-spacing: 0.02em; color: #FFF1C8; background: linear-gradient(180deg, rgba(255,255,255,0.10), transparent 40%), repeating-linear-gradient(92deg, rgba(0,0,0,0.06) 0 2px, transparent 2px 7px), linear-gradient(180deg, #9A6C40, #6B4828); box-shadow: inset 0 1px 0 rgba(255,236,200,0.25), 0 -1px 3px rgba(0,0,0,0.25); transition: background 0.2s, color 0.2s; }
+  .sp-slot.on .sp-ptag { background: linear-gradient(180deg, var(--gold-hi), var(--gold)); color: var(--ink); }
+  .sp.intro .sp-ptag { animation: spTagIn 0.45s cubic-bezier(.3,1.6,.5,1) both; }
+  .sp .pos-input { position: absolute; top: var(--pt); left: calc(var(--w, var(--pw)) / -2); width: var(--w, var(--pw)); height: var(--ph); padding: 0 3px; border-radius: 7px; text-align: center; margin: 0;
+    font-family: 'Oswald', sans-serif; font-weight: 500; font-size: var(--fs, 14px); letter-spacing: 0; color: var(--chalk); caret-color: var(--gold-hi);
+    background: rgba(8,18,12,0.5); border: 2px solid #7A5532; box-shadow: inset 0 2px 4px rgba(0,0,0,0.45); outline: none; -webkit-appearance: none; appearance: none; text-overflow: clip;
+    transition: background 0.2s, border-color 0.2s, box-shadow 0.2s, color 0.2s; }
+  .sp .pos-input::placeholder { color: rgba(244,241,232,0.42); font-weight: 400; }
+  .sp.intro .pos-input { animation: spPlateIn 0.35s ease-out both; }
+  .sp .pos-input:not(:placeholder-shown) { border-color: #A57446; background: rgba(8,18,12,0.68); }
+  .sp .sp-slot.on .pos-input { border: 2px solid var(--gold-hi); border-radius: 7px; background: rgba(247,217,142,0.16); box-shadow: 0 0 0 3px rgba(232,178,61,0.28); }
+  .sp .pos-input.ok { border: none; background: linear-gradient(180deg, #8BF0B6, var(--okg)); color: #0E2A1A; font-weight: 600; box-shadow: 0 2px 0 #23864F, 0 4px 8px rgba(0,0,0,0.3); }
+  .sp .pos-input.ok.pop { animation: spOkPop 0.45s ease-out; }
+  .sp .pos-input.near { border: 1.5px solid var(--gold); background: rgba(232,178,61,0.24); color: #FFF3D1; box-shadow: none; }
+  .sp .pos-input.near.shake { animation: spShake 0.4s; }
+  .sp .pos-input.revealed { border: 1.5px solid var(--gold); background: #1E2C37; color: var(--gold-hi); font-weight: 600; box-shadow: 0 3px 8px rgba(0,0,0,0.35); }
+  .sp .pos-input.prefilled { border: none; background: linear-gradient(180deg, #FBF8EF, #E6E0CF); color: #2A3640; font-weight: 500; box-shadow: 0 2px 0 #B9B19C, 0 4px 8px rgba(0,0,0,0.25); }
+  .sp .pos-input.bad, .sp .pos-input.miss { border: 1.5px solid #E0705F; background: rgba(193,57,43,0.42); color: var(--chalk); box-shadow: none; }
+  .sp .pos-input:disabled { opacity: 1; -webkit-text-fill-color: currentColor; }
+  .sp-bdg { position: absolute; z-index: 3; top: calc(var(--pt) - 7px); right: calc(var(--w, var(--pw)) / -2 - 6px); width: 17px; height: 17px; padding: 0; border: none; border-radius: 50%; display: grid; place-items: center; pointer-events: none; animation: spBadgeIn 0.35s cubic-bezier(.3,1.6,.5,1) both; }
+  .sp-bdg svg { width: 11px; height: 11px; }
+  .sp-bdg.ok { background: #fff; box-shadow: 0 1px 3px rgba(0,0,0,0.4); }
+  .sp-bdg.near { width: 22px; height: 22px; top: calc(var(--pt) - 9px); right: calc(var(--w, var(--pw)) / -2 - 9px); background: linear-gradient(170deg, var(--gold-hi), var(--gold)); box-shadow: 0 2px 0 #9C7422, 0 3px 6px rgba(0,0,0,0.4); pointer-events: auto; cursor: pointer; z-index: 6; }
+  .sp-bdg.near svg { width: 13px; height: 13px; }
+  .sp-bdg.near::after { content: ""; position: absolute; inset: -10px; }
+  .sp-bdg.near:active { transform: scale(0.9); }
+  .sp-bdg.pre { background: var(--gold-hi); box-shadow: 0 1px 3px rgba(0,0,0,0.4); }
+  .sp-bdg.rev { background: radial-gradient(circle at 35% 30%, #FFF1C2, #E8B23D 60%, #A8771A); box-shadow: 0 1px 3px rgba(0,0,0,0.4); }
+  .sp-bdg.rev svg { width: 11px; height: 11px; }
+  .sp-combo { position: absolute; z-index: 5; left: -6px; top: -4px; height: 30px; padding: 0 11px 0 7px; border-radius: 15px; display: none; align-items: center; gap: 5px;
+    background: linear-gradient(170deg, #FFB347, #E8632B); color: #2A0F04; box-shadow: 0 3px 0 #9B3B12, 0 6px 14px rgba(0,0,0,0.35); }
+  .sp-combo.on { display: inline-flex; }
+  .sp-combo.pop { animation: spOkPop 0.45s ease-out; }
+  .sp-combo svg { width: 17px; height: 17px; }
+  .sp-combo span { font-family: 'Anton', Impact, sans-serif; font-size: 16px; line-height: 1; }
+  .sp-combo small { font-weight: 500; font-size: 13px; margin-left: -4px; }
+  .sp .sp-bench { position: absolute; z-index: 5; right: -8px; bottom: -6px; height: 38px; padding: 0 12px 0 5px; display: inline-flex; align-items: center; gap: 7px; border: none; border-radius: 11px; cursor: pointer;
+    background: linear-gradient(180deg, rgba(255,255,255,0.10), transparent 40%), repeating-linear-gradient(92deg, rgba(0,0,0,0.06) 0 2px, transparent 2px 7px), linear-gradient(180deg, #9A6C40, #6B4828); box-shadow: inset 0 0 0 1.5px #3E2A16, inset 0 2px 0 rgba(255,236,200,0.22), 0 4px 12px rgba(0,0,0,0.45);
+    color: #FFF1C8; font-family: 'Oswald', sans-serif; font-weight: 500; font-size: 15px; }
+  .sp .sp-bench .tile { width: 27px; height: 27px; border-radius: 8px; display: grid; place-items: center; background: linear-gradient(180deg, #FBF3DF, #E9DCBC); box-shadow: inset 0 0 0 1px rgba(62,42,22,0.35), 0 1px 2px rgba(0,0,0,0.3); }
+  .sp .sp-bench .tile svg { width: 19px; height: 19px; }
+  .sp .sp-bench:active { transform: translateY(1px); }
+  .sp.intro .sp-bench, .sp.intro .sp-combo { animation: spFade 0.5s 1.5s both; }
+  /* Holzleiste = Werkzeugleiste der gewaehlten Position */
+  .sp-tray { position: relative; z-index: 3; flex-shrink: 0; height: 114px; margin: -2px -6px 0; border-radius: 6px 6px 16px 16px; padding: 7px;
+    background: linear-gradient(180deg, #8A6038 0 3px, #6B4828 3px, #4A3119); box-shadow: 0 8px 14px rgba(0,0,0,0.4), inset 0 -3px 0 rgba(0,0,0,0.25); transition: transform 0.35s cubic-bezier(.3,.8,.3,1), opacity 0.25s; }
+  .sp.d2 .sp-tray, .sp.d3 .sp-tray { height: 104px; }
+  .sp.intro .sp-tray { animation: spRise 0.55s 0.9s cubic-bezier(.2,.9,.25,1) both; }
+  .sp-felt { height: 100%; border-radius: 4px 4px 11px 11px; padding: 8px 10px; display: grid; grid-template-rows: auto 1fr; gap: 7px; overflow: hidden;
+    background: radial-gradient(120% 140% at 30% 0%, #23402F, #15291E); box-shadow: inset 0 2px 6px rgba(0,0,0,0.5), inset 0 0 0 1px rgba(0,0,0,0.3); }
+  .sp-ttop { display: flex; align-items: center; gap: 9px; min-height: 34px; }
+  .sp-ttag { flex-shrink: 0; min-width: 40px; height: 30px; padding: 0 9px; border-radius: 9px; display: grid; place-items: center; font-weight: 500; font-size: 14px; letter-spacing: 0.02em; color: #FFF1C8;
+    background: linear-gradient(180deg, rgba(255,255,255,0.10), transparent 40%), repeating-linear-gradient(92deg, rgba(0,0,0,0.06) 0 2px, transparent 2px 7px), linear-gradient(180deg, #9A6C40, #6B4828); box-shadow: inset 0 0 0 1.5px #3E2A16, inset 0 2px 0 rgba(255,236,200,0.22), 0 2px 4px rgba(0,0,0,0.35); }
+  .sp-ttag.done { background: linear-gradient(180deg, #8BF0B6, var(--okg)); color: #0E2A1A; box-shadow: 0 2px 0 #23864F; }
+  .sp-ttag svg { width: 18px; height: 18px; }
+  .sp-ttxt { flex: 1; min-width: 0; }
+  .sp-ttxt b { display: block; font-weight: 500; font-size: 16px; line-height: 1.15; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .sp-ttxt b span { font-weight: 300; color: rgba(244,241,232,0.75); }
+  .sp-tips { display: flex; gap: 5px; margin-top: 3px; min-height: 20px; align-items: center; overflow: hidden; }
+  .sp-tips .none { font-weight: 300; font-size: 13px; color: rgba(244,241,232,0.62); white-space: nowrap; }
+  .sp-tip { flex-shrink: 0; height: 20px; padding: 0 8px; border-radius: 10px; display: inline-flex; align-items: center; gap: 4px; font-weight: 500; font-size: 12.5px; color: var(--ink); background: linear-gradient(180deg, var(--gold-hi), var(--gold)); }
+  .sp-tip i { font-style: normal; font-weight: 400; font-size: 11px; color: rgba(19,32,42,0.7); }
+  .sp-tip.new { animation: spBadgeIn 0.4s cubic-bezier(.3,1.6,.5,1) both; }
+  .sp-tmsg { font-weight: 400; font-size: 13px; color: #FFE7A6; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; margin-top: 2px; }
+  .sp-tmsg.ok { color: #7FE0A8; }
+  .sp-clr { width: 34px; height: 34px; border-radius: 50%; flex-shrink: 0; display: grid; place-items: center; padding: 0; border: none; background: none; color: rgba(244,241,232,0.8); box-shadow: inset 0 0 0 1px rgba(244,241,232,0.22); cursor: pointer; }
+  .sp-clr svg { width: 17px; height: 17px; }
+  .sp-tbtns { display: flex; gap: 7px; }
+  .sp-tbtn { flex: 1; min-width: 0; height: 38px; padding: 0 6px; border: none; border-radius: 12px; display: inline-flex; align-items: center; justify-content: center; gap: 6px; font-family: 'Oswald', sans-serif; font-weight: 500; font-size: 14.5px; color: var(--chalk); white-space: nowrap; cursor: pointer;
+    background: #213A2C; box-shadow: inset 0 0 0 1.5px rgba(244,241,232,0.3), 0 2px 0 rgba(0,0,0,0.35); transition: transform 0.1s; }
+  .sp-tbtn svg { width: 18px; height: 18px; flex-shrink: 0; }
+  .sp-tbtn .cost { display: inline-flex; align-items: center; gap: 3px; font-family: 'Anton', Impact, sans-serif; font-weight: 400; font-size: 14px; color: var(--gold-hi); }
+  .sp-tbtn .cost .tcoin { width: 17px; height: 17px; vertical-align: 0; }
+  .sp-tbtn.wheel { background: linear-gradient(180deg, #2F6B49, #245638); box-shadow: inset 0 0 0 1.5px rgba(247,217,142,0.75), 0 2px 0 rgba(0,0,0,0.35); }
+  .sp-tbtn.gold { color: var(--ink); background: linear-gradient(170deg, var(--gold-hi), var(--gold)); box-shadow: 0 2px 0 #9C7422; font-weight: 600; }
+  .sp-tbtn:active:not(:disabled) { transform: translateY(2px); }
+  .sp-tbtn:disabled { opacity: 0.42; cursor: default; }
+  .sp-tbtn.sm { font-size: 13.5px; gap: 4px; }
+  .sp-bottom { flex-shrink: 0; margin-top: 8px; }
+  .sp.intro .sp-bottom { animation: spRise 0.55s 1.1s cubic-bezier(.2,.9,.25,1) both; }
+  .sp-cta { width: 100%; height: 58px; border: none; border-radius: 17px; font-family: 'Anton', Impact, sans-serif; font-weight: 400; font-size: 22px; line-height: 1.1; color: var(--ink); background: linear-gradient(160deg, var(--gold-hi), var(--gold)); box-shadow: 0 5px 0 #9C7422, 0 14px 30px rgba(0,0,0,0.3); position: relative; overflow: hidden; cursor: pointer; }
+  .sp-cta small { display: block; font-family: 'Oswald', sans-serif; font-weight: 500; font-size: 13px; margin-top: -2px; color: rgba(19,32,42,0.75); }
+  .sp-cta::after { content: ""; position: absolute; top: 0; bottom: 0; width: 40%; left: -60%; background: linear-gradient(100deg, transparent, rgba(255,255,255,0.6), transparent); transform: skewX(-18deg); }
+  .sp-cta.full::after { animation: lvSweep 1.1s ease-out 1 both; }
+  .sp-cta:active { transform: translateY(3px); box-shadow: 0 2px 0 #9C7422; }
+  .sp.d3 .sp-cta, .sp.d2 .sp-cta { height: 54px; }
+  @media (prefers-reduced-motion: reduce) { .sp *, .sp *::before, .sp *::after { animation: none !important; transition: none !important; } .sp.intro .sp-chalk .ln { stroke-dashoffset: 0; } }
+  .sp.fitting .sp-ptag, .sp.fitting .pos-input, .sp.fitting .sp-bdg { animation: none !important; transition: none !important; }
+  .sp.done { display: block; flex: none; }
+  .sp.done .sp-tray, .sp.done .sp-bottom { display: none; }
+  .sp.done .sp-frame { flex: none; }
+  .sp-res { padding: 14px 2px 26px; }
+  .toast-stack.sp-below { top: var(--sp-toast-top, 150px); }
   .tcoin { display: inline-block; width: 1em; height: 1em; vertical-align: -0.17em; flex-shrink: 0; overflow: visible; }
   .rules-dot { position: absolute; top: -3px; right: -3px; width: 9px; height: 9px; border-radius: 50%; background: var(--gold); border: 2px solid var(--ink); }
 
@@ -417,17 +560,17 @@
   .pitch .halfway { position: absolute; left: 0; right: 0; top: 50%; height: 2px; background: rgba(255,255,255,0.28); }
   .pitch .box-top { position: absolute; top: 0; left: 28%; width: 44%; height: 13%; border: 2px solid rgba(255,255,255,0.24); border-top: none; }
   .pitch .box-bottom { position: absolute; bottom: 0; left: 28%; width: 44%; height: 13%; border: 2px solid rgba(255,255,255,0.24); border-bottom: none; }
-  .pos-slot { position: absolute; transform: translate(-50%, -50%); display: flex; flex-direction: column; align-items: center; gap: clamp(2px, 0.8vw, 4px); z-index: 2; width: clamp(48px, 17cqw, 80px); }
-  .pos-label { font-family: 'Oswald', sans-serif; font-size: clamp(9px, 2.6vw, 12px); font-weight: 700; letter-spacing: 0.04em; color: var(--ink); background: linear-gradient(135deg, var(--gold), #f4d58d); padding: clamp(2px, 0.6vw, 3px) clamp(5px, 1.6vw, 8px); border-radius: 5px; box-shadow: 0 2px 5px rgba(0,0,0,0.3); }
-  .pos-input { width: 100%; text-align: center; font-size: clamp(10.5px, 3vw, 14px); padding: clamp(6px, 1.8vw, 9px) clamp(3px, 1vw, 5px); border-radius: 7px; border: 1px solid rgba(255,255,255,0.4); background: rgba(242,239,230,0.96); color: var(--ink); font-family: 'Oswald', sans-serif; font-weight: 500; box-shadow: 0 2px 6px rgba(0,0,0,0.25), inset 0 1px 0 rgba(255,255,255,0.6); }
-  .pos-input.ok { border-color: #2ecc71; background: rgba(46,204,113,0.4); color: var(--chalk); font-weight: 700; }
-  .pos-input.bad { border-color: var(--red); background: rgba(193,57,43,0.35); color: var(--chalk); }
-  .pos-input.revealed { border-color: #4aa3ff; background: rgba(74,163,255,0.3); color: var(--chalk); font-weight: 700; }
-  .pos-input.prefilled { border-color: #d9a441; background: rgba(217,164,65,0.28); color: var(--chalk); font-weight: 600; }
-  .pos-input.active-field { box-shadow: 0 0 0 3px var(--gold), 0 2px 6px rgba(0,0,0,0.25); }
-  .pos-input.near { border-color: var(--gold); background: rgba(232,178,61,0.28); color: var(--chalk); font-weight: 600; }
-  .pos-slot:has(.pos-input.near)::after { content: "✏️"; position: absolute; top: -4px; right: -4px; font-size: 10px; }
-  .prefill-tag { font-family: 'Oswald', sans-serif; font-weight: 500; font-size: clamp(8px, 2.2vw, 10px); color: rgba(217,164,65,0.9); text-align: center; margin-top: 2px; }
+  .pitch .pos-slot { position: absolute; transform: translate(-50%, -50%); display: flex; flex-direction: column; align-items: center; gap: clamp(2px, 0.8vw, 4px); z-index: 2; width: clamp(48px, 17cqw, 80px); }
+  .pitch .pos-label { font-family: 'Oswald', sans-serif; font-size: clamp(9px, 2.6vw, 12px); font-weight: 700; letter-spacing: 0.04em; color: var(--ink); background: linear-gradient(135deg, var(--gold), #f4d58d); padding: clamp(2px, 0.6vw, 3px) clamp(5px, 1.6vw, 8px); border-radius: 5px; box-shadow: 0 2px 5px rgba(0,0,0,0.3); }
+  .pitch .pos-input { width: 100%; text-align: center; font-size: clamp(10.5px, 3vw, 14px); padding: clamp(6px, 1.8vw, 9px) clamp(3px, 1vw, 5px); border-radius: 7px; border: 1px solid rgba(255,255,255,0.4); background: rgba(242,239,230,0.96); color: var(--ink); font-family: 'Oswald', sans-serif; font-weight: 500; box-shadow: 0 2px 6px rgba(0,0,0,0.25), inset 0 1px 0 rgba(255,255,255,0.6); }
+  .pitch .pos-input.ok { border-color: #2ecc71; background: rgba(46,204,113,0.4); color: var(--chalk); font-weight: 700; }
+  .pitch .pos-input.bad { border-color: var(--red); background: rgba(193,57,43,0.35); color: var(--chalk); }
+  .pitch .pos-input.revealed { border-color: #4aa3ff; background: rgba(74,163,255,0.3); color: var(--chalk); font-weight: 700; }
+  .pitch .pos-input.prefilled { border-color: #d9a441; background: rgba(217,164,65,0.28); color: var(--chalk); font-weight: 600; }
+  .pitch .pos-input.active-field { box-shadow: 0 0 0 3px var(--gold), 0 2px 6px rgba(0,0,0,0.25); }
+  .pitch .pos-input.near { border-color: var(--gold); background: rgba(232,178,61,0.28); color: var(--chalk); font-weight: 600; }
+  .pitch .pos-slot:has(.pos-input.near)::after { content: "✏️"; position: absolute; top: -4px; right: -4px; font-size: 10px; }
+  .pitch .prefill-tag { font-family: 'Oswald', sans-serif; font-weight: 500; font-size: clamp(8px, 2.2vw, 10px); color: rgba(217,164,65,0.9); text-align: center; margin-top: 2px; }
   .prefill-note { font-family: 'Oswald', sans-serif; font-weight: 300; font-size: 10.5px; color: rgba(217,164,65,0.9); text-align: center; margin-bottom: 10px; }
   .position-panel { background: rgba(242,239,230,0.06); border: 1px solid var(--line); border-radius: 10px; padding: 12px; margin-bottom: 14px; }
   .position-panel .panel-title { font-family: 'Oswald', sans-serif; font-weight: 700; font-size: 13px; color: var(--gold); letter-spacing: 0.04em; margin-bottom: 8px; }
@@ -3678,6 +3821,7 @@ function isNearFor(challenge, abbr, typedRaw) {
 // abschneiden (Prompt 22): Schrift schrittweise verkleinern, bis der Name passt (Untergrenze
 // 8,5px), danach notfalls leicht engere Laufweite. Feld und Spielfeld bleiben unveraendert.
 function fitNameNow(input) {
+  if (input.closest(".sp")) { spFitPlate(input); return; } // Spiel-Ansicht (Prompt 42)
   input.style.fontSize = "";
   input.style.letterSpacing = "";
   input.style.paddingLeft = input.style.paddingRight = "";
@@ -3962,9 +4106,12 @@ function tokenCoin(size) {
 const tokenChipInner = (n, big) => `${tokenCoin(big ? 28 : 22)}<b>${n}</b>`;
 // Token-Chip in der Spielfeld-Kopfzeile (Prompt 32) - existiert nur waehrend eines Kampagnen-/Freispiel-/Tages-Spiels
 // Kopfzeile der Level-Vorschau: "Pfad" (Chevron als SVG) | Token-Chip | "Regeln" (Info-Symbol als SVG)
-function lvTopbarHTML() {
+function lvTopbarHTML(o = {}) {
+  const b = o.back || { id: "lvBack", label: "Pfad", icon: "chev" };
+  const icon = b.icon === "x" ? '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18" stroke="currentColor" stroke-width="2.6" stroke-linecap="round"/></svg>'
+    : '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M15 5l-7 7 7 7" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/></svg>';
   const dot = !profile.hasSeenPitchRules || !profile.seenRulesBench ? '<span class="rules-dot" id="rulesDot"></span>' : "";
-  return `<div class="lv-top"><button type="button" class="tb back" id="lvBack"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M15 5l-7 7 7 7" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/></svg>Pfad</button><span class="sp"></span>`
+  return `<div class="lv-top"><button type="button" class="tb back" id="${b.id}">${icon}${b.label}</button><span class="sp"></span>`
     + `<span class="tb tok" data-tokchip data-big role="img" aria-label="${profile.hintTokens} ${TOKEN_LABEL}">${tokenChipInner(profile.hintTokens, true)}</span>`
     + `<button type="button" class="tb" id="rulesBtn"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9" fill="none" stroke="currentColor" stroke-width="2"/><path d="M12 11v6" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"/><circle cx="12" cy="7.6" r="1.4" fill="currentColor"/></svg>Regeln${dot}</button></div>`;
 }
@@ -4117,6 +4264,10 @@ function awardXP(profile, amount, reason) {
 function showToast(html) {
   if (celebrationQueue) { celebrationQueue.push(() => showToast(html)); return; } // waehrend der Welt-Feier warten (Prompt 31)
   const stack = document.getElementById("toastStack");
+  const gs = document.getElementById("screen-game"), headEl = document.querySelector("#spFrame .sp-head");
+  const below = !!(gs && !gs.hidden && gs.classList.contains("sp-on") && headEl); // Prompt 42: nicht ueber Mannschaft/Ergebnis
+  stack.classList.toggle("sp-below", below);
+  if (below) stack.style.setProperty("--sp-toast-top", Math.round(headEl.getBoundingClientRect().bottom + 6) + "px");
   const el = document.createElement("div");
   el.className = "toast";
   el.innerHTML = html;
@@ -5463,7 +5614,7 @@ function startMatch(m) {
   draftCtx = null; // bis renderPitch() die Aufstellung (neu) aufbaut
   if (navStack[navStack.length - 1] !== "game") navigate("game");
   const gameScreen = document.getElementById("screen-game");
-  gameScreen.classList.toggle("lv-on", !!currentLevelContext);
+  gameScreen.classList.toggle("lv-on", !!currentLevelContext); gameScreen.classList.remove("sp-on", "sp-done");
   if (gameScreen) gameScreen.scrollTop = 0;
   const pitchView = document.getElementById("pitchView");
   if (currentLevelContext) { // Kampagne: Taktiktafel (Prompt 41)
@@ -8334,9 +8485,166 @@ function scoutFxStep(fx, fctx, dpr) {
   else { scoutFxRunning = false; fctx.clearRect(0, 0, innerWidth, innerHeight); }
 }
 
+/* ================= SPIEL-ANSICHT "Taktiktafel" (Prompt 42) =================
+   Gemeinsame Bausteine fuer Kampagne, Frei spielen, Tages-Challenge (renderPitch) und die Duell-Runde: EINE Tafel mit Kreide-Spielfeld,
+   Holzreitern und Namensschildern. Die Spiel-Logik (Live-Pruefung, XP, Sterne, Kombo, Entwuerfe, Rad) bleibt unveraendert -
+   sie arbeitet weiter auf .pos-input[data-abbr] und den Klassen ok/near/bad/revealed/prefilled; Abzeichen und Holzleiste folgen diesen Klassen. */
+const POSN = { TW: "Torwart", RV: "Rechter Verteidiger", LV: "Linker Verteidiger", RIV: "Rechter Innenverteidiger", LIV: "Linker Innenverteidiger", ZIV: "Zentraler Innenverteidiger",
+  ZDM: "Defensives Mittelfeld", RZM: "Zentrales Mittelfeld rechts", LZM: "Zentrales Mittelfeld links", ZM: "Zentrales Mittelfeld", RM: "Rechtes Mittelfeld", LM: "Linkes Mittelfeld",
+  ROM: "Rechtes offensives Mittelfeld", LOM: "Linkes offensives Mittelfeld", ZOM: "Zentrales offensives Mittelfeld", RA: "Rechtsaußen", LA: "Linksaußen",
+  ST: "Mittelstürmer", RST: "Stürmer rechts", LST: "Stürmer links" };
+const SP_ICON = {
+  lens: '<svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="10.5" cy="10.5" r="5.2" fill="none" stroke="#3A2A08" stroke-width="2.4"/><path d="M14.4 14.4l4.4 4.4" stroke="#3A2A08" stroke-width="2.8" stroke-linecap="round"/></svg>',
+  x: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18" stroke="currentColor" stroke-width="2.6" stroke-linecap="round"/></svg>',
+  wheel: '<svg viewBox="0 0 24 24" aria-hidden="true" fill="none"><circle cx="12" cy="12" r="9" stroke="#F7D98E" stroke-width="2"/><path d="M12 3v18M3 12h18M5.6 5.6l12.8 12.8M18.4 5.6L5.6 18.4" stroke="#F7D98E" stroke-width="1.4"/><circle cx="12" cy="12" r="3" fill="#F7D98E"/></svg>',
+  eye: '<svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 12s3.6-6.5 10-6.5S22 12 22 12s-3.6 6.5-10 6.5S2 12 2 12z"/><circle cx="12" cy="12" r="3"/></svg>',
+  pen: '<svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="#13202A" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M4 20l4-1 11-11-3-3L5 16z"/></svg>',
+  check: (c) => `<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7.5" fill="none" stroke="${c}" stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round"/></svg>`,
+  gift: '<svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="#13202A" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="10" width="16" height="10" rx="1.5"/><path d="M3 7h18v3H3zM12 7v13M12 7c-2-4-6-3-5 0M12 7c2-4 6-3 5 0"/></svg>',
+  reset: '<svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 12a8 8 0 1 0 2.4-5.7"/><path d="M4 4v4.5h4.5"/></svg>',
+  next: '<svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg>',
+  flame: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2c1 4 6 6 6 12a6 6 0 0 1-12 0c0-3 1.5-4.5 3-6 0 2 1 3 2 3 0-3-1-6 1-9z" fill="#FFF3D1"/><path d="M12 12c.5 2 3 3 3 5.5a3 3 0 0 1-6 0c0-1.5 1-2.5 3-5.5z" fill="#E8632B"/></svg>',
+  bench: '<svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="#5B3D22" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 7h16"/><path d="M4 11h16"/><path d="M3 15h18"/><path d="M6 15v5"/><path d="M18 15v5"/><path d="M6 7v8"/><path d="M18 7v8"/></svg>'
+};
+const SP_TIP_LABEL = { firstLetter: "1. Buchstabe", shirtNumber: "Rückennummer", nationality: "Nation" };
+const spMeasure = document.createElement("canvas").getContext("2d");
+function spOpponent(info) { // "gegen <Gegner>": die andere Mannschaft der Partie
+  const n = (s) => s.toLowerCase(), has = (a, b) => n(a) === n(b) || n(a).includes(n(b)) || n(b).includes(n(a));
+  return has(info.home, info.side) ? info.away : has(info.away, info.side) ? info.home : info.away || info.home;
+}
+// Kopfzeile der Tafel (Zeile 1) je Modus
+function spKickHTML(m) {
+  const dots = (n, now, color) => `<span class="sp-dots" aria-hidden="true">${Array.from({ length: n }, (_, i) => `<i class="${i < now ? "done" : ""}${i === now ? " now" : ""}"></i>`).join("")}</span>`;
+  if (currentLevelContext) {
+    const { tier, index } = currentLevelContext, ms = getMatchesByTier(tier);
+    return `<span class="t">${DIFF_LABEL[tier]} · Level ${index + 1} von ${ms.length}</span><span class="sp-dots" aria-hidden="true">${ms.map((x, i) => `<i class="${profile.campaign.levelPassed[x.id] ? "done" : ""}${i === index ? " now" : ""}"></i>`).join("")}</span>`;
+  }
+  if (currentDailyChallenge) {
+    const d = new Date(currentDailyChallenge.dateKey + "T00:00:00").toLocaleDateString("de-DE", { weekday: "short", day: "numeric", month: "long" });
+    return `<span class="t">Tages-Challenge · ${duelEsc(d)}</span>`;
+  }
+  return `<span class="t">Frei spielen · Stufe ${m.difficulty} · ${DIFF_LABEL[m.difficulty]}</span><span class="sp-dots" aria-hidden="true">${[1, 2, 3, 4, 5].map(n => `<i class="${n <= m.difficulty ? "done" : ""}"></i>`).join("")}</span>`;
+}
+// Tafel: Kopf (Mannschaft, Gegner, Ergebnis-Tafel) + Kreide-Spielfeld mit Positionen. cfg: { kick, combo, bench }
+function spBoardHTML(m, cfg) {
+  const info = lvInfo(m), lay = PITCH_LAYOUTS[m.formation], year = (m.comp.match(/(\d{4})\s*$/) || m.comp.match(/(\d{4})/) || [])[1] || "";
+  return `<div class="sp-frame" id="spFrame">
+    <div class="sp-head"><div class="sp-kick" id="spKick">${cfg.kick}</div>
+      <div class="sp-row2"><div class="sp-who"><small>Aufstellen:</small><div class="sp-side"><b id="spSide">${duelEsc(info.side)}</b><span class="sp-pill">${duelEsc(m.formation)}</span></div>
+          <div class="sp-vs" id="spVs">gegen <em>${duelEsc(spOpponent(info))}</em> · ${duelEsc(info.comp)} ${year}</div></div>
+        <div class="sp-score"><b>${duelEsc(info.score)}</b><small>${info.note.length ? info.note.map(duelEsc).join("<br>") : "Endstand"}</small></div></div></div>
+    <div class="sp-pitch" id="spPitch" data-formation="${duelEsc(m.formation)}"><svg class="sp-chalk" id="spChalk" aria-hidden="true"></svg>
+      ${cfg.combo ? `<div class="sp-combo" id="comboChip">${SP_ICON.flame}<span id="comboN"></span><small>er-Kombo</small></div>` : ""}
+      ${lay.map((p, k) => `<div class="sp-slot" data-a="${p.abbr}" style="left:${p.x}%;top:${Math.max(8, Math.min(94, p.y))}%"><span class="sp-ptag" data-a="${p.abbr}" style="animation-delay:${900 + k * 60}ms">${p.abbr}</span>` +
+        `<input type="text" class="pos-input" data-abbr="${p.abbr}" placeholder="Name" autocomplete="off" autocapitalize="words" autocorrect="off" spellcheck="false" aria-label="Name für ${duelEsc(POSN[p.abbr] || p.abbr)}" style="animation-delay:${1050 + k * 50}ms"></div>`).join("")}
+      ${cfg.bench && benchOf(m) ? `<button type="button" class="sp-bench" id="benchBtn" aria-label="Ersatzbank öffnen"><span class="tile">${SP_ICON.bench}</span>Bank</button>` : ""}
+    </div></div>`;
+}
+function spTipsHTML(m, abbr, drawnSet, fresh) {
+  const ids = [...(drawnSet || [])].filter(id => id !== "fullName");
+  if (!ids.length) return '<span class="none">Noch keine Tipps für diese Position</span>';
+  const det = (m.details && m.details[abbr]) || {}, target = m.players[abbr];
+  const val = { firstLetter: () => target[0].toUpperCase() + "…", shirtNumber: () => det.nr, nationality: () => NAT_NAMES[det.nat] || det.nat };
+  return ids.map(id => `<span class="sp-tip${id === fresh ? " new" : ""}"><i>${SP_TIP_LABEL[id]}</i>${duelEsc(String(val[id]()))}</span>`).join("");
+}
+function spPlateWidth(lay, PW) { // Schildbreite aus dem kleinsten Abstand benachbarter Positionen einer Reihe (52-70 px)
+  let mn = 999;
+  lay.forEach(p => lay.forEach(q => { if (p !== q && Math.abs(p.y - q.y) < 14) mn = Math.min(mn, Math.abs(p.x - q.x) / 100 * PW); }));
+  return Math.max(52, Math.min(70, Math.floor(mn - 6)));
+}
+// Namensschild: Schrift erst kleiner (min. 10,5 px), dann darf das Schild breiter werden
+function spFitPlate(input) {
+  const slot = input.closest(".sp-slot"), root = input.closest(".sp");
+  if (!slot || !root) return;
+  const pw = +root.dataset.pw || 60;
+  input.style.removeProperty("--fs"); slot.style.removeProperty("--w");
+  const txt = input.value;
+  if (!txt) return;
+  const wt = input.classList.contains("ok") || input.classList.contains("revealed") ? 600 : 500;
+  spMeasure.font = `${wt} 14px Oswald, "Arial Narrow", sans-serif`;
+  const w = spMeasure.measureText(txt).width, inner = pw - 10;
+  let fs = 14, width = pw;
+  if (w > inner) {
+    fs = Math.max(10.5, 14 * inner / w);
+    spMeasure.font = `${wt} ${fs}px Oswald, "Arial Narrow", sans-serif`;
+    const w2 = spMeasure.measureText(txt).width;
+    if (w2 > inner) width = Math.ceil(w2 + 12);
+  }
+  input.style.setProperty("--fs", fs.toFixed(1) + "px");
+  slot.style.setProperty("--w", width + "px");
+}
+// Abzeichen am Schild folgen den Klassen (ok/near/prefilled/revealed); Stift ist ein echter Knopf
+function spSyncSlot(input, anim) {
+  const slot = input.closest(".sp-slot");
+  if (!slot) return;
+  const st = input.classList.contains("ok") ? "ok" : input.classList.contains("near") ? "near" : input.classList.contains("prefilled") ? "pre" : input.classList.contains("revealed") ? "rev" : "";
+  const prev = slot.dataset.st || "";
+  if (prev === st) return;
+  slot.dataset.st = st;
+  slot.querySelectorAll(".sp-bdg").forEach(b => b.remove());
+  const a = input.dataset.abbr, style = anim ? "" : ' style="animation:none"';
+  if (st === "near") slot.insertAdjacentHTML("beforeend", `<button type="button" class="sp-bdg near" data-fix="${a}" aria-label="${a}: Schreibweise korrigieren"${style}>${SP_ICON.pen}</button>`);
+  else if (st) slot.insertAdjacentHTML("beforeend", `<span class="sp-bdg ${st}"${style}>${{ ok: SP_ICON.check("#1E9D5A"), pre: SP_ICON.gift, rev: SP_ICON.lens }[st]}</span>`);
+  if (anim && st === "ok") { input.classList.remove("pop"); void input.offsetWidth; input.classList.add("pop"); }
+  if (anim && st === "near") { input.classList.remove("shake"); void input.offsetWidth; input.classList.add("shake"); }
+}
+function spRectsOverlap(a, b) { return a.left < b.right && b.left < a.right && a.top < b.bottom && b.top < a.bottom; }
+function spSlotBoxes(root) {
+  return [...root.querySelectorAll(".sp-slot")].map(s => {
+    const r1 = s.querySelector(".sp-ptag").getBoundingClientRect(), r2 = s.querySelector(".pos-input").getBoundingClientRect();
+    return { a: s.dataset.a, left: Math.min(r1.left, r2.left), right: Math.max(r1.right, r2.right), top: Math.min(r1.top, r2.top), bottom: Math.max(r1.bottom, r2.bottom) };
+  });
+}
+function spHasOverlap(root) {
+  const b = spSlotBoxes(root);
+  for (let i = 0; i < b.length; i++) for (let j = i + 1; j < b.length; j++) if (spRectsOverlap(b[i], b[j])) return true;
+  return false;
+}
+// Messen und Anpassen: Schildbreite, Dichte-Stufe (normal / kompakt / sehr kompakt) gegen Ueberlappen, Kreidelinien, Namen, Mannschafts-Schrift
+function spFit(root) {
+  const pitch = root.querySelector("#spPitch");
+  if (!pitch) return;
+  const lay = PITCH_LAYOUTS[pitch.dataset.formation];
+  root.classList.add("fitting"); // Animationen aus, damit gemessen wird, wo die Schilder wirklich stehen
+  const side = root.querySelector("#spSide"), who = root.querySelector(".sp-who");
+  const kick = root.querySelector("#spKick .t");
+  if (kick) { kick.style.fontSize = ""; for (let s = 13.5; kick.scrollWidth > kick.clientWidth + 0.5 && s > 11; s -= 0.5) kick.style.fontSize = s + "px"; }
+  if (side && who) { // Mannschaft in Anton Gold, max 26 px, per Messung (daneben steht die Formations-Pille)
+    spMeasure.font = "400 100px Anton, Impact, sans-serif";
+    const avail = who.clientWidth - (root.querySelector(".sp-pill").offsetWidth + 8);
+    side.style.fontSize = Math.max(16, Math.min(26, Math.floor(avail * 100 / (spMeasure.measureText(side.textContent.toUpperCase()).width + 1)))) + "px";
+  }
+  const run = () => {
+    root.dataset.pw = spPlateWidth(lay, pitch.clientWidth); root.style.setProperty("--pw", root.dataset.pw + "px");
+    root.querySelectorAll(".pos-input").forEach(spFitPlate);
+  };
+  for (const tier of ["", "d2", "d3"]) {
+    root.classList.remove("d2", "d3"); if (tier) root.classList.add(tier);
+    run();
+    if (!spHasOverlap(root)) break;
+  }
+  root.classList.remove("fitting");
+  const W = pitch.clientWidth, H = pitch.clientHeight, bw = Math.min(140, W * 0.42), bh = Math.min(52, H * 0.115), sw = Math.min(64, W * 0.19), sh = Math.min(20, H * 0.043);
+  const chalk = root.querySelector("#spChalk");
+  chalk.setAttribute("viewBox", `0 0 ${W} ${H}`);
+  chalk.innerHTML = `<rect class="ln" pathLength="1" x="2" y="2" width="${W - 4}" height="${H - 4}" rx="6" style="animation-delay:.2s"/>
+    <line class="ln" pathLength="1" x1="2" y1="${H / 2}" x2="${W - 2}" y2="${H / 2}" style="animation-delay:.45s"/>
+    <circle class="ln" pathLength="1" cx="${W / 2}" cy="${H / 2}" r="${Math.min(38, H * 0.1)}" style="animation-delay:.55s"/>
+    <rect class="ln" pathLength="1" x="${W / 2 - bw / 2}" y="2" width="${bw}" height="${bh}" style="animation-delay:.65s"/>
+    <rect class="ln" pathLength="1" x="${W / 2 - bw / 2}" y="${H - bh - 2}" width="${bw}" height="${bh}" style="animation-delay:.75s"/>
+    <rect class="ln" pathLength="1" x="${W / 2 - sw / 2}" y="2" width="${sw}" height="${sh}" style="animation-delay:.8s"/>
+    <rect class="ln" pathLength="1" x="${W / 2 - sw / 2}" y="${H - sh - 2}" width="${sw}" height="${sh}" style="animation-delay:.85s"/>`;
+}
+let spResizeTimer = null;
+window.addEventListener("resize", () => {
+  clearTimeout(spResizeTimer);
+  spResizeTimer = setTimeout(() => { const r = document.querySelector("#pitchView .sp"); if (r && !document.getElementById("screen-game").hidden && !r.classList.contains("sp-kb")) spFit(r); }, 150);
+});
+
 function renderPitch() {
   const m = currentMatch;
-  document.getElementById("screen-game").classList.remove("lv-on");
+  const gameScreen = document.getElementById("screen-game");
+  gameScreen.classList.remove("lv-on", "sp-done"); gameScreen.classList.add("sp-on");
   hintsUsed = new Set();
   tokenRevealed = new Set();
   fuzzyCorrected = new Set();
@@ -8351,42 +8659,10 @@ function renderPitch() {
   let combo = 0;
   const positions = PITCH_LAYOUTS[m.formation];
   const pitchView = document.getElementById("pitchView");
-  pitchView.innerHTML = `
-    <div class="bonus-panel">
-      <div class="pitch-header-row">
-        <button class="back-btn" id="exitMatchBtn"><span class="back-arrow">←</span>Abbrechen</button>
-        <div class="hdr-right"><span class="tok-chip" id="gameTokChip" data-tokchip role="img" aria-label="${profile.hintTokens} ${TOKEN_LABEL}">${tokenChipInner(profile.hintTokens)}</span><button class="rules-btn" id="rulesBtn">ℹ️ Regeln${!profile.hasSeenPitchRules || !profile.seenRulesBench ? '<span class="rules-dot" id="rulesDot"></span>' : ""}</button></div>
-      </div>
-      <div class="bonus-eyebrow">${m.formation} · ${m.comp}</div>
-      <div class="bonus-title" style="font-size:19px">${m.teams}</div>
-      <div class="badge-row${currentLevelContext ? " lvl pl" : ""}" style="text-align:center; margin-bottom:10px">${currentLevelContext ? renderLevelBadge(m) : renderDiffBadge(m.difficulty)}</div>
-      <div class="bonus-text" style="margin-bottom:10px">Gesucht: <b>${m.side}</b></div>
-      ${prefilledAbbrs.size > 0 ? `<div class="prefill-note">🎁 ${prefilledAbbrs.size} von ${positions.length} Positionen bereits vorgegeben</div>` : ""}
-      <div class="combo-chip hidden" id="comboChip"></div>
-      <div class="pitch-wrap">
-        <div class="pitch">
-          <div class="halfway"></div>
-          <div class="center-circle"></div>
-          <div class="center-dot"></div>
-          <div class="box-top"></div>
-          <div class="box-bottom"></div>
-          ${positions.map(p => prefilledAbbrs.has(p.abbr) ? `
-            <div class="pos-slot" style="left:${p.x}%; top:${p.y}%;">
-              <div class="pos-label">${p.abbr}</div>
-              <input type="text" class="pos-input" data-abbr="${p.abbr}" placeholder="Name" autocomplete="off" autocapitalize="words" autocorrect="off" spellcheck="false">
-              <div class="prefill-tag">✓ gratis</div>
-            </div>` : `
-            <div class="pos-slot" style="left:${p.x}%; top:${p.y}%;">
-              <div class="pos-label">${p.abbr}</div>
-              <input type="text" class="pos-input" data-abbr="${p.abbr}" placeholder="Name" autocomplete="off" autocapitalize="words" autocorrect="off" spellcheck="false">
-            </div>`).join("")}
-          ${benchOf(m) ? `<button type="button" class="bench-btn" id="benchBtn" aria-label="Ersatzbank öffnen"><span class="bench-ic">${BENCH_SVG}</span>Bank</button>` : ""}
-        </div>
-      </div>
-      <div class="position-panel" id="positionPanel"></div>
-      <button type="button" class="clear-link" id="clearFieldsBtn">↺ Felder leeren</button>
-      <button class="action btn-gold" id="checkBtn" style="width:100%">Auswerten</button>
-    </div>`;
+  pitchView.innerHTML = `<div class="sp intro" id="spRoot" style="--wc:${DIFF_COLOR[currentLevelContext ? currentLevelContext.tier : m.difficulty]}">${lvTopbarHTML({ back: { id: "exitMatchBtn", label: "Abbrechen", icon: "x" } })}
+    ${spBoardHTML(m, { kick: spKickHTML(m), combo: true, bench: true })}
+    <div class="sp-tray" id="spTray"><div class="sp-felt" id="positionPanel"></div></div>
+    <div class="sp-bottom"><button type="button" class="sp-cta" id="checkBtn">Auswerten<small id="spCtaSub"></small></button></div></div>`;
 
   prefilledAbbrs.forEach(abbr => {
     const input = pitchView.querySelector('input[data-abbr="' + abbr + '"]');
@@ -8413,91 +8689,112 @@ function renderPitch() {
   // eine nicht akzeptierte Eingabe beim Verlassen eines Feldes).
   const comboChipEl = pitchView.querySelector("#comboChip");
   function renderCombo() {
-    if (combo < 3) { comboChipEl.classList.add("hidden"); comboChipEl.textContent = ""; return; }
-    comboChipEl.classList.remove("hidden");
-    comboChipEl.textContent = "🔥 Kombo ×" + combo;
-    comboChipEl.classList.remove("combo-pop"); void comboChipEl.offsetWidth; comboChipEl.classList.add("combo-pop");
+    const on = combo >= 3;
+    comboChipEl.classList.toggle("on", on);
+    if (!on) return;
+    pitchView.querySelector("#comboN").textContent = combo;
+    comboChipEl.classList.remove("pop"); void comboChipEl.offsetWidth; comboChipEl.classList.add("pop");
   }
   function bumpCombo() { combo += 1; renderCombo(); }
   function resetCombo() { if (combo !== 0) { combo = 0; renderCombo(); } }
 
+  const solvedCls = (inp) => inp.classList.contains("ok") || inp.classList.contains("revealed") || inp.classList.contains("prefilled");
+  const nextFreeAfter = (from) => {
+    const ab = positions.map(p => p.abbr), i0 = ab.indexOf(from) + 1;
+    for (let k = 0; k < ab.length; k++) { const a = ab[(i0 + k) % ab.length]; if (!solvedCls(inputOf(a))) return a; }
+    return null;
+  };
+  // Holzleiste (Prompt 42): Werkzeuge der gewaehlten Position. Kosten/XP-Logik unveraendert (aus dem alten Positions-Panel uebernommen).
   function renderPositionPanel(abbr) {
     const panel = document.getElementById("positionPanel");
     if (!panel) return;
-    if (!abbr) { panel.innerHTML = ""; return; }
-    const input = pitchView.querySelector('input[data-abbr="' + abbr + '"]');
-    if (!input) { panel.innerHTML = ""; return; }
-    const solved = input.classList.contains("ok") || input.classList.contains("revealed") || input.classList.contains("prefilled");
-    if (solved) {
-      panel.innerHTML = `<div class="panel-title">Position ${abbr}</div><div class="panel-solved">✓ Position gelöst</div>`;
-      return;
-    }
-    const isNear = input.classList.contains("near");
-    const drawnSet = getDrawnSet(abbr);
-    const anyAvail = WHEEL_SEGS.some(seg => segAvailableFor(m, abbr, seg, drawnSet));
-    const canOpenWheel = anyAvail && profile.hintTokens >= ECONOMY.spinCost;
-    const openLabel = !anyAvail ? "Alle Tipps gezogen" : !canOpenWheel ? "Zu wenig Token" : "Scout-Rad öffnen";
-    const canReveal = profile.hintTokens >= ECONOMY.revealCost;
-    panel.innerHTML = `
-      <div class="panel-title">Position ${abbr}</div>
-      ${isNear ? `
-      <div class="panel-near">✏️ Fast richtig – prüf die Schreibweise</div>
-      <button type="button" class="action btn-gold correct-btn" style="width:100%; margin-bottom:8px;">✏️ Korrigieren</button>` : ""}
-      <div class="sr-chips">${chipsHTML(m, abbr, drawnSet)}</div>
-      <div class="sr-actions">
-        <button type="button" class="sr-open-btn" id="srOpenBtn" ${canOpenWheel ? "" : "disabled"}><span class="sr-open-icon">🎡</span> ${openLabel}</button>
-        <button type="button" class="action btn-outline" id="srRevealBtn" style="width:100%" ${canReveal ? "" : "disabled"}>👁️ Aufdecken · ${ECONOMY.revealCost} Token</button>
-      </div>`;
-
-    if (isNear) {
-      panel.querySelector(".correct-btn").addEventListener("click", () => {
-        input.value = m.players[abbr];
-        input.classList.remove("near", "bad");
-        input.classList.add("ok");
-        applyNameFit(input);
-        if (!input.dataset.counted) {
-          input.dataset.counted = "1";
-          fuzzyCorrected.add(abbr);
-          profile.stats.positionsCorrectFuzzy += 1;
-          resetCombo(); // Korrigieren zaehlt als Hilfe
-          const usedHint = hintsUsed.has(abbr);
-          const amount = knownAbbrs.has(abbr) ? 0 : (usedHint ? XP_RULES.fuzzyCorrectedWithHint : XP_RULES.fuzzyCorrected);
-          if (amount > 0) {
-            const r = awardXP(profile, amount, usedHint ? "Position korrigiert (mit Hinweis)" : "Position korrigiert");
-            if (r.leveledUp) showLevelUpToast(r.newLevel, r.levelsGained);
-          }
+    const clr = `<button type="button" class="sp-clr" id="clearFieldsBtn" aria-label="Felder leeren" title="Felder leeren">${SP_ICON.reset}</button>`;
+    const input = abbr ? inputOf(abbr) : null;
+    let html, afterBind;
+    if (positions.every(p => solvedCls(inputOf(p.abbr)))) {
+      html = `<div class="sp-ttop"><span class="sp-ttag done">${SP_ICON.check("#0E2A1A")}</span><div class="sp-ttxt"><b>Alle Positionen besetzt</b><div class="sp-tmsg ok">Bereit? Unten auswerten.</div></div>${clr}</div><div class="sp-tbtns"></div>`;
+    } else if (!input) {
+      html = `<div class="sp-ttop"><span class="sp-ttag">?</span><div class="sp-ttxt"><b>Position antippen</b></div>${clr}</div><div class="sp-tbtns"></div>`;
+    } else if (solvedCls(input)) {
+      const how = input.classList.contains("revealed") ? "aufgedeckt" : input.classList.contains("prefilled") ? "gratis vorgegeben" : "richtig eingetragen";
+      const nx = nextFreeAfter(abbr);
+      html = `<div class="sp-ttop"><span class="sp-ttag">${abbr}</span><div class="sp-ttxt"><b>${duelEsc(POSN[abbr] || abbr)}</b><div class="sp-tmsg ok">✓ ${duelEsc(m.players[abbr])} · ${how}</div></div>${clr}</div>
+        <div class="sp-tbtns">${nx ? `<button type="button" class="sp-tbtn" id="spNext">Nächste freie Position ${SP_ICON.next}</button>` : ""}</div>`;
+      afterBind = () => { const nb = panel.querySelector("#spNext"); if (nb) nb.onclick = () => { const n = nextFreeAfter(abbr); if (!n) return; if (document.querySelector("#spRoot.sp-kb")) inputOf(n).focus(); else setActivePosition(n); }; };
+    } else {
+      const isNear = input.classList.contains("near");
+      const drawnSet = getDrawnSet(abbr);
+      const anyAvail = WHEEL_SEGS.some(seg => segAvailableFor(m, abbr, seg, drawnSet));
+      const canOpenWheel = anyAvail && profile.hintTokens >= ECONOMY.spinCost;
+      const canReveal = profile.hintTokens >= ECONOMY.revealCost;
+      const spinCost = anyAvail ? `<span class="cost">${tokenCoin()}${ECONOMY.spinCost}</span>` : "";
+      const revCost = `<span class="cost">${tokenCoin()}${ECONOMY.revealCost}</span>`;
+      if (isNear) {
+        html = `<div class="sp-ttop"><span class="sp-ttag">${abbr}</span><div class="sp-ttxt"><b>${duelEsc(POSN[abbr] || abbr)}</b><div class="sp-tmsg">Fast richtig: „${duelEsc(input.value)}“ – Schreibweise prüfen</div></div>${clr}</div>
+          <div class="sp-tbtns"><button type="button" class="sp-tbtn gold sm" id="spFix">${SP_ICON.pen}Korrigieren</button>
+            <button type="button" class="sp-tbtn wheel sm" id="srOpenBtn" aria-label="Scout-Rad" ${canOpenWheel ? "" : "disabled"}>${SP_ICON.wheel}${spinCost}</button>
+            <button type="button" class="sp-tbtn sm" id="srRevealBtn" aria-label="Aufdecken" ${canReveal ? "" : "disabled"}>${SP_ICON.eye}${revCost}</button></div>`;
+      } else {
+        html = `<div class="sp-ttop"><span class="sp-ttag">${abbr}</span><div class="sp-ttxt"><b>${duelEsc(POSN[abbr] || abbr)}</b><div class="sp-tips">${spTipsHTML(m, abbr, drawnSet)}</div></div>${clr}</div>
+          <div class="sp-tbtns"><button type="button" class="sp-tbtn wheel" id="srOpenBtn" ${canOpenWheel ? "" : "disabled"}>${SP_ICON.wheel}${!anyAvail ? "Alle Tipps gezogen" : !canOpenWheel ? "Zu wenig Token" : "Scout-Rad"}${spinCost}</button>
+            <button type="button" class="sp-tbtn" id="srRevealBtn" ${canReveal ? "" : "disabled"}>${SP_ICON.eye}${canReveal ? "Aufdecken" : "Zu wenig Token"}${revCost}</button></div>`;
+      }
+      afterBind = () => {
+        const fix = panel.querySelector("#spFix"); if (fix) fix.onclick = () => applyCorrection(abbr);
+        panel.querySelector("#srOpenBtn").addEventListener("click", () => {
+          if (document.activeElement === input) input.blur(); // Tastatur weg, Modal frei
+          openScoutWheelModal(abbr, input);
+        });
+        panel.querySelector("#srRevealBtn").addEventListener("click", () => {
+          if (profile.hintTokens < ECONOMY.revealCost || input.classList.contains("ok") || input.classList.contains("revealed")) return;
+          resetCombo(); // Aufdecken zaehlt als Hilfe
+          profile.hintTokens -= ECONOMY.revealCost;
           saveProfile(profile);
           renderProfileBar();
-          const newlyUnlocked = checkAchievements(profile);
-          saveProfile(profile);
-          newlyUnlocked.forEach(showAchievementToast);
-        }
-        renderPositionPanel(abbr);
-        scheduleDraft();
-      });
+          tokenRevealed.add(abbr);
+          input.value = m.players[abbr];
+          input.classList.remove("bad", "ok");
+          input.classList.add("revealed");
+          input.disabled = true;
+          input.dataset.counted = "1";
+          applyNameFit(input);
+          renderPositionPanel(abbr);
+          scheduleDraft();
+        });
+      };
     }
-
-    panel.querySelector("#srOpenBtn").addEventListener("click", () => {
-      if (document.activeElement === input) input.blur(); // Tastatur weg, Modal frei
-      openScoutWheelModal(abbr, input);
-    });
-
-    panel.querySelector("#srRevealBtn").addEventListener("click", () => {
-      if (profile.hintTokens < ECONOMY.revealCost || input.classList.contains("ok") || input.classList.contains("revealed")) return;
-      resetCombo(); // Aufdecken zaehlt als Hilfe
-      profile.hintTokens -= ECONOMY.revealCost;
+    panel.innerHTML = html;
+    const cb = panel.querySelector("#clearFieldsBtn"); if (cb) cb.onclick = askClear;
+    if (afterBind) afterBind();
+  }
+  // "Korrigieren" (Stift am Schild oder Knopf in der Holzleiste): genau die bisherige Logik (fuzzyCorrected, XP, Kombo-Reset, Entwurf)
+  function applyCorrection(abbr) {
+    const input = inputOf(abbr);
+    if (!input || !input.classList.contains("near")) return;
+    input.value = m.players[abbr];
+    input.classList.remove("near", "bad");
+    input.classList.add("ok");
+    applyNameFit(input);
+    if (!input.dataset.counted) {
+      input.dataset.counted = "1";
+      fuzzyCorrected.add(abbr);
+      profile.stats.positionsCorrectFuzzy += 1;
+      resetCombo(); // Korrigieren zaehlt als Hilfe
+      const usedHint = hintsUsed.has(abbr);
+      const amount = knownAbbrs.has(abbr) ? 0 : (usedHint ? XP_RULES.fuzzyCorrectedWithHint : XP_RULES.fuzzyCorrected);
+      if (amount > 0) {
+        const r = awardXP(profile, amount, usedHint ? "Position korrigiert (mit Hinweis)" : "Position korrigiert");
+        if (r.leveledUp) showLevelUpToast(r.newLevel, r.levelsGained);
+      }
       saveProfile(profile);
       renderProfileBar();
-      tokenRevealed.add(abbr);
-      input.value = m.players[abbr];
-      input.classList.remove("bad", "ok");
-      input.classList.add("revealed");
-      input.disabled = true;
-      input.dataset.counted = "1";
-      applyNameFit(input);
-      renderPositionPanel(abbr);
-      scheduleDraft();
-    });
+      const newlyUnlocked = checkAchievements(profile);
+      saveProfile(profile);
+      newlyUnlocked.forEach(showAchievementToast);
+    }
+    renderPositionPanel(activePosAbbr);
+    scheduleDraft();
+    showToast("Korrigiert: <b>" + duelEsc(m.players[abbr]) + "</b>");
   }
 
   // Scout-Rad oeffnet sich als Bottom-Sheet-Modal (gleiches Muster wie Anleitung/
@@ -8791,12 +9088,14 @@ function renderPitch() {
     pitchView.querySelectorAll(".pos-input").forEach(inp => {
       inp.classList.toggle("active-field", inp.dataset.abbr === abbr);
     });
+    pitchView.querySelectorAll(".sp-slot").forEach(sl => sl.classList.toggle("on", sl.dataset.a === abbr));
     renderPositionPanel(abbr);
   }
 
   // "Fast richtig" (Prompt 4): laeuft NIE waehrend des Tippens, nur nach einer Tipppause
   // (debounce), bei blur oder Enter - und nie fuer Cross-Match, nur die eigene Position.
   const fuzzyTimers = new Map();
+  let nearHintShown = false; // einmal pro geoeffneter Aufstellung (Prompt 42)
   function runFuzzyCheck(input) {
     const abbr = input.dataset.abbr;
     clearTimeout(fuzzyTimers.get(abbr));
@@ -8804,6 +9103,7 @@ function renderPitch() {
     const near = isNearFor(m, abbr, input.value);
     const changed = input.classList.contains("near") !== near;
     input.classList.toggle("near", near);
+    if (near && changed && !nearHintShown) { nearHintShown = true; showToast("Fast richtig – tipp auf den <b>Stift</b>, um zu korrigieren"); }
     // Panel nur neu bauen, wenn sich der Fast-richtig-Zustand wirklich aendert - sonst wird ein
     // gerade angetippter Panel-Button ersetzt, bevor sein click feuert (Prompt 22).
     if (changed && activePosAbbr === abbr) renderPositionPanel(abbr);
@@ -8893,21 +9193,24 @@ function renderPitch() {
     combo = d.combo || 0; renderCombo();
     if (any) showToast("Weiter, wo du aufgehört hast");
   }
+  nearHintShown = true; // beim Fortsetzen keinen zweiten Hinweis neben "Weiter, wo du aufgehört hast"
   restoreDraft();
+  nearHintShown = false;
   // Aenderungen entprellt sichern (Tippen, Korrigieren, Aufdecken, Scout-Rad rufen scheduleDraft)
   pitchView.addEventListener("input", scheduleDraft);
-  const clearBtn = document.getElementById("clearFieldsBtn");
-  clearBtn.onclick = () => askSheet(`<div class="t">Felder leeren?</div><p>Deine Eingaben werden gelöscht. Verbrauchte Hilfen und Token bleiben verbraucht.</p>`, [
-    { label: "Felder leeren", cls: "main", fn: () => {
-      positions.forEach(({ abbr }) => {
-        const inp = inputOf(abbr);
-        if (prefilledAbbrs.has(abbr) || inp.classList.contains("revealed")) return;
-        inp.value = ""; inp.classList.remove("ok", "bad", "near"); inp.disabled = false; applyNameFit(inp);
-      });
-      resetCombo(); renderPositionPanel(activePosAbbr); scheduleDraft();
-    } },
-    { label: "Abbrechen", cls: "quiet" }
-  ]);
+  function askClear() {
+    askSheet(`<div class="t">Felder leeren?</div><p>Deine Eingaben werden gelöscht. Verbrauchte Hilfen und Token bleiben verbraucht.</p>`, [
+      { label: "Felder leeren", cls: "main", fn: () => {
+        positions.forEach(({ abbr }) => {
+          const inp = inputOf(abbr);
+          if (prefilledAbbrs.has(abbr) || inp.classList.contains("revealed")) return;
+          inp.value = ""; inp.classList.remove("ok", "bad", "near"); inp.disabled = false; applyNameFit(inp);
+        });
+        resetCombo(); renderPositionPanel(activePosAbbr); spSyncCta(); scheduleDraft();
+      } },
+      { label: "Abbrechen", cls: "quiet" }
+    ]);
+  }
 
   const firstSelectable = positions.find(p => !prefilledAbbrs.has(p.abbr));
   if (firstSelectable) setActivePosition(firstSelectable.abbr);
@@ -9020,6 +9323,33 @@ function renderPitch() {
   };
   document.getElementById("exitMatchBtn").onclick = exitMatch;
   document.getElementById("rulesBtn").onclick = openRulesModal;
+
+  // Spiel-Ansicht (Prompt 42): Abzeichen, "Auswerten"-Unterzeile und Holzleiste folgen den Zustaenden der Schilder
+  const spRoot = pitchView.querySelector("#spRoot"), spPitchEl = pitchView.querySelector("#spPitch");
+  const allInputs = [...pitchView.querySelectorAll(".pos-input")];
+  function spSyncCta() {
+    const sub = document.getElementById("spCtaSub"), btn = document.getElementById("checkBtn");
+    if (!sub || !btn) return;
+    const f = allInputs.filter(i => i.value.trim()).length, full = f === allInputs.length;
+    sub.textContent = full ? `Alle ${f} eingetragen – ab zur Auswertung` : `${f} von ${allInputs.length} eingetragen${prefilledAbbrs.size ? " · " + prefilledAbbrs.size + " gratis" : ""}`;
+    btn.classList.toggle("full", full);
+  }
+  spFit(spRoot);
+  allInputs.forEach(i => spSyncSlot(i, false));
+  spSyncCta();
+  new MutationObserver(recs => {
+    recs.forEach(r => { if (r.target.classList && r.target.classList.contains("pos-input")) spSyncSlot(r.target, true); });
+    spSyncCta();
+  }).observe(spPitchEl, { subtree: true, attributes: true, attributeFilter: ["class"] });
+  pitchView.addEventListener("input", spSyncCta);
+  spPitchEl.addEventListener("mousedown", (e) => { if (e.target.closest(".sp-bdg.near")) e.preventDefault(); }); // Stift nimmt dem Feld den Fokus nicht
+  spPitchEl.addEventListener("click", (e) => {
+    const fix = e.target.closest(".sp-bdg.near");
+    if (fix) { applyCorrection(fix.dataset.fix); return; }
+    const tag = e.target.closest(".sp-ptag");
+    if (tag) { const inp = inputOf(tag.dataset.a); if (!inp.disabled) inp.focus(); else setActivePosition(tag.dataset.a); } // Reiter antippen = Position waehlen
+  });
+  setTimeout(() => spRoot.classList.remove("intro"), 2600);
 }
 
 function evaluatePitch() {
@@ -9205,8 +9535,17 @@ function evaluatePitch() {
   newlyWonTrophies.forEach(showTrophyToast);
   if (bonusXP > 0) showToast("+" + bonusXP + " XP — " + bonusReason);
 
-  const panel = pitchView.querySelector(".bonus-panel");
-  document.getElementById("checkBtn").remove();
+  if (document.activeElement && document.activeElement.blur) document.activeElement.blur();
+  const spRootEl = pitchView.querySelector("#spRoot");
+  const spFrameEl = spRootEl.querySelector("#spFrame");
+  spFrameEl.style.height = spFrameEl.offsetHeight + "px"; // Tafel behaelt ihre Hoehe, darunter darf gescrollt werden
+  spRootEl.classList.add("done"); spRootEl.classList.remove("sp-kb");
+  spRootEl.querySelectorAll(".sp-slot.on").forEach(sl => sl.classList.remove("on")); // keine gewaehlte Position mehr nach dem Auswerten
+  spRootEl.querySelectorAll(".pos-input.active-field").forEach(i => i.classList.remove("active-field"));
+  document.getElementById("screen-game").classList.add("sp-done");
+  const panel = document.createElement("div");
+  panel.className = "sp-res";
+  spRootEl.appendChild(panel);
 
   if (campaignResult) {
     const banner = document.createElement("div");
