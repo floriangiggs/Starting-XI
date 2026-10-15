@@ -56,8 +56,9 @@ vorige umgesetzt, getestet und committet ist.
 | 42 | Spiel-Ansicht „Taktiktafel“ als One-Pager in allen Modi (inkl. Duell): Holzreiter, Holzleiste mit Werkzeugen, Korrigieren per Stift, Tastatur-Leiste, Regeln anpassen | 41 |
 | 43 | Duell-Zentrale: Kopf unter der iPhone-Statusleiste, Blätter (Schnell-Duell u. a.) per Wischen/✕ schließbar – Safe-Area-Check aller Bildschirme | – |
 | 44 | Startseite + Scout-Profil im Taktiktafel-Stil (Scout-Pass, Tages-Challenge-Tafel, Kampagne/Duell-Tafeln, Frei spielen auf der Kreideablage; Profil-Blatt mit Holzreitern, Trophäenregal) | 41, 42, 43 |
+| 45 | Kampagne-Weltenansicht im Taktiktafel-Stil (Saison-Brett, fünf Mini-Stadien mit Fortschrittsring, Kreideweg, „Du“-Magnet, Holzleiste mit Ziel) | 44 |
 
-**Empfohlene Reihenfolge ab jetzt:** 39 → 41 → 42 → 43 → 44 → weitere Offline-Feinschliffe (u. a. Jahres-Lücken im Ideen-Speicher auffüllen) → Planung Online-Duell (inkl. 28/29) → 8 (Capacitor, erst wenn die App final ist; vorher Duell-Pflichtpunkt aus CLAUDE.md ansprechen)
+**Empfohlene Reihenfolge ab jetzt:** 39 → 41 → 42 → 43 → 44 → 45 → weitere Offline-Feinschliffe (u. a. Jahres-Lücken im Ideen-Speicher auffüllen) → Planung Online-Duell (inkl. 28/29) → 8 (Capacitor, erst wenn die App final ist; vorher Duell-Pflichtpunkt aus CLAUDE.md ansprechen)
 
 Prompt 7 steht bewusst vor der Tages-Challenge: Nur mit der neuen
 Update-Strategie kommen neue Tages-Aufstellungen zuverlässig auf dem iPhone an.
@@ -77,7 +78,8 @@ Welten-Ausschmückung), `prototypes/ladescreen.html` (Prompt 11d) und
 `prototypes/duell-ausbau.html` (Prompts 39/40 – Duell-Zentrale v3) und
 `prototypes/level-vorschau.html` (Prompt 41 – nur Variante C „Taktiktafel“ + Kopfzeile) und
 `prototypes/spiel-ansicht.html` (Prompt 42 – nur Standard: Holzreiter + Holzrahmen) und
-`prototypes/startseite.html` (Prompt 44 – Startseite + Scout-Profil, ohne Statusleisten-Attrappe).
+`prototypes/startseite.html` (Prompt 44 – Startseite + Scout-Profil, ohne Statusleisten-Attrappe) und
+`prototypes/weltenkarte.html` (Prompt 45 – Kampagne-Weltenansicht, ohne Statusleisten-Attrappe).
 
 **Wichtig nach jeder Änderung:** Der Service Worker liefert die App aus dem
 Cache. Jeder Prompt erhöht deshalb `CACHE_NAME` in `sw.js` – sonst sieht die
@@ -3816,6 +3818,95 @@ E. Test und Abschluss
      Reiter (auch gescrollt), Trophäen-Zettel.
    - Overlap-/Safe-Area-Check (tools aus 43) ohne Befund.
    - CACHE_NAME in sw.js erhöhen, Status-Tabelle: Prompt 44 erledigt.
+```
+
+---
+
+## Prompt 45 – Kampagne: Weltenansicht im Taktiktafel-Stil
+
+```
+Lies CLAUDE.md. Optischer Umbau eines Bildschirms → Plan Mode, Plan
+zeigen, dann in Paketen A–C umsetzen (je Paket Commit + Test).
+Voraussetzung: Prompts 41–44 erledigt (Holz-Bausteine, Scout-Münze,
+Safe-Area-Regeln, Hintergrund der Startseite).
+Optische Vorlage: prototypes/weltenkarte.html (von Florian am
+15.10.2026 freigegeben) – Optik, Maße, Farben, Schriften, Bewegungen 1:1.
+NICHT übernehmen: angedeutete Statusleiste/Dynamic Island/Home-Balken,
+Regie-Pult, Beispiel-Spielstände, eingebettete Schriften.
+
+Grundsatz: Logik bleibt (ROADMAP-Reihenfolge Welt 1–5, isTierUnlocked,
+getMatchesByTier, profile.campaign.levelPassed/stars, Navigation in den
+Level-Pfad, "Welt geschafft"-Animation aus Prompt 31). Es ändert sich
+renderCampaignWorlds() und das zugehörige CSS (#screen-worldmap).
+
+A. Aufbau (One-Pager ohne Scrollen, Hintergrund wie Startseite)
+   1. Kopf: "‹ Start" (gezeichneter Chevron, wie .topbar aus 41),
+      "Kampagne" (Anton), rechts Token-Chip mit Scout-Münze. Unter der
+      Statusleiste (Safe-Area wie 43).
+   2. Saison-Brett (Holzbrettchen, drei Felder mit Trennfugen):
+      "x/59 Level bestanden" (Summe levelPassed über alle Welten, Gesamt
+      dynamisch), "★ x/177 Sterne" (starsSummaryForTier summiert),
+      "x/10 Pokale & Schalen" (Kampagnen-Trophäen cup_tierN/plate_tierN).
+   3. Weltentafel (Filz + Holzrahmen) mit den fünf Welten untereinander,
+      Stadien leicht versetzt (links/etwas eingerückt im Wechsel), Info
+      rechts daneben:
+      - Mini-Stadion von oben je Welt als SVG (stadium() im Prototyp):
+        1 Dorfplatz mit Bäumen + Holzzaun, 2 Tribüne + Banden, 3 volles
+        Rund, 4 Nacht mit vier Flutlichtern + Sternen, 5 goldene Arena
+        mit Konfetti. Spielfeld-Markierungen immer aus der Spielfeld-
+        Größe berechnet (Mittellinie/Mittelkreis in der Mitte des Felds,
+        Strafräume an den Enden – nicht feste Koordinaten).
+      - Fortschrittsring in Weltfarbe (DIFF_COLOR) = bestandene Level /
+        Levelanzahl; füllt sich einmalig beim Öffnen.
+      - Aktuelle Welt (erste freigeschaltete, nicht abgeschlossene):
+        weicher Schein in Weltfarbe + goldener "Du"-Magnet oben (ersetzt
+        das ⚽-Maskottchen auf dieser Seite; Maskottchen-Stufen dürfen
+        als kleines Detail am Magneten bleiben, im Plan vorschlagen).
+      - Abzeichen am Stadion: Pokal (alle Level bestanden), Schale (alle
+        mit 3 Sternen) – gezeichnet wie im Prototyp, keine Emojis.
+      - Gesperrt: Stadion entsättigt + Schloss-Kreis (SVG statt 🔒).
+        Welten ohne Aufstellungen ("bald verfügbar") wie gesperrt mit
+        diesem Text.
+      - Info: Holzreiter "● Welt n" (Punkt in Weltfarbe), Name (Anton),
+        Fortschrittsbalken + "x/N Level" bzw. "✓ geschafft", darunter
+        Sterne "★ x/max" und kleine Pokal-/Schalen-Symbole (gold wenn
+        gewonnen). Gesperrt: "N Level · frei nach <vorige Welt>".
+      - Kreideweg links zwischen den Stadien: geschafft = durchgezogene
+        Kreide mit Pfeilspitze, nächster Schritt = gold gepunktet mit
+        Pfeil, gesperrt = blass gepunktet. Der Weg kreuzt keinen Text.
+   4. Holzleiste unten (Filz-Einlage, drei Kreidestücke): zeigt die
+      ausgewählte Welt (Standard: aktuelle Welt). Welt antippen wählt sie
+      aus (goldene Markierung links + leichter Goldschimmer) – ein
+      zweiter Tipp auf dieselbe Welt oder der Knopf öffnet den Level-Pfad.
+      - freigeschaltet, offen: "<Welt> · Level n von N" + kurzer Welt-
+        Satz (aus TIER_INTRO gekürzt), Knopf "Weiter ›" (aktuelle Welt)
+        bzw. "Spielen ›".
+      - geschafft: "<Welt> · alle Level geschafft" + "Noch x Sterne bis
+        zur Schale" bzw. "Pokal und Schale gewonnen – Training jederzeit",
+        Knopf "Ansehen ›".
+      - gesperrt: "<Welt> ist noch gesperrt" + "Schalte frei: noch x
+        Level in <vorige Welt> bestehen", Knopf deaktiviert "Gesperrt".
+   5. Passt ohne Scrollen bei 393×852 und 430×932; bei 375×667 dürfen
+      Stadien/Zeilen kleiner werden (Zeilenhöhe aus verfügbarer Höhe
+      berechnen), nichts überlappt; Overlap-/Safe-Area-Check aus 43.
+
+B. Bewegung (einmalig beim Öffnen, prefers-reduced-motion beachten)
+   Saison-Brett und Tafel steigen auf, Stadien erscheinen gestaffelt,
+   Kreideweg zeichnet sich, Ringe/Balken füllen sich, Abzeichen ploppen,
+   "Du"-Magnet fällt mit kleinem Federn auf die aktuelle Welt, Glanz über
+   den Knopf. Keine Dauerschleifen (auch kein pulsierender Schein).
+
+C. Aufräumen + Abschluss
+   - Alte Stadion-Knoten-Stile (.stadium-node, .stadium-ring …),
+     roadmap-SVG und Emoji-Symbole dieser Seite entfernen, wenn nicht
+     mehr genutzt. Rückkehr vom Level-Pfad landet wieder hier mit der
+     zuletzt gewählten Welt.
+   - Texte in "So geht's", die die Weltenkarte beschreiben, prüfen.
+   - Screenshots 393×852 (Safe-Area simuliert), 430×932, 375×667 in drei
+     Spielständen: neu (Welt 1, Level 1), mittendrin (Welt 1 komplett,
+     Welt 2 teilweise), fast fertig (Welt 1–4 komplett, Welt 5 offen);
+     dazu je eine gesperrte und eine geschaffte Welt ausgewählt.
+   - CACHE_NAME in sw.js erhöhen, Status-Tabelle: Prompt 45 erledigt.
 ```
 
 ---
