@@ -67,14 +67,6 @@
 
   #screen-start { justify-content: space-between; gap: clamp(8px, 1.6vh, 14px); }
 
-  header { position: relative; text-align: center; padding-top: 4px; }
-  header::before { content: ""; position: absolute; top: -30px; left: 50%; transform: translateX(-50%); width: 260px; height: 170px; background: radial-gradient(ellipse, rgba(232,178,61,0.16), transparent 70%); pointer-events: none; z-index: -1; }
-  .brand-badge { width: clamp(34px, 5.5vh, 46px); height: clamp(34px, 5.5vh, 46px); margin: 0 auto 6px; border-radius: 50%; background: radial-gradient(circle at 35% 30%, #2c6b48, var(--pitch)); border: 2px solid var(--gold); display: flex; align-items: center; justify-content: center; font-size: clamp(16px, 2.6vh, 21px); box-shadow: 0 6px 18px rgba(0,0,0,0.4), inset 0 0 14px rgba(0,0,0,0.35); }
-
-  .help-btn { position: absolute; top: 0; right: 0; display: inline-flex; align-items: center; gap: 6px; background: linear-gradient(135deg, var(--gold), #f4d58d); color: var(--ink); border: none; border-radius: 20px; padding: 8px 14px; font-family: 'Oswald', sans-serif; font-weight: 700; font-size: clamp(11px, 3vw, 13px); text-transform: uppercase; letter-spacing: 0.02em; cursor: pointer; box-shadow: 0 4px 14px rgba(232,178,61,0.45); animation: helpBtnPulse 2.6s ease-in-out infinite; }
-  .help-btn .help-icon { font-size: 15px; line-height: 1; }
-  .help-btn:active { transform: scale(0.96); }
-  @keyframes helpBtnPulse { 0%, 100% { box-shadow: 0 4px 14px rgba(232,178,61,0.45); } 50% { box-shadow: 0 4px 22px rgba(232,178,61,0.8); } }
   .help-dot { position: absolute; top: -5px; right: -5px; width: 11px; height: 11px; border-radius: 50%; background: var(--red); border: 2px solid var(--ink); animation: helpPulse 1.6s ease-in-out infinite; }
   .help-dot.hidden { display: none; }
   @keyframes helpPulse { 0%,100% { transform: scale(1); opacity: 1; } 50% { transform: scale(1.3); opacity: 0.6; } }
@@ -98,37 +90,8 @@
   .diff-dot { width: 6px; height: 6px; border-radius: 50%; background: rgba(255,255,255,0.2); }
   .diff-dot.on { background: currentColor; }
 
-  /* ---- Start: Modus-Kacheln (Prompt 18, Optik 1:1 aus prototypes/modus-kacheln.html "A - neu").
-     Beide Kacheln teilen dasselbe Grid mit festen Zeilen (Icon, Titel, Bildzeile, Textzeile, Aktionsleiste),
-     dadurch liegen alle Zeilen exakt auf gleicher Hoehe. Regeln unter .mode-tiles gescoped. ---- */
   #dailyCard:empty { display: none; }
-  .mode-tiles { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; flex-shrink: 0; }
-  .mode-tiles .mt { position: relative; overflow: hidden; border-radius: 14px; border: 2px solid var(--line); display: grid; grid-template-rows: 34px 28px 22px 20px auto; justify-items: center; align-items: center; row-gap: 5px; padding: 12px 10px 0; text-align: center; font: inherit; color: var(--chalk); background: var(--ink-2); box-shadow: 0 6px 14px rgba(0,0,0,0.3); cursor: pointer; appearance: none; -webkit-appearance: none; }
-  .mode-tiles .mt:active { transform: scale(0.98); }
-  .mode-tiles .mt:focus-visible { outline: 2px solid var(--gold-2); outline-offset: 3px; }
-  .mode-tiles .mt.camp { background: linear-gradient(160deg, #f6da9c, var(--gold) 60%, #D49B26); color: var(--ink); border-color: var(--gold); box-shadow: 0 10px 22px rgba(232,178,61,0.35), inset 0 2px 0 rgba(255,255,255,0.35); }
-  .mode-tiles .mt::after { content: ""; position: absolute; inset: 0; pointer-events: none; opacity: 0.5; }
-  .mode-tiles .mt.camp::after { background: radial-gradient(circle at 50% 18%, rgba(255,255,255,0.45), transparent 38%); }
-  .mode-tiles .mt > * { position: relative; z-index: 1; }
-  .mode-tiles .mt .ic { font-size: 30px; line-height: 1; }
-  .mode-tiles .mt .nm { font-family: 'Anton', Impact, sans-serif; font-weight: 400; font-size: 22px; line-height: 1; text-transform: uppercase; letter-spacing: 0.01em; }
-  .mode-tiles .mt .ft { justify-self: stretch; align-self: end; margin: 6px -10px 0; padding: 7px 10px; display: flex; justify-content: center; align-items: center; gap: 4px; font-family: 'Anton', Impact, sans-serif; font-weight: 400; font-size: 13px; letter-spacing: 0.04em; text-transform: uppercase; }
-  .mode-tiles .mt.camp .ft { background: rgba(20,32,43,0.12); border-top: 1px solid rgba(20,32,43,0.18); color: var(--ink); }
-  .mode-tiles .mt .ft svg { width: 12px; height: 12px; }
-  .mode-tiles .wp { display: flex; align-items: center; }
-  .mode-tiles .wp i { width: 14px; height: 14px; border-radius: 50%; display: grid; place-items: center; font-style: normal; font-family: 'Anton', Impact, sans-serif; font-size: 9px; border: 2px solid rgba(20,32,43,0.3); background: rgba(20,32,43,0.08); color: transparent; }
-  .mode-tiles .wp i.done { background: var(--ink); border-color: var(--ink); color: var(--gold-2); font-size: 8px; }
-  .mode-tiles .wp i.now { width: 22px; height: 22px; font-size: 13px; background: var(--ink); border-color: var(--ink); color: var(--gold-2); box-shadow: 0 0 0 3px rgba(20,32,43,0.18); }
-  .mode-tiles .wp b { width: 9px; height: 2px; background: rgba(20,32,43,0.28); }
-  .mode-tiles .wp b.done { background: var(--ink); }
-  .mode-tiles .ln { font-family: 'Oswald', sans-serif; font-weight: 600; font-size: 13.5px; line-height: 1; white-space: nowrap; }
-  .mode-tiles .ln em { font-style: normal; font-weight: 400; opacity: 0.72; }
-  /* Kurze Displays (iPhone SE/8: 667px): Kacheln etwas dichter, sonst reicht der Platz mit Scout-Ausweis + Tages-Ticket nicht. */
-  @media (max-height: 700px) {
-    .mode-tiles .mt { grid-template-rows: 30px 26px 22px 20px auto; row-gap: 4px; padding-top: 10px; }
-    .mode-tiles .mt .ic { font-size: 28px; }
-    .mode-tiles .mt .ft { margin-top: 4px; padding: 6px 10px; }
-  }
+
 
   /* ---- Kampagne: Stadion-Roadmap ---- */
   #campaignView { flex: 1; min-height: 0; display: flex; flex-direction: column; }
@@ -221,7 +184,7 @@
   .back-btn .back-arrow { color: var(--gold); font-size: 20px; line-height: 1; }
 
   /* ---- Spielfeld-Kopfzeile: Abbrechen links, Regeln rechts (Prompt 11c) ---- */
-  .tok-chip b, .profile-bar .tok b { font-family: 'Anton', Impact, sans-serif; font-weight: 400; font-size: 16px; line-height: 1; color: var(--gold-2); }
+  .tok-chip b { font-family: 'Anton', Impact, sans-serif; font-weight: 400; font-size: 16px; line-height: 1; color: var(--gold-2); }
   /* Scout-Muenze (Prompt 41): einheitliches Token-Symbol, im Text ca. 1em und baseline-buendig */
   /* Kopfzeile der Level-Vorschau (Prompt 41, Prototyp level-vorschau.html .topbar/.tb) */
   .lv-top { display: flex; align-items: center; gap: 8px; flex-shrink: 0; }
@@ -392,7 +355,7 @@
   .hm-tray .hm-felt { height: 100%; border-radius: 4px 4px 11px 11px; display: flex; align-items: center; gap: 11px; padding: 0 12px 0 10px; background: radial-gradient(120% 140% at 30% 0%, #23402F, #15291E); box-shadow: inset 0 2px 6px rgba(0,0,0,0.5); }
   .hm-tray .hm-dice { width: 34px; height: 34px; flex-shrink: 0; }
   .hm-tray b { display: block; font-weight: 500; font-size: 16px; line-height: 1.1; }
-  .hm-tray small { display: block; font-weight: 300; font-size: 13px; color: rgba(244,241,232,0.78); }
+  .hm-tray small { display: block; font-weight: 300; font-size: 13px; color: rgba(244,241,232,0.78); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
   .hm-tray .hm-tx { flex: 1; min-width: 0; }
   .hm-tray .hm-ar { width: 34px; height: 34px; border-radius: 50%; display: grid; place-items: center; box-shadow: inset 0 0 0 1.5px rgba(247,217,142,0.7); color: var(--gold-hi); }
   .hm-tray .hm-ar svg { width: 17px; height: 17px; }
@@ -450,7 +413,7 @@
   .hm-wbtn svg { width: 17px; height: 17px; }
   .hm-namecard { display: flex; align-items: center; gap: 10px; padding: 10px 12px; border-radius: 12px; background: rgba(10,22,16,0.35); box-shadow: inset 0 0 0 1px rgba(244,241,232,0.2); }
   .hm-namecard div { flex: 1; } .hm-namecard b { display: block; font-weight: 500; font-size: 15.5px; } .hm-namecard small { font-weight: 300; font-size: 13px; color: rgba(244,241,232,0.75); }
-  .hm-namecard button { height: 34px; padding: 0 12px; border-radius: 10px; box-shadow: inset 0 0 0 1.5px rgba(247,217,142,0.7); color: var(--gold-hi); font-weight: 500; font-size: 14px; }
+  .hm-namecard button { height: 34px; background: none; border: none; font-family: inherit; cursor: pointer; padding: 0 12px; border-radius: 10px; box-shadow: inset 0 0 0 1.5px rgba(247,217,142,0.7); color: var(--gold-hi); font-weight: 500; font-size: 14px; }
   /* Trophäen */
   .hm-cab-top { display: flex; align-items: center; gap: 12px; padding: 12px 14px; border-radius: 14px; background: rgba(10,22,16,0.35); box-shadow: inset 0 0 0 1px rgba(244,241,232,0.2); }
   .hm-cab-top b { font-family: var(--f-display); font-weight: 400; font-size: 30px; color: var(--gold-hi); line-height: 1; }
@@ -493,8 +456,6 @@
   .hm-fine-n { margin-top: 14px; font-weight: 300; font-size: 13px; line-height: 1.5; color: rgba(244,241,232,0.65); }
   .hm-emptyb { padding: 18px 14px; border-radius: 12px; text-align: center; font-weight: 300; font-size: 14.5px; line-height: 1.45; color: rgba(244,241,232,0.82); background: rgba(10,22,16,0.3); box-shadow: inset 0 0 0 1.5px rgba(244,241,232,0.25); }
 
-
-
   /* ---- Startseite + Scout-Profil "Taktiktafel" (Prompt 44): Variablen des Prototyps, Bildschirm, kompakte Stufen ---- */
   .hm-home, .hm-psheet { --cream: #FFF1C8; --gold-hi: #F7D98E; --mint: #7FE0A8; --ok: #49D98A; --flame: #E8632B; --muted: rgba(244,241,232,0.8); --dim: rgba(244,241,232,0.55);
     --wood: linear-gradient(180deg, rgba(255,255,255,0.10), transparent 40%), repeating-linear-gradient(92deg, rgba(0,0,0,0.06) 0 2px, transparent 2px 7px), linear-gradient(180deg, #9A6C40, #6B4828);
@@ -518,9 +479,11 @@
   #screen-start .hm-pass .hm-stamps { gap: 10px; }
   @media (max-width: 410px) { #screen-start .hm-w { display: none; } }
   #screen-start .hm-xpt { overflow: hidden; }
+  @media (max-width: 370px) { #screen-start .hm-d-h small { white-space: nowrap; font-size: 13px; } #screen-start .hm-d-h .hm-sp { display: none; } }
   .hm-wait, .hm-wait * , .hm-wait *::before, .hm-wait *::after { animation-play-state: paused !important; } /* Einblenden startet erst, wenn der Ladebildschirm weg ist */
   .hm-pass:focus-visible, .hm-board:focus-visible, .hm-tray:focus-visible { outline: 2px solid var(--gold-hi); outline-offset: 3px; }
   .hm-tr, .hm-tab, .hm-wbtn, .hm-x { font-family: inherit; border: none; cursor: pointer; color: inherit; }
+  .hm-tr { background: none; padding: 0 2px; }
   /* Kompakte Stufen: iPhone 12 mini / X (812) und iPhone SE (667) - Tafeln werden niedriger, nichts scrollt */
   @media (max-height: 830px) {
     #screen-start.hm-home { --hd: 222px; --hm: 184px; --pass-h: 120px; gap: 8px; }
@@ -536,7 +499,8 @@
     #screen-start .hm-pass .hm-who > b { font-size: 22px; } #screen-start .hm-pass .hm-stamps { height: 32px; }
     #screen-start .hm-d-h { top: 11px; left: 18px; } #screen-start .hm-d-h b { font-size: 25px; } #screen-start .hm-d-mid { top: 60px; left: 18px; height: 68px; gap: 10px; } #screen-start .hm-mini { width: 56px !important; } #screen-start .hm-d-cta { left: 14px; right: 14px; bottom: 11px; }
     #screen-start .hm-cta, #screen-start .hm-done .hm-res, #screen-start .hm-done .hm-share { height: 40px; font-size: 20px; } #screen-start .hm-plate { height: 32px; } #screen-start .hm-plate b { font-size: 19px; }
-    #screen-start .hm-m-h { top: 11px; } #screen-start .hm-m-h b { font-size: 21px; } #screen-start .hm-m-art { top: 48px; height: 56px; } #screen-start .hm-m-btn { height: 34px; bottom: 10px; }
+    #screen-start .hm-m-h { top: 9px; } #screen-start .hm-m-h b { font-size: 20px; } #screen-start .hm-m-h small { margin-top: 2px; font-size: 12px; line-height: 14px; } #screen-start .hm-m-art { top: 48px; height: 56px; } #screen-start .hm-m-btn { height: 34px; bottom: 10px; }
+    #screen-start .hm-vs { height: 40px; gap: 5px; } #screen-start .hm-tag .hm-rt { height: 14px; font-size: 10.5px; } #screen-start .hm-tag .hm-nm { height: 25px; font-size: 13.5px; min-width: 44px; } #screen-start .hm-turn { bottom: -2px; font-size: 12px; line-height: 14px; }
     #screen-start .hm-tray { margin-top: 6px; height: 56px; } #screen-start .hm-tray .hm-dice { width: 28px; height: 28px; } #screen-start .hm-tray .hm-felt { gap: 9px; } #screen-start .hm-tray b { font-size: 15px; } #screen-start .hm-tray small { font-size: 12px; }
   }
   /* Profil-Blatt: Holzrahmen + Filz, Reiter oben (Container-Regeln; Inhalte siehe Prototyp-Regeln oben) */
@@ -895,9 +859,7 @@
   .gs .help.bench-help .cost { font-family: 'Anton', Impact, sans-serif; font-weight: 400; font-size: 14px; color: var(--gold-2); }
   .gs .help.bench-help p { margin: 2px 0 0; font-size: 12px; line-height: 1.3; }
   .gs .help.bench-help .bk { font-weight: 600; color: var(--gold-2); letter-spacing: 0.05em; }
-  .t-replay { display: block; margin-top: 8px; border: 1px solid rgba(232,178,61,0.6); background: rgba(232,178,61,0.1); color: var(--gold-2); border-radius: 18px; padding: 6px 14px; font-family: 'Oswald', sans-serif; font-weight: 600; font-size: 13px; cursor: pointer; }
-  .data-row { display: flex; gap: 8px; margin-top: 4px; }
-  .data-row button { flex: 1; border: 1px solid var(--line); background: var(--ink-2); color: var(--chalk); border-radius: 10px; padding: 9px 6px; font-family: 'Oswald', sans-serif; font-weight: 500; font-size: 13px; cursor: pointer; }
+
   .install-tip { position: fixed; z-index: 30; left: 50%; transform: translateX(-50%); top: max(8px, calc(env(safe-area-inset-top, 0px) + 6px)); width: calc(100% - 24px); max-width: 520px; display: flex; gap: 10px; align-items: center; background: var(--ink-2); border: 1px solid rgba(232,178,61,0.55); border-radius: 12px; padding: 9px 10px 9px 12px; box-shadow: 0 6px 20px rgba(0,0,0,0.45); }
   .install-tip p { margin: 0; flex: 1; font-family: 'Oswald', sans-serif; font-weight: 300; font-size: 12.5px; line-height: 1.35; }
   .install-tip p b { font-weight: 600; color: var(--gold-2); }
@@ -908,7 +870,6 @@
   .pass-banner.pass { background: rgba(46,204,113,0.15); color: #2ecc71; border: 1px solid rgba(46,204,113,0.4); }
   .pass-banner.fail { background: rgba(193,57,43,0.15); color: #E37464; border: 1px solid rgba(193,57,43,0.4); }
 
-
   .match-list { display: flex; flex-direction: column; gap: 10px; margin-bottom: 18px; }
   .match-card { background: var(--ink-2); border: 1px solid var(--line); border-radius: 10px; padding: 16px 18px; cursor: pointer; transition: border-color 0.15s, transform 0.1s; text-align: left; }
   .match-card:hover { border-color: var(--gold); }
@@ -916,7 +877,6 @@
   .match-comp { font-family: 'Oswald', sans-serif; font-weight: 600; font-size: 10px; letter-spacing: 0.1em; text-transform: uppercase; color: var(--gold); margin-bottom: 5px; }
   .match-teams { font-family: 'Oswald', sans-serif; font-weight: 600; font-size: 16px; color: var(--chalk); margin-bottom: 3px; }
   .match-shape { font-family: 'Oswald', sans-serif; font-weight: 300; font-size: 10.5px; color: rgba(242,239,230,0.45); }
-
 
   /* ---- Pitch ---- */
   .bonus-panel { background: linear-gradient(180deg, rgba(193,57,43,0.10), var(--ink-2)); border: 1px solid rgba(193,57,43,0.35); border-radius: 10px; padding: 14px 16px; margin-bottom: 12px; box-shadow: 0 8px 24px rgba(0,0,0,0.28); }
@@ -975,40 +935,7 @@
 
   .hidden { display: none !important; }
 
-  /* ---- Profil / Level-System: Scout-Ausweis (Prompt 17, Optik 1:1 aus prototypes/scout-ausweis.html Variante A).
-     Alle Regeln unter .profile-bar gescoped - .info/.goal/.xp/.new u. a. gibt es in der App teils schon. ---- */
   .rank-icon { position: relative; width: 38px; height: 38px; border-radius: 50%; flex-shrink: 0; display: flex; align-items: center; justify-content: center; font-size: 17px; line-height: 1; border: 2px solid var(--rank-c1, var(--gold)); background: radial-gradient(circle at 35% 30%, var(--rank-c1, #8a6a4a), var(--rank-c2, #5c4326) 75%); box-shadow: 0 4px 12px rgba(0,0,0,0.4), inset 0 0 10px rgba(0,0,0,0.35), 0 0 0 3px rgba(255,255,255,0.03); }
-  .profile-bar { display: block; width: 100%; padding: 0; text-align: left; font: inherit; color: var(--chalk); cursor: pointer; position: relative; flex-shrink: 0; border-radius: 14px; overflow: hidden; border: 1.5px solid rgba(232,178,61,0.55);
-    background: radial-gradient(circle at 0% 0%, rgba(232,178,61,0.16), transparent 45%), linear-gradient(160deg, #22313F, #18242F 70%); box-shadow: 0 8px 18px rgba(0,0,0,0.3); transition: transform 0.1s ease; }
-  .profile-bar:active { transform: scale(0.99); }
-  .profile-bar:focus-visible { outline: 2px solid var(--gold-2); outline-offset: 3px; }
-  .profile-bar.gold-frame { border-color: var(--gold); box-shadow: 0 0 0 1px var(--gold), 0 0 14px rgba(232,178,61,0.25), 0 8px 18px rgba(0,0,0,0.3); }
-  .profile-bar .body { display: flex; align-items: center; gap: 12px; padding: 11px 12px 9px; }
-  .profile-bar .ring { position: relative; width: 66px; height: 66px; flex-shrink: 0; }
-  .profile-bar .ring svg { position: absolute; inset: 0; transform: rotate(-90deg); }
-  .profile-bar .ring .emb { position: absolute; inset: 7px; border-radius: 50%; display: grid; place-items: center; font-size: 25px; background: radial-gradient(circle at 35% 30%, #f9e3a8, #b8862a 75%); box-shadow: inset 0 -3px 6px rgba(0,0,0,0.3), 0 0 14px rgba(232,178,61,0.35); }
-  .profile-bar .ring .lv { position: absolute; left: 50%; bottom: -7px; transform: translateX(-50%); font-family: 'Anton', Impact, sans-serif; font-weight: 400; font-size: 13px; line-height: 1; padding: 3px 7px 2px; border-radius: 10px; background: var(--ink); color: var(--gold-2); border: 1.5px solid var(--gold); white-space: nowrap; }
-  .profile-bar .info { flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 4px; }
-  .profile-bar .rk { font-family: 'Anton', Impact, sans-serif; font-weight: 400; font-size: 23px; line-height: 1; text-transform: uppercase; display: flex; flex-wrap: wrap; align-items: baseline; column-gap: 8px; row-gap: 2px; }
-  .profile-bar .rk.long { font-size: 19px; }
-  .profile-bar .rk small { font-family: 'Oswald', sans-serif; font-weight: 500; font-size: 12.5px; text-transform: none; color: var(--gold-2); }
-  .profile-bar .xp { height: 8px; border-radius: 5px; background: rgba(255,255,255,0.08); overflow: hidden; position: relative; }
-  .profile-bar .xp i { position: absolute; inset: 0 auto 0 0; border-radius: 5px; background: linear-gradient(90deg, var(--gold), var(--gold-2)); box-shadow: 0 0 10px rgba(232,178,61,0.55); transition: width 0.5s ease; }
-  .profile-bar .nx { font-family: 'Oswald', sans-serif; font-weight: 400; font-size: 12.5px; color: var(--muted); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-  .profile-bar .nx b { color: var(--gold-2); font-weight: 600; }
-  .profile-bar .goal { font-family: 'Oswald', sans-serif; font-weight: 400; font-size: 12px; color: rgba(242,239,230,0.8); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-  .profile-bar .goal b { color: var(--gold-2); font-weight: 600; }
-  .profile-bar .tok { flex-shrink: 0; align-self: flex-start; display: inline-flex; align-items: center; gap: 5px; height: 26px; padding: 0 10px 0 4px; border-radius: 13px; background: rgba(10,17,24,0.4); box-shadow: inset 0 0 0 1px rgba(244,241,232,0.25); }
-  .profile-bar .foot { display: flex; align-items: center; gap: 12px; padding: 7px 12px; border-top: 1px solid rgba(232,178,61,0.25); background: rgba(0,0,0,0.18); font-family: 'Oswald', sans-serif; font-weight: 400; font-size: 13px; }
-  .profile-bar .foot .st { display: inline-flex; align-items: center; gap: 4px; color: rgba(242,239,230,0.85); white-space: nowrap; }
-  .profile-bar .foot .st b { font-family: 'Anton', Impact, sans-serif; font-weight: 400; font-size: 14px; color: var(--chalk); }
-  .profile-bar .foot .cta { margin-left: auto; display: inline-flex; align-items: center; gap: 4px; font-family: 'Anton', Impact, sans-serif; font-weight: 400; font-size: 14px; letter-spacing: 0.03em; text-transform: uppercase; color: var(--gold); white-space: nowrap; }
-  .profile-bar .foot .cta svg { width: 14px; height: 14px; }
-  .profile-bar .foot .new { display: inline-block; width: 8px; height: 8px; border-radius: 50%; background: var(--gold); box-shadow: 0 0 0 3px rgba(232,178,61,0.25); margin-right: 3px; }
-  @media (max-width: 389px) {
-    .profile-bar .foot { gap: 8px; padding: 7px 10px; font-size: 12.5px; }
-    .profile-bar .foot .wissen-txt { display: none; }
-  }
 
   .toast-stack { position: fixed; top: max(16px, calc(env(safe-area-inset-top, 0px) + 10px)); left: 50%; transform: translateX(-50%); z-index: 50; display: flex; flex-direction: column; gap: 8px; width: 92%; max-width: 500px; pointer-events: none; }
   #srFx { position: fixed; inset: 0; width: 100%; height: 100%; pointer-events: none; z-index: 55; }
@@ -1021,130 +948,15 @@
   .modal-sheet { background: var(--ink-2); border: 1px solid var(--line); border-radius: 14px 14px 0 0; padding: 22px 20px max(28px, calc(env(safe-area-inset-bottom, 0px) + 14px)); width: 100%; max-width: 560px; max-height: 82vh; overflow-y: auto; }
   .modal-close { display: block; margin: 0 auto 16px; background: transparent; border: 1px solid var(--line); color: var(--chalk); border-radius: 20px; padding: 8px 18px; font-family: 'Oswald', sans-serif; font-weight: 600; font-size: 11px; text-transform: uppercase; cursor: pointer; }
 
-  /* ---- Scout-Profil Bottom-Sheet (Prompt 12, Optik 1:1 aus prototypes/scout-profil.html) ---- */
-  .profile-sheet { max-height: 88vh; display: flex; flex-direction: column; gap: 14px; padding-bottom: max(20px, env(safe-area-inset-bottom)); }
-  .sheet-head { display: flex; justify-content: space-between; align-items: center; }
-  .sheet-title { font-family: 'Anton', sans-serif; font-size: 22px; text-transform: uppercase; color: var(--gold); }
-  .sheet-head .modal-close { margin: 0; }
-  .tabs { display: grid; grid-template-columns: repeat(3, 1fr); gap: 4px; padding: 4px; border-radius: 12px; background: var(--ink-3); border: 1px solid var(--line); flex-shrink: 0; }
-  .tab { background: transparent; border: none; color: var(--muted); font-family: 'Oswald', sans-serif; font-weight: 600; font-size: 14px; padding: 8px 4px; border-radius: 9px; cursor: pointer; }
-  .tab[aria-selected="true"] { background: linear-gradient(160deg, #f6da9c, var(--gold)); color: var(--ink); font-weight: 700; }
-  .sheet-panel { display: flex; flex-direction: column; gap: 14px; overflow-y: auto; padding-right: 4px; scrollbar-gutter: stable; }
 
-  .hero { display: flex; gap: 14px; align-items: center; padding: 12px 14px; border-radius: 12px; background: var(--ink-3); border: 1px solid var(--line); }
-  .hero .rank-icon { width: 56px; height: 56px; font-size: 26px; flex-shrink: 0; }
-  .hero-rank { font-family: 'Anton', sans-serif; font-size: 22px; text-transform: uppercase; line-height: 1; }
-  .hero-sub { font-family: 'Oswald', sans-serif; font-size: 14px; font-weight: 300; color: var(--muted); margin-top: 4px; }
-  .hero-sub b { color: var(--gold); font-weight: 600; }
-  .stat-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; }
-  .stat-tile { background: var(--ink-3); border: 1px solid var(--line); border-radius: 10px; padding: 9px 6px; text-align: center; }
-  .stat-tile .v { font-family: 'Anton', sans-serif; font-weight: 400; font-size: 21px; color: var(--gold); }
-  .stat-tile .l { font-family: 'Oswald', sans-serif; font-size: 11.5px; font-weight: 400; color: var(--muted); margin-top: 1px; }
-  .sheet-label { font-family: 'Oswald', sans-serif; font-weight: 600; font-size: 12px; letter-spacing: 0.1em; text-transform: uppercase; color: var(--gold-2); }
-  .ladder { display: flex; flex-direction: column; gap: 4px; }
-  .rung { display: grid; grid-template-columns: 24px 1fr auto; gap: 10px; align-items: center; font-family: 'Oswald', sans-serif; font-size: 14px; padding: 6px 10px; border-radius: 8px; }
-  .rung.now { background: rgba(232,178,61,0.12); border: 1px solid rgba(232,178,61,0.35); font-weight: 600; }
-  .rung.past { color: var(--muted); }
-  .rung.future { color: rgba(242,239,230,0.42); }
-  .rung .lv-r { font-size: 12px; font-weight: 300; }
-
-  .shelf { display: flex; flex-direction: column; gap: 6px; }
-  .shelf-row { display: grid; grid-template-columns: repeat(3, 1fr); gap: 6px; padding: 10px 6px 0; border-radius: 10px 10px 0 0; background: linear-gradient(180deg, rgba(232,178,61,0.06), transparent 70%); position: relative; margin-bottom: 8px; }
-  .shelf-row::after { content: ""; position: absolute; left: 0; right: 0; bottom: -2px; height: 7px; border-radius: 3px; background: linear-gradient(180deg, #5B4424, #3A2B16); box-shadow: 0 4px 10px rgba(0,0,0,0.5); }
-  .trophy { display: flex; flex-direction: column; align-items: center; gap: 3px; padding-bottom: 12px; text-align: center; cursor: pointer; background: none; border: none; color: inherit; }
-  .trophy svg { width: 52px; height: 58px; filter: drop-shadow(0 4px 6px rgba(0,0,0,0.5)); }
-  .trophy.won svg { animation: trophyShine 3.5s ease-in-out infinite; }
-  @keyframes trophyShine { 0%, 100% { filter: drop-shadow(0 4px 6px rgba(0,0,0,0.5)); } 50% { filter: drop-shadow(0 4px 6px rgba(0,0,0,0.5)) drop-shadow(0 0 10px rgba(244,213,141,0.45)); } }
-  .trophy .t-name { font-family: 'Oswald', sans-serif; font-size: 12.5px; font-weight: 600; line-height: 1.15; }
-  .trophy .t-req { font-family: 'Oswald', sans-serif; font-size: 11px; font-weight: 300; color: rgba(242,239,230,0.42); line-height: 1.25; }
-  .trophy.locked .t-name { color: var(--muted); }
-  .t-detail { background: var(--ink-3); border: 1px solid rgba(232,178,61,0.35); border-radius: 10px; padding: 11px 14px; font-family: 'Oswald', sans-serif; font-size: 13.5px; font-weight: 300; line-height: 1.45; }
-  .t-detail b { color: var(--gold-2); font-weight: 600; }
-  .progress-mini { height: 5px; border-radius: 3px; background: rgba(255,255,255,0.1); overflow: hidden; margin-top: 8px; }
-  .progress-mini i { display: block; height: 100%; background: var(--gold); }
-  .progress-mini-label { font-size: 11px; color: var(--muted); margin-top: 3px; display: block; }
-
-  .insight { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
-  .ins { border-radius: 10px; padding: 11px 12px; border: 1px solid var(--line); background: var(--ink-3); }
-  .ins .n { font-family: 'Anton', sans-serif; font-size: 20px; text-transform: uppercase; margin-top: 3px; line-height: 1.05; }
-  .ins .p { font-family: 'Oswald', sans-serif; font-size: 12.5px; font-weight: 300; color: var(--muted); margin-top: 2px; }
-  .ins.strong { border-color: rgba(46,204,113,0.4); }
-  .ins.strong .sheet-label { color: #2ecc71; }
-  .ins.weak { border-color: rgba(232,178,61,0.45); }
   .bars { display: flex; flex-direction: column; gap: 8px; }
-  .bar-row { display: grid; grid-template-columns: 108px 1fr 42px; gap: 10px; align-items: center; font-family: 'Oswald', sans-serif; font-size: 13.5px; }
-  .bar-row .lbl { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
-  .bar-row .trk { height: 9px; border-radius: 5px; background: rgba(255,255,255,0.08); overflow: hidden; }
-  .bar-row .trk i { display: block; height: 100%; border-radius: 5px; }
-  .bar-row .pc { font-weight: 600; font-size: 12.5px; text-align: right; }
-  .bar-row.none { color: rgba(242,239,230,0.42); }
-  .sheet-note { font-family: 'Oswald', sans-serif; font-size: 12.5px; font-weight: 300; color: var(--muted); line-height: 1.5; }
 
-  /* ---- "Letzte 7 Tage" im Scout-Profil (Prompt 13, Optik 1:1 aus Prototyp) ---- */
-  .week { display: grid; grid-template-columns: repeat(7, 1fr); gap: 5px; }
-  .wd { text-align: center; font-family: 'Oswald', sans-serif; font-size: 11.5px; font-weight: 400; color: var(--muted); display: flex; flex-direction: column; gap: 5px; align-items: center; }
-  .wd .pip { width: 100%; height: 26px; border-radius: 6px; background: rgba(255,255,255,0.06); border: 1px solid var(--line); display: grid; place-items: center; font-size: 13px; }
-  .wd.done .pip { background: rgba(240,169,59,0.18); border-color: rgba(240,169,59,0.45); }
-  .wd.today { color: var(--chalk); font-weight: 600; }
-  .wd.today .pip { border-style: dashed; border-color: var(--gold-2); }
 
-  /* ---- Tages-Challenge-Karte im Ticket-Stil (Prompt 16, Optik 1:1 aus prototypes/tageskarte.html "Ticket - neu").
-     Alle Regeln unter .t1 gescoped: Klassennamen wie .title/.go/.meter/.mini/.sep/.md existieren in der App schon. ---- */
-  .t1 { --stub: 100px; position: relative; height: 148px; flex-shrink: 0; display: grid; grid-template-columns: minmax(0, 1fr) var(--stub); grid-template-rows: minmax(0, 1fr); filter: drop-shadow(0 8px 16px rgba(0,0,0,0.35)); }
-  /* Prompt 24: Inhalt darf das Ticket nie hoeher als die festen 148px machen - sonst sitzt die untere Einkerbung zu hoch. */
-  .t1 .main, .t1 .stub { border: 1.5px solid rgba(232,178,61,0.75); min-height: 0; overflow: hidden; }
-  .t1 .main { min-width: 0; position: relative; padding: 11px 12px 11px 16px; display: flex; flex-direction: column; justify-content: space-between; border-right: none; border-radius: 14px 0 0 14px;
-    background: radial-gradient(circle at 0% 0%, rgba(232,178,61,0.22), transparent 45%), repeating-linear-gradient(90deg, rgba(255,255,255,0.035) 0 18px, transparent 18px 36px), linear-gradient(150deg, #27603F, #173F2B 80%); }
-  .t1 .stub { position: relative; border-left: none; border-radius: 0 14px 14px 0; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 9px;
-    background: radial-gradient(circle at 30% 0%, #FFF1C4, transparent 60%), linear-gradient(160deg, #f6da9c, var(--gold) 55%, #C8921F); color: var(--ink); }
-  .t1 .stub::before { content: ""; position: absolute; left: -1px; top: 12px; bottom: 12px; border-left: 3px dotted rgba(20,32,43,0.5); }
-  .t1 .notch { position: absolute; right: var(--stub); width: 20px; height: 20px; margin-right: -10px; border-radius: 50%; background: var(--ink); border: 1.5px solid rgba(232,178,61,0.75); z-index: 2; }
-  .t1 .notch.t { top: -10px; clip-path: inset(50% 0 0 0); } .t1 .notch.b { bottom: -10px; clip-path: inset(0 0 50% 0); } /* Mittelpunkt exakt auf Ober-/Unterkante (Prompt 24) */
-  .t1 .date { display: flex; align-items: center; gap: 7px; font-family: 'Oswald', sans-serif; font-weight: 400; font-size: 13.5px; color: rgba(242,239,230,0.82); }
-  .t1 .date .live { width: 7px; height: 7px; border-radius: 50%; background: var(--ok); box-shadow: 0 0 0 3px rgba(46,204,113,0.18); }
-  .t1 .title { font-family: 'Anton', Impact, sans-serif; font-weight: 400; font-size: clamp(24px, 7.4vw, 31px); overflow: hidden; line-height: 0.95; text-transform: uppercase; letter-spacing: 0.005em; white-space: nowrap; }
-  .t1 .title span { color: var(--gold); text-shadow: 0 0 18px rgba(232,178,61,0.35); }
-  .t1 .meta { display: flex; align-items: center; gap: 9px; font-family: 'Oswald', sans-serif; font-weight: 500; font-size: 13.5px; white-space: nowrap; }
-  .t1 .meta .md { font-family: 'Anton', Impact, sans-serif; font-weight: 400; font-size: 15px; letter-spacing: 0.02em; color: var(--chalk); }
-  .t1 .meta .sep { width: 4px; height: 4px; border-radius: 50%; background: rgba(242,239,230,0.35); }
-  .t1 .meter { display: inline-flex; gap: 3px; } .t1 .meter i { width: 14px; height: 5px; border-radius: 3px; background: rgba(255,255,255,0.18); } .t1 .meter i.on { background: currentColor; box-shadow: 0 0 6px currentColor; }
-  .t1 .tl { display: flex; align-items: center; gap: 8px; }
-  .t1 .tl .l { font-family: 'Oswald', sans-serif; font-weight: 400; font-size: 12px; color: var(--muted); line-height: 1.15; }
-  .t1 .flip { display: inline-flex; gap: 3px; align-items: center; }
-  .t1 .flip b { font-family: 'Anton', Impact, sans-serif; font-weight: 400; font-size: 19px; line-height: 1; min-width: 17px; padding: 4px 3px 3px; text-align: center; border-radius: 4px; color: var(--gold-2); position: relative;
-    background: linear-gradient(180deg, #0d171f 0 49%, #0a1218 51% 100%); box-shadow: inset 0 0 0 1px rgba(255,255,255,0.06), 0 2px 0 rgba(0,0,0,0.35); }
-  .t1 .flip b::after { content: ""; position: absolute; left: 0; right: 0; top: 50%; height: 1px; background: rgba(0,0,0,0.6); }
-  .t1 .flip i { font-style: normal; font-family: 'Anton', Impact, sans-serif; font-size: 18px; color: rgba(244,213,141,0.55); margin: 0 1px; }
-  .t1 .fl { display: flex; flex-direction: column; align-items: center; line-height: 1; }
-  .t1 .fl b { font-family: 'Anton', Impact, sans-serif; font-weight: 400; font-size: 30px; color: var(--ink); }
-  .t1 .fl span { font-family: 'Oswald', sans-serif; font-weight: 600; font-size: 11.5px; color: rgba(20,32,43,0.75); margin-top: 3px; }
-  .t1 .go { border: 1.5px solid rgba(20,32,43,0.35); border-radius: 10px; padding: 8px 12px; font-family: 'Anton', Impact, sans-serif; font-weight: 400; font-size: 17px; letter-spacing: 0.04em; text-transform: uppercase; color: var(--gold-2); cursor: pointer;
-    background: repeating-linear-gradient(90deg, rgba(255,255,255,0.04) 0 9px, transparent 9px 18px), linear-gradient(150deg, #2B6A46, #173F2B); box-shadow: 0 3px 0 #0E2A1C, inset 0 1px 0 rgba(255,255,255,0.12); }
-  .t1 .go:active { transform: translateY(2px); box-shadow: 0 1px 0 #0E2A1C; }
-  .t1 .go.ghost { background: rgba(20,32,43,0.12); color: var(--ink); border: 1.5px solid rgba(20,32,43,0.45); box-shadow: none; }
-  .t1 .res { display: flex; align-items: center; gap: 10px; }
-  .t1 .res .sc { font-family: 'Anton', Impact, sans-serif; font-size: 26px; line-height: 1; } .t1 .res .sc small { font-size: 15px; color: var(--muted); }
-  .t1 .res .st { font-family: 'Oswald', sans-serif; font-weight: 400; font-size: 13px; line-height: 1.2; color: var(--gold-2); } .t1 .res .st span { display: block; color: var(--muted); }
-  .t1 .mini { display: flex; flex-direction: column; gap: 2px; align-items: center; } .t1 .mini .r { display: flex; gap: 2px; }
-  .t1 .sq { width: 7px; height: 7px; border-radius: 2px; flex-shrink: 0; } .t1 .sq.g { background: var(--ok); } .t1 .sq.y { background: var(--gold); } .t1 .sq.x { background: #3A4652; }
+  
+
+
   /* Gelöster Zustand (Prompt 24): Status "Erledigt" + kleiner Teilen-Knopf (Prototyp teilen.html) */
-  .t1 .stub.solved { gap: 7px; }
-  .t1 .stub.solved .fl b { font-size: 24px; }
-  .t1 .done { font-family: 'Anton', Impact, sans-serif; font-weight: 400; font-size: 15px; text-transform: uppercase; letter-spacing: 0.03em; display: inline-flex; align-items: center; gap: 4px; color: #17402B; }
-  .t1 .done i { font-style: normal; width: 18px; height: 18px; border-radius: 50%; background: #1F6B43; color: var(--gold-2); display: grid; place-items: center; font-size: 11px; font-family: 'Oswald', sans-serif; font-weight: 600; }
-  .t1 .share-sm { border: 1.5px solid rgba(20,32,43,0.45); background: rgba(255,255,255,0.18); border-radius: 9px; padding: 4px 10px; font-family: 'Oswald', sans-serif; font-weight: 600; font-size: 12.5px; color: var(--ink); cursor: pointer; }
-  .t1 .share-sm:active { transform: translateY(1px); }
-  /* Der Prototyp ist auf ~402px Breite ausgelegt; auf schmaleren Handys (375/360px) etwas kompakter, sonst bricht das Timer-Label um. */
-  .t1 .tl .l { white-space: nowrap; }
-  .t1 .meta.compact .meter { display: none; }
-  @media (max-width: 389px) {
-    .t1 { --stub: 92px; }
-    .t1 .main { padding: 11px 8px 11px 14px; }
-    .t1 .flip { gap: 2px; }
-    .t1 .flip b { font-size: 17px; min-width: 15px; padding: 4px 2px 3px; }
-    .t1 .flip i { font-size: 16px; margin: 0; }
-    .t1 .go { padding: 8px 10px; font-size: 16px; }
-  }
+
 
   /* ---- So geht's / Regeln als Reiter-Blatt (Prompt 19) - alles unter .gs gescoped ---- */
   .modal-sheet.gs { --muted: rgba(242,239,230,0.7); --dim: rgba(242,239,230,0.45);
@@ -1261,7 +1073,6 @@
     .gs .warn { padding: 7px 11px; }
   }
 
-
   /* ---- Frei spielen (Prompt 20) - alles unter .fp gescoped ---- */
   #screen-freeplay .fp { --muted: rgba(242,239,230,0.68); --dim: rgba(242,239,230,0.45);
     flex: 1; min-height: 0; display: flex; flex-direction: column; gap: 12px; }
@@ -1311,21 +1122,7 @@
   }
 
   /* ---- Duell gegen Freunde (Prompt 25) - Optik 1:1 aus prototypes/duell.html, strikt gescoped ---- */
-  /* Startseiten-Kachel */
-  .mode-tiles .mt.duel { background: repeating-linear-gradient(90deg, rgba(255,255,255,0.035) 0 16px, transparent 16px 32px), linear-gradient(150deg, #27603F, #173F2B 85%); border-color: rgba(232,178,61,0.65); color: var(--chalk); }
-  .mode-tiles .mt.duel::after { background: radial-gradient(circle at 50% 50%, transparent 0 34px, rgba(242,239,230,0.07) 35px 36px, transparent 37px); }
-  .mode-tiles .mt.duel .ft { background: rgba(0,0,0,0.2); border-top: 1px solid var(--line); color: var(--gold); white-space: nowrap; letter-spacing: 0.02em; }
-  @media (max-width: 389px) { .mode-tiles .mt.duel .ft { font-size: 12px; letter-spacing: 0; gap: 3px; } }
-  .mode-tiles .mt.duel .ln { color: rgba(242,239,230,0.9); }
-  .mode-tiles .mt.duel .ln em { color: var(--muted); opacity: 1; }
-  .mode-tiles .duel .dcount { position: absolute; top: 8px; right: 8px; z-index: 2; min-width: 22px; height: 22px; border-radius: 11px; padding: 0 6px; display: grid; place-items: center; background: var(--gold); color: var(--ink); font-family: 'Anton', Impact, sans-serif; font-size: 13px; border: 1.5px solid rgba(20,32,43,0.55); }
-  .mode-tiles .duel .dpair { display: flex; align-items: center; justify-content: center; gap: 7px; }
-  .mode-tiles .duel .dpair .dn { font-family: 'Anton', Impact, sans-serif; font-size: 14px; max-width: 72px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; color: var(--chalk); }
-  .mode-tiles .duel .dpair .flip b { font-size: 15px; min-width: 14px; padding: 3px 2px 2px; }
-  .mode-tiles .duel .dpair .flip i { font-size: 14px; margin: 0; }
-  .solo-line { flex-shrink: 0; align-self: center; background: none; border: none; font-family: 'Oswald', sans-serif; font-weight: 400; font-size: 14px; color: var(--muted); cursor: pointer; padding: 2px 6px; }
-  .solo-line b { font-weight: 600; color: var(--gold); }
-  .solo-line:focus-visible { outline: 2px solid var(--gold-2); outline-offset: 2px; border-radius: 8px; }
+
   @media (max-height: 700px) { #screen-start { gap: 6px; } .solo-line { font-size: 13px; line-height: 1; padding: 0 6px; } }
   /* Formkurve oben auf dem Frei-spielen-Bildschirm */
   #screen-freeplay .fpform { margin-left: auto; display: flex; align-items: center; gap: 4px; }
@@ -1559,8 +1356,6 @@
   #duelWo .wo-foot .wo-a { font-weight: 300; font-size: 12.5px; color: var(--dim); }
   #duelWo .wo-foot .wo-b { font-weight: 400; font-size: 12.5px; color: var(--muted); }
 
-
-  
   /* Spiel */
   #screen-duelplay .dplay { gap: 10px; min-height: 100%; }
   #screen-duelplay .between { text-align: center; align-items: center; justify-content: center; flex: 1; display: flex; flex-direction: column; gap: 14px; }
@@ -1696,7 +1491,6 @@
     #splash .kickoff { display: none; }
   }
 
-
   /* ===== Welt geschafft (Prompt 31) - Buehne aus prototypes/welt-animation.html ===== */
   #worldCelebration { position: fixed; inset: 0; z-index: 80; display: grid; place-items: center; overflow: hidden; background: #0A1118; touch-action: manipulation;
     --ink: #14202B; --ink-deep: #0A1118; --ink-2: #1C2B38; --pitch: #1F4D36; --chalk: #F2EFE6; --gold: #E8B23D; --gold-hi: #F6D88E; --ok: #2ECC71;
@@ -1771,8 +1565,6 @@
   #worldCelebration .wc-btn.wc-live { pointer-events: auto; }
   #worldCelebration .wc-hint { position: absolute; left: 0; right: 0; bottom: 22px; text-align: center; font-weight: 300; font-size: 12.5px; color: var(--dim); }
   #worldCelebration canvas.wc-fx { position: absolute; inset: 0; width: 100%; height: 100%; pointer-events: none; }
-
-  
 
   /* ===== Duell-Zentrale v2 (Prompt 39) - Seiten-CSS aus prototypes/duell-ausbau.html (v3), alle Klassen/Variablen/Keyframes mit dz-Praefix ===== */
   #screen-duels, .dz-ov {
@@ -4709,7 +4501,7 @@ function hmFitXpt() {
   for (let f = 12.5; el.scrollWidth > el.clientWidth + 1 && f > 10.5; f -= 0.5) el.style.fontSize = f + "px";
   if (el.scrollWidth > el.clientWidth + 1 && el.dataset.short) { el.innerHTML = el.dataset.short; el.style.fontSize = ""; for (let f = 12.5; el.scrollWidth > el.clientWidth + 1 && f > 10.5; f -= 0.5) el.style.fontSize = f + "px"; }
 }
-window.addEventListener("resize", () => hmFitXpt());
+window.addEventListener("resize", () => { hmFitXpt(); hmFitMags(); });
 
 // Tages-Challenge als grosse Tafel: Kreide-Spielfeld mit den Magneten der heutigen Formation (OHNE Namen = spoilerfrei),
 // Stufe, Formation, Countdown auf dem Holzbrettchen, "Starten" bzw. Ergebnis + Teilen.
@@ -4723,6 +4515,15 @@ function hmMiniPitch(formation, w, h) {
       <circle class="hm-ln" pathLength="1" cx="36" cy="43" r="9" style="animation-delay:.8s"/><rect class="hm-ln" pathLength="1" x="20" y="1" width="32" height="12" style="animation-delay:.85s"/><rect class="hm-ln" pathLength="1" x="20" y="73" width="32" height="12" style="animation-delay:.9s"/></svg>
     ${lay.map((p, k) => `<span class="hm-mag ${p.abbr === "TW" ? "hm-tw" : ""}" style="left:${p.x}%;top:${Math.max(6, Math.min(94, p.y))}%;animation-delay:${900 + k * 55}ms"></span>`).join("")}</div>`;
 }
+function hmFitMags(root) {
+  // Magnetgroesse aus dem tatsaechlich gerenderten Spielfeld: Abstand zweier Magnete mind. 1.5 px
+  (root || document).querySelectorAll(".hm-mini").forEach((mini) => {
+    const w = mini.offsetWidth, h = mini.offsetHeight; if (!w || !h) return;
+    const pts = [...mini.querySelectorAll(".hm-mag")].map((m) => [parseFloat(m.style.left) / 100 * w, parseFloat(m.style.top) / 100 * h]);
+    let mn = 999; pts.forEach((p, i) => pts.forEach((q, j) => { if (j > i) mn = Math.min(mn, Math.hypot(p[0] - q[0], p[1] - q[1])); }));
+    mini.style.setProperty("--md", Math.max(5, Math.min(10, Math.floor(mn - 1.5))) + "px");
+  });
+}
 function renderDailyCard() {
   const card = document.getElementById("dailyCard");
   const dateKey = localDateKey(), dayNum = dayNumber(dateKey);
@@ -4732,7 +4533,7 @@ function renderDailyCard() {
   const diffColor = diff === 5 ? "#e0705f" : DIFF_COLOR[diff]; // Stufe 5 ist auf Gruen zu dunkel
   const draft = profile.drafts["d:" + dateKey];
   card.innerHTML = `
-    <div class="hm-d-h"><div><b>Tages-<em>Challenge</em></b><small>${duelEsc(dateTxt)} · Spieltag ${dayNum}</small></div>
+    <div class="hm-d-h"><div><b>Tages-<em>Challenge</em></b><small>${duelEsc(dateTxt)}<span class="hm-sp"> · Spieltag ${dayNum}</span></small></div>
       <span class="hm-streak ${streak ? "" : "hm-off"}" role="img" aria-label="Serie ${streak} Tage">${HM_SV.flame(streak ? "#FFF3D1" : "rgba(244,241,232,0.7)", streak ? "#E8632B" : "rgba(10,22,16,0.6)")}<span>${streak}</span><small>${streak === 1 ? "Tag" : "Tage"} Serie</small></span></div>
     <div class="hm-d-mid">${hmMiniPitch(dm.formation, 74, 86)}
       <div class="hm-d-info">
@@ -4747,6 +4548,7 @@ function renderDailyCard() {
     prepareDailyShare(dateKey); // Bild vorab erzeugen, damit der Tipp sofort teilen kann (Nutzergeste)
   } else document.getElementById("dailyPlayBtn").onclick = startDailyChallenge;
   tickDailyTimer();
+  hmFitMags(card);
 }
 // Restzeit bis lokale Mitternacht - nur Textwechsel pro Sekunde, keine Animation (CLAUDE.md)
 function tickDailyTimer() {

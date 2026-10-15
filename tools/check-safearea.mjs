@@ -59,6 +59,12 @@ for (const id of screens) {
   await report("Bildschirm " + id);
   if (id === "game") { await page.evaluate(() => renderPitch()); await page.waitForTimeout(900); await report("Spiel-Ansicht"); }
 }
+// Startseite mit fortgeschrittenem Stand + Scout-Profil-Blatt (alle Reiter)
+await page.evaluate(() => { navStack.length = 0; navigate("start"); profile.streak = { current: 5, best: 9, lastDayKey: localDateKey() }; saveProfile(profile); renderProfileBar(); renderDailyCard(); renderModeTiles(); }); await page.waitForTimeout(900); await report("Startseite (Stand)");
+for (const t of ["ov", "tr", "kn"]) {
+  await page.evaluate((t) => { document.querySelectorAll(".modal-backdrop").forEach((e) => e.remove()); openProfileSheet(t); }, t); await page.waitForTimeout(900); await report("Scout-Profil " + t);
+}
+await page.evaluate(() => document.querySelectorAll(".modal-backdrop").forEach((e) => e.remove()));
 // Level-Vorschau, Duell-Walkout, Duell-Runde, Einladung
 await page.evaluate(() => { const m = getMatchesByTier(1)[0]; currentLevelContext = { tier: 1, index: 0, m }; startMatch(m); }); await page.waitForTimeout(700); await report("Level-Vorschau");
 await page.evaluate(() => { profile.duelName = "Anna"; profile.duelHandle = "anna"; window.DUEL_TEST_SECONDS = 120; const id = createDuel({ rounds: 3, seconds: 120, difficulty: 0 }); profile.duels[id].opponent = { name: "Tim", deviceId: "t1" }; window.__duelId = id; startDuelRun(id); });
