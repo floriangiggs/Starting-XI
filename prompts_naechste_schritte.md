@@ -59,8 +59,9 @@ vorige umgesetzt, getestet und committet ist.
 | 45 | Kampagne-Weltenansicht im Taktiktafel-Stil (Saison-Brett, fünf Mini-Stadien mit Fortschrittsring, Kreideweg, „Du“-Magnet, Holzleiste mit Ziel) | 44 |
 | 46 | Ladebildschirm v2 „Kabinentafel“ (Taktiktafel-Stil, nicht überspringbar, Übergang in die Startseite) | 44 |
 | 47 | Frei spielen im Taktiktafel-Stil (One-Pager: Wettbewerbs-Karten mit Flaggen/Zeichen, Stufen in Weltfarben, Hardcore-Schalter, Zähl-Brett + Auslosen mit verdeckter Karte, Tages-Archiv) | 44 |
+| 48 | 32 neue Aufstellungen für schwache Kategorien (England, Deutschland, Spanien/Italien, EM, WM) – in Paketen recherchiert, auf Kampagne/Tag verteilt, in allen Modi einsortiert | 41 (teaser) |
 
-**Empfohlene Reihenfolge ab jetzt:** 39 → 41 → 42 → 43 → 44 → 45 → 46 → 47 → weitere Offline-Feinschliffe (u. a. Jahres-Lücken im Ideen-Speicher auffüllen) → Planung Online-Duell (inkl. 28/29) → 8 (Capacitor, erst wenn die App final ist; vorher Duell-Pflichtpunkt aus CLAUDE.md ansprechen)
+**Empfohlene Reihenfolge ab jetzt:** 39 → 41 → 42 → 43 → 44 → 45 → 46 → 47 → 48 → weitere Offline-Feinschliffe (u. a. Jahres-Lücken im Ideen-Speicher auffüllen) → Planung Online-Duell (inkl. 28/29) → 8 (Capacitor, erst wenn die App final ist; vorher Duell-Pflichtpunkt aus CLAUDE.md ansprechen)
 
 Prompt 7 steht bewusst vor der Tages-Challenge: Nur mit der neuen
 Update-Strategie kommen neue Tages-Aufstellungen zuverlässig auf dem iPhone an.
@@ -4078,6 +4079,140 @@ startArchiveMatch), Formkurve (profile.freeplayForm), freeplaySource.
      mit Entwurf, Level < 15 / ≥ 15 mit Hardcore an, Auswahl mit 0
      Treffern, Ziehungs-Karte; Overlap-/Safe-Area-Check aus 43.
    - CACHE_NAME in sw.js erhöhen, Status-Tabelle: Prompt 47 erledigt.
+```
+
+---
+
+## Prompt 48 – 32 neue Aufstellungen für die schwachen Kategorien
+
+```
+Lies CLAUDE.md (Datengenauigkeit hat oberste Priorität: jede Aufstellung,
+Bank, Rückennummer, Nationalität nur mit verlässlicher Quelle, nie aus dem
+Gedächtnis; Reihenfolge-Regel; Jahresverteilung; Lösbarkeit). Daten-
+Erweiterung → kurz Plan zeigen, dann in Paketen A–E (je Paket Commit +
+Hook-Ergebnis). Voraussetzung: Prompt 41 (Feld teaser) ist erledigt.
+
+Ziel (mit Florian am 15.10.2026 festgelegt): die späteren Duell-/Freispiel-
+Kategorien auf je ca. 20 Aufstellungen bringen. Stand vorher (Kampagne +
+Tag, je Eintrag): Champions League 30, WM 19, EM 14, Deutschland 12,
+England 7, Spanien/Italien 10. Danach: England 19, Deutschland 19,
+Spanien/Italien 19, EM 16, WM 21.
+
+Feste Liste (Partie → abgefragte Seite = side). Datum/Ergebnis/Runde aus
+der Quelle übernehmen; weicht die Quelle von der Angabe hier ab, gilt die
+Quelle – im Ergebnis melden. Ist eine Partie nicht sicher belegbar oder
+die Aufstellung nicht eindeutig: weglassen und melden (nicht raten).
+
+Paket A – England (12)
+ E1  ManUtd – ManCity 1:6, Premier League, Okt. 2011 → Manchester City
+ E2  West Brom – ManUtd 5:5, Premier League, Mai 2013 (Fergusons letztes
+     Spiel) → Manchester United
+ E3  Chelsea – Crystal Palace 1:0, Premier League, Mai 2015 (Meister-
+     schaft) → Chelsea
+ E4  Arsenal – Chelsea 2:1, FA-Cup-Finale 2017 → Arsenal
+ E5  ManCity – Liverpool 5:0, Premier League, Sept. 2017 → Liverpool
+ E6  ManCity – Liverpool 4:0, Premier League, Juli 2020 (Spalier) →
+     Manchester City
+ E7  Liverpool – ManUtd 7:0, Premier League, März 2023 → Liverpool
+ E8  ManCity – Arsenal 4:1, Premier League, April 2023 → Arsenal
+ E9  ManUtd – Arsenal 8:2, Premier League, Aug. 2011 → Manchester United
+ E10 Arsenal – Aston Villa 4:0, FA-Cup-Finale 2015 → Arsenal
+ E11 Liverpool – Crystal Palace 4:0, Premier League, Juni 2020 →
+     Liverpool
+ E12 Arsenal – Chelsea 2:1, FA-Cup-Finale 2020 → Chelsea
+Paket B – Deutschland (7)
+ D1  Werder – Leverkusen 1:0, DFB-Pokal-Finale 2009 → Werder Bremen
+ D2  BVB – Nürnberg 2:0, Bundesliga, April 2011 (Meisterschaft) →
+     Borussia Dortmund
+ D3  Bayern – Wolfsburg 5:1, Bundesliga, Sept. 2015 (Lewandowski 5 Tore)
+     → FC Bayern
+ D4  Wolfsburg – BVB 3:1, DFB-Pokal-Finale 2015 → VfL Wolfsburg
+ D5  BVB – Frankfurt 2:1, DFB-Pokal-Finale 2017 → Eintracht Frankfurt
+ D6  BVB – Schalke 4:0, Bundesliga, Mai 2020 (Geisterderby) → Borussia
+     Dortmund
+ D7  BVB – Mainz 2:2, Bundesliga, Mai 2023 (letzter Spieltag) →
+     Borussia Dortmund
+Paket C – Spanien/Italien (9)
+ S1  Real – Barcelona 1:0 n. V., Copa-del-Rey-Finale 2011 → Real Madrid
+ S2  Atlético – Real 2:1 n. V., Copa-del-Rey-Finale 2013 → Atlético
+ S3  Real – Barcelona 2:3, LaLiga, April 2017 → FC Barcelona
+ S4  Barcelona – Real 1:2, LaLiga, Okt. 2023 → Real Madrid
+ I1  AS Rom – AC Mailand 0:0, Serie A, Mai 2011 (Meistertitel Milan) →
+     AC Mailand
+ I2  AS Rom – Genua 3:2, Serie A, Mai 2017 (Tottis letztes Spiel) →
+     AS Rom
+ I3  Juventus – Napoli 0:1, Serie A, April 2018 (Koulibaly) → SSC Neapel
+ I4  Juventus – Inter 2:0, Serie A, März 2020 (Geisterspiel) → Juventus
+ I5  Juventus – Lazio 2:1 n. V., Coppa-Italia-Finale Mai 2015 → Lazio
+Paket D – Turniere (4)
+ M1  Deutschland – Portugal 3:2, EM-Viertelfinale 2008 → Deutschland
+ M3  Deutschland – Frankreich 0:2, EM-Halbfinale 2016 → Frankreich
+ W1  Deutschland – England 4:1, WM-Achtelfinale 2010 → Deutschland
+ W3  Spanien – Niederlande 1:0 n. V., WM-Finale 2010 → Spanien
+
+Pro Eintrag Pflicht (wie alle bestehenden): id, comp (inkl. Datum),
+league, teams (Schreibweise wie bestehende Einträge, "A gegen B x:y …"),
+side, context (Hintergrund), teaser (spoilerfrei, Prompt 41), formation
+(passend zu PITCH_LAYOUTS; fehlt eine Formation → melden, nicht
+umbiegen), difficulty, players (Nachnamen), aliases wo nötig (Regeln aus
+Prompt 38: Namensgleichheit, Initialen, Nachname allein), details (nr,
+nat), bench (+ benchSource), source. Mindestens zwei unabhängige Quellen
+für die Startelf (z. B. kicker.de, weltfussball.de, transfermarkt,
+offizielle Vereinsseite, BBC/ESPN-Spielbericht). Positionen nach der
+tatsächlichen Grundordnung des Spiels, nicht nach "Stammposition".
+
+Paket E – Einsortieren in die Modi (Florian: "darauf achten, dass es
+auch in den Modi passt")
+1. Neue league-Werte sauber zuordnen: "FA Cup" (England), "Copa del Rey"
+   (Spanien), "Coppa Italia" (Italien) – bzw. bestehende Werte nutzen,
+   falls schon vorhanden. Überall nachziehen:
+   - FREEPLAY_GROUPS (Frei spielen: England/Spanien/Italien-Karte zählt
+     die Pokale mit; Flaggen aus Prompt 47),
+   - LEAGUE_GROUPS (Wissen-Auswertung) – dabei den bestehenden Fehler
+     beheben: "DFB-Pokal" fehlt bei "Deutschland", "Afrika-Cup" bei
+     "Nationalmannschaften",
+   - Duell-Kategorien, falls im Code schon vorhanden (sonst in Prompt 40
+     die Zuordnung ergänzen: England = Premier League + FA Cup, Europa =
+     LaLiga + Copa del Rey + Serie A + Coppa Italia),
+   - Trophäen, die Wettbewerbe zählen ("Weltmeister-Wissen" = alle WM/
+     EM-Aufstellungen perfekt; "Vollständigkeitsfanatiker"): Folgen für
+     bestehende Spieler prüfen und melden (bereits gewonnene Trophäen
+     bleiben gewonnen).
+2. Verteilung Kampagne / Tages-Pool (Vorschlag, mit Begründung anpassen
+   und als Tabelle zeigen; Schwierigkeit nach CLAUDE.md – je älter, desto
+   bekannter; Stars helfen):
+   Kampagne (17):
+     Welt 1: W1 (DE 2010), W3 (ESP 2010), E7 (LIV 2023), D3 (FCB 2015)
+     Welt 2: M1 (DE 2008), M3 (FRA 2016), S4 (Real 2023), E8 (ARS 2023)
+     Welt 3: D6 (BVB 2020), E6 (MCI 2020), S3 (Barça 2017), I4 (Juve 2020)
+     Welt 4: E2 (MUN 2013), S2 (Atlético 2013), I2 (Roma 2017), D5 (SGE 2017)
+     Welt 5: I1 (Milan 2011)
+   Tages-Pool (15): E1, E3, E4, E5, E9, E10, E11, E12, D1, D2, D4, D7,
+     S1, I3, I5.
+   Innerhalb jeder Welt die Reihenfolge so mischen, dass dieselbe
+   Mannschaft (beide Teams einer Partie!) nie direkt hintereinander kommt
+   – auch über Weltwechsel und im Tages-Pool (Tag n und n+1). Häufungen
+   (Deutschland, Arsenal, Liverpool, ManCity, Dortmund, Real, Juventus)
+   bewusst auseinanderziehen. Dafür ein Prüfskript (oder den Hook
+   erweitern) und Ergebnis zeigen.
+   Bestehende Kampagnen-Fortschritte dürfen nicht kaputtgehen: Level-
+   Zuordnung läuft über die id; neue Level hinten bzw. dazwischen so
+   einfügen, dass bestandene Level bestanden bleiben und keine Welt
+   plötzlich wieder gesperrt ist (isTierUnlocked prüft "alle bestanden" –
+   neue Level in einer bereits abgeschlossenen Welt würden sie wieder
+   öffnen!). Lösung im Plan vorschlagen (z. B. abgeschlossene Welten
+   bleiben abgeschlossen, neue Level dort als "Bonus" markieren oder neue
+   Level nur in Welten, die der Spieler noch nicht abgeschlossen hat
+   zählen) und mit Florian klären, bevor umgesetzt wird.
+3. Vor und nach dem Einbau die Verteilung nach Jahr ausgeben (Kampagne +
+   Tag) und mit dem Ideen-Speicher "Jahres-Lücken" abgleichen; Ideen-
+   Speicher-Einträge "Vorrat …" für die verbauten Spiele als erledigt
+   markieren.
+
+Abschluss: Hook check-lineups + Namensprüfung (Prompt 38) + Spoiler-
+Prüfung (Prompt 41) ohne Befund; Zählung je Kategorie vorher/nachher als
+Tabelle; Screenshots Frei spielen (Karten-Zahlen) und Weltenkarte
+(Levelzahlen); CACHE_NAME erhöhen; Status-Tabelle: Prompt 48 erledigt.
 ```
 
 ---
