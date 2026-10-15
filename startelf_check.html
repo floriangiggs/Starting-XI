@@ -459,6 +459,24 @@
   .sp.d3 .sp-cta, .sp.d2 .sp-cta { height: 54px; }
   @media (prefers-reduced-motion: reduce) { .sp *, .sp *::before, .sp *::after { animation: none !important; transition: none !important; } .sp.intro .sp-chalk .ln { stroke-dashoffset: 0; } }
   .sp.fitting .sp-ptag, .sp.fitting .pos-input, .sp.fitting .sp-bdg { animation: none !important; transition: none !important; }
+  /* Tastatur: Kopfzeile aus, Tafel rutscht hoch, Holzleiste wird zur Zubehoerleiste direkt ueber der Tastatur */
+  .sp.sp-kb .lv-top { transform: translateY(-80px); opacity: 0; pointer-events: none; }
+  .sp.sp-kb .sp-tray, .sp.sp-kb .sp-bottom { opacity: 0; pointer-events: none; }
+  .sp-acc { --gold-hi: #F7D98E; position: fixed; z-index: 60; left: 0; top: 0; width: 100%; height: 60px; box-sizing: border-box; padding: 7px 8px; display: flex; align-items: center; gap: 7px;
+    background: linear-gradient(180deg, #7A5532 0 3px, #5B3D22 3px, #4A3119); box-shadow: 0 -6px 14px rgba(0,0,0,0.3); }
+  .sp-acc .sp-ttag { height: 32px; }
+  .sp-amid { flex: 1; min-width: 0; height: 44px; padding: 3px 9px; border-radius: 10px; background: #1A3024; box-shadow: inset 0 2px 5px rgba(0,0,0,0.5); display: flex; flex-direction: column; justify-content: center; }
+  .sp-amid b { font-weight: 500; font-size: 13px; line-height: 1.15; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .sp-amid b span { font-weight: 300; color: rgba(244,241,232,0.75); }
+  .sp-amid .sp-tips { margin-top: 2px; min-height: 18px; } .sp-amid .sp-tip { height: 18px; font-size: 12px; } .sp-amid .sp-tips .none { font-size: 12.5px; }
+  .sp-ib { width: 44px; height: 44px; border-radius: 12px; flex-shrink: 0; display: grid; place-items: center; position: relative; padding: 0; border: none; color: var(--chalk); cursor: pointer;
+    background: #2A4A37; box-shadow: inset 0 0 0 1.5px rgba(244,241,232,0.3), 0 2px 0 rgba(0,0,0,0.4); }
+  .sp-ib.wheel { background: linear-gradient(180deg, #2F6B49, #245638); box-shadow: inset 0 0 0 1.5px rgba(247,217,142,0.75), 0 2px 0 rgba(0,0,0,0.4); }
+  .sp-ib.gold { width: auto; padding: 0 12px; color: var(--ink); background: linear-gradient(170deg, var(--gold-hi), var(--gold)); font-family: 'Oswald', sans-serif; font-weight: 600; font-size: 14px; box-shadow: 0 2px 0 #9C7422; }
+  .sp-ib svg { width: 21px; height: 21px; }
+  .sp-ib .n { position: absolute; right: -4px; top: -5px; width: 16px; height: 16px; border-radius: 50%; display: grid; place-items: center; font-family: 'Anton', Impact, sans-serif; font-size: 10px; line-height: 1; color: #3A2A08;
+    background: radial-gradient(circle at 35% 30%, #FFF1C2, #E8B23D 60%, #A8771A); box-shadow: inset 0 0 0 1px rgba(255,255,255,0.45), 0 1px 2px rgba(0,0,0,0.3); }
+  .sp-ib:disabled { opacity: 0.42; cursor: default; }
   .sp.done { display: block; flex: none; }
   .sp.done .sp-tray, .sp.done .sp-bottom { display: none; }
   .sp.done .sp-frame { flex: none; }
@@ -8540,9 +8558,9 @@ function spBoardHTML(m, cfg) {
       ${cfg.bench && benchOf(m) ? `<button type="button" class="sp-bench" id="benchBtn" aria-label="Ersatzbank öffnen"><span class="tile">${SP_ICON.bench}</span>Bank</button>` : ""}
     </div></div>`;
 }
-function spTipsHTML(m, abbr, drawnSet, fresh) {
+function spTipsHTML(m, abbr, drawnSet, fresh, short) {
   const ids = [...(drawnSet || [])].filter(id => id !== "fullName");
-  if (!ids.length) return '<span class="none">Noch keine Tipps für diese Position</span>';
+  if (!ids.length) return `<span class="none">${short ? "Noch keine Tipps" : "Noch keine Tipps für diese Position"}</span>`;
   const det = (m.details && m.details[abbr]) || {}, target = m.players[abbr];
   const val = { firstLetter: () => target[0].toUpperCase() + "…", shirtNumber: () => det.nr, nationality: () => NAT_NAMES[det.nat] || det.nat };
   return ids.map(id => `<span class="sp-tip${id === fresh ? " new" : ""}"><i>${SP_TIP_LABEL[id]}</i>${duelEsc(String(val[id]()))}</span>`).join("");
@@ -8635,6 +8653,10 @@ function spFit(root) {
     <rect class="ln" pathLength="1" x="${W / 2 - sw / 2}" y="2" width="${sw}" height="${sh}" style="animation-delay:.8s"/>
     <rect class="ln" pathLength="1" x="${W / 2 - sw / 2}" y="${H - sh - 2}" width="${sw}" height="${sh}" style="animation-delay:.85s"/>`;
 }
+let spKb = null; // Tastatur-Steuerung der laufenden Spiel-Ansicht (von renderPitch gesetzt)
+if (window.visualViewport) ["resize", "scroll"].forEach(ev => window.visualViewport.addEventListener(ev, () => spKb && spKb.check()));
+document.addEventListener("focusin", () => { if (spKb) setTimeout(spKb.check, 0); });
+document.addEventListener("focusout", () => { if (spKb) setTimeout(spKb.check, 80); });
 let spResizeTimer = null;
 window.addEventListener("resize", () => {
   clearTimeout(spResizeTimer);
@@ -8705,22 +8727,53 @@ function renderPitch() {
     return null;
   };
   // Holzleiste (Prompt 42): Werkzeuge der gewaehlten Position. Kosten/XP-Logik unveraendert (aus dem alten Positions-Panel uebernommen).
+  // Dieselben Zustaende bedienen die Zubehoerleiste ueber der Tastatur (#spAcc); Knoepfe tragen data-act.
+  function revealPosition(abbr) {
+    const input = inputOf(abbr);
+    if (profile.hintTokens < ECONOMY.revealCost || input.classList.contains("ok") || input.classList.contains("revealed")) return;
+    resetCombo(); // Aufdecken zaehlt als Hilfe
+    profile.hintTokens -= ECONOMY.revealCost;
+    saveProfile(profile);
+    renderProfileBar();
+    tokenRevealed.add(abbr);
+    input.value = m.players[abbr];
+    input.classList.remove("bad", "ok");
+    input.classList.add("revealed");
+    input.disabled = true;
+    input.dataset.counted = "1";
+    applyNameFit(input);
+    renderPositionPanel(abbr);
+    scheduleDraft();
+  }
+  function spAct(name, abbr) {
+    const input = abbr ? inputOf(abbr) : null;
+    if (name === "clear") askClear();
+    else if (name === "fix") applyCorrection(abbr);
+    else if (name === "wheel") { if (document.activeElement === input) input.blur(); openScoutWheelModal(abbr, input); } // Tastatur weg, Blatt frei
+    else if (name === "reveal") revealPosition(abbr);
+    else if (name === "done") { if (document.activeElement && document.activeElement.blur) document.activeElement.blur(); }
+    else if (name === "next") { const n = nextFreeAfter(abbr); if (!n) return; if (document.querySelector("#spRoot.sp-kb")) inputOf(n).focus(); else setActivePosition(n); }
+  }
   function renderPositionPanel(abbr) {
     const panel = document.getElementById("positionPanel");
     if (!panel) return;
-    const clr = `<button type="button" class="sp-clr" id="clearFieldsBtn" aria-label="Felder leeren" title="Felder leeren">${SP_ICON.reset}</button>`;
-    const input = abbr ? inputOf(abbr) : null;
-    let html, afterBind;
+    const clr = `<button type="button" class="sp-clr" data-act="clear" aria-label="Felder leeren" title="Felder leeren">${SP_ICON.reset}</button>`;
+    const input = abbr ? inputOf(abbr) : null, name = abbr ? duelEsc(POSN[abbr] || abbr) : "";
+    let html, accMid = "", accBtns = "";
+    const done = `<button type="button" class="sp-ib gold" data-act="done">Fertig</button>`;
     if (positions.every(p => solvedCls(inputOf(p.abbr)))) {
       html = `<div class="sp-ttop"><span class="sp-ttag done">${SP_ICON.check("#0E2A1A")}</span><div class="sp-ttxt"><b>Alle Positionen besetzt</b><div class="sp-tmsg ok">Bereit? Unten auswerten.</div></div>${clr}</div><div class="sp-tbtns"></div>`;
+      accMid = `<b>Alle Positionen besetzt</b>`;
     } else if (!input) {
       html = `<div class="sp-ttop"><span class="sp-ttag">?</span><div class="sp-ttxt"><b>Position antippen</b></div>${clr}</div><div class="sp-tbtns"></div>`;
+      accMid = `<b>Position antippen</b>`;
     } else if (solvedCls(input)) {
       const how = input.classList.contains("revealed") ? "aufgedeckt" : input.classList.contains("prefilled") ? "gratis vorgegeben" : "richtig eingetragen";
       const nx = nextFreeAfter(abbr);
-      html = `<div class="sp-ttop"><span class="sp-ttag">${abbr}</span><div class="sp-ttxt"><b>${duelEsc(POSN[abbr] || abbr)}</b><div class="sp-tmsg ok">✓ ${duelEsc(m.players[abbr])} · ${how}</div></div>${clr}</div>
-        <div class="sp-tbtns">${nx ? `<button type="button" class="sp-tbtn" id="spNext">Nächste freie Position ${SP_ICON.next}</button>` : ""}</div>`;
-      afterBind = () => { const nb = panel.querySelector("#spNext"); if (nb) nb.onclick = () => { const n = nextFreeAfter(abbr); if (!n) return; if (document.querySelector("#spRoot.sp-kb")) inputOf(n).focus(); else setActivePosition(n); }; };
+      html = `<div class="sp-ttop"><span class="sp-ttag">${abbr}</span><div class="sp-ttxt"><b>${name}</b><div class="sp-tmsg ok">✓ ${duelEsc(m.players[abbr])} · ${how}</div></div>${clr}</div>
+        <div class="sp-tbtns">${nx ? `<button type="button" class="sp-tbtn" data-act="next">Nächste freie Position ${SP_ICON.next}</button>` : ""}</div>`;
+      accMid = `<b>${name} <span>· ✓ ${duelEsc(m.players[abbr])}</span></b>`;
+      accBtns = nx ? `<button type="button" class="sp-ib" data-act="next" aria-label="Nächste freie Position">${SP_ICON.next}</button>` : "";
     } else {
       const isNear = input.classList.contains("near");
       const drawnSet = getDrawnSet(abbr);
@@ -8729,43 +8782,26 @@ function renderPitch() {
       const canReveal = profile.hintTokens >= ECONOMY.revealCost;
       const spinCost = anyAvail ? `<span class="cost">${tokenCoin()}${ECONOMY.spinCost}</span>` : "";
       const revCost = `<span class="cost">${tokenCoin()}${ECONOMY.revealCost}</span>`;
+      const ibWheel = `<button type="button" class="sp-ib wheel" data-act="wheel" aria-label="Scout-Rad" ${canOpenWheel ? "" : "disabled"}>${SP_ICON.wheel}${anyAvail ? `<span class="n">${ECONOMY.spinCost}</span>` : ""}</button>`;
+      const ibRev = `<button type="button" class="sp-ib" data-act="reveal" aria-label="Aufdecken" ${canReveal ? "" : "disabled"}>${SP_ICON.eye}<span class="n">${ECONOMY.revealCost}</span></button>`;
       if (isNear) {
-        html = `<div class="sp-ttop"><span class="sp-ttag">${abbr}</span><div class="sp-ttxt"><b>${duelEsc(POSN[abbr] || abbr)}</b><div class="sp-tmsg">Fast richtig: „${duelEsc(input.value)}“ – Schreibweise prüfen</div></div>${clr}</div>
-          <div class="sp-tbtns"><button type="button" class="sp-tbtn gold sm" id="spFix">${SP_ICON.pen}Korrigieren</button>
-            <button type="button" class="sp-tbtn wheel sm" id="srOpenBtn" aria-label="Scout-Rad" ${canOpenWheel ? "" : "disabled"}>${SP_ICON.wheel}${spinCost}</button>
-            <button type="button" class="sp-tbtn sm" id="srRevealBtn" aria-label="Aufdecken" ${canReveal ? "" : "disabled"}>${SP_ICON.eye}${revCost}</button></div>`;
+        html = `<div class="sp-ttop"><span class="sp-ttag">${abbr}</span><div class="sp-ttxt"><b>${name}</b><div class="sp-tmsg">Fast richtig: „${duelEsc(input.value)}“ – Schreibweise prüfen</div></div>${clr}</div>
+          <div class="sp-tbtns"><button type="button" class="sp-tbtn gold sm" data-act="fix">${SP_ICON.pen}Korrigieren</button>
+            <button type="button" class="sp-tbtn wheel sm" id="srOpenBtn" data-act="wheel" aria-label="Scout-Rad" ${canOpenWheel ? "" : "disabled"}>${SP_ICON.wheel}${spinCost}</button>
+            <button type="button" class="sp-tbtn sm" id="srRevealBtn" data-act="reveal" aria-label="Aufdecken" ${canReveal ? "" : "disabled"}>${SP_ICON.eye}${revCost}</button></div>`;
+        accMid = `<b>${name} <span>· Fast richtig</span></b>`;
+        accBtns = `<button type="button" class="sp-ib gold" data-act="fix">Korrigieren</button>`;
       } else {
-        html = `<div class="sp-ttop"><span class="sp-ttag">${abbr}</span><div class="sp-ttxt"><b>${duelEsc(POSN[abbr] || abbr)}</b><div class="sp-tips">${spTipsHTML(m, abbr, drawnSet)}</div></div>${clr}</div>
-          <div class="sp-tbtns"><button type="button" class="sp-tbtn wheel" id="srOpenBtn" ${canOpenWheel ? "" : "disabled"}>${SP_ICON.wheel}${!anyAvail ? "Alle Tipps gezogen" : !canOpenWheel ? "Zu wenig Token" : "Scout-Rad"}${spinCost}</button>
-            <button type="button" class="sp-tbtn" id="srRevealBtn" ${canReveal ? "" : "disabled"}>${SP_ICON.eye}${canReveal ? "Aufdecken" : "Zu wenig Token"}${revCost}</button></div>`;
+        html = `<div class="sp-ttop"><span class="sp-ttag">${abbr}</span><div class="sp-ttxt"><b>${name}</b><div class="sp-tips">${spTipsHTML(m, abbr, drawnSet)}</div></div>${clr}</div>
+          <div class="sp-tbtns"><button type="button" class="sp-tbtn wheel" id="srOpenBtn" data-act="wheel" ${canOpenWheel ? "" : "disabled"}>${SP_ICON.wheel}${!anyAvail ? "Alle Tipps gezogen" : !canOpenWheel ? "Zu wenig Token" : "Scout-Rad"}${spinCost}</button>
+            <button type="button" class="sp-tbtn" id="srRevealBtn" data-act="reveal" ${canReveal ? "" : "disabled"}>${SP_ICON.eye}${canReveal ? "Aufdecken" : "Zu wenig Token"}${revCost}</button></div>`;
+        accMid = `<b>${name}</b><div class="sp-tips">${spTipsHTML(m, abbr, drawnSet, null, true)}</div>`;
+        accBtns = ibWheel + ibRev;
       }
-      afterBind = () => {
-        const fix = panel.querySelector("#spFix"); if (fix) fix.onclick = () => applyCorrection(abbr);
-        panel.querySelector("#srOpenBtn").addEventListener("click", () => {
-          if (document.activeElement === input) input.blur(); // Tastatur weg, Modal frei
-          openScoutWheelModal(abbr, input);
-        });
-        panel.querySelector("#srRevealBtn").addEventListener("click", () => {
-          if (profile.hintTokens < ECONOMY.revealCost || input.classList.contains("ok") || input.classList.contains("revealed")) return;
-          resetCombo(); // Aufdecken zaehlt als Hilfe
-          profile.hintTokens -= ECONOMY.revealCost;
-          saveProfile(profile);
-          renderProfileBar();
-          tokenRevealed.add(abbr);
-          input.value = m.players[abbr];
-          input.classList.remove("bad", "ok");
-          input.classList.add("revealed");
-          input.disabled = true;
-          input.dataset.counted = "1";
-          applyNameFit(input);
-          renderPositionPanel(abbr);
-          scheduleDraft();
-        });
-      };
     }
     panel.innerHTML = html;
-    const cb = panel.querySelector("#clearFieldsBtn"); if (cb) cb.onclick = askClear;
-    if (afterBind) afterBind();
+    const acc = document.getElementById("spAcc");
+    if (acc) acc.innerHTML = `<span class="sp-ttag">${abbr || "?"}</span><div class="sp-amid">${accMid}</div>${accBtns}${done}`;
   }
   // "Korrigieren" (Stift am Schild oder Knopf in der Holzleiste): genau die bisherige Logik (fuzzyCorrected, XP, Kombo-Reset, Entwurf)
   function applyCorrection(abbr) {
@@ -9139,7 +9175,10 @@ function renderPitch() {
   // Panel-Buttons nehmen dem Namensfeld beim Antippen weder Fokus noch Tastatur (mousedown-
   // preventDefault) - so loest der erste Tipp sofort aus (Prompt 22).
   const posPanelEl = document.getElementById("positionPanel");
-  if (posPanelEl) posPanelEl.addEventListener("mousedown", (e) => { if (e.target.closest("button")) e.preventDefault(); });
+  if (posPanelEl) {
+    posPanelEl.addEventListener("mousedown", (e) => { if (e.target.closest("button")) e.preventDefault(); });
+    posPanelEl.addEventListener("click", (e) => { const b = e.target.closest("[data-act]"); if (b && !b.disabled) spAct(b.dataset.act, activePosAbbr); });
+  }
 
   // ---- Entwurf speichern/wiederherstellen (Prompt 34) ----
   const draftKey = currentLevelContext ? "c:" + m.id : currentDailyChallenge ? "d:" + currentDailyChallenge.dateKey : "f:" + m.id;
@@ -9350,6 +9389,44 @@ function renderPitch() {
     if (tag) { const inp = inputOf(tag.dataset.a); if (!inp.disabled) inp.focus(); else setActivePosition(tag.dataset.a); } // Reiter antippen = Position waehlen
   });
   setTimeout(() => spRoot.classList.remove("intro"), 2600);
+
+  // Tastatur (Prompt 42): per visualViewport erkannt (iPhone-Safari verkleinert nur das sichtbare Fenster). Ohne Tastatur bleibt die normale Ansicht.
+  const kb = { open: false };
+  const visVP = () => window.visualViewport;
+  // Tastatur offen = sichtbares Fenster deutlich kleiner als die Seite (iPhone-Safari scrollt dabei oft das Dokument und verschiebt offsetTop,
+  // deshalb nicht ueber offsetTop rechnen). Zubehoerleiste: fixed am <body>, an die Unterkante des sichtbaren Fensters geheftet.
+  const kbIsOpen = () => { const v = visVP(); return !!v && v.height < document.documentElement.clientHeight - 120; };
+  function placeKb() {
+    const v = visVP(), acc = document.getElementById("spAcc");
+    if (!v || !acc) return;
+    const accH = acc.offsetHeight || 60;
+    acc.style.transform = `translateY(${Math.round(v.offsetTop + v.height - accH)}px)`;
+    acc.style.left = Math.round(v.offsetLeft) + "px"; acc.style.width = Math.round(v.width) + "px";
+    const frame = spRoot.querySelector("#spFrame"), inp = spRoot.querySelector(".pos-input.active-field") || document.activeElement;
+    if (!frame || !inp || !inp.getBoundingClientRect) return;
+    const r = inp.getBoundingClientRect(), ty = new DOMMatrix(getComputedStyle(frame).transform).m42;
+    const target = Math.min(250, Math.max(110, v.height - accH - 80)); // Schild ca. 250 px unter der Oberkante, immer ueber der Zubehoerleiste
+    const want = Math.max(0, Math.min((r.top + r.height / 2 - ty) - (v.offsetTop + target), 380));
+    frame.style.transform = want ? `translateY(${-Math.round(want)}px)` : "";
+  }
+  function kbCheck() {
+    if (!document.body.contains(spRoot)) { const a = document.getElementById("spAcc"); if (a) a.remove(); return; }
+    const ae = document.activeElement, focused = !!(ae && ae.classList && ae.classList.contains("pos-input") && spRoot.contains(ae));
+    const open = focused && kbIsOpen();
+    if (open && !kb.open) {
+      kb.open = true; spRoot.classList.add("sp-kb");
+      const acc = document.createElement("div"); acc.className = "sp-acc"; acc.id = "spAcc";
+      acc.addEventListener("mousedown", (e) => { if (e.target.closest("button")) e.preventDefault(); });
+      acc.addEventListener("click", (e) => { const b = e.target.closest("[data-act]"); if (b && !b.disabled) spAct(b.dataset.act, activePosAbbr); });
+      document.body.appendChild(acc); renderPositionPanel(activePosAbbr);
+    } else if (!open && kb.open) {
+      kb.open = false; spRoot.classList.remove("sp-kb");
+      const acc = document.getElementById("spAcc"); if (acc) acc.remove();
+      const frame = spRoot.querySelector("#spFrame"); if (frame) frame.style.transform = "";
+    }
+    if (kb.open) placeKb();
+  }
+  spKb = { check: kbCheck };
 }
 
 function evaluatePitch() {
@@ -9539,7 +9616,9 @@ function evaluatePitch() {
   const spRootEl = pitchView.querySelector("#spRoot");
   const spFrameEl = spRootEl.querySelector("#spFrame");
   spFrameEl.style.height = spFrameEl.offsetHeight + "px"; // Tafel behaelt ihre Hoehe, darunter darf gescrollt werden
-  spRootEl.classList.add("done"); spRootEl.classList.remove("sp-kb");
+  spKb = null; spRootEl.classList.add("done"); spRootEl.classList.remove("sp-kb");
+  const accEl = document.getElementById("spAcc"); if (accEl) accEl.remove();
+  spFrameEl.style.transform = "";
   spRootEl.querySelectorAll(".sp-slot.on").forEach(sl => sl.classList.remove("on")); // keine gewaehlte Position mehr nach dem Auswerten
   spRootEl.querySelectorAll(".pos-input.active-field").forEach(i => i.classList.remove("active-field"));
   document.getElementById("screen-game").classList.add("sp-done");
