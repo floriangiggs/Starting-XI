@@ -777,6 +777,63 @@
   .lp-float.up svg { transform: rotate(180deg); }
   @media (prefers-reduced-motion: reduce) { #screen-levelpath.lp *, #screen-levelpath.lp *::before, #screen-levelpath.lp *::after { animation: none !important; transition: none !important; } }
 
+  /* ---- Ersatzbank-Blatt im Taktiktafel-Stil (Prompt 52, Prototyp bank-v2.html; Koerper .bnb gilt auch im Duell-Rueckblick) ---- */
+  .sp-sheet.bn { --bn-top: max(58px, calc(env(safe-area-inset-top, 0px) + 14px)); display: flex; flex-direction: column; max-height: none; height: calc(100dvh - var(--bn-top) - max(6px, env(safe-area-inset-bottom, 0px))); margin-bottom: max(6px, env(safe-area-inset-bottom, 0px)); }
+  .sp-sheet.bn .in { flex: 1; min-height: 0; display: flex; flex-direction: column; padding: 14px; }
+  .bn-h { display: flex; align-items: center; gap: 11px; }
+  .bn-h .bn-ic { width: 42px; height: 42px; border-radius: 12px; flex-shrink: 0; display: grid; place-items: center; background: linear-gradient(180deg, #FBF3DF, #E9DCBC); box-shadow: inset 0 0 0 1px rgba(62,42,22,0.35), 0 2px 0 rgba(0,0,0,0.3); }
+  .bn-h .bn-ic svg { width: 27px; height: 27px; }
+  .bn-h .bn-t { flex: 1; min-width: 0; }
+  .bn-h .bn-t b { display: block; font-family: 'Anton', Impact, sans-serif; font-weight: 400; font-size: 27px; line-height: 1.02; }
+  .bn-h .bn-t small { display: block; font-weight: 300; font-size: 14px; color: rgba(244,241,232,0.82); margin-top: 2px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .bn-scroll { flex: 1; min-height: 0; overflow-y: auto; margin: 10px -4px 0; padding: 0 4px 4px; scrollbar-width: none; overscroll-behavior: contain; }
+  .bn-scroll::-webkit-scrollbar { display: none; }
+  .dz-bnb { padding: 0 12px 12px; }
+  .bnb { --ink: #13202A; --chalk: #F4F1E8; font-family: 'Oswald', sans-serif; color: var(--chalk); text-align: left; }
+  .bnb .bn-tl { position: relative; height: 76px; margin: 2px 0 4px; }
+  .bnb .bn-tl svg { position: absolute; inset: 0; width: 100%; height: 100%; overflow: visible; }
+  .bnb .bn-mk { position: absolute; transform: translate(-50%, 0); display: grid; justify-items: center; }
+  .bnb .bn-mk .bn-sh { position: relative; width: 28px; height: 26px; }
+  .bnb .bn-mk .bn-sh svg { position: absolute; inset: 0; width: 100%; height: 100%; }
+  .bnb .bn-mk .bn-sh b { position: absolute; inset: 5px 0 0; text-align: center; font-family: 'Anton', Impact, sans-serif; font-weight: 400; font-size: 12.5px; line-height: 18px; color: var(--ink); }
+  .bnb .bn-g { display: flex; align-items: center; gap: 8px; margin: 12px 0 7px; font-weight: 500; font-size: 15px; color: var(--chalk); }
+  .bnb .bn-g:first-child { margin-top: 2px; }
+  .bnb .bn-g em { font-style: normal; font-weight: 300; color: rgba(244,241,232,0.7); }
+  .bnb .bn-g::after { content: ""; flex: 1; height: 1.5px; background: linear-gradient(90deg, rgba(244,241,232,0.35), rgba(244,241,232,0)); border-radius: 1px; }
+  .bnb .bn-sub { display: grid; grid-template-columns: 30px minmax(0,1fr) auto; align-items: center; gap: 9px; padding: 5px 8px 5px 7px; margin-bottom: 6px; border-radius: 11px;
+    background: linear-gradient(180deg, #FBF8EF, #E9E2CF); color: var(--ink); box-shadow: 0 2px 0 rgba(0,0,0,0.28), inset 0 -1px 0 rgba(120,96,60,0.25); }
+  .bnb .bn-shirt { position: relative; width: 30px; height: 28px; }
+  .bnb .bn-shirt svg { position: absolute; inset: 0; width: 100%; height: 100%; }
+  .bnb .bn-shirt b { position: absolute; left: 0; right: 0; top: 7px; text-align: center; font-family: 'Anton', Impact, sans-serif; font-weight: 400; font-size: 13px; line-height: 1; color: #FBF8EF; }
+  .bnb .bn-nm { min-width: 0; }
+  .bnb .bn-sub .bn-nm b { display: block; font-weight: 600; font-size: 15.5px; line-height: 1.12; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .bnb .bn-sub .bn-nm > span { display: flex; align-items: center; gap: 5px; margin-top: 1px; font-weight: 400; font-size: 12.5px; color: rgba(19,32,42,0.68); white-space: nowrap; }
+  .bnb .bn-for { display: inline-flex; align-items: center; gap: 4px; font-weight: 500; color: rgba(19,32,42,0.86); min-width: 0; overflow: hidden; text-overflow: ellipsis; }
+  .bnb .bn-for svg { width: 13px; height: 13px; flex-shrink: 0; }
+  .bnb .bn-hid { display: inline-flex; align-items: center; gap: 4px; height: 17px; padding: 0 7px; border-radius: 10px; border: 1.3px dashed rgba(19,32,42,0.35); color: rgba(19,32,42,0.6); font-weight: 400; }
+  .bnb .bn-hid svg { width: 12px; height: 12px; }
+  .bnb .bn-min { display: inline-flex; align-items: center; gap: 2px; height: 26px; padding: 0 8px 0 5px; border-radius: 13px; background: linear-gradient(180deg, #2F7A50, #23603D); color: #FBF8EF; box-shadow: inset 0 0 0 1px rgba(255,255,255,0.12), 0 1.5px 0 rgba(0,0,0,0.25); }
+  .bnb .bn-min svg { width: 14px; height: 14px; }
+  .bnb .bn-min b { font-family: 'Anton', Impact, sans-serif; font-weight: 400; font-size: 15px; line-height: 1; }
+  .bnb .bn-min b sup { font-family: 'Oswald', sans-serif; font-weight: 500; font-size: 10.5px; vertical-align: 5px; margin-left: 1px; }
+  .bnb .bn-rest { display: grid; grid-template-columns: 1fr 1fr; gap: 7px; }
+  .bnb .bn-rp { display: grid; grid-template-columns: 30px minmax(0,1fr); align-items: center; gap: 9px; height: 48px; padding: 0 10px 0 7px; border-radius: 11px; background: rgba(8,22,14,0.28); box-shadow: inset 0 0 0 1.3px rgba(244,241,232,0.2); }
+  .bnb .bn-no { width: 30px; height: 30px; border-radius: 50%; display: grid; place-items: center; box-shadow: inset 0 0 0 1.6px rgba(244,241,232,0.6); font-family: 'Anton', Impact, sans-serif; font-size: 14.5px; color: var(--chalk); }
+  .bnb .bn-rp .bn-nm { line-height: 1.1; }
+  .bnb .bn-rp .bn-nm b { display: block; font-weight: 500; font-size: 16.5px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .bnb .bn-rp .bn-nm small { display: block; font-weight: 300; font-size: 12.5px; color: rgba(244,241,232,0.7); margin-top: 1px; }
+  .bn-note { display: flex; gap: 9px; align-items: flex-start; margin: 12px 0 2px; padding: 9px 11px; border-radius: 10px; background: #F6E7A6; color: #3A2E10; transform: rotate(-0.6deg); box-shadow: 0 3px 8px rgba(0,0,0,0.3); font-weight: 400; font-size: 13.5px; line-height: 1.38; }
+  .bn-note svg { width: 17px; height: 17px; flex-shrink: 0; margin-top: 1px; } .bn-note b { font-weight: 600; }
+  .sp-sheet.bn .bn-cta { width: 100%; height: 52px; margin-top: 12px; flex-shrink: 0; border: none; border-radius: 15px; cursor: pointer; font-family: 'Anton', Impact, sans-serif; font-size: 20px; color: #13202A; background: linear-gradient(160deg, #F7D98E, #E8B23D); box-shadow: 0 4px 0 #9C7422; }
+  .sp-sheet.bn .bn-cta:active { transform: translateY(3px); box-shadow: 0 1px 0 #9C7422; }
+  @keyframes bnUp { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: none; } }
+  @keyframes bnPop { 0% { opacity: 0; transform: translate(-50%, -8px) scale(.6); } 70% { transform: translate(-50%, 1px) scale(1.06); } 100% { opacity: 1; transform: translate(-50%, 0) scale(1); } }
+  @keyframes bnDraw { to { stroke-dashoffset: 0; } }
+  .bnb.bn-anim .bn-sub, .bnb.bn-anim .bn-rp, .bnb.bn-anim .bn-g, .bn-note.bn-anim { animation: bnUp .42s cubic-bezier(.2,.9,.3,1) both; }
+  .bnb.bn-anim .bn-tl .bn-mk { animation: bnPop .5s cubic-bezier(.2,.9,.3,1.2) both; }
+  .bnb.bn-anim .bn-tl .bn-ln { stroke-dasharray: 400; stroke-dashoffset: 400; animation: bnDraw .7s .15s ease-out forwards; }
+  @media (prefers-reduced-motion: reduce) { .bnb.bn-anim *, .bn-note.bn-anim { animation: none !important; } .bnb.bn-anim .bn-tl .bn-ln { stroke-dashoffset: 0 !important; } }
+
   /* ---- Level-Vorschau "Taktiktafel" (Prompt 41, Prototyp level-vorschau.html Variante C; alles unter .lv) ---- */
   #screen-game.lv-on { overflow: hidden; padding: max(12px, calc(env(safe-area-inset-top) + 8px)) 12px max(12px, calc(env(safe-area-inset-bottom) + 4px));
     background: repeating-radial-gradient(circle at 30% 20%, rgba(255,255,255,0.025) 0 2px, transparent 2px 6px), radial-gradient(120% 70% at 50% 25%, #357652, #1A3D2B 70%), #1A3D2B; }
@@ -1094,22 +1151,6 @@
   /* ---- Ersatzbank (Prompt 37) - Optik aus prototypes/bank.html (Variante C + Blatt) ---- */
   .bench-ic { width: 26px; height: 26px; border-radius: 8px; display: inline-grid; place-items: center; background: linear-gradient(135deg, var(--gold), #f4d58d); box-shadow: 0 2px 5px rgba(0,0,0,0.35); flex-shrink: 0; }
   .bench-ic svg { width: 19px; height: 19px; display: block; }
-  .bench-sheet { display: flex; flex-direction: column; max-height: min(88vh, 640px); padding-top: 12px; }
-  .bench-sheet .bn-head { display: flex; justify-content: space-between; align-items: flex-start; gap: 12px; }
-  .bench-sheet .bn-head h2 { margin: 0; font-family: 'Anton', Impact, sans-serif; font-weight: 400; font-size: 30px; line-height: 1.05; }
-  .bench-sheet .bn-head p { margin: 3px 0 0; font-family: 'Oswald', sans-serif; font-weight: 300; font-size: 14.5px; color: var(--muted); }
-  .bench-sheet .bn-list { margin-top: 14px; flex: 1; min-height: 0; overflow-y: auto; display: grid; align-content: start; gap: 6px; }
-  .bench-sheet .bn-grp { font-family: 'Oswald', sans-serif; font-weight: 600; font-size: 11px; letter-spacing: 0.12em; text-transform: uppercase; color: var(--dim); margin: 8px 0 2px; }
-  .bench-sheet .bn-pl { display: grid; grid-template-columns: 34px minmax(0,1fr) auto; align-items: center; gap: 10px; padding: 8px 10px; border-radius: 10px; background: var(--ink-2); box-shadow: inset 0 0 0 1px rgba(242,239,230,0.05); }
-  .bench-sheet .bn-pl.on { box-shadow: inset 0 0 0 1px rgba(46,204,113,0.35); }
-  .bench-sheet .bn-nr { width: 34px; height: 34px; border-radius: 50%; display: grid; place-items: center; font-family: 'Anton', Impact, sans-serif; font-size: 16px; background: rgba(242,239,230,0.07); color: var(--muted); }
-  .bench-sheet .bn-nm { font-family: 'Oswald', sans-serif; font-weight: 500; font-size: 16.5px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; min-width: 0; }
-  .bench-sheet .bn-nm em { font-style: normal; font-weight: 400; font-size: 11px; letter-spacing: 0.08em; color: var(--dim); margin-left: 6px; }
-  .bench-sheet .bn-nm small { display: block; font-weight: 300; font-size: 13px; color: var(--muted); }
-  .bench-sheet .bn-in { display: inline-flex; align-items: center; gap: 4px; padding: 3px 9px; border-radius: 12px; background: rgba(46,204,113,0.14); color: var(--ok); font-family: 'Oswald', sans-serif; font-weight: 600; font-size: 13px; font-variant-numeric: tabular-nums; white-space: nowrap; }
-  .bench-sheet .bn-legend { margin-top: 12px; font-family: 'Oswald', sans-serif; font-weight: 300; font-size: 13.5px; color: var(--muted); line-height: 1.45; }
-  .bench-sheet .bn-legend b { color: var(--ok); font-weight: 600; }
-  .bench-sheet .bn-back { margin-top: 12px; height: 48px; flex-shrink: 0; border: none; border-radius: 13px; background: linear-gradient(160deg, var(--gold-2), var(--gold)); color: var(--ink); font-family: 'Anton', Impact, sans-serif; font-size: 19px; box-shadow: 0 4px 0 #9C7422; cursor: pointer; }
   .gs .help.bench-help { display: grid; grid-template-columns: 26px minmax(0,1fr); gap: 10px; align-items: start; padding: 7px 10px; }
   .gs .help.bench-help .bench-ic { width: 26px; height: 26px; margin-top: 1px; }
   .gs .help.bench-help b { display: flex; justify-content: space-between; align-items: baseline; gap: 8px; font-size: 15px; }
@@ -1968,11 +2009,6 @@
   details.dz-bank summary::-webkit-details-marker { display: none; }
   details.dz-bank summary .dz-tile { width: 26px; height: 26px; border-radius: 8px; display: grid; place-items: center; background: linear-gradient(135deg, var(--dz-gold), #f4d58d); }
   details.dz-bank summary em { margin-left: auto; font-style: normal; font-weight: 300; font-size: 13px; color: var(--dz-dim); }
-  .dz-blist { display: grid; gap: 5px; padding: 0 12px 12px; }
-  .dz-blist div { display: grid; grid-template-columns: 26px minmax(0,1fr) auto; gap: 8px; align-items: center; font-size: 14.5px; }
-  .dz-blist .dz-nr { font-family: var(--dz-f-display); font-size: 15px; color: var(--dz-muted); text-align: center; }
-  .dz-blist .dz-in { font-weight: 500; font-size: 13px; color: var(--dz-win); }
-  .dz-blist small { color: var(--dz-muted); font-weight: 300; }
   .dz-acts { display: grid; grid-template-columns: 1fr auto; gap: 8px; margin-top: 12px; }
   .dz-delbtn { height: 54px; padding: 0 16px; border-radius: 16px; box-shadow: inset 0 0 0 1px rgba(255,138,115,0.45); color: #FFB3A3; font-weight: 500; font-size: 15px; display: flex; align-items: center; gap: 6px; }
   .dz-delbtn svg { width: 18px; height: 18px; }
@@ -11053,6 +11089,14 @@ new MutationObserver((recs) => {
 }).observe(document.body, { childList: true });
 document.addEventListener("keydown", (e) => { if (e.key === "Escape" && sheetStack.length) { if (sheetCloseTop()) e.preventDefault(); } });
 
+// Duell-Rueckblick: Bank-Koerper erst beim Aufklappen bauen (Breite messen), immer mit "fuer <Name>" (Prompt 52)
+document.addEventListener("toggle", (e) => {
+  const det = e.target; if (!det.matches || !det.matches("details.dz-bank") || !det.open) return;
+  const box = det.querySelector(".dz-bnb"), m = LINEUP_CHALLENGES.find((x) => x.id === det.dataset.mid) || dailyMatchById(det.dataset.mid);
+  if (!box || !m || box.dataset.done) return;
+  box.dataset.done = "1"; box.innerHTML = benchBodyHTML(m, true, det.clientWidth - 24); box.classList.add("bn-anim");
+}, true);
+
 /* ---- Overlays: Sheet, Menue, Rueckgaengig-Hinweis ---- */
 let dzToastTimer = null;
 function dzCloseSheet() { document.querySelectorAll(".dz-shade, .dz-sheet").forEach(el => el.remove()); }
@@ -11288,9 +11332,6 @@ function dzRoundHTML(d, i) {
   const dots = (r, who) => (r && r.solvedAt ? lay.map((q, k) => r.solvedAt[k] == null ? "" : `<span class="dz-pt" style="left:${Math.min(100, r.solvedAt[k] / limit * 100).toFixed(1)}%;--t:${Math.round(Math.min(1, r.solvedAt[k] / limit) * 900) + 200}ms" title="${q.abbr} nach ${r.solvedAt[k]} s"></span>`).join("") : "");
   const firstOf = (r) => { const v = r && r.solvedAt ? r.solvedAt.filter(x => x != null) : []; return v.length ? Math.min(...v) : null; };
   const bench = benchOf(m);
-  const nameOf = (f) => (m.players && m.players[f]) || f;
-  const subs = bench ? bench.filter(x => x.in).sort((x, y) => x.in - y.in || (x.inExtra || 0) - (y.inExtra || 0)) : [], rest = bench ? bench.filter(x => !x.in) : [];
-  const min = (x) => (x.inExtra ? x.in + "+" + x.inExtra : x.in) + "'";
   const pitch = cmpOk ? `<div class="dz-pitch" data-pitch><svg class="dz-lines" viewBox="0 0 100 125" preserveAspectRatio="none" aria-hidden="true"><g fill="none" stroke="rgba(244,241,232,0.4)" stroke-width="0.5"><line x1="0" y1="62.5" x2="100" y2="62.5"/><circle cx="50" cy="62.5" r="11"/><rect x="24" y="0" width="52" height="16"/><rect x="24" y="109" width="52" height="16"/></g></svg>
       ${lay.map((q, k) => { const my = bit(a, k), op = bit(b, k); return `<div class="dz-ps dz-${my && op ? "both" : my ? "me" : op ? "op" : "none"}" style="left:${q.x}%;top:${q.y}%;--d:${k}"><button type="button" data-ab="${q.abbr}" data-k="${k}"><span class="dz-nm">${duelEsc(m.players[q.abbr])}</span><span class="dz-mk"><i class="${my ? "dz-y" : "dz-x"}">${my ? "✓" : "–"}</i><i class="${op ? "dz-o" : "dz-x"}">${op ? "✓" : "–"}</i></span></button></div>`; }).join("")}</div>
     <div class="dz-legend"><span><i style="--bg:#F4F1E8"></i>beide richtig</span><span><i style="--bg:linear-gradient(135deg,#F7D98E,#E8B23D)"></i>nur du</span><span><i style="--bg:linear-gradient(135deg,#C3E2FF,#8CC8FF)"></i>nur ${duelEsc(p.name)}</span><span><i style="--bg:rgba(10,17,24,0.72)"></i>beide falsch</span></div>`
@@ -11303,9 +11344,7 @@ function dzRoundHTML(d, i) {
   return `<div class="dz-mt"><small>${d.lineups.length > 1 ? `Runde ${i + 1} · ` : ""}${duelEsc(m.comp)}</small><b>${duelEsc(m.teams)}</b><span>Gesucht: ${duelEsc(side)} · ${duelEsc(m.formation)}</span></div>
     <div class="dz-cmp"><div class="dz-me"><small>${duelEsc(me.name)}</small><b>${a.correct} von 11<em>${fmtMS(a.seconds)}</em></b></div>${b ? `<div class="dz-op"><small>${duelEsc(p.name)}</small><b>${b.correct} von 11<em>${fmtMS(b.seconds)}</em></b></div>` : `<div class="dz-op"><small>${duelEsc(p.name)}</small><b>–</b></div>`}</div>
     ${pitch}${tl}
-    ${bench ? `<details class="dz-bank"><summary><span class="dz-tile">${DZ_ICON.bench}</span>Ersatzbank<em>${bench.length} Spieler</em></summary><div class="dz-blist">
-      ${subs.map(x => `<div><span class="dz-nr">${duelEsc(x.nr)}</span><span>${duelEsc(x.name)}${x.for ? ` <small>für ${duelEsc(nameOf(x.for))}</small>` : ""}</span><span class="dz-in">⇡ ${min(x)}</span></div>`).join("")}
-      ${rest.map(x => `<div><span class="dz-nr">${duelEsc(x.nr)}</span><span>${duelEsc(x.name)}</span><span></span></div>`).join("")}</div></details>` : ""}`;
+    ${bench ? `<details class="dz-bank" data-mid="${duelEsc(m.id)}"><summary><span class="dz-tile">${DZ_ICON.bench}</span>Ersatzbank<em>${bench.length} Spieler</em></summary><div class="bnb dz-bnb"></div></details>` : ""}`;
 }
 function dzDetailHTML(id, d) {
   if (!d || !d.result) return "";
@@ -12563,29 +12602,70 @@ function renderDuelResult() {
 const BENCH_COST = 0; // Token-Preis spaeter moeglich: hier Abzug + Hilfe-Markierung nachruesten
 let benchReveal = false;
 const BENCH_SVG = '<svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="#14202B" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 7h16"/><path d="M4 11h16"/><path d="M3 15h18"/><path d="M6 15v5"/><path d="M18 15v5"/><path d="M6 7v8"/><path d="M18 7v8"/></svg>';
+// ---- Ersatzbank im Taktiktafel-Stil (Prompt 52, Prototyp bank-v2.html): gemeinsamer Koerper fuer Blatt und Duell-Rueckblick ----
+const BENCH_POS_WORD = { TW: "Tor", ABW: "Abwehr", MIT: "Mittelfeld", ANG: "Angriff" };
+const BI = {
+  bench: '<svg viewBox="0 0 32 32" aria-hidden="true"><path d="M5 9 C5 5 27 5 27 9 V19 H5 Z" fill="rgba(140,190,170,0.35)" stroke="#5B3D22" stroke-width="1.8"/><rect x="8" y="13" width="4.4" height="6" rx="1.4" fill="#2E7D52"/><rect x="13.8" y="13" width="4.4" height="6" rx="1.4" fill="#2E7D52"/><rect x="19.6" y="13" width="4.4" height="6" rx="1.4" fill="#2E7D52"/><path d="M4 19h24M7 19v6M25 19v6" stroke="#5B3D22" stroke-width="2.2" stroke-linecap="round"/></svg>',
+  up: '<svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="#9BF0BE" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M12 19V5M6 11l6-6 6 6"/></svg>',
+  out: '<svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="M12 5v14M6 13l6 6 6-6"/></svg>',
+  lock: '<svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><rect x="5" y="11" width="14" height="9" rx="2"/><path d="M8 11V8a4 4 0 0 1 8 0v3"/></svg>',
+  pin: '<svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="9" r="6" fill="#C9962E"/><circle cx="10" cy="7" r="2" fill="#F7D98E"/><path d="M12 15v7" stroke="#6B4828" stroke-width="2" stroke-linecap="round"/></svg>',
+  x: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18" stroke="currentColor" stroke-width="2.6" stroke-linecap="round"/></svg>',
+  shirt: (c) => `<svg viewBox="0 0 38 36" aria-hidden="true"><path d="M12 2 L4 6 L1 14 L7 16 L8 13 V34 H30 V13 L31 16 L37 14 L34 6 L26 2 C24 5 14 5 12 2 Z" fill="${c}" stroke="rgba(0,0,0,0.25)" stroke-width="1"/><path d="M12 2 C14 5 24 5 26 2" fill="none" stroke="rgba(255,255,255,0.45)" stroke-width="1.4"/><path d="M8 13 V34 H12 V10 Z" fill="rgba(255,255,255,0.12)"/></svg>`
+};
 function benchOf(m) { return Array.isArray(m.bench) && m.bench.length ? m.bench : null; }
+// Zeitleiste (Kreide), Namensschilder der Eingewechselten und Kreide-Kacheln der uebrigen Bank. W = Breite des Bereichs in px (Marker liegen in Prozent)
+function benchBodyHTML(m, reveal, W) {
+  const bench = benchOf(m); if (!bench) return "";
+  const esc = (x) => duelEsc(String(x)), mins = (b) => b.in + (b.inExtra || 0) * 0.01, minTxt = (b) => `${b.in}${b.inExtra ? `<sup>+${b.inExtra}</sup>` : ""}`;
+  const used = bench.filter((b) => b.in).sort((a, b) => mins(a) - mins(b));
+  const order = { TW: 0, ABW: 1, MIT: 2, ANG: 3 };
+  const unused = bench.filter((b) => !b.in).sort((a, b) => (order[a.pos] ?? 9) - (order[b.pos] ?? 9) || a.nr - b.nr);
+  const et = used.some((b) => b.in > 90 && !b.inExtra) || /n\.V\.|i\.E\./.test(m.teams);
+  const shirtCol = lpMix(DIFF_COLOR[m.difficulty] || "#2E7D52", "#13202A", 0.38);
+  const timeline = () => {
+    const end = et ? 120 : 90, w = Math.max(220, Math.round(W || 336)), x0 = 14, x1 = w - 14, X = (t) => x0 + (x1 - x0) * Math.min(t, end + 3) / (end + 3);
+    const ticks = et ? [0, 45, 90, 105, 120] : [0, 45, 90];
+    let svg = `<svg viewBox="0 0 ${w} 76" aria-hidden="true">
+      <path class="bn-ln" d="M${x0} 56 H${x1}" stroke="rgba(244,241,232,0.8)" stroke-width="2.2" stroke-linecap="round" fill="none"/>
+      ${et ? `<rect x="${X(90)}" y="51" width="${X(120) - X(90)}" height="10" rx="3" fill="rgba(244,241,232,0.08)"/>` : ""}
+      ${ticks.map((t) => `<path d="M${X(t)} ${t === 45 || t === 90 ? 50 : 52} V${t === 45 || t === 90 ? 62 : 60}" stroke="rgba(244,241,232,${t % 45 ? 0.45 : 0.75})" stroke-width="1.6"/><text x="${X(t)}" y="74" text-anchor="middle" font-family="Oswald" font-weight="400" font-size="10.5" fill="rgba(244,241,232,0.7)">${t === 0 ? "Anpfiff" : t + "'"}</text>`).join("")}</svg>`;
+    // nahe Minuten werden seitlich aufgefaechert (Mindestabstand 31 px), schraege Kreidestriche zeigen auf die echte Minute
+    const xs = used.map((b) => X(mins(b))), L = xs.slice(), gap = 31;
+    for (let i = 1; i < L.length; i++) L[i] = Math.max(L[i], L[i - 1] + gap);
+    if (L.length) L[L.length - 1] = Math.min(L[L.length - 1], x1 + 4);
+    for (let i = L.length - 2; i >= 0; i--) L[i] = Math.min(L[i], L[i + 1] - gap);
+    let stems = "", mk = "";
+    used.forEach((b, k) => {
+      stems += `<path d="M${L[k].toFixed(1)} 40 L${xs[k].toFixed(1)} 55" stroke="rgba(244,241,232,0.6)" stroke-width="1.5" stroke-linecap="round"/><circle cx="${xs[k].toFixed(1)}" cy="56" r="2.6" fill="#F4F1E8"/>`;
+      mk += `<span class="bn-mk" style="left:${(L[k] / w * 100).toFixed(2)}%;top:12px;animation-delay:${(0.35 + k * 0.09).toFixed(2)}s"><span class="bn-sh">${BI.shirt("#F4F1E8")}<b>${esc(b.nr)}</b></span></span>`;
+    });
+    return `<div class="bn-tl">${svg.replace("</svg>", stems + "</svg>")}${mk}</div>`;
+  };
+  let d = 0.25; const dl = () => `animation-delay:${(d += 0.06).toFixed(2)}s`;
+  const nameOf = (f) => (m.players && m.players[f]) || f; // Kuerzel eines Startspielers oder Name eines Bankspielers
+  const subs = used.map((b) => `<div class="bn-sub" style="${dl()}"><span class="bn-shirt">${BI.shirt(shirtCol)}<b>${esc(b.nr)}</b></span>
+      <span class="bn-nm"><b>${esc(b.name)}</b><span>${BENCH_POS_WORD[b.pos] || ""}${reveal && b.for ? ` · <span class="bn-for">${BI.out}für ${esc(nameOf(b.for))}</span>` : ` · <span class="bn-hid">${BI.lock}für wen?</span>`}</span></span>
+      <span class="bn-min" role="img" aria-label="eingewechselt in Minute ${b.in}${b.inExtra ? "+" + b.inExtra : ""}">${BI.up}<b>${minTxt(b)}'</b></span></div>`).join("");
+  const rest = unused.map((b) => `<div class="bn-rp" style="${dl()}"><span class="bn-no">${esc(b.nr)}</span><span class="bn-nm"><b>${esc(b.name)}</b><small>${BENCH_POS_WORD[b.pos] || ""}</small></span></div>`).join("");
+  return `${used.length ? `<div class="bn-g" style="${dl()}">Eingewechselt <em>${used.length}</em></div>${timeline()}${subs}` : ""}${unused.length ? `<div class="bn-g" style="${dl()}">Nicht eingesetzt <em>${unused.length}</em></div><div class="bn-rest">${rest}</div>` : ""}`;
+}
+function benchCompLabel(m) {
+  const yr = (m.comp.match(/(\d{4})\s*$/) || [])[1] || "";
+  return m.comp.replace(/\s*\([^)]*\)/g, "").split(",")[0].replace("Champions-League-", "CL-").replace("Champions League", "CL") + (yr ? " " + yr : "");
+}
 function openBenchSheet(m) {
   const bench = benchOf(m);
   if (!bench || document.getElementById("benchSheet")) return;
-  const esc = (x) => duelEsc(String(x));
-  const minute = (b) => b.in ? (b.inExtra ? b.in + "+" + b.inExtra : b.in) + "'" : "";
-  const nameOf = (f) => (m.players && m.players[f]) || f; // Kuerzel eines Startspielers oder Name eines Bankspielers
-  const row = (b, on) => `<div class="bn-pl${on ? " on" : ""}"><span class="bn-nr">${esc(b.nr)}</span><span class="bn-nm">${esc(b.name)}<em>${esc(b.pos)}</em>${on && benchReveal && b.for ? `<small>für ${esc(nameOf(b.for))}</small>` : ""}</span>${on ? `<span class="bn-in">⇡ ${minute(b) || "eingew."}</span>` : "<span></span>"}</div>`;
-  const used = bench.filter((b) => b.in).sort((a, b) => a.in - b.in || (a.inExtra || 0) - (b.inExtra || 0));
-  const unused = bench.filter((b) => !b.in);
   const team = m.side.replace(/^Aufstellung (?:von|des|der)\s+/i, "");
+  const W = Math.min(548, innerWidth - 12) - 14 - 28; // Breite des Inhalts (Holzrahmen 2x7, Filz-Polster 2x14)
   const backdrop = document.createElement("div");
-  backdrop.className = "modal-backdrop";
-  backdrop.id = "benchSheet";
-  backdrop.innerHTML = `<div class="modal-sheet bench-sheet" role="dialog" aria-modal="true" aria-label="Ersatzbank">
-      <div class="bn-head"><div><h2>Ersatzbank</h2><p>${esc(team)} · ${esc(m.comp.replace(/\s*\([^)]*\)/g, ""))}</p></div><button type="button" class="modal-close" id="benchClose">Schließen</button></div>
-      <div class="bn-list">
-        ${used.length ? '<div class="bn-grp">Eingewechselt</div>' + used.map((b) => row(b, true)).join("") : ""}
-        ${unused.length ? '<div class="bn-grp">Nicht eingesetzt</div>' + unused.map((b) => row(b, false)).join("") : ""}
-      </div>
-      <div class="bn-legend">${benchReveal ? "Bei jedem Wechsel steht, für wen er kam." : "Der <b>grüne Pfeil</b> zeigt, wer eingewechselt wurde. Für wen er kam, siehst du nach dem Auswerten."}</div>
-      <button type="button" class="bn-back" id="benchBack">Zurück aufs Feld</button>
-    </div>`;
+  backdrop.className = "modal-backdrop sp-sbd"; backdrop.id = "benchSheet"; backdrop.style.zIndex = "45";
+  backdrop.innerHTML = `<div class="sp-sheet bn" role="dialog" aria-modal="true" aria-label="Ersatzbank"><div class="in">
+      <div class="bn-h"><span class="bn-ic">${BI.bench}</span><div class="bn-t"><b>Ersatzbank</b><small>${duelEsc(team)} · ${duelEsc(benchCompLabel(m))}</small></div><button type="button" class="sp-x" id="benchClose" aria-label="Schließen">${BI.x}</button></div>
+      <div class="bn-scroll"><div class="bnb bn-anim">${benchBodyHTML(m, benchReveal, W)}</div>
+        <div class="bn-note bn-anim" style="animation-delay:0.9s">${BI.pin}<span>${benchReveal ? "Bei jedem Wechsel steht jetzt, <b>für wen</b> der Spieler kam." : "Die Bank verrät keine Startelf: <b>für wen</b> eingewechselt wurde, siehst du erst nach dem Auswerten."}</span></div></div>
+      <button type="button" class="bn-cta" id="benchBack">Zurück aufs Feld</button></div></div>`;
   document.body.appendChild(backdrop);
   const close = () => backdrop.remove();
   backdrop.querySelector("#benchClose").onclick = close;
