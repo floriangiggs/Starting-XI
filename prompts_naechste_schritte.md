@@ -4385,9 +4385,10 @@ C. Richtiger Name wird erst beim Verlassen des Felds grün (Florian)
       und .prefilled (deren Optik gewinnt immer).
    2. Einmaliger Pop + Häkchen wie im Prototyp, sofort beim Tippen.
    3. Gilt in allen Modi inkl. Duell-Runde (.miss nach Abgabe bleibt).
-   4. Optional, im Plan kurz vorschlagen: nach richtigem Namen
-      automatisch zur nächsten freien Position springen (Tastatur bleibt
-      offen) – nur umsetzen, wenn Florian zustimmt.
+   4. KEIN automatischer Sprung zur nächsten Position (Florian,
+      16.10.2026): Nach einem richtigen Namen bleibt das Feld gewählt;
+      der Spieler wählt selbst, welches Feld er als Nächstes ausfüllt
+      (Antippen oder Knopf "Nächste freie Position" wie bisher).
    5. Playwright-Test: Feld wählen, korrekten Namen tippen (ohne
       Verlassen) → berechnete Hintergrundfarbe ist grün, data-st="ok";
       fast richtigen Namen tippen → nach Tipppause gold + Stift.
