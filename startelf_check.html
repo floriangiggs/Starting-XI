@@ -114,44 +114,12 @@
 
 
   /* ---- Kampagne: Level-Pfad innerhalb einer Welt ---- */
-  .level-path-wrap { position: relative; width: 100%; margin-bottom: 18px; border-radius: 14px; overflow: hidden; border: 2px solid rgba(255,255,255,0.15); background:
       radial-gradient(circle at 50% 0%, var(--path-bg, rgba(232,178,61,0.12)), transparent 55%),
       repeating-linear-gradient(180deg, rgba(255,255,255,0.05) 0 24px, transparent 24px 48px),
       linear-gradient(180deg, #1f5c3d, #163d29);
     box-shadow: 0 10px 28px rgba(0,0,0,0.35), inset 0 0 50px rgba(0,0,0,0.25); }
-  .level-path-wrap .field-marking { position: absolute; border: 1.5px solid rgba(255,255,255,0.16); pointer-events: none; }
-  .level-path-wrap .field-halfway { left: 6%; right: 6%; height: 1.5px; background: rgba(255,255,255,0.14); border: none; }
-  .level-path-wrap .field-circle { width: 22%; padding-bottom: 22%; border-radius: 50%; left: 50%; transform: translate(-50%, -50%); }
   .confetti-dot { position: absolute; width: 5px; height: 5px; border-radius: 50%; opacity: 0.55; pointer-events: none; }
-  .level-path-svg { position: absolute; inset: 0; width: 100%; height: 100%; }
-  .level-node { position: absolute; transform: translate(-50%, -50%); z-index: 2; cursor: pointer; text-align: center; }
-  .level-node.locked { cursor: not-allowed; }
-  .level-node.goal { cursor: default; }
-  .path-deco, .path-deco-side { position: absolute; top: 0; pointer-events: none; z-index: 0; }
-  .path-deco { inset: 0; width: 100%; height: 100%; }
-  .path-deco-side { width: 48px; height: 100%; overflow: visible; }
-  .path-deco-side.l { left: 0; }
-  .path-deco-side.r { right: 0; }
-  .path-intro { position: relative; z-index: 2; text-align: center; padding: 16px 18px 0; }
-  .path-intro .pi-k { font-family: 'Oswald', sans-serif; font-weight: 600; font-size: 11px; letter-spacing: 0.1em; text-transform: uppercase; color: var(--gold-2); }
-  .path-intro .pi-h { font-family: 'Anton', sans-serif; font-size: 26px; text-transform: uppercase; line-height: 1.05; text-shadow: 0 2px 8px rgba(0,0,0,0.5); }
-  .path-intro .pi-p { font-family: 'Oswald', sans-serif; font-weight: 300; font-size: 12.5px; color: rgba(242,239,230,0.8); margin-top: 2px; }
 
-  .level-dot { position: relative; width: 68px; height: 68px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-family: 'Anton', sans-serif; font-weight: 400; font-size: 22px; border: 3px solid var(--line); background: radial-gradient(circle at 35% 30%, #333, #1a1a1a 70%); box-shadow: 0 6px 14px rgba(0,0,0,0.45), inset 0 0 0 2px rgba(255,255,255,0.04); transition: transform 0.1s ease; overflow: hidden; }
-  .level-node:active .level-dot { transform: scale(0.92); }
-  .level-node.locked .level-dot { opacity: 0.35; }
-  .level-node.passed .level-dot { color: var(--chalk); background: radial-gradient(circle at 35% 30%, var(--node-color-light, #3fae63), var(--node-color, #1f6b3f) 75%); border-color: var(--node-color, #2ecc71); }
-  .level-node.passed .level-dot::before { content: ""; position: absolute; left: 6%; right: 6%; top: 50%; height: 8%; background: rgba(255,255,255,0.4); transform: translateY(-50%); }
-  .level-node.passed .level-dot::after { content: ""; position: absolute; width: 46%; height: 46%; border: 8% solid rgba(255,255,255,0.35); border-radius: 50%; top: 50%; left: 50%; transform: translate(-50%,-50%); box-sizing: border-box; }
-  .level-node.passed .level-dot span { position: relative; z-index: 2; }
-  .level-node.current .level-dot { border-color: var(--node-color, var(--gold)); animation: floodlightPulse 1.8s ease-in-out infinite; }
-  .level-dot .level-badge { position: absolute; bottom: -3px; right: -3px; width: 22px; height: 22px; border-radius: 50%; background: var(--ink); border: 2px solid var(--node-color, var(--gold)); display: flex; align-items: center; justify-content: center; z-index: 3; box-shadow: 0 2px 5px rgba(0,0,0,0.5); }
-  .level-dot .level-badge .mascot-ball { font-size: 11px; }
-  .level-dot .level-badge .mascot::before, .level-dot .level-badge .mascot-accessory, .level-dot .level-badge .mascot.sparkle::after { display: none; }
-  .level-node .level-label { margin-top: 6px; font-family: 'Oswald', sans-serif; font-weight: 700; font-size: 14px; letter-spacing: 0.02em; color: rgba(242,239,230,0.85); text-shadow: 0 2px 4px rgba(0,0,0,0.6); }
-  .level-node.passed .level-label { color: var(--chalk); }
-  .level-node.locked .level-label { opacity: 0.4; }
-  .goal-node .level-dot { width: 82px; height: 82px; font-size: 30px; }
 
   .back-btn { display: inline-flex; align-items: center; gap: 8px; background: var(--ink-2); border: 1px solid var(--line); color: var(--chalk); font-family: 'Anton', sans-serif; font-weight: 400; font-size: 17px; text-transform: uppercase; letter-spacing: 0.01em; cursor: pointer; margin-bottom: 18px; padding: 10px 18px 10px 14px; border-radius: 24px; box-shadow: 0 4px 12px rgba(0,0,0,0.3); transition: transform 0.1s ease, border-color 0.15s ease; }
   .back-btn:active { transform: scale(0.96); }
@@ -491,9 +459,6 @@
   .hm-psheet .hm-namecard small + small { display: block; margin-top: 1px; }
   @media (prefers-reduced-motion: reduce) { .hm-home *, .hm-home *::before, .hm-home *::after, .hm-psheet, .hm-psheet * { animation: none !important; } .hm-ln { stroke-dashoffset: 0 !important; } .hm-xp i { transform: none !important; } .hm-wait, .hm-wait * { animation-play-state: running !important; } }
   .hm-home:not(.hm-intro) *, .hm-home:not(.hm-intro) *::before, .hm-home:not(.hm-intro) *::after { animation: none !important; }
-  /* Kreidelinie im Level-Pfad (renderCampaignLevels) */
-  .roadmap-path { fill: none; stroke: rgba(242,239,230,0.16); stroke-width: 0.9; stroke-dasharray: 2.2 2.6; stroke-linecap: round; }
-  .roadmap-path.lit { stroke: rgba(232,178,61,0.5); }
   /* ---- Kampagne: Weltenansicht "Taktiktafel" (Prompt 45, Prototyp weltenkarte.html; alles unter #screen-worldmap.wm) ---- */
   .hm-home, .hm-psheet, #screen-worldmap.wm { --cream: #FFF1C8; --gold-hi: #F7D98E; --mint: #7FE0A8; --ok: #49D98A; --muted: rgba(244,241,232,0.8); --dim: rgba(244,241,232,0.55); }
   #screen-worldmap.wm { --wood: linear-gradient(180deg, rgba(255,255,255,0.10), transparent 40%), repeating-linear-gradient(92deg, rgba(0,0,0,0.06) 0 2px, transparent 2px 7px), linear-gradient(180deg, #9A6C40, #6B4828);
@@ -740,6 +705,77 @@
   .fp-ticket .bt .re { height: 50px; padding: 0 14px; border-radius: 14px; display: inline-flex; align-items: center; gap: 6px; font-weight: 500; font-size: 14.5px; color: var(--cream); background: var(--wood); box-shadow: var(--wood-edge); }
   .fp-ticket .bt .re svg { width: 18px; height: 18px; }
   @media (prefers-reduced-motion: reduce) { #screen-freeplay.fpv *, #screen-freeplay.fpv *::before, #screen-freeplay.fpv *::after, .fp-ticket { animation: none !important; transition: none !important; } }
+
+  /* ---- Kampagne: Level-Pfad (Prompt 51, Prototyp level-pfad.html; alles unter #screen-levelpath.lp, Klassen lp-) ---- */
+  #screen-levelpath.lp { --cream: #FFF1C8; --gold-hi: #F7D98E; --mint: #7FE0A8; --muted: rgba(244,241,232,0.8); --dim: rgba(244,241,232,0.55);
+    --wood: linear-gradient(180deg, rgba(255,255,255,0.10), transparent 40%), repeating-linear-gradient(92deg, rgba(0,0,0,0.06) 0 2px, transparent 2px 7px), linear-gradient(180deg, #9A6C40, #6B4828);
+    --wood-edge: inset 0 0 0 1.5px #3E2A16, inset 0 2px 0 rgba(255,236,200,0.22); --f-display: Anton, Impact, "Arial Narrow", sans-serif; --f-text: Oswald, "Arial Narrow", system-ui, sans-serif;
+    padding: 0; overflow: hidden; font-family: var(--f-text); color: var(--chalk); text-align: left; background: linear-gradient(180deg, var(--lpbg0, #2F6838), var(--lpbg1, #2F6838)); }
+  :where(#screen-levelpath.lp button) { font-family: inherit; color: inherit; cursor: pointer; border: none; background: none; padding: 0; }
+  #screen-levelpath.lp button:focus-visible { outline: 2px solid var(--gold-hi); outline-offset: 2px; }
+  .lp-scroll { position: absolute; inset: 0; overflow-y: auto; overflow-x: hidden; scrollbar-width: none; overscroll-behavior: contain; -webkit-overflow-scrolling: touch; }
+  .lp-scroll::-webkit-scrollbar { display: none; }
+  #levelPathView { min-height: 100%; }
+  .lp-sizer { position: relative; margin: max(0px, calc(env(safe-area-inset-top, 0px) - 48px)) auto 0; }
+  .lp-world { position: absolute; left: 0; top: 0; width: 390px; overflow: clip; transform-origin: 0 0; }
+  .lp-world svg.lp-bg, .lp-world svg.lp-far, .lp-world svg.lp-road, .lp-world svg.lp-near { position: absolute; left: 0; top: 0; width: 390px; overflow: visible; pointer-events: none; }
+  .lp-world svg.lp-far { will-change: transform; }
+  .lp-node { position: absolute; z-index: 5; width: 0; height: 0; }
+  .lp-nbtn { position: absolute; left: -31px; top: -31px; width: 62px; height: 62px; border-radius: 50%; display: grid; place-items: center; transition: transform 0.12s; }
+  .lp-nbtn::after { content: ""; position: absolute; inset: -6px; } /* Trefferflaeche mind. 44 px auch bei skalierter Landschaft */
+  .lp-nbtn:active { transform: scale(0.94); }
+  .lp-nbtn svg.lp-disc { position: absolute; inset: -6px; width: 74px; height: 74px; overflow: visible; }
+  .lp-nbtn b { position: relative; font-family: var(--f-display); font-weight: 400; font-size: 26px; line-height: 1; color: #13202A; text-shadow: 0 1px 0 rgba(255,255,255,0.35); }
+  .lp-node.lock .lp-nbtn b { color: rgba(244,241,232,0.6); text-shadow: none; font-size: 22px; }
+  .lp-node.cur .lp-nbtn { left: -38px; top: -38px; width: 76px; height: 76px; }
+  .lp-node.cur .lp-nbtn svg.lp-disc { inset: -7px; width: 90px; height: 90px; }
+  .lp-node.cur .lp-nbtn b { font-size: 32px; }
+  .lp-nstars { position: absolute; left: -30px; top: 30px; width: 60px; height: 18px; pointer-events: none; overflow: visible; z-index: 3; }
+  .lp-node.cur .lp-nstars { top: 38px; }
+  .lp-badge { position: absolute; z-index: 4; width: 24px; height: 24px; border-radius: 50%; display: grid; place-items: center; right: -40px; bottom: -6px; box-shadow: 0 2px 4px rgba(0,0,0,0.45); pointer-events: none; }
+  .lp-badge svg { width: 14px; height: 14px; }
+  .lp-badge.draft { background: linear-gradient(170deg, var(--gold-hi), var(--gold)); }
+  .lp-badge.seen { background: #FBF8EF; right: auto; left: -40px; }
+  .lp-du { position: absolute; z-index: 6; left: -28px; top: -112px; width: 56px; pointer-events: none; display: grid; justify-items: center; }
+  .lp-du .lp-pin { width: 40px; height: 40px; border-radius: 50%; display: grid; place-items: center; font-weight: 600; font-size: 14px; color: #13202A;
+    background: radial-gradient(circle at 35% 30%, #FFF4CF, var(--gold) 58%, #8C6214); box-shadow: 0 6px 12px rgba(0,0,0,0.45), inset 0 -2px 3px rgba(0,0,0,0.2); }
+  .lp-du i { width: 3px; height: 14px; background: linear-gradient(180deg, #8C6214, rgba(140,98,20,0)); }
+  .lp-du .lp-tag { margin-top: -2px; height: 20px; padding: 0 8px; border-radius: 6px; display: grid; place-items: center; white-space: nowrap; font-weight: 500; font-size: 12px; color: var(--cream); background: var(--wood); box-shadow: var(--wood-edge), 0 2px 4px rgba(0,0,0,0.35); }
+  .lp-ring { position: absolute; left: -46px; top: -46px; width: 92px; height: 92px; border-radius: 50%; box-shadow: 0 0 0 3px var(--gold-hi); opacity: 0; pointer-events: none; }
+  .lp-sign { position: absolute; z-index: 6; left: 50%; top: 104px; width: 300px; margin-left: -150px; transform-origin: 50% -40px; }
+  .lp-sign .lp-rope { position: absolute; top: -40px; width: 2px; height: 44px; background: linear-gradient(180deg, rgba(60,40,20,0), #5B3D22); }
+  .lp-sign .lp-board { position: relative; border-radius: 14px; padding: 12px 16px 13px; text-align: center; background: var(--wood); box-shadow: var(--wood-edge), 0 14px 26px rgba(0,0,0,0.45); }
+  .lp-sign .lp-board::before, .lp-sign .lp-board::after { content: ""; position: absolute; top: 9px; width: 8px; height: 8px; border-radius: 50%; background: radial-gradient(circle at 35% 30%, #F0E2C0, #8A6A3A); box-shadow: 0 1px 1px rgba(0,0,0,0.4); }
+  .lp-sign .lp-board::before { left: 10px; } .lp-sign .lp-board::after { right: 10px; }
+  .lp-sign small { display: block; font-weight: 500; font-size: 13px; color: rgba(255,241,200,0.85); }
+  .lp-sign h2 { margin: 2px 0 0; font-family: var(--f-display); font-weight: 400; font-size: 34px; line-height: 1; text-transform: none; letter-spacing: 0; color: var(--cream); text-shadow: 0 -1px 0 rgba(0,0,0,0.45), 0 0 18px rgba(255,214,120,0.18); }
+  .lp-sign .lp-prog { display: flex; align-items: center; gap: 10px; margin-top: 9px; }
+  .lp-sign .lp-bar { flex: 1; height: 8px; border-radius: 4px; background: rgba(20,12,4,0.55); box-shadow: inset 0 1px 2px rgba(0,0,0,0.6); overflow: hidden; }
+  .lp-sign .lp-bar i { display: block; height: 100%; border-radius: 4px; background: var(--wc); box-shadow: 0 0 8px var(--wc); transform-origin: 0 50%; }
+  .lp-sign .lp-prog > span:last-child { font-weight: 400; font-size: 13px; color: rgba(255,241,200,0.9); white-space: nowrap; }
+  .lp-sign .lp-prog b { font-family: var(--f-display); font-weight: 400; font-size: 15px; color: var(--cream); }
+  .lp-note { position: absolute; z-index: 5; left: 50%; top: 232px; width: 250px; margin-left: -125px; padding: 11px 14px 10px; text-align: center; color: #3A3010; background: linear-gradient(170deg, #FFEB8F, #F6D65A); box-shadow: 0 10px 18px rgba(0,0,0,0.35); }
+  .lp-note::before { content: ""; position: absolute; top: -7px; left: 50%; margin-left: -7px; width: 14px; height: 14px; border-radius: 50%; background: radial-gradient(circle at 35% 30%, #ff8a73, #b23a26); box-shadow: 0 2px 4px rgba(0,0,0,0.4); }
+  .lp-note span { font-weight: 400; font-size: 13.5px; line-height: 1.38; }
+  .lp-goal { position: absolute; z-index: 5; left: 0; width: 390px; display: grid; justify-items: center; text-align: center; pointer-events: none; }
+  .lp-goal .lp-gsign { margin-top: 10px; padding: 8px 14px; border-radius: 11px; background: var(--wood); box-shadow: var(--wood-edge), 0 8px 16px rgba(0,0,0,0.4); }
+  .lp-goal .lp-gsign small { display: block; font-weight: 400; font-size: 12.5px; color: rgba(255,241,200,0.85); }
+  .lp-goal .lp-gsign b { display: block; font-family: var(--f-display); font-weight: 400; font-size: 21px; line-height: 1.05; color: var(--cream); }
+  .lp-gotap { position: absolute; z-index: 6; width: 168px; height: 140px; border-radius: 80px 80px 0 0; }
+  .lp-topshade { position: absolute; z-index: 20; left: 0; right: 0; top: 0; height: calc(110px + env(safe-area-inset-top, 0px)); pointer-events: none; background: linear-gradient(180deg, var(--shade, #2E5E35) 0%, color-mix(in srgb, var(--shade, #2E5E35) 70%, transparent) 55%, transparent); }
+  .lp-top { position: absolute; z-index: 30; left: 14px; right: 14px; top: max(14px, calc(env(safe-area-inset-top, 0px) + 10px)); height: 40px; display: flex; align-items: center; gap: 8px; }
+  .lp-top .lp-tb { height: 38px; padding: 0 14px 0 10px; border-radius: 19px; display: inline-flex; align-items: center; gap: 4px; font-weight: 500; font-size: 15px; background: rgba(10,22,16,0.5); box-shadow: inset 0 0 0 1px rgba(244,241,232,0.28); backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px); flex-shrink: 0; }
+  .lp-top .lp-tb svg { width: 18px; height: 18px; }
+  .lp-top .lp-sp { flex: 1; }
+  .lp-top .lp-tok { padding: 0 12px 0 5px; gap: 7px; cursor: default; } .lp-top .lp-tok svg.tcoin { width: 28px; height: 28px; vertical-align: 0; }
+  .lp-top .lp-tok b { font-family: var(--f-display); font-weight: 400; font-size: 19px; line-height: 1; color: var(--gold-hi); }
+  .lp-top .lp-stchip { padding: 0 12px 0 8px; gap: 5px; cursor: default; } .lp-stchip svg { width: 17px; height: 17px; } .lp-stchip b { font-family: var(--f-display); font-weight: 400; font-size: 17px; color: var(--gold-hi); } .lp-stchip small { font-size: 13px; color: rgba(244,241,232,0.7); }
+  .lp-float { position: absolute; z-index: 32; left: 50%; bottom: max(20px, calc(env(safe-area-inset-bottom, 0px) + 14px)); height: 48px; padding: 0 18px 0 14px; border-radius: 24px; display: inline-flex; align-items: center; gap: 8px; transform: translate(-50%, calc(100% + 90px)); transition: transform 0.35s cubic-bezier(.3,1.3,.5,1); pointer-events: none;
+    font-family: var(--f-display); font-size: 19px; color: #13202A; background: linear-gradient(160deg, var(--gold-hi), var(--gold)); box-shadow: 0 4px 0 #9C7422, 0 12px 24px rgba(0,0,0,0.4); }
+  .lp-float.on { transform: translate(-50%, 0); pointer-events: auto; }
+  .lp-float svg { width: 18px; height: 18px; transition: transform 0.2s; }
+  .lp-float.up svg { transform: rotate(180deg); }
+  @media (prefers-reduced-motion: reduce) { #screen-levelpath.lp *, #screen-levelpath.lp *::before, #screen-levelpath.lp *::after { animation: none !important; transition: none !important; } }
 
   /* ---- Level-Vorschau "Taktiktafel" (Prompt 41, Prototyp level-vorschau.html Variante C; alles unter .lv) ---- */
   #screen-game.lv-on { overflow: hidden; padding: max(12px, calc(env(safe-area-inset-top) + 8px)) 12px max(12px, calc(env(safe-area-inset-bottom) + 4px));
@@ -1055,9 +1091,6 @@
   .save-btn.quiet { border-color: var(--line); background: transparent; color: var(--muted); }
   .seen-note { text-align: center; font-family: 'Oswald', sans-serif; font-weight: 300; font-size: 13.5px; color: var(--muted); margin: -2px 0 10px; }
   .reveal-row { margin-bottom: 10px; }
-  .level-node .seen-eye { position: absolute; top: -6px; right: -8px; font-size: 13px; line-height: 1; z-index: 3; pointer-events: none; }
-  .level-node .draft-pen { position: absolute; top: -6px; left: -8px; font-size: 13px; line-height: 1; z-index: 3; pointer-events: none; }
-  .level-node .draft-tag { position: absolute; left: 50%; transform: translateX(-50%); bottom: -13px; white-space: nowrap; font-family: 'Oswald', sans-serif; font-weight: 500; font-size: 11px; color: var(--gold-2); text-shadow: 0 1px 3px rgba(0,0,0,0.7); pointer-events: none; }
   /* ---- Ersatzbank (Prompt 37) - Optik aus prototypes/bank.html (Variante C + Blatt) ---- */
   .bench-ic { width: 26px; height: 26px; border-radius: 8px; display: inline-grid; place-items: center; background: linear-gradient(135deg, var(--gold), #f4d58d); box-shadow: 0 2px 5px rgba(0,0,0,0.35); flex-shrink: 0; }
   .bench-ic svg { width: 19px; height: 19px; display: block; }
@@ -1139,8 +1172,6 @@
   .result-stars { display: flex; justify-content: center; margin: -2px 0 10px; }
   .result-stars .stars-row svg { width: 22px; height: 22px; }
   .result-stars.freeplay-note { font-family: 'Oswald', sans-serif; font-weight: 300; font-size: 13px; color: var(--muted); text-align: center; padding: 0 10px; }
-  .level-stars { display: flex; justify-content: center; gap: 2px; margin-top: 4px; min-height: 12px; }
-  .level-stars svg { width: 11px; height: 11px; }
   .token-receipt { background: rgba(232,178,61,0.1); border: 1px solid rgba(232,178,61,0.3); border-radius: 10px; padding: 10px 12px; margin-bottom: 12px; font-family: 'Oswald', sans-serif; font-size: 12.5px; }
   .token-receipt-title { color: var(--gold-2); display: flex; align-items: center; gap: 6px; font-weight: 700; letter-spacing: 0.04em; margin-bottom: 6px; }
   .token-receipt-line { display: flex; justify-content: space-between; padding: 2px 0; color: rgba(242,239,230,0.85); }
@@ -2058,12 +2089,13 @@
   </section>
 
   <!-- LEVEL-PFAD -->
-  <section class="screen scroll-y" id="screen-levelpath" aria-label="Level-Pfad" hidden>
-    <div class="topbar">
-      <button class="back-btn" type="button" id="backFromLevelpath"><span class="back-arrow">←</span>Welten</button>
-      <div class="topbar-title" id="pathTitle"></div>
-    </div>
-    <div id="levelPathView"></div>
+  <section class="screen lp" id="screen-levelpath" aria-label="Level-Pfad" hidden>
+    <div class="lp-scroll" id="lpScroll"><div id="levelPathView"></div></div>
+    <div class="lp-topshade"></div>
+    <div class="lp-top"><button class="lp-tb" type="button" id="backFromLevelpath"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M15 5l-7 7 7 7" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/></svg>Welten</button><span class="lp-sp"></span>
+      <span class="lp-tb lp-stchip" id="lpStars" role="img" aria-label="Sterne dieser Welt"></span><span class="lp-tb lp-tok" id="lpTok" data-tokchip data-big role="img" aria-label="Scout-Token"></span></div>
+    <button class="lp-float" type="button" id="lpFloat"><svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="#13202A" stroke-width="2.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 5v14M6 13l6 6 6-6"/></svg><span></span></button>
+    <h1 id="pathTitle" hidden></h1>
   </section>
 
   <!-- FREISPIEL -->
@@ -3838,11 +3870,11 @@ let navStack = ["start"];
 // so bleibt z.B. der Level-Pfad/die Weltkarte nie mit dem Stand von vor einem
 // Spielversuch stehen, ganz gleich ob per Button, Wischgeste oder Hardware-Zurück
 // dorthin navigiert wird (ein einziger Code-Pfad statt Refresh an jeder Aufrufstelle).
-function refreshScreenContent(id) {
+function refreshScreenContent(id, dir) {
   if (id !== "duels") dzCloseOverlays(); // Duell-Zentrale: Sheets/Menue/Hinweise nicht in andere Bildschirme mitnehmen (Prompt 39)
   if (id === "start") { renderDailyCard(); renderModeTiles(); }
   if (id === "worldmap") renderCampaignWorlds();
-  if (id === "levelpath") renderCampaignLevels();
+  if (id === "levelpath") renderCampaignLevels(dir);
   if (id === "freeplay") renderFreeplay();
   if (id === "duels") renderDuels();
   if (id === "duelinvite") renderDuelInvite();
@@ -3867,10 +3899,11 @@ function showScreen(id, dir) {
   const next = document.getElementById("screen-" + id);
   if (!next || cur === next) return;
   if (cur && cur.id === "screen-game") { flushDraft(); draftCtx = null; } // Zurueck-Geste/Abbrechen: Entwurf sichern (Prompt 34)
-  refreshScreenContent(id);
+  refreshScreenContent(id, dir);
   next.hidden = false;
   if (id === "worldmap") wmLayout();
   if (id === "freeplay") fpFit();
+  if (id === "levelpath") lpLayout();
   next.classList.add(dir === "fwd" ? "enter-right" : "enter-left");
   void next.offsetWidth;
   requestAnimationFrame(() => {
@@ -5186,7 +5219,6 @@ const ROADMAP_NODES = [
 /* ---- Kampagne: Weltenansicht "Taktiktafel" (Prompt 45, Prototyp weltenkarte.html) ----
    Logik wie zuvor (ROADMAP_NODES-Reihenfolge, isTierUnlocked, getMatchesByTier, campaign.levelPassed/stars, Navigation in den
    Level-Pfad); nur Darstellung. Hoehen werden per wmLayout() aus der verfuegbaren Hoehe berechnet (kein Scrollen). */
-const WM_TEXT = { 1: "Bolzplatz-Flair – hier beginnt jede Karriere", 2: "Kleine Tribüne, Vereinsfußball zum Anfassen", 3: "Ausverkauftes Haus am Wochenende", 4: "Große Nächte unter Flutlicht", 5: "Nur für Legenden – am Ende wartet der Pokal" };
 const WM_SV = {
   chev: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M9 5l7 7-7 7" fill="none" stroke="#13202A" stroke-width="2.8" stroke-linecap="round" stroke-linejoin="round"/></svg>',
   back: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M15 5l-7 7 7 7" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/></svg>',
@@ -5299,7 +5331,7 @@ function wmPaintTray() {
     felt.innerHTML = `<span class="dot" style="filter:saturate(.3)"></span><span class="tx"><b>${name} ist noch gesperrt</b><small>Schalte frei: noch ${left} Level in ${DIFF_LABEL[prev.w]} bestehen</small></span>${dis("Gesperrt")}`; return;
   }
   const lv = x.done ? null : (getMatchesByTier(x.w).findIndex((m) => !profile.campaign.levelPassed[m.id]) + 1);
-  felt.innerHTML = `<span class="dot"></span><span class="tx"><b>${name}${lv ? ` · Level ${lv} von ${x.n}` : " · alle Level geschafft"}</b><small>${x.done ? (x.plate ? "Pokal und Schale gewonnen – Training jederzeit" : `Noch ${x.smax - x.s} Sterne bis zur Schale`) : WM_TEXT[x.w]}</small></span>
+  felt.innerHTML = `<span class="dot"></span><span class="tx"><b>${name}${lv ? ` · Level ${lv} von ${x.n}` : " · alle Level geschafft"}</b><small>${x.done ? (x.plate ? "Pokal und Schale gewonnen – Training jederzeit" : `Noch ${x.smax - x.s} Sterne bis zur Schale`) : TIER_INTRO[x.w]}</small></span>
     <button class="wm-go" type="button" id="wmGo">${x.done ? "Ansehen" : x.w === cur ? "Weiter" : "Spielen"}${WM_SV.chev}</button>`;
   document.getElementById("wmGo").onclick = () => wmOpen(x.w);
 }
@@ -5330,178 +5362,390 @@ function wmLayout() {
 }
 window.addEventListener("resize", () => wmLayout());
 
-// Rein dekorative Welt-Ausschmückung hinter dem Level-Pfad (nie über den Level-Punkten,
-// siehe z-index-Schema von .path-deco* vs. .level-node) - 1:1 Optik aus
-// prototypes/navigation.html, damit jede Welt einen eigenen Charakter bekommt.
-const TIER_THEME = { 1: "village", 2: "regional", 3: "bundesliga", 4: "night", 5: "gold" };
 const TIER_INTRO = {
-  1: "Bolzplatz-Flair: Zaun, Bäume, ein Flutlichtmast - hier beginnt jede Karriere.",
-  2: "Kleine Tribüne, Fantasie-Bandenwerbung - Vereinsfußball zum Anfassen.",
-  3: "Ausverkauftes Haus, Fahnen im Wind - Fußball am Wochenende.",
-  4: "Flutlicht und Sternenhimmel - große Nächte unter europäischen Flutlichtmasten.",
-  5: "Nur für Legenden. Goldenes Licht, Konfetti - am Ende wartet der Pokal."
+  1: "Bolzplatz-Flair: Holzzaun, Vereinsheim, ein Flutlichtmast. Hier beginnt jede Karriere.",
+  2: "Aschenplatz, Stehtraverse mit Wellenbrechern und Wellblechdach. Vereinsfußball zum Anfassen.",
+  3: "Ausverkauftes Haus, Fahnen im Wind. Fußball am Wochenende.",
+  4: "Flutlicht vom Stadiondach, Handylichter auf den Rängen. Große europäische Nächte.",
+  5: "Nur für Legenden. Goldenes Licht, und am Ende wartet der Pokal."
 };
-const PATH_BG = {
-  village: "linear-gradient(180deg, #2f5d3a, #1f4a2f)",
-  regional: "repeating-linear-gradient(180deg, rgba(255,255,255,0.05) 0 44px, transparent 44px 88px), linear-gradient(180deg, #235a3c, #184330)",
-  bundesliga: "repeating-linear-gradient(180deg, rgba(255,255,255,0.06) 0 44px, transparent 44px 88px), linear-gradient(180deg, #1f6040, #164a31)",
-  night: "radial-gradient(ellipse at 50% 0%, rgba(255,246,200,0.18), transparent 45%), repeating-linear-gradient(180deg, rgba(255,255,255,0.035) 0 44px, transparent 44px 88px), linear-gradient(180deg, #0d1a24, #13382a 30%, #0f2e22)",
-  gold: "radial-gradient(ellipse at 50% 100%, rgba(232,178,61,0.35), transparent 55%), repeating-linear-gradient(180deg, rgba(255,255,255,0.05) 0 44px, transparent 44px 88px), linear-gradient(180deg, #2a4a2a, #3a4a22 60%, #4a3f1c)"
+/* ================= KAMPAGNE: LEVEL-PFAD (Prompt 51, Prototyp prototypes/level-pfad.html Fassung v2) =================
+   Pro Welt eine eigene gezeichnete Landschaft (Requisiten LP, Tribuenen edgeStand), Weg als Sinus-Schlange, Level als Magnete.
+   Logik wie zuvor: getMatchesByTier, unlockedLevelCount, campaign.levelPassed/stars/solutionSeen, drafts "c:<id>", currentLevelContext,
+   Antippen eines freien Levels -> startMatch (Level-Vorschau aus Prompt 41). Die Landschaft ist fuer 390 px Breite gezeichnet und wird bei
+   schmaleren Geraeten skaliert; auf breiteren steht sie mittig. Szene je (Welt, Levelanzahl) einmal gebaut und gecacht. */
+const lpF1 = (n) => n.toFixed(1);
+function lpRng(seed) { let h = seed >>> 0 || 1; return () => { h ^= h << 13; h ^= h >>> 17; h ^= h << 5; return ((h >>> 0) % 100000) / 100000; }; }
+function lpMix(a, b, t) { const p = (h) => [1, 3, 5].map((i) => parseInt(h.slice(i, i + 2), 16)); const A = p(a), B = p(b); return "#" + A.map((v, i) => Math.round(v + (B[i] - v) * t).toString(16).padStart(2, "0")).join(""); }
+const LP_TH = {
+  1: { bg: ["#4E8A4C", "#3E7A43", "#2F6838"], stripe: "rgba(255,255,255,0.05)", shade: "#2E5E35", road: "#C49A63", roadEdge: "#8C6A3E", roadHi: "#D9B583", mark: "steps" },
+  2: { bg: ["#4A8A4E", "#3A7444", "#2B5E37"], stripe: "rgba(255,255,255,0.05)", shade: "#2B5434", road: "#B9643F", roadEdge: "#7E3E24", roadHi: "#CF7E58", mark: "rake" },
+  3: { bg: ["#3D9358", "#2F7E4A", "#22683B"], stripe: "rgba(255,255,255,0.06)", shade: "#22553A", road: "#4BA066", roadEdge: "#2A6B41", roadHi: "#5CB377", mark: "chalk" },
+  4: { bg: ["#163326", "#10271D", "#0B1D15"], stripe: "rgba(255,255,255,0.025)", shade: "#0E2219", road: "#2A3A33", roadEdge: "#16201C", roadHi: "#394C44", mark: "lights" },
+  5: { bg: ["#2F5A3A", "#3A4A28", "#4A3A18"], stripe: "rgba(255,230,160,0.05)", shade: "#2B4430", road: "#9E1F2A", roadEdge: "#5E0E16", roadHi: "#C2333F", mark: "carpet" }
 };
-function pathDecoration(theme, H) {
-  const along = (fn, step, off = 0) => { let o = ""; for (let y = 170 + off; y < H - 80; y += step) o += fn(y); return o; };
-  if (theme === "village") {
-    const tree = (x, y, sc) => `<g transform="translate(${x} ${y}) scale(${sc})"><rect x="-2" y="0" width="4" height="14" fill="#4a3620"/><circle cx="0" cy="-4" r="10" fill="#2f6a3a"/><circle cx="-6" cy="2" r="7" fill="#357a42"/><circle cx="6" cy="1" r="7" fill="#2c6436"/></g>`;
-    const fence = x => `<rect x="${x}" y="130" width="10" height="${H - 200}" fill="url(#wood)"/>`;
-    return {
-      full: `<defs><linearGradient id="skyV" x1="0" x2="0" y1="0" y2="1"><stop offset="0" stop-color="#E8A65A" stop-opacity=".35"/><stop offset="1" stop-color="#E8A65A" stop-opacity="0"/></linearGradient></defs><rect width="100%" height="140" fill="url(#skyV)"/>`,
-      L: `<defs><pattern id="wood" width="10" height="26" patternUnits="userSpaceOnUse"><rect width="10" height="26" fill="#6b4a2a"/><rect y="22" width="10" height="4" fill="#4a321b"/><rect width="1.5" height="26" fill="#7d5a35"/></pattern></defs>${fence(4)}
-          <g transform="translate(22 40)"><rect x="0" y="0" width="4" height="96" fill="#8c8c8c"/><rect x="-10" y="-8" width="24" height="12" rx="2" fill="#bdbdbd"/><circle cx="-4" cy="-2" r="3" fill="#fff6c8"/><circle cx="2" cy="-2" r="3" fill="#fff6c8"/><circle cx="8" cy="-2" r="3" fill="#fff6c8"/></g>
-          ${along(y => tree(30, y, 0.85), 230)}`,
-      R: `${fence(34)}${along(y => tree(18, y, 0.8), 250, 110)}`
-    };
-  }
-  if (theme === "regional") {
-    const ads = ["SCOUT", "KICK", "ELF", "PFALZ", "11ER"], cols = ["#C9D6E3", "#E8B23D", "#F2EFE6", "#7fd99a", "#E0705F"];
-    const board = (x, y, i) => `<g transform="translate(${x} ${y}) rotate(-90)"><rect x="-34" y="-8" width="68" height="16" rx="2" fill="${cols[i % 5]}"/><text x="0" y="4.5" text-anchor="middle" font-family="Oswald, sans-serif" font-weight="700" font-size="11" fill="#14202B">${ads[i % 5]}</text></g>`;
-    let i = 0;
-    return {
-      full: `<rect width="100%" height="64" fill="#243A4D"/><rect y="12" width="100%" height="7" fill="#1C2B38"/><rect y="27" width="100%" height="7" fill="#1C2B38"/><rect y="42" width="100%" height="7" fill="#1C2B38"/>`,
-      L: along(y => board(12, y, i++), 150),
-      R: along(y => board(36, y, i++), 150, 70)
-    };
-  }
-  if (theme === "bundesliga") {
-    const flag = (x, c1, c2) => `<g transform="translate(${x} 70)"><rect width="2" height="34" fill="#ccc"/><path d="M2 2 h20 l-5 7 5 7 h-20z" fill="${c1}"/><path d="M2 9 h16" stroke="${c2}" stroke-width="3"/></g>`;
-    const crowd = `<defs><pattern id="crowd" width="8" height="8" patternUnits="userSpaceOnUse"><rect width="8" height="8" fill="#1a2733"/><circle cx="2" cy="2" r="1.6" fill="#e8b23d" opacity=".55"/><circle cx="6" cy="6" r="1.6" fill="#F2EFE6" opacity=".35"/><circle cx="6" cy="2" r="1.3" fill="#e0705f" opacity=".4"/></pattern></defs>`;
-    return {
-      full: `${crowd}<rect width="100%" height="62" fill="url(#crowd)"/><rect y="62" width="100%" height="4" fill="#E8B23D" opacity=".6"/>`,
-      L: `<rect width="22" height="${H}" fill="url(#crowd)"/>${flag(26, "#E8B23D", "#14202B")}`,
-      R: `<rect x="26" width="22" height="${H}" fill="url(#crowd)"/>${flag(4, "#7DB8FF", "#F2EFE6")}`
-    };
-  }
-  if (theme === "night") {
-    let st = ""; for (let k = 0; k < 80; k++) st += `<circle cx="${(k * 37) % 100}%" cy="${(k * 53) % H}" r="${(k % 3) * 0.5 + 0.6}" fill="#fff" opacity="${0.2 + (k % 4) * 0.15}"/>`;
-    const beam = `<defs><linearGradient id="beam" x1="0" x2="0" y1="0" y2="1"><stop offset="0" stop-color="#fff6c8" stop-opacity=".32"/><stop offset="1" stop-color="#fff6c8" stop-opacity="0"/></linearGradient></defs>`;
-    return {
-      full: st,
-      L: `${beam}<g transform="translate(16 18)"><path d="M3 4 L120 220 L20 230 Z" fill="url(#beam)"/><rect width="3" height="90" fill="#6b7785"/><rect x="-8" y="-6" width="20" height="10" rx="2" fill="#9aa6b3"/></g>`,
-      R: `<g transform="translate(30 18)"><path d="M0 4 L-120 220 L-20 230 Z" fill="url(#beam)"/><rect width="3" height="90" fill="#6b7785"/><rect x="-8" y="-6" width="20" height="10" rx="2" fill="#9aa6b3"/></g>`
-    };
-  }
-  let conf = ""; const cc = ["#E8B23D", "#F4D58D", "#F2EFE6", "#E0705F"];
-  for (let k = 0; k < 70; k++) conf += `<rect x="${(k * 29) % 100}%" y="${(k * 71) % H}" width="${3 + k % 3}" height="${6 + k % 4}" rx="1" fill="${cc[k % 4]}" opacity=".45"/>`;
-  return { full: conf, L: "", R: "" };
-}
+const LP_SV = {
+  back: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M15 5l-7 7 7 7" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/></svg>',
+  star: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2.5l2.9 6.1 6.6.8-4.9 4.6 1.3 6.6L12 17.3l-5.9 3.3 1.3-6.6-4.9-4.6 6.6-.8z" fill="#F7D98E" stroke="#9C7422" stroke-width="1.2"/></svg>',
+  pen: '<svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="#13202A" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M4 20l4-1 11-11-3-3L5 16z"/></svg>',
+  eye: '<svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="#13202A" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 12s3.6-6.5 10-6.5S22 12 22 12s-3.6 6.5-10 6.5S2 12 2 12z"/><circle cx="12" cy="12" r="3"/></svg>',
+  down: '<svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="#13202A" stroke-width="2.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 5v14M6 13l6 6 6-6"/></svg>'
+};
 
-function renderCampaignLevels() {
-  const container = document.getElementById("levelPathView");
-  container.innerHTML = "";
-  const tier = campaignTier;
-  const matches = getMatchesByTier(tier);
-  const unlockedCount = unlockedLevelCount(tier);
-  const color = DIFF_COLOR[tier];
-  const theme = TIER_THEME[tier];
-  document.getElementById("pathTitle").textContent = DIFF_LABEL[tier];
-
-  const worldStars = starsSummaryForTier(matches);
-
-  // Ein schlängelnder Pfad aus Level-Stationen, mündet in ein Ziel-Symbol Richtung nächste Welt.
-  // INTRO_H reserviert oben Platz für den Ausschmückungs-Kopf (Welt N/Sterne/Text), OUTRO_H
-  // unten Platz für den groesseren Ziel-Button + Label (Prompt 11c: 20px Reserve reichten
-  // nicht) - beides ohne die bestehende Kurvenform/den Abstand der Stationen zu veraendern.
-  const INTRO_H = 96;
-  const OUTRO_H = 100;
-  // Y_STEP muss die tatsaechliche Knotenhoehe (Dot + Sterne + Label, ~110px) sicher
-  // uebersteigen, sonst ueberlappen sich bei ungünstiger Zickzack-Phase (aehnliches x)
-  // Level-Punkt und -Label VERSCHIEDENER Stationen (Prompt 11c, siehe check-overlap.mjs).
-  const Y_STEP = 125;
-  const totalNodes = matches.length + 1; // +1 für die Ziel-Station am Ende
-  const contentH = totalNodes * Y_STEP + 20;
-  const wrapHeight = INTRO_H + contentH + OUTRO_H;
-
-  const wrap = document.createElement("div");
-  wrap.className = "level-path-wrap";
-  wrap.style.height = wrapHeight + "px";
-  wrap.style.background = PATH_BG[theme];
-
-  const points = [];
-  for (let i = 0; i < totalNodes; i++) {
-    const x = 50 + 37 * Math.sin(i * 1.15);
-    const yPx = INTRO_H + ((i + 0.6) / totalNodes) * contentH;
-    points.push({ x, y: (yPx / wrapHeight) * 100 });
-  }
-
-  let pathD = "";
-  for (let i = 0; i < points.length - 1; i++) {
-    const p1 = points[i], p2 = points[i + 1];
-    const midY = (p1.y + p2.y) / 2;
-    pathD += (i === 0 ? "M " + p1.x + " " + p1.y + " " : "") + "C " + p1.x + " " + midY + ", " + p2.x + " " + midY + ", " + p2.x + " " + p2.y + " ";
-  }
-
-  let nodesHtml = "";
-  matches.forEach((m, idx) => {
-    const isPassed = !!profile.campaign.levelPassed[m.id];
-    const isUnlocked = idx < unlockedCount;
-    const isCurrent = isUnlocked && !isPassed;
-    const levelStars = profile.campaign.stars[m.id] || 0;
-    const p = points[idx];
-    const nodeStyle = "--node-color:" + color + "; --node-color-light:" + color + "cc;" + (isCurrent ? " border-color:" + color + ";" : "");
-    nodesHtml += `
-      <div class="level-node ${isPassed ? "passed" : isUnlocked ? "current" : "locked"}" style="left:${p.x}%; top:${p.y}%;" data-idx="${idx}">
-        <div class="level-dot" style="${nodeStyle}">
-          <span>${isUnlocked ? (idx + 1) : "🔒"}</span>
-          ${isCurrent ? '<div class="level-badge">' + renderMascotHTML("small") + '</div>' : ""}
-        </div>
-        <div class="level-stars">${isUnlocked ? starsRowHTML(levelStars) : ""}</div>
-        ${isUnlocked && profile.drafts["c:" + m.id] ? '<span class="draft-pen" aria-hidden="true">✏️</span><span class="draft-tag">angefangen</span>' : ""}
-        ${isUnlocked && profile.campaign.solutionSeen[m.id] && levelStars < 3 ? '<span class="seen-eye" title="Lösung angesehen – Sterne eingefroren" aria-label="Lösung angesehen">👁</span>' : ""}
-        <div class="level-label">Level ${idx + 1}</div>
-      </div>`;
-  });
-
-  const allPassed = matches.every(m => profile.campaign.levelPassed[m.id]);
-  const goalPoint = points[points.length - 1];
-  const nextTierLabel = tier < 5 ? DIFF_LABEL[tier + 1] : null;
-  nodesHtml += `
-    <div class="level-node goal goal-node" style="left:${goalPoint.x}%; top:${goalPoint.y}%;">
-      <div class="level-dot" style="${allPassed ? "background:" + color + ";border-color:" + color : "border-color:" + color + "55"}">
-        <span>${allPassed ? "🏆" : "🔒"}</span>
-      </div>
-      <div class="level-label">${tier === 5 ? "Weltklasse!" : (nextTierLabel ? "Weiter zu " + nextTierLabel : "")}</div>
-    </div>`;
-
-  const dec = pathDecoration(theme, wrapHeight);
-
-  wrap.innerHTML = `
-    <div class="path-intro"><div class="pi-k">Welt ${tier} · ⭐ ${worldStars.earned}/${worldStars.max}</div><div class="pi-h" style="color:${color}">${DIFF_LABEL[tier]}</div><div class="pi-p">${TIER_INTRO[tier]}</div></div>
-    <svg class="path-deco" width="100%" height="${wrapHeight}">${dec.full}</svg>
-    <svg class="path-deco-side l" width="48" height="${wrapHeight}" overflow="visible">${dec.L}</svg>
-    <svg class="path-deco-side r" width="48" height="${wrapHeight}" overflow="visible">${dec.R}</svg>
-    <svg class="level-path-svg" viewBox="0 0 100 100" preserveAspectRatio="none">
-      <path class="roadmap-path${allPassed ? " lit" : ""}" d="${pathD}"></path>
-    </svg>${nodesHtml}`;
-
-  wrap.querySelectorAll(".level-node:not(.goal)").forEach(node => {
-    const idx = parseInt(node.dataset.idx, 10);
-    if (idx < unlockedCount) {
-      node.onclick = () => {
-        currentLevelContext = { tier, index: idx, m: matches[idx] };
-        startMatch(matches[idx]);
-      };
+/* ---------- Requisiten (gezeichnet, Licht von links oben) ---------- */
+  /* ---------- Requisiten (gezeichnet, Licht von links oben) ---------- */
+  const lpSh = (x, y, rx, ry, o = 0.28) => `<ellipse cx="${lpF1(x)}" cy="${lpF1(y)}" rx="${lpF1(rx)}" ry="${lpF1(ry)}" fill="rgba(0,0,0,${o})"/>`;
+  const LP = {
+    tree(x, y, s = 1, dark) {
+      const c = dark ? ["#163E24", "#1F5530", "#2B6B3C"] : ["#1E5A30", "#2B7A40", "#3E9A52"];
+      return `<g transform="translate(${lpF1(x)} ${lpF1(y)}) scale(${s})">${lpSh(4, 2, 22, 7)}<rect x="-3.5" y="-16" width="7" height="18" rx="2" fill="#6B4828"/><rect x="-3.5" y="-16" width="3" height="18" fill="#8A6038"/>
+        <circle cx="0" cy="-30" r="20" fill="${c[0]}"/><circle cx="-9" cy="-25" r="13" fill="${c[0]}"/><circle cx="10" cy="-24" r="12" fill="${c[0]}"/>
+        <circle cx="-3" cy="-34" r="16" fill="${c[1]}"/><circle cx="-10" cy="-38" r="9" fill="${c[2]}"/><circle cx="2" cy="-43" r="7" fill="${c[2]}"/><circle cx="-12" cy="-41" r="3.5" fill="rgba(255,255,255,0.14)"/></g>`;
+    },
+    pine(x, y, s = 1) {
+      return `<g transform="translate(${lpF1(x)} ${lpF1(y)}) scale(${s})">${lpSh(3, 2, 15, 5)}<rect x="-2.5" y="-10" width="5" height="12" fill="#5B3D22"/>
+        <path d="M0 -58 L16 -26 L-16 -26 Z" fill="#1A4A2A"/><path d="M0 -48 L19 -14 L-19 -14 Z" fill="#1E5530"/><path d="M0 -36 L22 -4 L-22 -4 Z" fill="#23603A"/>
+        <path d="M0 -58 L-16 -26 L-4 -26 Z M0 -48 L-19 -14 L-6 -14 Z M0 -36 L-22 -4 L-7 -4 Z" fill="rgba(255,255,255,0.08)"/></g>`;
+    },
+    bush(x, y, s = 1) {
+      return `<g transform="translate(${lpF1(x)} ${lpF1(y)}) scale(${s})">${lpSh(2, 3, 18, 5)}<circle cx="-9" cy="-6" r="9" fill="#24663A"/><circle cx="9" cy="-6" r="9" fill="#24663A"/><circle cx="0" cy="-10" r="11" fill="#2E7A46"/><circle cx="-4" cy="-14" r="5" fill="#3E9A52"/>
+        <circle cx="6" cy="-9" r="1.8" fill="#F7D98E"/><circle cx="-8" cy="-4" r="1.6" fill="#FBF8EF"/><circle cx="2" cy="-3" r="1.6" fill="#E8B23D"/></g>`;
+    },
+    flowers(x, y) { let o = ""; for (let i = 0; i < 6; i++) o += `<circle cx="${lpF1(x + (i * 7) % 22 - 10)}" cy="${lpF1(y + (i * 5) % 12 - 6)}" r="1.8" fill="${["#FBF8EF", "#F7D98E", "#FFB8A8"][i % 3]}"/>`; return o; },
+    fence(x, y, len) {
+      let o = `<g transform="translate(${lpF1(x)} ${lpF1(y)})">${lpSh(len / 2, 3, len / 2 + 4, 3, 0.18)}<rect x="0" y="-15" width="${len}" height="3.5" rx="1" fill="#8A6038"/><rect x="0" y="-7" width="${len}" height="3.5" rx="1" fill="#7A5532"/>`;
+      for (let px = 2; px < len; px += 16) o += `<rect x="${px}" y="-21" width="5" height="22" rx="1.2" fill="#9A6C40"/><rect x="${px}" y="-21" width="2" height="22" fill="rgba(255,236,200,0.2)"/>`;
+      return o + "</g>";
+    },
+    goal(x, y, s = 1) {
+      let net = ""; for (let i = 1; i < 9; i++) net += `<line x1="${-30 + i * 6.6}" y1="-30" x2="${-24 + i * 5.3}" y2="-4" stroke="rgba(255,255,255,0.35)" stroke-width="0.7"/>`;
+      for (let j = 1; j < 5; j++) net += `<line x1="${-30 + j * 1.2}" y1="${-30 + j * 6}" x2="${30 - j * 1.2}" y2="${-30 + j * 6}" stroke="rgba(255,255,255,0.3)" stroke-width="0.7"/>`;
+      return `<g transform="translate(${lpF1(x)} ${lpF1(y)}) scale(${s})">${lpSh(0, 1, 36, 5)}<path d="M-30 -30 L-24 -4 L24 -4 L30 -30 Z" fill="rgba(255,255,255,0.08)"/>${net}
+        <rect x="-33" y="-33" width="66" height="4" rx="1.5" fill="#FBF8EF"/><rect x="-33" y="-33" width="4" height="33" rx="1.5" fill="#FBF8EF"/><rect x="29" y="-33" width="4" height="33" rx="1.5" fill="#E6E0CF"/></g>`;
+    },
+    cone(x, y) { return `<g transform="translate(${lpF1(x)} ${lpF1(y)})">${lpSh(1, 1, 7, 2)}<path d="M-6 0 L0 -15 L6 0 Z" fill="#F07A2E"/><path d="M-3.8 -5 L3.8 -5 L2.8 -8 L-2.8 -8 Z" fill="#FBF8EF"/><rect x="-8" y="-1" width="16" height="2.5" rx="1" fill="#D2601E"/><path d="M-6 0 L0 -15 L-1 0 Z" fill="rgba(255,255,255,0.15)"/></g>`; },
+    ball(x, y, s = 1) { return `<g transform="translate(${lpF1(x)} ${lpF1(y)}) scale(${s})">${lpSh(2, 2, 8, 2.5)}<circle cx="0" cy="-7" r="7" fill="#FBF8EF" stroke="#C9C2AE" stroke-width="0.8"/><path d="M0 -10 l2.8 2 -1 3.3 h-3.6 l-1 -3.3z" fill="#2A2018"/><circle cx="-2.4" cy="-9.6" r="1.6" fill="rgba(255,255,255,0.8)"/></g>`; },
+    bench(x, y, s = 1) { return `<g transform="translate(${lpF1(x)} ${lpF1(y)}) scale(${s})">${lpSh(0, 2, 26, 4)}<rect x="-22" y="-12" width="3" height="12" fill="#5B3D22"/><rect x="19" y="-12" width="3" height="12" fill="#5B3D22"/><rect x="-25" y="-15" width="50" height="5" rx="1.5" fill="#9A6C40"/><rect x="-25" y="-24" width="50" height="5" rx="1.5" fill="#8A6038"/><rect x="-25" y="-15" width="50" height="1.6" fill="rgba(255,236,200,0.25)"/></g>`; },
+    hay(x, y) { return `<g transform="translate(${lpF1(x)} ${lpF1(y)})">${lpSh(0, 1, 16, 4)}<rect x="-15" y="-16" width="30" height="16" rx="5" fill="#D9B05A"/><path d="M-15 -11 h30 M-15 -6 h30" stroke="#B88E3C" stroke-width="1"/><rect x="-15" y="-16" width="30" height="4" rx="3" fill="rgba(255,255,255,0.18)"/></g>`; },
+    clubhouse(x, y) {
+      return `<g transform="translate(${lpF1(x)} ${lpF1(y)})">${lpSh(2, 2, 52, 8)}<rect x="-44" y="-44" width="88" height="44" fill="#EFE3C6"/><rect x="-44" y="-44" width="88" height="44" fill="url(#lpplaster)" opacity="0.4"/>
+        <path d="M-52 -42 L0 -74 L52 -42 Z" fill="#B4583A"/><path d="M-52 -42 L0 -74 L0 -42 Z" fill="#C96C48"/>${[0, 1, 2, 3].map(i => `<path d="M${-46 + i * 4} ${-46 - i * 7} L${46 - i * 4} ${-46 - i * 7}" stroke="#93452B" stroke-width="1" opacity=".6"/>`).join("")}
+        <rect x="-8" y="-28" width="16" height="28" rx="1.5" fill="#6B4828"/><circle cx="4" cy="-13" r="1.3" fill="#F7D98E"/>
+        <rect x="-36" y="-34" width="18" height="14" rx="1.5" fill="#2E4A3C"/><rect x="18" y="-34" width="18" height="14" rx="1.5" fill="#2E4A3C"/><path d="M-27 -34 v14 M-36 -27 h18 M27 -34 v14 M18 -27 h18" stroke="#EFE3C6" stroke-width="1.5"/>
+        <rect x="-36" y="-34" width="7" height="6" fill="rgba(247,217,142,0.35)"/>
+        <rect x="-30" y="-58" width="60" height="12" rx="2" fill="#7FD99A"/><text x="0" y="-49.3" text-anchor="middle" font-family="Oswald" font-weight="500" font-size="8.5" fill="#13202A">Vereinsheim</text></g>`;
+    },
+    mast(x, y, s = 1, glow) {
+      let lat = ""; for (let k = 0; k < 9; k++) lat += `<path d="M${-4 + k * 0.25} ${-8 - k * 12} L${4 - k * 0.25} ${-20 - k * 12} M${4 - k * 0.25} ${-8 - k * 12} L${-4 + k * 0.25} ${-20 - k * 12}" stroke="#7E8A86" stroke-width="0.8"/>`;
+      return `<g transform="translate(${lpF1(x)} ${lpF1(y)}) scale(${s})">${lpSh(0, 2, 12, 3)}<path d="M-5 0 L-2 -112 M5 0 L2 -112" stroke="#9AA6A1" stroke-width="2"/>${lat}
+        ${glow ? `<circle cx="0" cy="-122" r="34" fill="url(#lplampglow)"/>` : ""}<rect x="-16" y="-130" width="32" height="16" rx="2" fill="#5E6A66"/>${[0, 1, 2, 3].map(i => [0, 1].map(j => `<rect x="${-14 + i * 7.3}" y="${-128 + j * 7}" width="5.6" height="5" rx="1" fill="${glow ? "#FFF6D6" : "#E8E4D8"}"/>`).join("")).join("")}</g>`;
+    },
+    /* Tribüne entlang des Bildrands – Draufsicht, Reihen parallel zum Rand, Dach außen */
+    edgeStand(side, y0, y1, o, r) {
+      const W = o.w, L = side === "L", X = v => L ? v : 390 - v;          // v = Abstand vom Außenrand
+      const rect = (v0, v1, ya, yb, fill, extra = "") => `<rect x="${lpF1(L ? v0 : 390 - v1)}" y="${lpF1(ya)}" width="${lpF1(v1 - v0)}" height="${lpF1(yb - ya)}" fill="${fill}" ${extra}/>`;
+      const gid = "lpsg" + side + o.key;
+      let s = `<defs><linearGradient id="${gid}" x1="${L ? 0 : 1}" x2="${L ? 1 : 0}" y1="0" y2="0"><stop offset="0" stop-color="#000" stop-opacity=".42"/><stop offset="1" stop-color="#000" stop-opacity="0"/></linearGradient>
+        <linearGradient id="${gid}f" x1="${L ? 0 : 1}" x2="${L ? 1 : 0}" y1="0" y2="0"><stop offset="0" stop-color="#000" stop-opacity=".30"/><stop offset="1" stop-color="#000" stop-opacity="0"/></linearGradient></defs>`;
+      // Schattenwurf der Tribüne auf den Rasen
+      s += rect(W, W + 12, y0, y1, `url(#${gid}f)`);
+      // Betonkörper
+      s += rect(0, W, y0, y1, o.concrete);
+      const rows = o.rows, pitch = (W - o.roof - 6) / rows;
+      // Aufgänge
+      const aisles = []; for (let y = y0 + 60 + r() * 30; y < y1 - 40; y += o.aisle + r() * 30) aisles.push(y);
+      const inAisle = y => aisles.some(a => y > a - 5 && y < a + 5);
+      // Stufen (vorn hell, hinten dunkler)
+      for (let k = 0; k < rows; k++) {
+        const v1 = W - 5 - k * pitch, v0 = v1 - pitch;
+        s += rect(v0, v1, y0, y1, lpMix(o.step[0], o.step[1], k / Math.max(1, rows - 1)));
+        s += rect(v1 - 0.9, v1, y0, y1, "rgba(255,255,255,0.10)");
+      }
+      // Sitzschalen-Farbbänder (nur bei Sitzplätzen)
+      if (o.seats) for (let k = 0; k < rows; k++) {
+        const v1 = W - 5 - k * pitch, c = o.seats[Math.min(o.seats.length - 1, Math.floor(k / rows * o.seats.length))];
+        s += rect(v1 - pitch + 1.2, v1 - 1.4, y0, y1, c, 'opacity=".9"');
+      }
+      // Publikum: Schultern + Köpfe, Blick zum Feld
+      const skin = ["#F1D3B5", "#E2B48F", "#B98260", "#7A4E33", "#F4DCC4"];
+      const crowd = [];
+      for (let k = 0; k < rows; k++) {
+        const vc = W - 5 - k * pitch - pitch / 2;
+        const gap = o.gap || 4.6;
+        for (let y = y0 + 3; y < y1 - 3; y += gap) {
+          if (inAisle(y)) continue;
+          if (r() > o.dens) continue;
+          const jx = (r() - 0.5) * (o.standing ? 1.6 : 0.6), jy = (r() - 0.5) * (o.standing ? 1.8 : 0.5);
+          const c = o.shirts[Math.floor(r() * o.shirts.length)];
+          const cx = X(vc + jx), cy = y + jy;
+          crowd.push(`<ellipse cx="${lpF1(cx)}" cy="${lpF1(cy)}" rx="${o.standing ? 2.2 : 2.0}" ry="2.7" fill="${c}"/><circle cx="${lpF1(cx + (L ? 0.7 : -0.7))}" cy="${lpF1(cy)}" r="1.6" fill="${skin[Math.floor(r() * skin.length)]}"/>`);
+          if (o.phones && r() < o.phones) crowd.push(`<circle cx="${lpF1(cx + (L ? 1.6 : -1.6))}" cy="${lpF1(cy)}" r="3.4" fill="rgba(255,250,220,0.20)"/><circle cx="${lpF1(cx + (L ? 1.6 : -1.6))}" cy="${lpF1(cy)}" r="0.9" fill="#FFFBEA"/>`);
+          if (o.scarf && r() < o.scarf) crowd.push(`<rect x="${lpF1(cx - 3.2)}" y="${lpF1(cy - 0.6)}" width="6.4" height="1.3" rx=".6" fill="${o.scarfC[Math.floor(r() * o.scarfC.length)]}"/>`);
+        }
+      }
+      s += crowd.join("");
+      // Wellenbrecher (Stehplätze)
+      if (o.barriers) for (let k = 1; k < rows; k += 2) { const v = W - 5 - k * pitch - 0.6; for (let y = y0 + 20 + r() * 20; y < y1 - 30; y += 64) { if (inAisle(y) || inAisle(y + 30)) continue; s += rect(v - 1.1, v + 1.1, y, y + 30, "#2E5A40") + rect(v - 1.1, v - 0.3, y, y + 30, "rgba(255,255,255,0.35)") + rect(v - 2, v + 2, y - 1.2, y + 1.2, "#1F3E2C") + rect(v - 2, v + 2, y + 29, y + 31.2, "#1F3E2C"); } }
+      // Treppen + Mundlöcher
+      for (const a of aisles) {
+        s += rect(o.roof, W - 4, a - 5, a + 5, o.stair);
+        for (let v = o.roof + 2; v < W - 5; v += 3) s += rect(v, v + 0.8, a - 5, a + 5, "rgba(0,0,0,0.16)");
+        s += rect(o.roof, W - 4, a - 0.6, a + 0.6, o.rail);
+        if (o.vom) { const vm = o.roof + (W - o.roof) * 0.5; s += rect(vm - 5, vm + 5, a + 5, a + 12, "#121A17") + rect(vm - 5, vm + 5, a + 5, a + 6.2, "rgba(255,255,255,0.22)"); }
+      }
+      // Front: Bande/Zaun
+      if (o.fence) { s += rect(W - 4.5, W - 1, y0, y1, "rgba(220,226,222,0.20)"); for (let y = y0; y < y1; y += 3) s += rect(W - 4.5, W - 1, y, y + 0.6, "rgba(230,236,232,0.35)"); s += rect(W - 1.4, W, y0, y1, "#A9B2AC"); for (let y = y0 + 10; y < y1; y += 24) s += rect(W - 2.4, W + 0.6, y, y + 2.2, "#7E8882"); }
+      else { s += rect(W - 3.5, W, y0, y1, o.front); s += rect(W - 3.5, W - 2.6, y0, y1, "rgba(255,255,255,0.25)"); if (o.led) s += rect(W - 2.6, W - 0.6, y0, y1, o.led, 'opacity=".85"'); }
+      // Stirnseiten
+      s += rect(0, W, y0, y0 + 3, "rgba(0,0,0,0.35)") + rect(0, W, y1 - 3, y1, "rgba(0,0,0,0.35)") + rect(0, W + 8, y1, y1 + 6, "rgba(0,0,0,0.16)");
+      // Dach-Schatten auf obere Reihen + Dach
+      if (o.roof) {
+        s += rect(o.roof, o.roof + 16, y0, y1, `url(#${gid})`);
+        s += rect(0, o.roof, y0, y1, o.roofC);
+        if (o.ribs) for (let y = y0; y < y1; y += 4) s += rect(0, o.roof, y, y + 1.2, "rgba(0,0,0,0.13)");
+        else for (let y = y0 + 8; y < y1; y += 46) s += rect(0, o.roof, y, y + 1.6, "rgba(0,0,0,0.18)");
+        s += rect(o.roof - 1.6, o.roof, y0, y1, "rgba(255,255,255,0.55)");
+        s += rect(0, 1.4, y0, y1, "rgba(0,0,0,0.35)");
+        if (o.roofLights) for (let y = y0 + 14; y < y1; y += 28) s += `<circle cx="${lpF1(X(o.roof - 3))}" cy="${lpF1(y)}" r="7" fill="url(#lplampglow)"/><rect x="${lpF1(X(o.roof - 3) - 1.6)}" y="${lpF1(y - 3)}" width="3.2" height="6" rx="1" fill="#FFF6D6"/>`;
+      }
+      return s;
+    },
+    dugout(x, y, c = "#2E7D52") {
+      let seats = ""; for (let i = 0; i < 5; i++) seats += `<rect x="${-23 + i * 9.4}" y="-16" width="7.4" height="9" rx="2.4" fill="${c}"/><rect x="${-23 + i * 9.4}" y="-16" width="7.4" height="2" rx="1" fill="rgba(255,255,255,0.25)"/>`;
+      return `<g transform="translate(${lpF1(x)} ${lpF1(y)})">${lpSh(0, 1, 30, 4.5)}<rect x="-28" y="-6" width="56" height="6" rx="1" fill="#5A635E"/>${seats}
+        <path d="M-29 0 V-18 C-29 -32 29 -32 29 -18 V0" fill="rgba(210,236,226,0.22)" stroke="rgba(240,248,244,0.75)" stroke-width="1.6"/>
+        <path d="M-22 -22 C-14 -29 -2 -30 6 -29" stroke="rgba(255,255,255,0.55)" stroke-width="1.6" fill="none" stroke-linecap="round"/>
+        <rect x="-30" y="-1.5" width="60" height="2.4" rx="1" fill="#3A403D"/></g>`;
+    },
+    dummies(x, y, c = "#E8B23D") {
+      let o = `<g transform="translate(${lpF1(x)} ${lpF1(y)})">${lpSh(0, 1, 26, 4)}`;
+      for (let i = 0; i < 4; i++) { const dx = -18 + i * 12; o += `<g transform="translate(${dx} 0)"><rect x="-1.2" y="-4" width="2.4" height="4" fill="#3A403D"/><path d="M-4.5 -4 L-4.5 -22 C-4.5 -26 -2.8 -27 -2 -27.5 C-4 -29 -4 -34 0 -34 C4 -34 4 -29 2 -27.5 C2.8 -27 4.5 -26 4.5 -22 L4.5 -4 Z" fill="${c}"/><path d="M-4.5 -4 L-4.5 -22 C-4.5 -26 -2.8 -27 -2 -27.5 L-1.2 -4 Z" fill="rgba(255,255,255,0.22)"/><rect x="-4.5" y="-12" width="9" height="1.6" fill="rgba(0,0,0,0.25)"/></g>`; }
+      return o + `<rect x="-24" y="-1" width="48" height="2" rx="1" fill="#3A403D"/></g>`;
+    },
+    ballbag(x, y) {
+      let b = ""; [[-6, -7], [5, -7], [0, -15], [-7, -21], [6, -20]].forEach(([dx, dy]) => b += `<circle cx="${dx}" cy="${dy}" r="5.6" fill="#FBF8EF" stroke="#C9C2AE" stroke-width=".6"/><path d="M${dx} ${dy - 2.4} l2.2 1.6 -.8 2.6 h-2.8 l-.8 -2.6z" fill="#2A2018"/>`);
+      let net = ""; for (let i = -12; i <= 12; i += 4) net += `<path d="M${i} -27 L${i * 0.8} -1" stroke="rgba(30,30,30,0.45)" stroke-width=".6"/>`; for (let j = -24; j < 0; j += 4) net += `<path d="M-12 ${j} H12" stroke="rgba(30,30,30,0.35)" stroke-width=".6"/>`;
+      return `<g transform="translate(${lpF1(x)} ${lpF1(y)})">${lpSh(0, 1, 14, 3.5)}${b}${net}<path d="M-6 -28 Q0 -34 6 -28" stroke="#3A403D" stroke-width="1.4" fill="none"/></g>`;
+    },
+    crate(x, y, c = "#2E7D52") {
+      let o = ""; for (let i = 0; i < 4; i++) o += `<rect x="${-10 + i * 5.4}" y="-21" width="4" height="12" rx="1.5" fill="rgba(200,230,240,0.75)"/><rect x="${-9.6 + i * 5.4}" y="-23" width="3.2" height="2.6" rx=".8" fill="${c}"/>`;
+      return `<g transform="translate(${lpF1(x)} ${lpF1(y)})">${lpSh(0, 1, 13, 3)}${o}<rect x="-12" y="-11" width="24" height="11" rx="1.5" fill="${c}"/><rect x="-12" y="-11" width="24" height="2" fill="rgba(255,255,255,0.25)"/><rect x="-5" y="-8" width="10" height="3" rx="1.5" fill="rgba(0,0,0,0.3)"/></g>`;
+    },
+    corner(x, y, c = "#E8B23D") { return `<g transform="translate(${lpF1(x)} ${lpF1(y)})">${lpSh(0, 1, 5, 1.8)}<rect x="-0.9" y="-30" width="1.8" height="30" fill="#FBF8EF"/><path d="M0.9 -30 L13 -25.5 L0.9 -21 Z" fill="${c}"/><path d="M0 0 m-9 0 a9 5 0 0 1 9 -5" stroke="rgba(255,255,255,0.7)" stroke-width="1.2" fill="none"/></g>`; },
+    photog(x, y, vest = "#E8B23D") { return `<g transform="translate(${lpF1(x)} ${lpF1(y)})">${lpSh(2, 1, 11, 3)}<rect x="-6" y="-10" width="12" height="10" rx="2" fill="#3A403D"/><path d="M-6 -10 C-7 -20 7 -20 6 -10 Z" fill="${vest}"/><circle cx="0" cy="-21" r="4.2" fill="#E2B48F"/><path d="M-4.2 -22 a4.2 4.2 0 0 1 8.4 0 Z" fill="#2A2018"/><rect x="2" y="-18" width="7" height="5" rx="1" fill="#1A1E1C"/><rect x="8" y="-17.5" width="9" height="4" rx="1.2" fill="#2A302D"/><rect x="16" y="-17.5" width="1.6" height="4" fill="#9AA6A1"/></g>`; },
+    flag(x, y, c1, c2, s = 1) { return `<g transform="translate(${lpF1(x)} ${lpF1(y)}) scale(${s})">${lpSh(0, 1, 5, 2)}<rect x="-1.2" y="-46" width="2.4" height="46" fill="#D9D4C6"/><circle cx="0" cy="-47" r="2.2" fill="#E8B23D"/><path d="M1 -45 C 10 -49, 16 -40, 26 -44 L26 -30 C 16 -26, 10 -35, 1 -31 Z" fill="${c1}"/><path d="M1 -38 C 10 -42, 16 -33, 26 -37 L26 -33 C 16 -29, 10 -38, 1 -34 Z" fill="${c2}"/></g>`; },
+    scoreboard(x, y) { return `<g transform="translate(${lpF1(x)} ${lpF1(y)})">${lpSh(0, 2, 34, 5)}<rect x="-3" y="-30" width="6" height="30" fill="#5B3D22"/><rect x="-38" y="-70" width="76" height="42" rx="4" fill="#6B4828"/><rect x="-34" y="-66" width="68" height="34" rx="2" fill="#13221A"/>
+      <text x="-17" y="-58" text-anchor="middle" font-family="Oswald" font-weight="500" font-size="7" fill="#F4F1E8">HEIM</text><text x="17" y="-58" text-anchor="middle" font-family="Oswald" font-weight="500" font-size="7" fill="#F4F1E8">GAST</text>
+      <rect x="-27" y="-55" width="18" height="20" rx="1.5" fill="#FBF8EF"/><rect x="9" y="-55" width="18" height="20" rx="1.5" fill="#FBF8EF"/><text x="-18" y="-39" text-anchor="middle" font-family="Anton" font-size="17" fill="#13202A">2</text><text x="18" y="-39" text-anchor="middle" font-family="Anton" font-size="17" fill="#13202A">1</text></g>`; },
+    bus(x, y) { return `<g transform="translate(${lpF1(x)} ${lpF1(y)})">${lpSh(0, 2, 44, 5)}<rect x="-42" y="-34" width="84" height="30" rx="7" fill="#F4F1E8"/><rect x="-42" y="-16" width="84" height="6" fill="#A8D94A"/><rect x="-42" y="-34" width="84" height="5" rx="3" fill="rgba(255,255,255,0.6)"/>${[0, 1, 2, 3, 4].map(i => `<rect x="${-36 + i * 15}" y="-28" width="12" height="9" rx="1.5" fill="#2E4A3C"/>`).join("")}<rect x="30" y="-28" width="9" height="12" rx="1.5" fill="#2E4A3C"/><circle cx="-26" cy="-4" r="6" fill="#222"/><circle cx="26" cy="-4" r="6" fill="#222"/><circle cx="-26" cy="-4" r="2.5" fill="#999"/><circle cx="26" cy="-4" r="2.5" fill="#999"/></g>`; },
+    camera(x, y) { return `<g transform="translate(${lpF1(x)} ${lpF1(y)})">${lpSh(0, 1, 16, 3.5)}<path d="M0 -20 L-12 0 M0 -20 L12 0 M0 -20 L0 0" stroke="#3A3F3C" stroke-width="2"/><rect x="-14" y="-34" width="24" height="15" rx="3" fill="#2A302D"/><rect x="10" y="-31" width="9" height="9" rx="2" fill="#1A1E1C"/><circle cx="19" cy="-26.5" r="3.2" fill="#4A6A8A"/><rect x="-12" y="-38" width="12" height="5" rx="1" fill="#2A302D"/><rect x="-11" y="-31" width="10" height="3" rx="1" fill="#C1392B"/><text x="-6" y="-21" text-anchor="middle" font-family="Oswald" font-weight="600" font-size="5" fill="#F4F1E8">TV</text></g>`; },
+    screen(x, y, txt) { return `<g transform="translate(${lpF1(x)} ${lpF1(y)})">${lpSh(0, 2, 40, 5)}<rect x="-4" y="-26" width="8" height="26" fill="#3A403D"/><rect x="-44" y="-74" width="88" height="50" rx="5" fill="#2A302D"/><rect x="-40" y="-70" width="80" height="42" rx="2" fill="url(#lpscr${txt.length})"/><text x="0" y="-41" text-anchor="middle" font-family="Anton" font-size="20" fill="#FFF1C8">${txt}</text></g>`; },
+    beam(x, y, dir, len = 260) { const a = dir < 0 ? -1 : 1; return `<path d="M${lpF1(x)} ${lpF1(y)} L${lpF1(x + a * len * 0.55)} ${lpF1(y + len)} L${lpF1(x + a * len * 0.15)} ${lpF1(y + len)} Z" fill="url(#lpbeamg)"/>`; },
+    sparkle(x, y, s = 1, c = "#FFF6D6") { return `<path d="M${lpF1(x)} ${lpF1(y - 4 * s)} L${lpF1(x + 1 * s)} ${lpF1(y - 1 * s)} L${lpF1(x + 4 * s)} ${lpF1(y)} L${lpF1(x + 1 * s)} ${lpF1(y + 1 * s)} L${lpF1(x)} ${lpF1(y + 4 * s)} L${lpF1(x - 1 * s)} ${lpF1(y + 1 * s)} L${lpF1(x - 4 * s)} ${lpF1(y)} L${lpF1(x - 1 * s)} ${lpF1(y - 1 * s)} Z" fill="${c}"/>`; },
+    flare(x, y) { return `<g transform="translate(${lpF1(x)} ${lpF1(y)})"><circle cx="0" cy="-16" r="18" fill="url(#lpflareg)"/><rect x="-1.5" y="-14" width="3" height="14" fill="#3A2A2A"/><circle cx="0" cy="-16" r="3.5" fill="#FFE2B0"/><path d="M0 -20 C -6 -34, 8 -40, 2 -60" stroke="rgba(200,200,200,0.25)" stroke-width="7" fill="none" stroke-linecap="round"/></g>`; },
+    laurel(x, y, s = 1, flip) { let o = `<g transform="translate(${lpF1(x)} ${lpF1(y)}) scale(${flip ? -s : s} ${s})"><path d="M0 0 C -14 -10, -18 -30, -10 -46" stroke="#B9851F" stroke-width="2" fill="none"/>`; for (let i = 0; i < 6; i++) { const t = i / 6, px = -14 * Math.sin(t * 2.2) - 2, py = -t * 44; o += `<ellipse cx="${lpF1(px - 5)}" cy="${lpF1(py)}" rx="6" ry="2.6" transform="rotate(${-30 - i * 6} ${lpF1(px - 5)} ${lpF1(py)})" fill="${i % 2 ? "#E8B23D" : "#F7D98E"}"/>`; } return o + "</g>"; },
+    pedestal(x, y, s = 1) { return `<g transform="translate(${lpF1(x)} ${lpF1(y)}) scale(${s})">${lpSh(0, 2, 30, 5)}<rect x="-24" y="-18" width="48" height="18" rx="2" fill="#2A2018"/><rect x="-24" y="-18" width="48" height="3" fill="#E8B23D"/>
+      <path d="M-14 -66 h28 v12 c0 12-6 18-14 18 s-14-6-14-18z" fill="url(#lpgoldg)" stroke="#8A6420" stroke-width="1"/><path d="M-14 -62 h-6 a7 7 0 0 0 8 9 M14 -62 h6 a7 7 0 0 1 -8 9" stroke="#C9962E" stroke-width="2.4" fill="none"/><path d="M-4 -36 h8 v8 h6 v6 h-20 v-6 h6z" fill="url(#lpgoldg)"/><ellipse cx="-6" cy="-58" rx="3" ry="6" fill="rgba(255,255,255,0.35)"/></g>`; },
+    rope(x1, x2, y) { let o = ""; for (let x = x1; x <= x2; x += 44) o += `<rect x="${lpF1(x - 2.5)}" y="${lpF1(y - 22)}" width="5" height="22" rx="2" fill="url(#lpgoldg)"/><circle cx="${lpF1(x)}" cy="${lpF1(y - 23)}" r="4" fill="#F7D98E"/>${x + 44 <= x2 ? `<path d="M${lpF1(x)} ${lpF1(y - 19)} Q ${lpF1(x + 22)} ${lpF1(y - 8)} ${lpF1(x + 44)} ${lpF1(y - 19)}" stroke="#9E1F2A" stroke-width="3" fill="none"/>` : ""}`; return o; },
+    confetti(x, y, r) { const c = ["#F7D98E", "#E8B23D", "#FBF8EF", "#7FD99A", "#C1392B"][Math.floor(r() * 5)]; return `<rect x="${lpF1(x)}" y="${lpF1(y)}" width="${lpF1(3 + r() * 3)}" height="${lpF1(6 + r() * 3)}" rx="1" fill="${c}" opacity="${lpF1(0.55 + r() * 0.4)}" transform="rotate(${Math.floor(r() * 180)} ${lpF1(x)} ${lpF1(y)})"/>`; }
+  };
+/* ---------- Weg-Geometrie ---------- */
+const LP_STEP = 132, LP_TOP0 = 448, LP_AMP = 104, LP_CX = 195;
+const lpPathX = (y, phase) => LP_CX + LP_AMP * Math.sin((y - LP_TOP0) / LP_STEP * 1.18 + phase);
+const lpSceneCache = {};
+// Szene (Hintergrund, Tribuenen, ferne/nahe Requisiten, Weg) - unabhaengig vom Spielstand, deshalb gecacht
+function lpScene(W, n) {
+  const key = W + ":" + n; if (lpSceneCache[key]) return lpSceneCache[key];
+  const th = LP_TH[W], r = lpRng(W * 977 + 13), phase = W * 0.9, P = LP;
+  const H = LP_TOP0 + (n - 1) * LP_STEP + 330, goalY = LP_TOP0 + n * LP_STEP - 10;
+  const pts = []; for (let y = LP_TOP0 - 150; y <= goalY + 6; y += 6) pts.push([lpPathX(y, phase), y]);
+  const dAll = "M" + pts.map((p) => lpF1(p[0]) + " " + lpF1(p[1])).join(" L");
+  let far = "", near = "", farProps = "";
+  let bg = `<defs>
+      <linearGradient id="lpbgg" x1="0" x2="0" y1="0" y2="1"><stop offset="0" stop-color="${th.bg[0]}"/><stop offset=".5" stop-color="${th.bg[1]}"/><stop offset="1" stop-color="${th.bg[2]}"/></linearGradient>
+      <pattern id="lpmow" width="390" height="88" patternUnits="userSpaceOnUse"><rect width="390" height="44" fill="${th.stripe}"/></pattern>
+      <radialGradient id="lplampglow"><stop offset="0" stop-color="#FFF6D6" stop-opacity=".7"/><stop offset="1" stop-color="#FFF6D6" stop-opacity="0"/></radialGradient>
+      <radialGradient id="lpflareg"><stop offset="0" stop-color="#FFB46B" stop-opacity=".85"/><stop offset="1" stop-color="#E8632B" stop-opacity="0"/></radialGradient>
+      <linearGradient id="lpbeamg" x1="0" x2="0" y1="0" y2="1"><stop offset="0" stop-color="#FFF6D6" stop-opacity=".30"/><stop offset="1" stop-color="#FFF6D6" stop-opacity="0"/></linearGradient>
+      <linearGradient id="lpgoldg" x1="0" x2="1" y1="0" y2="1"><stop offset="0" stop-color="#FFF4CF"/><stop offset=".4" stop-color="#F4D58D"/><stop offset=".75" stop-color="#E8B23D"/><stop offset="1" stop-color="#A97A22"/></linearGradient>
+      <linearGradient id="lpscr4" x1="0" x2="1"><stop offset="0" stop-color="#2E7D52"/><stop offset="1" stop-color="#E8B23D"/></linearGradient>
+      <linearGradient id="lpscr5" x1="0" x2="1"><stop offset="0" stop-color="#2E7D52"/><stop offset="1" stop-color="#E8B23D"/></linearGradient>
+      <pattern id="lpplaster" width="6" height="6" patternUnits="userSpaceOnUse"><circle cx="2" cy="2" r=".6" fill="#C9BB98"/></pattern>
+      <radialGradient id="lpspot"><stop offset="0" stop-color="#FFE7A8" stop-opacity=".45"/><stop offset="1" stop-color="#FFE7A8" stop-opacity="0"/></radialGradient>
+      <filter id="lpsoft" x="-20%" y="-20%" width="140%" height="140%"><feGaussianBlur stdDeviation="6"/></filter></defs>
+      <rect width="390" height="${H}" fill="url(#lpbgg)"/><rect width="390" height="${H}" fill="url(#lpmow)"/>`;
+  if (W === 4) { for (let i = 0; i < 140; i++) far += `<circle cx="${lpF1(70 + r() * 250)}" cy="${lpF1(r() * H)}" r="${lpF1(0.5 + r() * 1.1)}" fill="#FFF8E6" opacity="${lpF1(0.2 + r() * 0.6)}"/>`; }
+  if (W === 5) { bg += `<rect width="390" height="${H}" fill="url(#lpspot)" opacity=".5"/>`; for (let i = 0; i < 70; i++) far += P.confetti(72 + r() * 246, r() * H, r); }
+  if (W === 1) { for (let i = 0; i < 40; i++) far += `<circle cx="${lpF1(r() * 390)}" cy="${lpF1(r() * H)}" r="${lpF1(6 + r() * 14)}" fill="rgba(0,0,0,0.05)"/>`; }
+  const freeSides = (y) => { const xs = [y + 16, y, y - 25, y - 50, y - 70].map((v) => lpPathX(v, phase)), px = Math.max(...xs), pn = Math.min(...xs); const e = W === 1 ? 6 : 72; return [[e, pn - 40], [px + 40, 390 - e]].filter(([a, b]) => b - a > 30); };
+  const place = (y, fn, layer, hw = 16) => { const sides = freeSides(y).filter(([a, b]) => b - a > hw * 2 + 4); if (!sides.length) return; const [a, b] = sides[Math.floor(r() * sides.length)]; const x = a + hw + r() * Math.max(0, b - a - hw * 2); const py2 = lpPathX(y - 40, phase); if (Math.abs(x - py2) < hw + 30) return; if (layer === "far") farProps += fn(x, y); else near += fn(x, y); };
+  const px = (y) => lpPathX(y, phase), CX = LP_CX, TOP0 = LP_TOP0, STEP = LP_STEP, setPieces = [];
+    if (W === 1) {
+      setPieces.push(P.clubhouse(lpPathX(TOP0 + 60, phase) < CX ? 300 : 90, TOP0 + 70), P.goal(lpPathX(TOP0 + STEP * 3.4, phase) < CX ? 305 : 85, TOP0 + STEP * 3.4), P.mast(lpPathX(TOP0 + STEP * 6.2, phase) < CX ? 352 : 34, TOP0 + STEP * 6.2, 0.9, false));
+      for (let y = 160; y < H - 60; y += 26) { const k = r(); place(y, (x, yy) => k < 0.42 ? P.tree(x, yy, 0.75 + r() * 0.35) : k < 0.6 ? P.bush(x, yy, 0.8 + r() * 0.4) : k < 0.72 ? P.flowers(x, yy) : k < 0.78 ? P.cone(x, yy) : k < 0.83 ? P.ball(x, yy) : k < 0.88 ? P.hay(x, yy) : k < 0.93 ? P.bench(x, yy, 0.8) : P.pine(x, yy, 0.8), k < 0.6 ? "far" : "near", k < 0.42 ? 20 : 16); }
+      far += P.fence(0, 210, 120) + P.fence(270, 210, 120);
+    } else if (W === 2) {
+      // Regionalliga: Stehtraversen mit Wellblechdach, Zaun, Fans in Grün-Weiß
+      const o = { key: 2, w: 58, rows: 5, roof: 10, ribs: true, roofC: "#8E9692", concrete: "#7B827D", step: ["#868D88", "#646B66"], stair: "#B6BBB4", rail: "#C9CEC8", shirts: ["#A8D94A", "#2E7D52", "#13202A", "#2E7D52", "#A8D94A", "#F4F1E8", "#3A4440"], dens: 0.7, standing: true, gap: 6, barriers: true, fence: true, scarf: 0.12, scarfC: ["#A8D94A", "#F4F1E8"], aisle: 150 };
+      bg += P.edgeStand("L", 150, H - 160, o, r) + P.edgeStand("R", 260, H - 160, o, r);
+      setPieces.push(P.scoreboard(lpPathX(TOP0 + STEP * 1.5, phase) < CX ? 290 : 100, TOP0 + STEP * 1.5), P.bus(lpPathX(TOP0 + STEP * 5.5, phase) < CX ? 286 : 104, TOP0 + STEP * 5.5), P.dugout(lpPathX(TOP0 + STEP * 3.5, phase) < CX ? 290 : 100, TOP0 + STEP * 3.5, "#2E7D52"), P.dugout(lpPathX(TOP0 + STEP * 8.5, phase) < CX ? 290 : 100, TOP0 + STEP * 8.5, "#13202A"));
+      for (let y = 170; y < H - 60; y += 40) { const k = r(); if (k < 0.12) continue; place(y, (x, yy) => k < 0.24 ? P.hay(x, yy) : k < 0.32 ? P.dummies(x, yy, "#E8B23D") : k < 0.52 ? P.ballbag(x, yy) : k < 0.64 ? P.crate(x, yy, "#2E7D52") : k < 0.74 ? P.corner(x, yy, "#A8D94A") : k < 0.86 ? P.cone(x, yy) + P.cone(x + 16, yy + 3) : P.ball(x, yy), "near", k < 0.2 ? 32 : k < 0.38 ? 28 : 16); }
+    } else if (W === 3) {
+      // Bundesliga: Sitzplatz-Tribünen, Unterrang rot, Oberrang grau, LED-Bande
+      const o = { key: 3, w: 60, rows: 6, roof: 12, roofC: "#C9CFCC", concrete: "#5E6662", step: ["#6E7672", "#4C5450"], seats: ["#B8332A", "#B8332A", "#8F9893", "#8F9893"], stair: "#9AA29D", rail: "#D7DCD9", shirts: ["#C1392B", "#F4F1E8", "#13202A", "#E8B23D", "#C1392B", "#3A4A44"], dens: 0.88, gap: 5.6, vom: true, front: "#2A302D", led: "#E8B23D", scarf: 0.08, scarfC: ["#C1392B", "#F4F1E8"], aisle: 120 };
+      bg += P.edgeStand("L", 130, H - 150, o, r) + P.edgeStand("R", 130, H - 150, o, r);
+      setPieces.push(P.screen(lpPathX(TOP0 + STEP * 2.5, phase) < CX ? 288 : 102, TOP0 + STEP * 2.5, "TOR!"), P.camera(lpPathX(TOP0 + STEP * 6, phase) < CX ? 300 : 90, TOP0 + STEP * 6), P.dugout(lpPathX(TOP0 + STEP * 4.5, phase) < CX ? 290 : 100, TOP0 + STEP * 4.5, "#C1392B"));
+      for (let y = 170; y < H - 60; y += 40) { const k = r(); if (k < 0.1) continue; place(y, (x, yy) => k < 0.22 ? P.flag(x, yy, "#C1392B", "#F4F1E8", 0.85) : k < 0.38 ? P.photog(x, yy, "#E8B23D") : k < 0.52 ? P.camera(x, yy) : k < 0.64 ? P.dummies(x, yy, "#C1392B") : k < 0.74 ? P.ballbag(x, yy) : k < 0.86 ? P.corner(x, yy, "#E8B23D") : P.crate(x, yy, "#C1392B"), "near", k < 0.22 ? 32 : k < 0.38 ? 20 : k < 0.64 && k >= 0.52 ? 28 : 18); }
+    } else if (W === 4) {
+      // Champions League bei Nacht: dunkle Ränge, Handylichter, Dachstrahler
+      const o = { key: 4, w: 60, rows: 6, roof: 12, roofC: "#3A4448", concrete: "#1E2826", step: ["#2C3634", "#1A2321"], seats: ["#22303A", "#22303A", "#1C262E"], stair: "#3A4644", rail: "#6E7A78", shirts: ["#2A3A44", "#3A4A54", "#E8863D", "#F4F1E8", "#1E2A30", "#4A5A60"], dens: 0.9, gap: 5.6, vom: true, front: "#141C1A", led: "#7FD99A", phones: 0.05, aisle: 130, roofLights: true };
+      bg += P.edgeStand("L", 120, H - 150, o, r) + P.edgeStand("R", 120, H - 150, o, r);
+      for (let i = 0; i < Math.floor(n / 3) + 1; i++) { const y = TOP0 + STEP * (1 + i * 3); farProps += P.beam(i % 2 ? 360 : 30, y - 130, i % 2 ? -1 : 1); }
+      for (let y = 170; y < H - 60; y += 44) { const k = r(); place(y, (x, yy) => k < 0.25 ? P.camera(x, yy) : k < 0.42 ? P.photog(x, yy, "#E8863D") : k < 0.56 ? P.flare(x, yy) : k < 0.7 ? P.ballbag(x, yy) : k < 0.82 ? P.corner(x, yy, "#E8863D") : P.sparkle(x, yy - 20, 1.6), "near", k < 0.25 ? 22 : 18); }
+    } else {
+      // Weltklasse-Finale: rot-goldene Ränge, Schals, Konfetti nur über dem Rasen
+      const o = { key: 5, w: 60, rows: 6, roof: 12, roofC: "#E9E1CC", concrete: "#3A1E22", step: ["#5A2A30", "#3A1A1E"], seats: ["#9E1F2A", "#9E1F2A", "#B8862A"], stair: "#7A5A50", rail: "#F7D98E", shirts: ["#E8B23D", "#F7D98E", "#FBF8EF", "#9E1F2A", "#C1392B", "#2A2018"], dens: 0.9, gap: 5.6, vom: true, front: "#2A1418", led: "#F7D98E", scarf: 0.1, scarfC: ["#E8B23D", "#FBF8EF"], phones: 0.02, aisle: 130, roofLights: true };
+      bg += P.edgeStand("L", 120, H - 150, o, r) + P.edgeStand("R", 120, H - 150, o, r);
+      for (let y = 170; y < H - 60; y += 42) { const k = r(); place(y, (x, yy) => k < 0.22 ? P.laurel(x, yy, 0.9, r() < 0.5) : k < 0.3 ? P.photog(x, yy, "#E8B23D") : k < 0.6 ? P.sparkle(x, yy - 10, 2, "#F7D98E") + P.sparkle(x + 14, yy - 30, 1.2, "#FFF6D6") : k < 0.74 ? P.camera(x, yy) : k < 0.86 ? P.corner(x, yy, "#E8B23D") : P.flag(x, yy, "#E8B23D", "#9E1F2A", 0.9), "near", k < 0.3 && k >= 0.22 ? 20 : k >= 0.6 && k < 0.74 ? 22 : 16); }
     }
-  });
+    // Weg
+    const roadW = 38;
+    let road = `<path d="${dAll}" fill="none" stroke="rgba(0,0,0,0.25)" stroke-width="${roadW + 10}" stroke-linecap="round" stroke-linejoin="round" transform="translate(3 5)" filter="url(#soft)"/>
+      <path d="${dAll}" fill="none" stroke="${th.roadEdge}" stroke-width="${roadW + 6}" stroke-linecap="round" stroke-linejoin="round"/>
+      <path d="${dAll}" fill="none" stroke="${th.road}" stroke-width="${roadW}" stroke-linecap="round" stroke-linejoin="round"/>
+      <path d="${dAll}" fill="none" stroke="${th.roadHi}" stroke-width="${roadW - 22}" stroke-linecap="round" stroke-linejoin="round" opacity=".45" transform="translate(-4 -2)"/>`;
+    if (th.mark === "steps") road += `<path d="${dAll}" fill="none" stroke="rgba(90,60,30,0.45)" stroke-width="5" stroke-dasharray="3 15" stroke-linecap="round" transform="translate(-6 0)"/><path d="${dAll}" fill="none" stroke="rgba(90,60,30,0.45)" stroke-width="5" stroke-dasharray="3 15" stroke-dashoffset="9" stroke-linecap="round" transform="translate(6 0)"/>`;
+    if (th.mark === "rake") road += `<path d="${dAll}" fill="none" stroke="rgba(255,255,255,0.14)" stroke-width="${roadW - 8}" stroke-dasharray="1.5 5" />`;
+    if (th.mark === "chalk") road += `<path d="${dAll}" fill="none" stroke="#FBF8EF" stroke-width="${roadW + 2}" stroke-linecap="round" opacity=".85"/><path d="${dAll}" fill="none" stroke="${th.road}" stroke-width="${roadW - 3}" stroke-linecap="round"/><path d="${dAll}" fill="none" stroke="rgba(255,255,255,0.06)" stroke-width="${roadW - 3}" stroke-dasharray="20 20"/>`;
+    if (th.mark === "lights") road += `<path d="${dAll}" fill="none" stroke="#FFE7A8" stroke-width="${roadW + 4}" stroke-dasharray="0.1 22" stroke-linecap="round" opacity=".9"/><path d="${dAll}" fill="none" stroke="${th.road}" stroke-width="${roadW - 4}" stroke-linecap="round"/>`;
+    if (th.mark === "carpet") road += `<path d="${dAll}" fill="none" stroke="#E8B23D" stroke-width="${roadW + 1}" stroke-linecap="round" opacity=".9"/><path d="${dAll}" fill="none" stroke="${th.road}" stroke-width="${roadW - 6}" stroke-linecap="round"/><path d="${dAll}" fill="none" stroke="rgba(255,255,255,0.08)" stroke-width="${roadW - 14}" stroke-linecap="round"/>`;
 
-  container.appendChild(wrap);
-
-  // Beim Öffnen automatisch zum aktuellen Level scrollen (wie prototypes/navigation.html).
-  requestAnimationFrame(() => {
-    const currentIdx = matches.findIndex(m => !profile.campaign.levelPassed[m.id]);
-    if (currentIdx === -1) { document.getElementById("screen-levelpath").scrollTop = 0; return; }
-    const targetNode = wrap.querySelector('.level-node[data-idx="' + currentIdx + '"]');
-    if (targetNode) targetNode.scrollIntoView({ block: "center", behavior: "auto" });
-  });
+  const rope = W === 5 ? P.rope(30, 120, LP_TOP0 - 70) + P.rope(270, 360, LP_TOP0 - 70) : "";
+  return (lpSceneCache[key] = { W, n, th, H, goalY, phase, dAll, bg, far, farProps, near: near + rope, setPieces: setPieces.join(""), road });
 }
+
+let lpAnim = null, lpState = null;
+function lpStarPath(k, s) { return `<path transform="translate(${15 + k * 15} 9.6) scale(.78)" d="M0 -8 L2.35 -3.24 L7.6 -2.47 L3.8 1.24 L4.7 6.47 L0 4 L-4.7 6.47 L-3.8 1.24 L-7.6 -2.47 L-2.35 -3.24 Z" fill="${k < s ? "#F7D98E" : "rgba(244,241,232,0.18)"}" stroke="${k < s ? "#9C7422" : "none"}" stroke-width="1"/>`; }
+function renderCampaignLevels(dir) {
+  const scr = document.getElementById("screen-levelpath"), container = document.getElementById("levelPathView");
+  if (lpAnim) cancelAnimationFrame(lpAnim);
+  const W = campaignTier, matches = getMatchesByTier(W), n = matches.length, wc = DIFF_COLOR[W];
+  const sc = lpScene(W, n), th = sc.th, phase = sc.phase, H = sc.H, goalY = sc.goalY, P = LP;
+  const curIdx = matches.findIndex((m) => !profile.campaign.levelPassed[m.id]), passed = matches.filter((m) => profile.campaign.levelPassed[m.id]).length;
+  const starsOf = (m) => profile.campaign.stars[m.id] || 0, summary = starsSummaryForTier(matches);
+  const nodesY = matches.map((m, i) => LP_TOP0 + i * LP_STEP);
+  const dDone = (() => { const curY = curIdx >= 0 ? nodesY[curIdx] : goalY; const pts = []; for (let y = LP_TOP0 - 150; y <= goalY + 6; y += 6) if (y <= curY) pts.push([lpPathX(y, phase), y]); return "M" + pts.map((p) => lpF1(p[0]) + " " + lpF1(p[1])).join(" L"); })();
+  scr.style.setProperty("--wc", wc); scr.style.setProperty("--shade", th.shade); scr.style.setProperty("--lpbg0", th.bg[0]); scr.style.setProperty("--lpbg1", th.bg[1]);
+  // "Du"-Magnet sitzt ueber dem aktuellen Level; steht der Vorgaenger-Knoten fast darueber, rutscht er seitlich weg (nie auf Sternen/Scheibe des Nachbarn), bleibt aber im Feld zwischen den Tribuenen
+  const duShift = (i, x) => { if (!i) return 0; const dx = x - lpPathX(nodesY[i - 1], phase), need = 66; if (Math.abs(dx) >= need) return 0; const first = dx >= 0 ? 1 : -1; for (const dir of [first, -first]) { const nx = Math.max(92, Math.min(298, x + dir * need)); if (Math.abs(nx - lpPathX(nodesY[i - 1], phase)) >= need - 2) return nx - x; } return 0; };
+  const nodes = matches.map((m, i) => {
+    const x = lpPathX(nodesY[i], phase), st = profile.campaign.levelPassed[m.id] ? "done" : i === curIdx ? "cur" : "lock", s = starsOf(m);
+    const big = st === "cur", R = big ? 38 : 31, cx = big ? 45 : 37;
+    const disc = st === "lock"
+      ? `<svg class="lp-disc" viewBox="0 0 74 74" aria-hidden="true"><ellipse cx="40" cy="44" rx="30" ry="29" fill="rgba(0,0,0,0.3)"/><circle cx="37" cy="37" r="30" fill="${W === 4 ? "#1A2A22" : "#244A33"}"/><circle cx="37" cy="37" r="28" fill="none" stroke="rgba(244,241,232,0.55)" stroke-width="2" stroke-dasharray="5 4"/><circle cx="58" cy="58" r="11" fill="#3E2A16"/><g transform="translate(52 49)"><rect x="0" y="6" width="12" height="9" rx="2.2" fill="#F7D98E"/><path d="M2.6 6V4.2a3.4 3.4 0 0 1 6.8 0V6" fill="none" stroke="#F7D98E" stroke-width="2"/></g></svg>`
+      : `<svg class="lp-disc" viewBox="0 0 ${cx * 2} ${cx * 2}" aria-hidden="true"><defs><radialGradient id="lpng${i}" cx=".35" cy=".3" r=".75"><stop offset="0" stop-color="#FFFFFF"/><stop offset=".35" stop-color="${wc}"/><stop offset="1" stop-color="${lpMix(wc, "#000000", 0.38)}"/></radialGradient></defs>
+          <ellipse cx="${cx + 3}" cy="${cx + 8}" rx="${R - 1}" ry="${R - 3}" fill="rgba(0,0,0,0.35)"/>
+          ${big ? `<circle cx="${cx}" cy="${cx}" r="${R + 5}" fill="url(#lpgring${i})"/><defs><linearGradient id="lpgring${i}" x1="0" x2="1" y1="0" y2="1"><stop offset="0" stop-color="#FFF4CF"/><stop offset=".5" stop-color="#E8B23D"/><stop offset="1" stop-color="#8C6214"/></linearGradient></defs>` : `<circle cx="${cx}" cy="${cx}" r="${R + 2.5}" fill="#3E2A16"/>`}
+          <circle cx="${cx}" cy="${cx}" r="${R}" fill="url(#lpng${i})"/><circle cx="${cx}" cy="${cx}" r="${R - 5}" fill="none" stroke="rgba(255,255,255,0.35)" stroke-width="1.5"/>
+          <ellipse cx="${cx - R * 0.3}" cy="${cx - R * 0.42}" rx="${R * 0.42}" ry="${R * 0.22}" fill="rgba(255,255,255,0.35)" transform="rotate(-25 ${cx - R * 0.3} ${cx - R * 0.42})"/></svg>`;
+    const starArc = st === "done" || (st === "cur" && s) ? `<svg class="lp-nstars" viewBox="0 0 60 18" aria-hidden="true"><rect x="1" y="1" width="58" height="16" rx="8" fill="rgba(10,22,16,0.72)" stroke="rgba(255,236,200,0.25)"/>${[0, 1, 2].map((k) => lpStarPath(k, s)).join("")}</svg>` : "";
+    const badges = (st !== "lock" && profile.drafts["c:" + m.id] ? `<span class="lp-badge draft" title="angefangen">${LP_SV.pen}</span>` : "") + (st !== "lock" && profile.campaign.solutionSeen[m.id] && s < 3 ? `<span class="lp-badge seen" title="Lösung angesehen – Sterne eingefroren">${LP_SV.eye}</span>` : "");
+    return `<div class="lp-node ${st}" style="left:${lpF1(x)}px;top:${nodesY[i]}px" data-i="${i}">${starArc}<button class="lp-nbtn" type="button" aria-label="Level ${i + 1}${st === "lock" ? " (gesperrt)" : s ? ", " + s + " Sterne" : ""}">${disc}<b>${i + 1}</b></button>${badges}
+      ${st === "cur" ? `<span class="lp-ring"></span><span class="lp-du" style="left:${-28 + duShift(i, x)}px"><span class="lp-pin">Du</span><i></i><span class="lp-tag">Level ${i + 1}</span></span>` : ""}</div>`;
+  }).join("");
+  const allDone = passed === n && n > 0, gx = lpPathX(goalY, phase), nextW = (() => { for (let t = W + 1; t <= 5; t++) if (getMatchesByTier(t).length) return t; return 0; })();
+  const sh = (x, y, rx, ry, o = 0.28) => lpSh(x, y, rx, ry, o);
+  const goalArt = W < 5
+    ? `<svg width="390" height="200" viewBox="0 0 390 200" style="position:absolute;left:0;top:${goalY - 120}px;overflow:visible" aria-hidden="true">
+        ${sh(gx, 152, 90, 12, 0.35)}<path d="M${gx - 84} 150 L${gx - 84} 70 Q${gx} 6 ${gx + 84} 70 L${gx + 84} 150 Z" fill="#5E6A66"/><path d="M${gx - 84} 150 L${gx - 84} 70 Q${gx} 6 ${gx + 84} 70 L${gx + 84} 150 Z" fill="url(#lpstone)"/>
+        <path d="M${gx - 54} 150 L${gx - 54} 86 Q${gx} 40 ${gx + 54} 86 L${gx + 54} 150 Z" fill="#0E1A14"/><path d="M${gx - 54} 150 L${gx - 54} 86 Q${gx} 40 ${gx + 54} 86 L${gx + 54} 150 Z" fill="url(#lptunnel)"/>
+        <defs><linearGradient id="lpstone" x1="0" x2="0" y1="0" y2="1"><stop offset="0" stop-color="rgba(255,255,255,0.18)"/><stop offset="1" stop-color="rgba(0,0,0,0.25)"/></linearGradient>
+          <radialGradient id="lptunnel" cx=".5" cy=".9" r=".7"><stop offset="0" stop-color="${allDone ? DIFF_COLOR[Math.min(5, W + 1)] : "#2A3A33"}" stop-opacity="${allDone ? 0.75 : 0.5}"/><stop offset="1" stop-color="#0E1A14" stop-opacity="0"/></radialGradient></defs>
+        ${!allDone ? `<g transform="translate(${gx - 11} 98)"><rect x="0" y="10" width="22" height="17" rx="3.5" fill="rgba(244,241,232,0.7)"/><path d="M5 10V7a6 6 0 0 1 12 0v3" fill="none" stroke="rgba(244,241,232,0.7)" stroke-width="3"/></g>` : P.sparkle(gx, 108, 3, "#FFF6D6")}
+        ${P.flag(gx - 96, 150, wc, "#FBF8EF", 1)}${P.flag(gx + 70, 150, DIFF_COLOR[Math.min(5, W + 1)], "#FBF8EF", 1)}</svg>`
+    : `<svg width="390" height="220" viewBox="0 0 390 220" style="position:absolute;left:0;top:${goalY - 150}px;overflow:visible" aria-hidden="true"><circle cx="${gx}" cy="110" r="110" fill="url(#lpspot)"/>${P.laurel(gx - 40, 176, 1.6, false)}${P.laurel(gx + 40, 176, 1.6, true)}${P.pedestal(gx, 180, 1.5)}${allDone ? P.sparkle(gx - 46, 70, 2.4) + P.sparkle(gx + 50, 60, 2) : ""}</svg>`;
+  const goal = `${goalArt}${W < 5 && allDone && nextW ? `<button type="button" class="lp-gotap" id="lpGoTap" style="left:${gx - 84}px;top:${goalY - 100}px" aria-label="Tunnel offen – weiter: ${DIFF_LABEL[nextW]}"></button>` : ""}<div class="lp-goal" style="top:${goalY + 34}px"><span class="lp-gsign"><small>${W < 5 ? (allDone ? "Tunnel offen" : "Alle Level bestehen") : (allDone ? "Geschafft" : "Am Ende wartet")}</small><b>${W < 5 ? "Weiter: " + DIFF_LABEL[nextW || W + 1] : "Der Weltklasse-Pokal"}</b></span></div>`;
+  document.getElementById("lpStars").innerHTML = `${LP_SV.star}<b>${summary.earned}</b><small>/${summary.max}</small>`;
+  const tokChip = document.getElementById("lpTok"); if (tokChip) tokChip.innerHTML = tokenChipInner(profile.hintTokens, true);
+  document.getElementById("pathTitle").textContent = DIFF_LABEL[W];
+  container.innerHTML = `<div class="lp-sizer" id="lpSizer"><div class="lp-world" id="lpWorld" style="height:${H}px">
+      <svg class="lp-bg" height="${H}" viewBox="0 0 390 ${H}" aria-hidden="true">${sc.bg}</svg>
+      <svg class="lp-far" id="lpFar" height="${H}" viewBox="0 0 390 ${H}" aria-hidden="true">${sc.far}</svg>
+      <svg class="lp-road" height="${H}" viewBox="0 0 390 ${H}" aria-hidden="true">${sc.farProps}${sc.road}<path id="lpDone" d="${dDone}" fill="none" stroke="${W === 4 ? "#FFE7A8" : "#FBF8EF"}" stroke-width="4.5" stroke-linecap="round" stroke-dasharray="1000 0" opacity=".85" pathLength="1000"/></svg>
+      <svg class="lp-near" height="${H}" viewBox="0 0 390 ${H}" aria-hidden="true">${sc.setPieces}${sc.near}</svg>
+      ${goal}
+      <div class="lp-sign" id="lpSign"><span class="lp-rope" style="left:34px"></span><span class="lp-rope" style="right:34px"></span>
+        <div class="lp-board"><small>Welt ${W} von 5</small><h2>${DIFF_LABEL[W]}</h2>
+          <div class="lp-prog"><span class="lp-bar"><i id="lpPbar" style="width:${Math.max(3, n ? passed / n * 100 : 0)}%"></i></span><span><b>${passed}</b>/${n} Level</span></div></div></div>
+      <div class="lp-note" id="lpNote"><span>${TIER_INTRO[W]}</span></div>
+      ${nodes}
+    </div></div>`;
+  const fl = document.getElementById("lpFloat");
+  fl.querySelector("span").textContent = curIdx >= 0 ? "Zu Level " + (curIdx + 1) : "";
+  document.getElementById("lpScroll").scrollTop = 0;
+  // Antippen: freie Level wie bisher in die Level-Vorschau (startMatch), gesperrte melden das kurz
+  container.querySelectorAll(".lp-node").forEach((nd) => nd.querySelector(".lp-nbtn").onclick = () => {
+    const i = +nd.dataset.i;
+    if (nd.classList.contains("lock")) { showToast("Level " + (i + 1) + " ist noch gesperrt"); return; }
+    currentLevelContext = { tier: W, index: i, m: matches[i] }; startMatch(matches[i]);
+  });
+  const gt = document.getElementById("lpGoTap"); if (gt) gt.onclick = () => { wmSel = nextW; goBackTo("worldmap"); };
+  lpState = { W, n, curIdx, nodesY, goalY, H, intro: dir === "fwd" && !REDUCED_MOTION, started: false, passed };
+  if (!scr.hidden) lpLayout();
+}
+// Skalierung auf die Bildschirmbreite, Kamera/Einstiegs-Bewegung (erst wenn der Bildschirm sichtbar ist)
+function lpLayout() {
+  const scr = document.getElementById("screen-levelpath"), scrollEl = document.getElementById("lpScroll"), world = document.getElementById("lpWorld"), sizer = document.getElementById("lpSizer");
+  if (!lpState || !world || !scr.clientWidth) return;
+  const S = Math.min(1, scr.clientWidth / 390), st = lpState;
+  world.style.transform = `scale(${S})`; sizer.style.width = (390 * S) + "px"; sizer.style.height = (st.H * S) + "px";
+  const far = document.getElementById("lpFar"), upd = () => { far.style.transform = `translateY(${(scrollEl.scrollTop * 0.22 / S).toFixed(1)}px)`; lpFloat(); };
+  scrollEl.onscroll = upd;
+  const off = sizer.offsetTop, curY = (st.curIdx >= 0 ? st.nodesY[st.curIdx] : st.goalY) * S + off, target = Math.max(0, curY - scrollEl.clientHeight * 0.56);
+  st.S = S; st.off = off; st.curY = curY; st.target = target;
+  document.getElementById("lpFloat").onclick = () => lpSmoothTo(target, 700);
+  if (st.started) { upd(); return; }
+  st.started = true;
+  if (!st.intro) { scrollEl.scrollTop = target; upd(); return; }
+  lpIntro(scrollEl, S);
+}
+function lpFloat() {
+  const st = lpState, scrollEl = document.getElementById("lpScroll"), fl = document.getElementById("lpFloat"); if (!st || !fl) return;
+  if (st.curIdx < 0 || st.introOn) { fl.classList.remove("on"); return; }
+  const vis = st.curY - scrollEl.scrollTop, hdr = document.querySelector("#screen-levelpath .lp-top").getBoundingClientRect().bottom, off = vis < hdr + 40 || vis > scrollEl.clientHeight - 80;
+  fl.classList.toggle("on", off); fl.classList.toggle("up", vis < hdr + 40);
+}
+function lpSmoothTo(target, ms) {
+  const scrollEl = document.getElementById("lpScroll"), s0 = scrollEl.scrollTop, t1 = Math.max(0, Math.min(target, scrollEl.scrollHeight - scrollEl.clientHeight)), t0 = performance.now();
+  const step = (now) => { const k = Math.min(1, (now - t0) / ms), e = k < 0.5 ? 4 * k * k * k : 1 - Math.pow(-2 * k + 2, 3) / 2; scrollEl.scrollTop = s0 + (t1 - s0) * e; if (k < 1) lpAnim = requestAnimationFrame(step); };
+  lpAnim = requestAnimationFrame(step);
+}
+// Einmalige Bewegung: Schild schwingt ein, Zettel faellt, Weg zeichnet sich, Knoten ploppen, Kamera faehrt zum Level, "Du"-Magnet faellt, ein Ring
+function lpIntro(scrollEl, S) {
+  const st = lpState, nodes = [...document.querySelectorAll("#lpWorld .lp-node")], done = document.getElementById("lpDone"), sign = document.getElementById("lpSign"), note = document.getElementById("lpNote"), du = document.querySelector("#lpWorld .lp-du"), ring = document.querySelector("#lpWorld .lp-ring");
+  st.introOn = true; lpFloat();
+  scrollEl.scrollTop = 0;
+  nodes.forEach((nd) => { nd.style.opacity = 0; }); if (du) du.style.opacity = 0;
+  const T0 = performance.now(), camStart = 1000, camDur = 1500, target = st.target, curNodeY = st.curIdx >= 0 ? st.nodesY[st.curIdx] : st.goalY;
+  const ease = (x) => 1 - Math.pow(1 - x, 3), back = (x, s = 1.6) => 1 + (s + 1) * Math.pow(x - 1, 3) + s * Math.pow(x - 1, 2), cl = (v) => Math.max(0, Math.min(1, v));
+  const finish = () => { cancelAnimationFrame(lpAnim); st.introOn = false; nodes.forEach((nd) => { nd.style.opacity = 1; nd.style.transform = ""; }); if (du) { du.style.opacity = 1; du.style.transform = ""; } if (ring) ring.style.opacity = 0; sign.style.transform = ""; sign.style.opacity = 1; note.style.transform = ""; note.style.opacity = 1; done.setAttribute("stroke-dasharray", "1000 0"); ["touchstart", "wheel", "mousedown"].forEach((ev) => scrollEl.removeEventListener(ev, finish)); lpFloat(); };
+  ["touchstart", "wheel", "mousedown"].forEach((ev) => scrollEl.addEventListener(ev, finish, { passive: true, once: true }));
+  const tick = (now) => {
+    if (!st.introOn) return;
+    const t = now - T0;
+    const sg = cl(t / 700); sign.style.transform = `rotate(${(Math.sin(sg * Math.PI * 2.2) * 9 * (1 - sg)).toFixed(2)}deg) translateY(${(-60 * (1 - ease(cl(t / 380)))).toFixed(1)}px)`; sign.style.opacity = cl(t / 250);
+    const no = cl((t - 350) / 450); note.style.opacity = no; note.style.transform = `translateY(${(-18 * (1 - back(no))).toFixed(1)}px) rotate(${(-1.2 + 6 * (1 - no)).toFixed(2)}deg)`;
+    const cam = cl((t - camStart) / camDur), camE = cam < 0.5 ? 4 * cam * cam * cam : 1 - Math.pow(-2 * cam + 2, 3) / 2;
+    if (t > camStart) scrollEl.scrollTop = target * camE;
+    const dr = cl((t - 600) / (camDur + 500)); done.setAttribute("stroke-dasharray", `${(dr * 1000).toFixed(1)} 1000`);
+    nodes.forEach((nd, i) => { const y = st.nodesY[i], appear = 500 + (y - LP_TOP0) / Math.max(1, curNodeY - LP_TOP0 + 1) * (camDur + 400), k = cl((t - appear) / 380), e = back(k, 2); nd.style.opacity = cl(k * 3); nd.style.transform = `scale(${(0.4 + 0.6 * e).toFixed(3)})`; });
+    if (du) { const dk = cl((t - (camStart + camDur + 50)) / 520); du.style.opacity = cl(dk * 3); du.style.transform = `translateY(${(-60 * (1 - back(dk, 1.8))).toFixed(1)}px)`; }
+    if (ring) { const rk = cl((t - (camStart + camDur + 380)) / 650); ring.style.opacity = rk > 0 && rk < 1 ? (1 - rk).toFixed(2) : 0; ring.style.transform = `scale(${(0.8 + rk * 0.9).toFixed(3)})`; }
+    if (t < camStart + camDur + 1100) lpAnim = requestAnimationFrame(tick); else finish();
+  };
+  lpAnim = requestAnimationFrame(tick);
+}
+window.addEventListener("resize", () => { if (lpState && lpState.started) { lpState.started = true; lpLayout(); } });
 
 // Aktuelle Kampagnen-Welt fuer die Start-Kachel: erste noch nicht komplett
 // abgeschlossene Welt, sonst Welt 5 (gleiche isCurrent-Logik wie renderCampaignWorlds).

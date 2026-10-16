@@ -127,49 +127,46 @@ for (const width of WIDTHS) {
   console.log(`Alle echten Aufstellungen: ${n} Pruefungen`);
 }
 
-// Level-Pfad (Prompt 11c): fuer jede der 5 Welten je einmal mit Level 1 aktuell
-// und einmal mit einem mittleren Level aktuell (dort haben Ball-Badge/Sterne/Label
-// auf BEIDEN Seiten Nachbarn) pruefen, dass sich Punkt/Sterne/Label/Badge
-// VERSCHIEDENER Level nicht ueberschneiden.
+// Level-Pfad (Prompt 51): je Welt x Spielstand (neu / mittendrin mit Entwurf + Lösung gesehen / alles geschafft) x Breite: Knoten, Sterne, Abzeichen,
+// "Du"-Magnet und Schild/Zettel ueberlappen sich nicht untereinander, und kein Knoten liegt auf einer Requisite (Baum, Bank, Kamera ...).
 const tiers = await page.evaluate(() => ROADMAP_NODES.map((n) => n.tier));
-
 for (const width of WIDTHS) {
   await page.setViewportSize({ width, height: 900 });
   for (const tier of tiers) {
-    for (const currentInMiddle of [false, true]) {
-      const result = await page.evaluate(({ tier, currentInMiddle }) => {
+    for (const state of ["neu", "mitte", "fertig"]) {
+      const result = await page.evaluate(({ tier, state }) => {
         const matches = getMatchesByTier(tier);
         if (matches.length === 0) return { skip: true };
-        profile.campaign.levelPassed = {};
-        if (currentInMiddle) {
-          const passUntil = Math.floor(matches.length / 2);
-          for (let i = 0; i < passUntil; i++) profile.campaign.levelPassed[matches[i].id] = true;
-        }
+        profile.campaign.levelPassed = {}; profile.campaign.stars = {}; profile.campaign.solutionSeen = {}; profile.drafts = {};
+        const until = state === "neu" ? 0 : state === "fertig" ? matches.length : Math.floor(matches.length / 2);
+        for (let i = 0; i < until; i++) { profile.campaign.levelPassed[matches[i].id] = true; profile.campaign.stars[matches[i].id] = (i % 3) + 1; }
+        if (state === "mitte") { profile.drafts["c:" + matches[until].id] = { mode: "c", id: matches[until].id, entries: { TW: { v: "x", s: "typed" } }, updated: Date.now() }; profile.campaign.solutionSeen[matches[1].id] = true; }
         document.querySelectorAll(".screen").forEach((s) => { s.hidden = true; });
         document.getElementById("screen-levelpath").hidden = false;
         campaignTier = tier;
-        renderCampaignLevels();
-        const nodes = Array.from(document.querySelectorAll(".level-node"));
-        return {
-          boxes: nodes.map((el, i) => {
-            const r = el.getBoundingClientRect();
-            return { idx: i, left: r.left, top: r.top, width: r.width, height: r.height };
-          })
-        };
-      }, { tier, currentInMiddle });
-
+        renderCampaignLevels("back");
+        lpLayout();
+        const R = (el) => { const r = el.getBoundingClientRect(); return { left: r.left, top: r.top, width: r.width, height: r.height }; };
+        const parts = [];
+        document.querySelectorAll("#lpWorld .lp-node").forEach((nd, i) => {
+          nd.querySelectorAll(".lp-nbtn, .lp-nstars, .lp-badge, .lp-du").forEach((el) => parts.push({ node: i, kind: el.className.baseVal || el.className.split(" ")[0], ...R(el) }));
+        });
+        const props = [...document.querySelectorAll("#lpWorld svg.lp-near > g, #lpWorld svg.lp-road > g")].map(R).filter((r) => r.width > 0);
+        return { parts, props, sign: R(document.getElementById("lpSign")), note: R(document.getElementById("lpNote")) };
+      }, { tier, state });
       if (result.skip) continue;
-
-      const boxes = result.boxes;
       const issues = [];
-      for (let i = 0; i < boxes.length; i++) {
-        for (let j = i + 1; j < boxes.length; j++) {
-          if (overlap(boxes[i], boxes[j])) issues.push(`Level ${boxes[i].idx + 1} <-> Level ${boxes[j].idx + 1}`);
-        }
+      const parts = result.parts;
+      for (let i = 0; i < parts.length; i++) for (let j = i + 1; j < parts.length; j++) {
+        if (parts[i].node !== parts[j].node && overlap(parts[i], parts[j])) issues.push(`Level ${parts[i].node + 1} ${parts[i].kind} <-> Level ${parts[j].node + 1} ${parts[j].kind}`);
+      }
+      for (const pt of parts) {
+        if (pt.kind.includes("lp-du") && (overlap(pt, result.note) || overlap(pt, result.sign))) issues.push(`Level ${pt.node + 1} "Du" auf Schild/Zettel`);
+        if (pt.kind.includes("lp-nbtn")) for (const pr of result.props) if (overlap({ left: pt.left + 8, top: pt.top + 8, width: pt.width - 16, height: pt.height - 16 }, pr)) { issues.push(`Level ${pt.node + 1} liegt auf Requisite`); break; }
       }
       if (issues.length > 0) {
         totalIssues += issues.length;
-        console.log(`[${width}px] Level-Pfad Welt ${tier} (${currentInMiddle ? "mittleres" : "erstes"} Level aktuell): ${issues.length} Ueberlappung(en): ${issues.join(", ")}`);
+        console.log(`[${width}px] Level-Pfad Welt ${tier} (${state}): ${issues.length} Befund(e): ${[...new Set(issues)].slice(0, 6).join("; ")}`);
       }
     }
   }
