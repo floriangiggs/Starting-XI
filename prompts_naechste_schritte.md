@@ -60,8 +60,12 @@ vorige umgesetzt, getestet und committet ist.
 | 46 | Ladebildschirm v2 „Kabinentafel“ (Taktiktafel-Stil, nicht überspringbar, Übergang in die Startseite) | ✅ erledigt (Ladebildschirm „Kabinentafel“ nach ladescreen-v2.html: render(t)-Zeitplan 4,5 s, nicht überspringbar, reduzierte Fassung ≈ 1,1 s, Halt bei 99 % bis Schriften geladen, Sicherheitsnetz 8 s, Startseite startet beim Ausblenden; Bühne 390×844 skaliert in die Fläche ohne Safe-Areas) |
 | 47 | Frei spielen im Taktiktafel-Stil (One-Pager: Wettbewerbs-Karten mit Flaggen/Zeichen, Stufen in Weltfarben, Hardcore-Schalter, Zähl-Brett + Auslosen mit verdeckter Karte, Tages-Archiv) | ✅ erledigt (Taktiktafel-Frei-spielen: Wettbewerbs-Karten mit Zeichen/Flaggen, Stufen-Kacheln, Hardcore-Schalter, Holzleiste mit Zähler + Würfel, verdeckte Ziehungs-Karte inkl. „Nochmal“ im Ergebnis, Tages-Archiv; Dichte-Stufen für kleine Handys; Hardcore-Pool jetzt strikt Stufe 4–5) |
 | 48 | 32 neue Aufstellungen für schwache Kategorien (England, Deutschland, Spanien/Italien, EM, WM) – in Paketen recherchiert, auf Kampagne/Tag verteilt, in allen Modi einsortiert | 41 (teaser) |
+| 49 | Bugfix XP-Balken (zeigt immer „0 XP“), Schrift im Scout-Pass, XP-/Token-/Trophäen-Meldungen und Level-Up im Taktiktafel-Stil | – |
+| 50 | Blauer Balken am unteren Rand (Ladescreen + alle Bildschirme) weg, Platz unten gewinnen, Geräte-Test; richtiger Name wird sofort grün (nicht erst beim Verlassen) | – |
+| 51 | Kampagne: Level-Pfad neu (Candy-Crush-Weg, jede Welt eigene Landschaft mit Tribünen und Platz-Requisiten, Holzschild, Kamerafahrt zum aktuellen Level, "Zu Level n"-Knopf) | 41, 43, 45, 50 |
+| 52 | Ersatzbank-Blatt im Taktiktafel-Stil (Holzrahmen + Filz, Kreide-Zeitleiste der Wechsel, Namensschilder der Eingewechselten, übrige Bank in Kreide), gleiche Darstellung im Duell-Rückblick | 42, 50 |
 
-**Empfohlene Reihenfolge ab jetzt:** 39 → 41 → 42 → 43 → 44 → 45 → 46 → 47 → 48 → weitere Offline-Feinschliffe (u. a. Jahres-Lücken im Ideen-Speicher auffüllen) → Planung Online-Duell (inkl. 28/29) → 8 (Capacitor, erst wenn die App final ist; vorher Duell-Pflichtpunkt aus CLAUDE.md ansprechen)
+**Empfohlene Reihenfolge ab jetzt:** 49 → 50 (Bugfixes, sofort) → 39 → 41 → 42 → 43 → 44 → 45 → 46 → 47 → 48 → 49 → 50 → 51 → 52 → weitere Offline-Feinschliffe (u. a. Jahres-Lücken im Ideen-Speicher auffüllen) → Planung Online-Duell (inkl. 28/29) → 8 (Capacitor, erst wenn die App final ist; vorher Duell-Pflichtpunkt aus CLAUDE.md ansprechen)
 
 Prompt 7 steht bewusst vor der Tages-Challenge: Nur mit der neuen
 Update-Strategie kommen neue Tages-Aufstellungen zuverlässig auf dem iPhone an.
@@ -4213,6 +4217,442 @@ Abschluss: Hook check-lineups + Namensprüfung (Prompt 38) + Spoiler-
 Prüfung (Prompt 41) ohne Befund; Zählung je Kategorie vorher/nachher als
 Tabelle; Screenshots Frei spielen (Karten-Zahlen) und Weltenkarte
 (Levelzahlen); CACHE_NAME erhöhen; Status-Tabelle: Prompt 48 erledigt.
+```
+
+---
+
+## Prompt 49 – XP-Balken reparieren, Meldungen und Level-Up im neuen Stil
+
+```
+Lies CLAUDE.md. Bugfix + kleiner optischer Umbau → erst Ursache im Code
+bestätigen und zeigen, dann in Paketen A–C umsetzen (je Paket Commit +
+Test). Kein Plan Mode nötig, aber bei C kurz die Gestaltung zeigen.
+
+A. Bug: XP-Balken zeigt immer "Noch 0 XP bis Level n+1" (Florian)
+   Ursache (vorab geprüft, Stand main 83993f1):
+   - Level-Modell: levelFromXP() liefert das höchste Level L mit
+     xpForLevel(L) <= totalXP (Level 1 ab 0 XP). Level L beginnt also bei
+     xpForLevel(L) (L ≥ 2) bzw. 0 (L = 1) und endet bei xpForLevel(L+1).
+   - renderProfileBar() (Scout-Pass) und profileOverviewHTML() (Profil-
+     Blatt) rechnen aber mit baseXP = xpForLevel(level − 1) und nextXP =
+     xpForLevel(level) – eine Stufe zu niedrig. Da totalXP immer
+     ≥ xpForLevel(level) ist, wird remainingXP = 0 und der Balken voll.
+     Gemessen: 300 XP → Level 2, angezeigt "Noch 0 XP bis Level 3"
+     (richtig: 150 XP). Selbst Level 1 mit 0 XP zeigt "Noch 75 XP"
+     (richtig: 225 XP).
+   Fix:
+   1. Eine gemeinsame Funktion levelProgress(totalXP) → { level, base,
+      next, intoLevel, needed, remaining, pct } mit base = level === 1 ? 0
+      : xpForLevel(level), next = xpForLevel(level + 1). Beide Stellen
+      (Scout-Pass, Profil-Übersicht "x / y XP") und jede weitere Stelle,
+      die Fortschritt anzeigt (grep nach xpForLevel), nutzen nur noch
+      diese Funktion.
+   2. Test tools/test-xp.mjs: für totalXP 0, 1, 224, 225, 226, 449, 450,
+      1000, 5000 und je Level 1–35 Übergänge prüfen: level ==
+      levelFromXP, 0 ≤ pct < 1, remaining > 0, remaining == next −
+      totalXP, base ≤ totalXP < next. Ergebnis-Tabelle zeigen.
+   3. Kein Eingriff in gespeicherte Daten nötig (nur Anzeige); die
+      Lade-Korrektur (totalXP ≥ xpForLevel(level)) bleibt.
+   4. Schrift im Scout-Pass: .hm-pass ist ein <button> ohne font-family →
+      "Level n", XP-Zeile, Stempel und "Scout-Profil" laufen in der
+      Systemschrift statt Oswald. font-family: var(--f-text)/'Oswald' am
+      .hm-pass setzen und global prüfen, ob weitere <button> ohne
+      geerbte Schrift sind (Regel button { font-family: inherit } o. ä.,
+      ohne bestehende Optik zu ändern). Screenshot vorher/nachher.
+
+B. XP-, Token- und Trophäen-Meldungen (showToast) im neuen Stil
+   Heute: Ink-Blau (--ink-2) mit Goldrand, Text klein – alter Stil.
+   Neu (wie die Hinweise in den freigegebenen Prototypen
+   prototypes/spiel-ansicht.html, startseite.html):
+   - Hintergrund dunkles Grün rgba(14,24,18,0.95), feine Goldlinie innen
+     (inset 0 0 0 1px rgba(247,217,142,0.45)), Radius 14 px, Schatten,
+     Oswald 400 14.5 px, mittig; einmaliges Einblenden, kein Pulsieren.
+   - Typen mit kleinem Zeichen links statt Emoji: XP = goldene Pille mit
+     "+50 XP" (Anton) + Grund in Oswald ("Erster Stern"); Token =
+     Scout-Münze (tokenCoin) + "+1 Scout-Token"; Trophäe = kleiner
+     gezeichneter Pokal (wie Trophäenregal aus Prompt 44) + Name; sonst
+     nur Text. Aufrufer (showToast, showAchievementToast,
+     showTrophyToast, Bonus-XP-Toast, Tages-Serie usw.) auf diese Typen
+     umstellen; Stellen per grep auflisten.
+   - Position wie heute (oben unter der Statusleiste bzw. im Spiel unter
+     dem Tafel-Kopf, Prompt 42); mehrere Meldungen stapeln sauber, nie
+     über der Statusleiste (Safe-Area-Check aus 43).
+
+C. Level-Up im Taktiktafel-Stil (showLevelUpToast)
+   Heute: blau-dunkles Overlay, Emoji-Medaille mit DAUER-Pulsieren
+   (verstößt gegen CLAUDE.md), gesperrtes "LEVEL UP", blaues Konfetti.
+   Neu:
+   - Abdunkeln in dunklem Grün; in der Mitte eine kleine Holz-Tafel
+     (Filz + Holzrahmen wie Startseite) mit: Rang-Medaille als SVG
+     (hmRankIcon aus Prompt 44, Rangfarbe), "Level-Aufstieg" (Oswald 500,
+     normale Schreibweise), Levelzahl groß (Anton, cremefarben auf
+     Holzbrettchen wie die Anzeigetafel), bei Rangwechsel "Neuer Rang:
+     <Name>", darunter "+n Scout-Token" mit Münze, goldener Knopf
+     "Weiter" (Anton wie die anderen Haupt-Knöpfe).
+   - Bewegung einmalig: Tafel stempelt sich ein, Levelzahl zählt von
+     alt auf neu hoch, Medaille ploppt; Konfetti nur in Gold, Creme,
+     Mint und der Rangfarbe (kein Blau); kein Dauerpulsieren.
+     prefers-reduced-motion: ruhig einblenden.
+   - Warteschlange celebrationQueue (Prompt 31) unverändert beachten.
+
+Abschluss: Screenshots Scout-Pass (Level 1/0 XP, Level 2/300 XP, Level
+12), Profil-Übersicht, je ein XP-, Token-, Trophäen-Toast, Level-Up mit
+und ohne Rangwechsel; tools/test-xp.mjs ohne Fehler; CACHE_NAME erhöhen;
+Status-Tabelle: Prompt 49 erledigt.
+```
+
+---
+
+## Prompt 50 – Unterer Rand ohne blauen Balken, Geräte-Test, richtiger Name sofort grün
+
+```
+Lies CLAUDE.md. Zwei Funde vom iPhone-Test (Florian, 16.10.2026). Erst
+Ursachen im Code bestätigen und zeigen, dann in Paketen A–C umsetzen (je
+Paket Commit + Test). Kein Plan Mode nötig.
+
+A. Blauer Balken am unteren Rand (Ladescreen und alle Bildschirme)
+   Befund: Auf dem iPhone (installierte App) ist unten überall ein
+   blauer Streifen sichtbar – auch im Ladescreen.
+   Vorab geprüft (Stand main 83993f1):
+   - html, body haben background: var(--ink) (Ink-Blau); theme-color
+     (#14202B) und manifest background_color/theme_color sind ebenfalls
+     Ink-Blau. Alles, was die Bildschirme nicht abdecken, scheint blau
+     durch.
+   - .stage ist height: 100vh/100dvh, max-width 560px. Im Browser bei
+     393×852 deckt das alles ab (unten grün); auf dem iPhone im
+     Standalone-Modus mit black-translucent + viewport-fit=cover reicht
+     100dvh offenbar nicht bis unter den Home-Balken (bekanntes iOS-PWA-
+     Verhalten) → der blaue Body bleibt unten sichtbar. Auf breiten
+     Geräten (> 560 px, Tablets, Querformat) zusätzlich links/rechts.
+   - Noch Ink-Blau sind außerdem: #screen-duels (--dz-ink), #screen-
+     levelpath, #screen-duelinvite, #screen-duelplay, #screen-duelresult
+     (Standard-.screen-Hintergrund) – diese im Bericht auflisten, aber
+     nur den unteren Rand angleichen (eigene Umgestaltung folgt später).
+   Umsetzung:
+   1. Zuerst messen statt raten: kleine Debug-Anzeige hinter ?debug=1
+      (innerHeight, visualViewport.height, screen.height, berechnete
+      100dvh/100vh/100%, env(safe-area-inset-*), .stage-Rechteck). Florian
+      schickt davon einen Screenshot vom iPhone (Hinweis im Abschluss);
+      bis dahin die robuste Lösung unten umsetzen.
+   2. html, body und .stage bekommen den grünen Rasen-Grund der
+      Startseite (unterer Farbton #173A29) statt Ink-Blau; theme-color und
+      manifest background_color/theme_color auf dasselbe Grün. Damit ist
+      jeder Spalt höchstens grün statt blau.
+   3. .stage füllt garantiert den ganzen Bildschirm: position: fixed;
+      inset: 0 (bzw. height: 100% mit html/body 100%) statt nur 100dvh;
+      auf breiten Geräten ist der Bereich neben der 560-px-Spalte
+      ebenfalls Rasen-Grün (kein Blau, keine harte Kante).
+   4. Platz gewinnen: Hintergründe (Rasen, Tafel-Schatten, Holzleisten-
+      Schatten) laufen bis ganz unten unter den Home-Balken; nur
+      antippbare Elemente bleiben über der Safe-Area. Unterer Abstand
+      der Bildschirme von max(16px, safe-bottom + 10px) auf max(12px,
+      safe-bottom + 4px) senken (Home-Balken nie überdecken). Dadurch
+      werden auf iPhones mit Home-Balken unten ca. 6 px frei, auf Geräten
+      ohne ca. 4 px – an Tafeln/Spielfeld weitergeben. Ladescreen
+      ebenso.
+   5. Gleiche Prüfung für Blätter (Profil, Scout-Rad, Bank, Rückfragen):
+      Blatt-Hintergrund reicht bis ganz unten, Inhalt über der Safe-Area.
+
+B. Kompatibilität mit anderen Smartphones
+   - Prüfmatrix (Playwright, simulierte Safe-Areas): iPhone SE 375×667
+     (0/0), iPhone 13 mini 375×812 (50/34), iPhone 16 393×852 (59/34),
+     iPhone 16 Pro Max 440×956 (62/34), Android klein 360×780 (24/0),
+     Android groß 412×915 (24/24, Gesten-Navigation), Android mit
+     3-Tasten-Leiste 412×869 (24/0), Tablet hochkant 768×1024.
+   - Je Bildschirm (Ladescreen, Start, Profil-Blatt, Weltenkarte,
+     Level-Pfad, Level-Vorschau, Spiel inkl. Tastatur-Modus, Frei
+     spielen, Tages-Challenge, Duell-Zentrale, Duell-Runde, Ergebnis):
+     kein blauer Rand, nichts unter Status-/Navigationsleiste, nichts
+     abgeschnitten, kein Scrollen, wo One-Pager gewollt ist. Bestehende
+     tools/check-safearea.mjs und check-overlap.mjs erweitern; Ergebnis
+     als Tabelle (Gerät × Bildschirm: ok / Befund) zeigen, Befunde
+     beheben.
+   - Android: viewport-fit=cover + env()-Werte prüfen (Chrome liefert
+     sie seit Edge-to-Edge); manifest display "standalone" und
+     orientation "portrait" bleiben.
+
+C. Richtiger Name wird erst beim Verlassen des Felds grün (Florian)
+   Ursache (vorab geprüft): Die Live-Prüfung setzt sofort die Klasse
+   .ok und das Häkchen-Abzeichen erscheint auch. Aber die Regel für das
+   gewählte Feld ".sp .sp-slot.on .pos-input" (Goldrand, goldener
+   Schimmer) ist spezifischer als ".sp .pos-input.ok" (grün) und
+   überdeckt das Grün, solange das Feld gewählt ist. Grün wird es erst,
+   wenn eine andere Position gewählt wird. Das kann mit "Fast richtig"
+   (gold + Stift) verwechselt werden.
+   Fix:
+   1. Richtig schlägt Auswahl: Sobald ein Name akzeptiert ist, wird das
+      Schild sofort grün (gleiche Optik wie .ok), auch wenn es gewählt
+      ist. Die Auswahl bleibt nur als feiner Goldring außen sichtbar
+      (box-shadow), nicht als goldene Füllung. Gleiches für .revealed
+      und .prefilled (deren Optik gewinnt immer).
+   2. Einmaliger Pop + Häkchen wie im Prototyp, sofort beim Tippen.
+   3. Gilt in allen Modi inkl. Duell-Runde (.miss nach Abgabe bleibt).
+   4. KEIN automatischer Sprung zur nächsten Position (Florian,
+      16.10.2026): Nach einem richtigen Namen bleibt das Feld gewählt;
+      der Spieler wählt selbst, welches Feld er als Nächstes ausfüllt
+      (Antippen oder Knopf "Nächste freie Position" wie bisher).
+   5. Playwright-Test: Feld wählen, korrekten Namen tippen (ohne
+      Verlassen) → berechnete Hintergrundfarbe ist grün, data-st="ok";
+      fast richtigen Namen tippen → nach Tipppause gold + Stift.
+
+Abschluss: Screenshots vorher/nachher (unterer Rand Start, Spiel,
+Ladescreen; Feld mit richtigem Namen, noch gewählt), Gerätetabelle aus
+B, CACHE_NAME erhöhen, Status-Tabelle: Prompt 50 erledigt. Am Ende
+Florian bitten: App am iPhone komplett schließen, neu öffnen, unteren
+Rand prüfen und ggf. ?debug=1-Screenshot schicken.
+```
+
+---
+
+## Prompt 51 – Kampagne: Level-Pfad neu (Weg, Welt-Landschaften, Tribünen)
+
+```
+Lies CLAUDE.md. Optischer Umbau eines Bildschirms → Plan Mode, Plan
+zeigen, dann in Paketen A–D umsetzen (je Paket Commit + Test).
+Voraussetzung: Prompts 41, 43, 45 und 50 erledigt (Holz-Bausteine,
+Scout-Münze, Safe-Area-Regeln, Weltenansicht, grüner Grund statt Ink).
+Optische Vorlage: prototypes/level-pfad.html (von Florian am 16.10.2026
+freigegeben, Fassung v2) – Optik, Maße, Farben, Schriften, Bewegungen
+1:1. Im Prototyp über das Regie-Pult alle 5 Welten und die Spielstände
+"neu / mittendrin / alles geschafft" ansehen.
+NICHT übernehmen: angedeutete Statusleiste/Dynamic Island/Home-Balken,
+Regie-Pult, Toasts "In der App: …", Beispiel-Spielstände, feste
+Levelanzahl N, eingebettete Schriften.
+
+Grundsatz: Logik bleibt (getMatchesByTier, unlockedCount, profile.
+campaign.levelPassed/stars/solutionSeen, profile.drafts "c:<id>",
+currentLevelContext, Antippen eines freien Levels öffnet wie bisher die
+Level-Vorschau aus 41, Rückweg zur Weltenansicht aus 45). Es ändern
+sich renderCampaignLevels(), pathDecoration(), TIER_INTRO, PATH_BG und
+das CSS von #screen-levelpath (.level-node, .path-deco*, .roadmap-path).
+
+A. Aufbau und Weg
+   1. Kopf fest oben (unter der Safe-Area wie 43): "‹ Welten"
+      (gezeichneter Chevron), rechts Sterne-Chip "★ x/max" der Welt und
+      Token-Chip mit Scout-Münze. Weicher Schatten unter dem Kopf, damit
+      der Inhalt darunter weg scrollt.
+   2. Oben im Pfad hängendes Holzschild an zwei Seilen: "Welt n von 5",
+      Weltname (Anton), Fortschrittsbalken in Weltfarbe + "x/N Level".
+      Darunter gelber Notizzettel mit dem Welt-Satz (TIER_INTRO neu, siehe
+      C). Ersetzt .path-intro.
+   3. Weg statt dünner gestrichelter Linie: breiter Weg (Breite 38 px +
+      Rand + weicher Schatten) als sanfte Sinus-Schlange über die ganze
+      Breite, Abstand der Level 132 px. Jede Welt hat eine eigene
+      Wegart (TH im Prototyp): 1 sandfarbener Trampelpfad mit Tritten,
+      2 roter Aschenplatz-Weg mit Rechenspuren, 3 Rasenweg mit
+      Kreidelinien, 4 dunkler Weg mit Lichterkette am Rand, 5 roter
+      Teppich mit Goldkante. Geschaffter Abschnitt bekommt eine Kreide-
+      Spur bis zum aktuellen Level.
+   4. Level-Knoten (keine Emojis):
+      - geschafft: glänzende Scheibe in Weltfarbe mit Nummer (Anton),
+        darunter dunkle Pille mit drei gezeichneten Sternen.
+      - aktuell: größer, goldener Ring, goldener "Du"-Magnet mit
+        Holzschild "Level n" darüber (ersetzt das Maskottchen hier).
+      - gesperrt: dunkle Scheibe mit Kreide-Strichkreis, blasse Nummer,
+        kleines goldenes Schloss-Abzeichen unten rechts.
+      - angefangen (Entwurf): kleines Stift-Abzeichen; Lösung angesehen:
+        Auge-Abzeichen (beide als SVG wie im Prototyp, ersetzen ✏️/👁
+        und den Text "angefangen").
+      - Trefferfläche mind. 44 px; Knoten, Sterne, Abzeichen und "Du"
+        dürfen sich nie mit Requisiten oder Nachbarknoten überdecken.
+   5. Ziel am Ende: Welt 1–4 Stadiontunnel (Steinbogen) mit Fahnen,
+      verschlossen mit Schloss bzw. offen mit Licht in der Farbe der
+      nächsten Welt; Holzschild "Alle Level bestehen / Tunnel offen ·
+      Weiter: <nächste Welt>". Welt 5: Pokal auf Podest mit Lorbeer,
+      Schild "Am Ende wartet / Geschafft · Der Weltklasse-Pokal". Ein Tipp
+      auf den offenen Tunnel führt zur Weltenansicht mit der nächsten
+      Welt ausgewählt.
+   6. Schwebender Knopf "↓ Zu Level n" (gold, unten mittig über der
+      Safe-Area): erscheint nur, wenn das aktuelle Level aus dem Bild
+      gescrollt ist (Pfeil zeigt nach oben bzw. unten), fährt weich
+      dorthin. Während der Einstiegs-Bewegung ausgeblendet.
+
+B. Welt-Landschaften (rein dekorativ, pointer-events: none)
+   Requisiten als SVG-Bausteine wie im Prototyp (Objekt P), seitlich
+   des Wegs platziert über freeSides()/place() mit festem Zufalls-Seed je
+   Welt (gleiches Bild bei jedem Öffnen). Mindestabstand zum Weg wie im
+   Prototyp; nichts liegt auf dem Weg oder unter Knoten.
+   1. Kreisliga: Bäume, Tannen, Büsche, Blumen, Holzzaun, Vereinsheim,
+      Tor, Heuballen, Bank, Hütchen, ein Flutlichtmast. Keine Tribüne.
+   2. Regionalliga: Stehtraversen links und rechts am Rand (Beton-
+      stufen, grüne Wellenbrecher, Wellblechdach, Zaun vorn, Fans in
+      Grün-Weiß mit Schals), Anzeigetafel "Heim 2 : 1 Gast",
+      Mannschaftsbus, zwei Trainerbänke, Freistoß-Dummies, Ballnetz,
+      Getränkekiste, Eckfahnen, Hütchen.
+   3. Bundesliga: Sitzplatz-Tribünen am Rand (unten rote, oben graue
+      Schalen, Mundlöcher an den Aufgängen, Bande mit goldenem LED-
+      Streifen OHNE Schrift), Videowand "TOR!", TV-Kamera, Trainerbank,
+      Fotografen, Fahnen, Ballnetz, Getränkekiste, Eckfahnen.
+   4. Champions League (Nacht): dunkle Ränge mit vereinzelten Handy-
+      lichtern, Strahler an der Dachkante, Lichtkegel, Sterne nur über
+      dem Rasen, TV-Kameras, Fotografen, bengalische Fackeln mit Rauch,
+      Eckfahnen. Keine Flutlichtmasten.
+   5. Weltklasse: rot-goldene Ränge mit Schals und Dachbeleuchtung,
+      goldener Schein, Kordel-Absperrung oben, Lorbeer, Funkeln,
+      Fotografen, Kameras, Fahnen; Konfetti nur über dem Rasen.
+   Tribünen (P.edgeStand im Prototyp) sind durchgehende Streifen am
+   linken und rechten Bildrand (ca. 58–60 px breit, von oben gesehen):
+   Reihen parallel zum Rand, Zuschauer als Schultern + Kopf mit Blick
+   zum Feld, Treppenaufgänge mit Geländer alle ~120–150 px, Dach außen
+   mit Schattenwurf auf die oberen Reihen, Schatten der Tribüne auf den
+   Rasen. Werte je Welt aus dem Prototyp übernehmen.
+   KEINE Werbebanden/Spruchbänder mit Text (ELF, KICK, LIGA usw.) und
+   keine freistehenden Mini-Tribünen-Blöcke – Florian hat beides
+   abgelehnt.
+   Leistung: Die Tribünen bestehen aus vielen kleinen SVG-Elementen. Je
+   Welt einmal als SVG-String bauen und cachen (nicht bei jedem Öffnen
+   neu würfeln); auf einem älteren iPhone (Playwright mit CPU-Drossel
+   4×) darf das Öffnen nicht ruckeln. Falls nötig, Tribünen-Streifen
+   einmal in ein Canvas/Bild rendern und als Hintergrund setzen – Optik
+   muss gleich bleiben.
+   Ebenen: Hintergrund + Tribünen fest; Himmels-Deko (Sterne, Konfetti,
+   Flecken) mit leichter Parallaxe (0.22); Weg; Requisiten; Knoten.
+   Die Parallaxe-Ebene darf die Scrollhöhe nicht vergrößern (overflow:
+   clip am Welt-Container).
+
+C. Bewegung, Texte, Breite
+   1. Einmalig beim Öffnen (prefers-reduced-motion: alles sofort fertig,
+      direkt beim aktuellen Level): Schild schwingt ein, Zettel fällt,
+      Kamera fährt in 1,5 s vom Kopf zum aktuellen Level, geschaffte
+      Kreide-Spur zeichnet sich, Knoten ploppen gestaffelt, "Du"-Magnet
+      fällt mit Federn, ein einzelner Ring breitet sich am aktuellen
+      Level aus. Tippen/Scrollen bricht die Fahrt ab. Keine Dauer-
+      schleifen (kein Schweben, kein Pulsieren – .level-node.current
+      animation entfernen). Bei Rückkehr aus einem Level ohne Intro
+      direkt auf das aktuelle Level.
+   2. TIER_INTRO an die neue Optik anpassen (gilt auch, wo 45 den Satz
+      gekürzt nutzt):
+      1 "Bolzplatz-Flair: Holzzaun, Vereinsheim, ein Flutlichtmast. Hier
+        beginnt jede Karriere."
+      2 "Aschenplatz, Stehtraverse mit Wellenbrechern und Wellblechdach.
+        Vereinsfußball zum Anfassen."
+      3 "Ausverkauftes Haus, Fahnen im Wind. Fußball am Wochenende."
+      4 "Flutlicht vom Stadiondach, Handylichter auf den Rängen. Große
+        europäische Nächte."
+      5 "Nur für Legenden. Goldenes Licht, und am Ende wartet der Pokal."
+   3. Levelanzahl dynamisch aus getMatchesByTier (Höhe = TOP0 + (n-1) ·
+      132 + 330). Die Landschaft ist für 390 px Breite gezeichnet: auf
+      breiteren Geräten mittig, daneben Rasen-Grün der Welt (kein Ink);
+      Tribünen bleiben am Rand der 390er-Fläche. Bei 360/375 px
+      skalieren (transform), nicht abschneiden.
+
+D. Aufräumen + Abschluss
+   - Alte Pfad-Stile und -Funktionen entfernen, wenn nicht mehr genutzt
+     (alte pathDecoration-Motive, .roadmap-path, .level-dot-Glanz,
+     Maskottchen im Pfad, Emoji 🔒/🏆/✏️/👁 auf dieser Seite).
+   - tools/check-overlap.mjs: Prüfung des Level-Pfads auf die neuen
+     Knoten anpassen (Knoten/Sterne/Abzeichen/"Du" überlappen nicht
+     untereinander, liegen nicht auf Requisiten, Tribünen nicht unter
+     Knoten); für alle 5 Welten.
+   - "So geht's"-Texte zum Level-Pfad prüfen.
+   - Screenshots 393×852 (Safe-Area simuliert), 430×932, 375×667 je Welt
+     in drei Spielständen: neu, mittendrin (mit Entwurf + angesehener
+     Lösung), alles geschafft (Tunnel offen / Pokal); dazu ein Bild mit
+     sichtbarem "Zu Level n"-Knopf und Einzelbilder der Einstiegs-
+     Bewegung (0 / 0,7 / 1,5 / 2,6 s).
+   - CACHE_NAME in sw.js erhöhen, Status-Tabelle: Prompt 51 erledigt.
+```
+
+---
+
+## Prompt 52 – Ersatzbank-Blatt im Taktiktafel-Stil
+
+```
+Lies CLAUDE.md. Optischer Umbau eines Blatts → kurz Plan Mode, Plan
+zeigen, dann in Paketen A–C umsetzen (je Paket Commit + Test).
+Voraussetzung: Prompts 42 und 50 erledigt (Spiel-Ansicht Taktiktafel
+mit Bank-Knopf, Blatt-Rahmen des Scout-Rads, Safe-Area unten).
+Optische Vorlage: prototypes/bank-v2.html (von Florian am 16.10.2026
+freigegeben, Fassung v2) – maßgeblich ist NUR das Blatt (.sheet.bn,
+openBench(), CSS-Block "Ersatzbank-Blatt"). Optik, Maße, Farben,
+Schriften und Bewegung 1:1. Im Regie-Pult alle fünf Partien und "vor /
+nach dem Auswerten" ansehen.
+NICHT übernehmen: Spielfeld, Regie-Pult, Demo-Daten, eingebettete
+Schriften, angedeutete Statusleiste.
+
+Grundsatz: Logik aus Prompt 37 bleibt unverändert (benchOf(m), Knopf
+nur bei vollständiger Bank und nie in der Duell-Runde, BENCH_COST = 0,
+kein Einfluss auf Hilfen/Kombo/XP/Sterne/Teilen-Raster, benchReveal:
+"für <Name>" erst nach dem Auswerten bzw. in der Kampagne nach
+"Lösung anzeigen"). Es ändern sich openBenchSheet() und das CSS
+.bench-sheet/.bn-* (altes Ink-Blau mit ink-2-Zeilen).
+
+A. Blatt (ersetzt den Inhalt von openBenchSheet)
+   1. Rahmen wie das Scout-Rad-Blatt aus 42: Holzrahmen, Filz innen,
+      oben unter der Kopfzeile des Spiels beginnend (im Prototyp
+      top: 58px), unten über der Safe-Area (Regel aus 50). Dunkler
+      Schleier dahinter, Tippen daneben schließt.
+   2. Kopf: cremefarbene Kachel mit gezeichneter Trainerbank (SVG aus
+      BI.bench), "Ersatzbank" (Anton), darunter Oswald 300 "<Team> ·
+      <kurzer Wettbewerb> <Jahr>" (Wettbewerb = Teil vor dem ersten
+      Komma aus m.comp, "Champions-League-" → "CL-", z. B.
+      "Borussia Dortmund · CL-Halbfinale 2013"), runder ×-Knopf.
+   3. Abschnitt "Eingewechselt <Anzahl>" (Oswald 500 + Kreidelinie
+      rechts, keine Großbuchstaben-Sperrschrift):
+      - Kreide-Zeitleiste: Anpfiff – 45' – 90'; bei Verlängerung (ein
+        Wechsel nach 90 ohne inExtra oder "n.V."/"i.E." in m.teams) bis
+        120' mit 105'-Strich und leicht abgesetztem Bereich ab 90'.
+        Je Wechsel ein cremefarbenes Kreide-Trikot mit Rückennummer.
+        Dicht beieinander liegende Wechsel werden seitlich aufgefächert
+        (Mindestabstand 31 px, am rechten Rand zurückgeschoben),
+        schräge Kreidestriche zeigen auf die echte Minute (Punkt auf
+        der Linie). Nie überlappen.
+      - Darunter je Wechsel ein cremefarbenes Namensschild (wie die
+        Schilder auf dem Spielfeld, Höhe ca. 48 px): Trikot in
+        abgedunkelter Weltfarbe mit Nummer (Anton), Name Oswald 600
+        15,5 px, darunter Position als Wort (Tor, Abwehr, Mittelfeld,
+        Angriff) und
+        · vor dem Auswerten: gestrichelte Pille mit Schloss "für wen?"
+        · danach: "↓ für <Name des Startspielers>" (Pfeil als SVG, in
+          Tinte, KEIN Rot – Rot bleibt für Fehler).
+        Rechts grüne Minuten-Pille mit gezeichnetem Pfeil nach oben und
+        Minute in Anton; Nachspielzeit als "90" mit hochgestelltem "+2".
+        Sortiert nach Minute.
+      - Kampagne außerhalb einer Welt-Farbe (Freispiel, Tag): Trikot in
+        Stufenfarbe (DIFF_COLOR) der Aufstellung, abgedunkelt wie im
+        Prototyp (mixHex mit Ink, 0.38).
+   4. Abschnitt "Nicht eingesetzt <Anzahl>": Kreide-Kacheln auf dem
+      Filz, zweispaltig, gleich hoch wie die Namensschilder (ca. 48
+      px): Nummer im Kreide-Kreis (Anton), Name Oswald 500 16,5 px,
+      Position als Wort Oswald 300 darunter. Sortiert Tor, Abwehr,
+      Mittelfeld, Angriff, dann Nummer. Lange Namen mit … kürzen.
+   5. Gelber Notizzettel mit Stecknadel: vor dem Auswerten "Die Bank
+      verrät keine Startelf: für wen eingewechselt wurde, siehst du
+      erst nach dem Auswerten." – danach "Bei jedem Wechsel steht
+      jetzt, für wen der Spieler kam."
+   6. Unten fest: goldener Knopf "Zurück aufs Feld" (.cta-Stil aus 42).
+      Der Bereich dazwischen scrollt (lange Bänke wie EM 2024 mit 15
+      Spielern), Kopf und Knopf bleiben stehen.
+   7. Bewegung einmalig beim Öffnen: Linie zeichnet sich, Trikots
+      ploppen gestaffelt, Karten steigen gestaffelt ein.
+      prefers-reduced-motion: alles sofort. Keine Dauerschleifen.
+   8. Bedienung: ×, "Zurück aufs Feld", Tippen auf den Schleier und
+      Wischen nach unten schließen (wie die anderen Blätter seit 43).
+      Barrierefreiheit: role="dialog", aria-label, Minuten-Pille mit
+      aria-label "eingewechselt in Minute 63".
+
+B. Gleiche Darstellung im Duell-Rückblick
+   Die aufklappbare Bank im Duell-Rückblick (details.dz-bank in der
+   Spielhistorie/Detailansicht) nutzt dieselben Bausteine: eine
+   gemeinsame Funktion benchBodyHTML(m, reveal) liefert Zeitleiste,
+   Namensschilder und Kreide-Kacheln; dort immer reveal = true. Der
+   Aufklapp-Kopf bleibt, die Optik darin wie im Blatt. Die restliche
+   Duell-Zentrale wird NICHT umgestaltet (eigener Prompt später).
+
+C. Aufräumen + Abschluss
+   - Alte .bench-sheet/.bn-*-Regeln und dz-blist-Zeilen entfernen, wenn
+     nicht mehr genutzt; "⇡"-Textpfeil durch SVG ersetzen.
+   - "So geht's"/Regeln-Text zur Ersatzbank prüfen (sinngemäß gleich).
+   - Playwright: Blatt in allen Modi mit Bank öffnen (Kampagne vor und
+     nach "Lösung anzeigen", Freispiel vor/nach Auswerten, Tages-
+     Challenge); prüfen: "für wen" vorher nirgends im DOM, nachher
+     richtig; Zeitleisten-Trikots überlappen nicht (u. a. Dortmund
+     2013: 82', 83', 90+2'); Kacheln gleich hoch; nichts unter der
+     Safe-Area; Liste scrollt, Knopf bleibt sichtbar.
+   - Screenshots 393×852 (Safe-Area simuliert) und 375×667: WM-Finale
+     2014 (Verlängerung, vor/nach), EM 2024 (lange Bank), Dortmund 2013
+     (dichte Wechsel), Duell-Rückblick aufgeklappt.
+   - CACHE_NAME in sw.js erhöhen, Status-Tabelle: Prompt 52 erledigt.
 ```
 
 ---
