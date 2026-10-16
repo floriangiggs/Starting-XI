@@ -40,6 +40,7 @@
   html { -webkit-text-size-adjust: 100%; }
   html, body { margin: 0; padding: 0; height: 100%; background: var(--ink); color: var(--chalk); font-family: 'Oswald', sans-serif; touch-action: manipulation; overflow: hidden; }
   button, input { touch-action: manipulation; }
+  button { font-family: inherit; } /* Prompt 49: Buttons erben die App-Schrift (Oswald) statt der Systemschrift; Klassen-Regeln mit eigener Schrift gewinnen weiter */
 
   /* ---- Bildschirm-Architektur (Prompt 11b) ----
      Jeder <section class="screen"> ist ein eigener, bildschirmfuellender Bereich;
@@ -4390,6 +4391,13 @@ function levelFromXP(totalXP) {
   while (xpForLevel(level + 1) <= totalXP) level++;
   return level;
 }
+// Fortschritt im aktuellen Level (Prompt 49): Level L beginnt bei xpForLevel(L) (Level 1 bei 0) und endet bei xpForLevel(L + 1).
+// Einzige Quelle fuer Scout-Pass und Profil-Uebersicht.
+function levelProgress(totalXP) {
+  const level = levelFromXP(totalXP), base = level === 1 ? 0 : xpForLevel(level), next = xpForLevel(level + 1);
+  const intoLevel = totalXP - base, needed = next - base, remaining = next - totalXP;
+  return { level, base, next, intoLevel, needed, remaining, pct: Math.max(0, Math.min(1, intoLevel / needed)) };
+}
 
 const RANKS = [
   { min: 1,  max: 4,  icon: "⚽", name: "Kreisliga",       c1: "#a37b4a", c2: "#5c4326" },
@@ -4582,9 +4590,8 @@ let hmIntroDone = false; // volle Einblend-Animation nur beim ersten Anzeigen pr
 // Scout-Pass (ersetzt den Scout-Ausweis aus Prompt 17; gleiche Daten wie vorher)
 function renderProfileBar() {
   const rank = rankForLevel(profile.level);
-  const baseXP = xpForLevel(profile.level - 1), nextXP = xpForLevel(profile.level);
-  const progress = Math.max(0, Math.min(1, (profile.totalXP - baseXP) / (nextXP - baseXP)));
-  const remainingXP = Math.max(0, nextXP - profile.totalXP);
+  const lp = levelProgress(profile.totalXP), baseXP = lp.base, nextXP = lp.next, progress = lp.pct;
+  const remainingXP = lp.remaining;
   // Bestehende Spieler sollen fuer schon vorher gewonnene Trophaeen keinen "neu"-Punkt sehen.
   if (!Array.isArray(profile.seenTrophies)) { profile.seenTrophies = wonTrophyIds(); saveProfile(profile); }
   const won = wonTrophyIds();
@@ -5692,8 +5699,7 @@ function hmTrophySVG(kind, won, id) {
 
 function profileOverviewHTML() {
   const rank = rankForLevel(profile.level), next = nextRankInfo(profile.level);
-  const baseXP = xpForLevel(profile.level - 1), nextXP = xpForLevel(profile.level);
-  const progress = Math.max(0, Math.min(1, (profile.totalXP - baseXP) / (nextXP - baseXP)));
+  const lp = levelProgress(profile.totalXP), baseXP = lp.base, nextXP = lp.next, progress = lp.pct;
   const playedIds = profile.stats.playedMatchIds;
   const avgCorrect = playedIds.length
     ? (playedIds.reduce((sum, id) => sum + ((profile.best[id] && profile.best[id].correct) || 0), 0) / playedIds.length).toFixed(1).replace(".", ",")
@@ -5713,7 +5719,7 @@ function profileOverviewHTML() {
   return `<div class="hm-p-hero" style="--rc1:${rank.c1};--rc2:${rank.c2}"><span class="hm-medal">${hmRankIcon(hmRankKind(rank), rank.c1)}<span class="hm-lv">Level ${profile.level}</span></span>
       <div class="hm-who"><small>${profile.duelName ? duelEsc(profile.duelName) + (h ? " · @" + duelEsc(h) : "") : "Scout-Pass"}</small><b>${rank.name}</b>${profile.unlockedTitle ? `<small>„${duelEsc(profile.unlockedTitle)}“</small>` : ""}
         <div class="hm-xp"><i style="width:${Math.max(3, progress * 100).toFixed(0)}%"></i></div>
-        <div class="hm-xpt">${profile.totalXP - baseXP} / ${nextXP - baseXP} XP${next ? ` · noch <b>${next.levelsLeft} Level</b> bis ${next.name}` : " · höchster Rang erreicht"}</div></div></div>
+        <div class="hm-xpt">${lp.intoLevel} / ${lp.needed} XP${next ? ` · noch <b>${next.levelsLeft} Level</b> bis ${next.name}` : " · höchster Rang erreicht"}</div></div></div>
     <div class="hm-lbl" style="margin-top:22px">Statistik</div>
     <div class="hm-stat-board">
       <div class="hm-st"><b>${profile.stats.lineupsPlayed}</b><span>Absolviert</span></div><div class="hm-st"><b>${avgCorrect}</b><span>Ø Treffer</span></div>
