@@ -657,7 +657,7 @@
   .fp-lv { display: grid; grid-template-columns: repeat(5, 1fr); gap: 6px; margin-top: 10px; flex-shrink: 0; }
   .fp-lt { position: relative; height: 68px; border-radius: 12px; overflow: hidden; display: grid; justify-items: center; align-content: center; gap: 4px; background: rgba(8,18,12,0.38); box-shadow: inset 0 0 0 1.5px rgba(244,241,232,0.3); transition: background 0.2s, box-shadow 0.2s; }
   .fp-lt::before { content: ""; position: absolute; left: 0; right: 0; top: 0; height: 5px; background: var(--c); }
-  .fp-lt .bars { display: flex; gap: 2px; } .fp-lt .bars i { width: 5px; height: 9px; border-radius: 2px; background: rgba(244,241,232,0.2); } .fp-lt .bars i.on { background: var(--c); }
+  .fp-lt .bars { display: flex; flex-direction: row; gap: 2px; } .fp-lt .bars i { width: 5px; height: 9px; border-radius: 2px; background: rgba(244,241,232,0.2); } .fp-lt .bars i.on { background: var(--c); }
   .fp-lt b { font-family: var(--f-display); font-weight: 400; font-size: 17px; line-height: 1; }
   .fp-lt span { font-weight: 300; font-size: 12px; color: rgba(244,241,232,0.78); white-space: nowrap; }
   .fp-lt.on { background: linear-gradient(180deg, color-mix(in srgb, var(--c) 32%, transparent), rgba(8,18,12,0.3)); box-shadow: inset 0 0 0 2px var(--gold-hi), 0 4px 10px rgba(0,0,0,0.25); }
@@ -4798,7 +4798,7 @@ const GUIDE_TABS = [
       <div class="mline"><span class="ic">🌍</span><p><b>Kampagne:</b> Von Kreisliga bis Weltklasse. Ab <b>${PASS_THRESHOLD} von 11</b> ist ein Level bestanden – das nächste wird frei.</p></div>
       <div class="mline"><span class="ic">📅</span><p><b>Tages-Challenge:</b> Für alle dasselbe Spiel. <b>Jeden Tag ein anderes Spiel – keine Wiederholung, bis alle durch sind.</b> Täglich spielen baut deine 🔥-Serie auf – bis zu <b>+${Math.round(XP_RULES.dailyStreakBonusMax * 100)} % XP</b>. Ergebnis als Raster teilbar.</p></div>
       <div class="mline"><span class="ic">⚔️</span><p><b>Duell:</b> Fordere einen Freund per Link heraus – gleiche Aufstellungen, jeder für sich mit Zeitlimit. Wer mehr Spieler kennt, gewinnt. Kein Scout-Rad, keine Hilfen – auch keine Ersatzbank.</p></div>
-      <div class="mline"><span class="ic">🎲</span><p><b>Frei spielen:</b> Training ohne Druck. Mehrere Wettbewerbe oder Stufen antippen = mehr Spiele, beides kombiniert grenzt die Auswahl ein. Mit Tages-Archiv für verpasste Tage.</p></div>
+      <div class="mline"><span class="ic">🎲</span><p><b>Frei spielen:</b> Training ohne Druck. Wettbewerbe und Stufen antippen, die Zahl unten zeigt, wie viele Aufstellungen passen. Der Knopf zieht eine davon verdeckt – die Partie siehst du erst beim Anpfiff, „Neu ziehen“ mischt neu. Ab Level 15 gibt es den Hardcore-Schalter (nur Stufe 4–5). Dazu das Tages-Archiv für verpasste Tage.</p></div>
     </div>` },
   { id: "belohnung", icon: "🏆", label: "Belohnung", render: () => `
     <div class="card"><div class="h">Sterne · Kampagne &amp; Tages-Challenge</div>
