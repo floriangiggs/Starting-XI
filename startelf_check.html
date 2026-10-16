@@ -1154,8 +1154,13 @@
 
   .toast-stack { position: fixed; top: max(16px, calc(env(safe-area-inset-top, 0px) + 10px)); left: 50%; transform: translateX(-50%); z-index: 50; display: flex; flex-direction: column; gap: 8px; width: 92%; max-width: 500px; pointer-events: none; }
   #srFx { position: fixed; inset: 0; width: 100%; height: 100%; pointer-events: none; z-index: 55; }
-  .toast { background: var(--ink-2); border: 1px solid var(--gold); border-radius: 8px; padding: 12px 16px; font-family: 'Oswald', sans-serif; font-size: 13.5px; color: var(--chalk); box-shadow: 0 6px 20px rgba(0,0,0,0.4); animation: toastIn 0.3s ease, toastOut 0.3s ease 3.2s forwards; }
-  .toast b { color: var(--gold); }
+  .toast { display: flex; align-items: center; justify-content: center; gap: 10px; text-align: center; background: rgba(14,24,18,0.95); border: none; border-radius: 14px; padding: 9px 16px; font-family: 'Oswald', sans-serif; font-weight: 400; font-size: 14.5px; line-height: 1.25; color: var(--chalk);
+    box-shadow: inset 0 0 0 1px rgba(247,217,142,0.45), 0 10px 24px rgba(0,0,0,0.45); animation: toastIn 0.3s ease, toastOut 0.3s ease 3.2s forwards; }
+  .toast b { font-weight: 600; color: #F7D98E; }
+  .toast .tt-xp { flex-shrink: 0; height: 26px; padding: 0 10px; border-radius: 13px; display: inline-flex; align-items: center; font-family: 'Anton', Impact, sans-serif; font-weight: 400; font-size: 16px; letter-spacing: 0.3px; color: #13202A; background: linear-gradient(160deg, #F7D98E, #E8B23D); box-shadow: 0 2px 0 #9C7422; }
+  .toast .tt-ic { flex-shrink: 0; width: 26px; height: 28px; display: grid; place-items: center; } .toast .tt-ic svg { width: 100%; height: 100%; }
+  .toast .tt-tok { flex-shrink: 0; display: inline-flex; align-items: center; gap: 4px; padding: 0 8px 0 3px; height: 26px; border-radius: 13px; background: rgba(247,217,142,0.12); box-shadow: inset 0 0 0 1px rgba(247,217,142,0.3); font-family: 'Anton', Impact, sans-serif; font-size: 14px; color: #F7D98E; } .toast .tt-tok svg { width: 20px; height: 20px; }
+  .toast .tt-tx { min-width: 0; }
   @keyframes toastIn { from { opacity: 0; transform: translateY(-10px); } to { opacity: 1; transform: translateY(0); } }
   @keyframes toastOut { to { opacity: 0; transform: translateY(-10px); } }
 
@@ -1566,16 +1571,20 @@
   @keyframes confettiFall { to { transform: translateY(112vh) rotate(560deg); opacity: 0.4; } }
 
   /* ---- Level-Up-Zeremonie ---- */
-  .levelup-overlay { position: fixed; inset: 0; background: rgba(10,14,20,0.88); z-index: 70; display: flex; align-items: center; justify-content: center; animation: fadeIn 0.25s ease; }
-  @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
-  .levelup-card { text-align: center; padding: 30px 26px; animation: levelupPop 0.5s cubic-bezier(.34,1.56,.64,1); }
-  @keyframes levelupPop { from { transform: scale(0.6); opacity: 0; } to { transform: scale(1); opacity: 1; } }
-  .levelup-rank-icon { font-size: 64px; margin-bottom: 6px; filter: drop-shadow(0 0 20px currentColor); animation: levelupPulse 1.4s ease-in-out infinite; }
-  @keyframes levelupPulse { 0%,100% { transform: scale(1); } 50% { transform: scale(1.08); } }
-  .levelup-title { font-family: 'Oswald', sans-serif; font-weight: 600; font-size: 12px; letter-spacing: 0.12em; color: var(--gold); text-transform: uppercase; margin-bottom: 8px; }
-  .levelup-level { font-family: 'Anton', sans-serif; font-size: clamp(40px, 12vw, 64px); color: var(--chalk); line-height: 1; margin-bottom: 10px; }
-  .levelup-rank-name { font-family: 'Oswald', sans-serif; font-weight: 700; font-size: 20px; margin-bottom: 22px; }
-  .levelup-close { background: var(--gold); color: var(--ink); border: none; border-radius: 8px; padding: 13px 30px; font-family: 'Oswald', sans-serif; font-weight: 700; text-transform: uppercase; letter-spacing: 0.03em; cursor: pointer; }
+  /* Level-Aufstieg im Taktiktafel-Stil (Prompt 49): Holz-Tafel mit Filz, einmalige Bewegung, kein Dauerpulsieren */
+  .lu-overlay { position: fixed; inset: 0; z-index: 70; display: flex; align-items: center; justify-content: center; padding: 0 28px; background: rgba(4,10,7,0.72); animation: fadeIn 0.25s ease; }
+  .lu-card { --cream: #FFF1C8; --gold-hi: #F7D98E; width: 100%; max-width: 330px; border-radius: 22px; padding: 7px; background: linear-gradient(180deg, #8A6038, #4A3119); box-shadow: 0 24px 50px rgba(0,0,0,0.55); animation: luStamp 0.5s cubic-bezier(.3,1.35,.5,1) both; }
+  @keyframes luStamp { from { opacity: 0; transform: scale(1.35) rotate(-4deg); } }
+  .lu-in { border-radius: 16px; padding: 22px 18px 18px; text-align: center; background: radial-gradient(110% 70% at 50% 0%, #33704D, #1D4530 80%); box-shadow: inset 0 2px 8px rgba(0,0,0,0.45); color: var(--chalk); }
+  .lu-medal { width: 74px; height: 80px; margin: 0 auto; animation: hmPop 0.45s 0.25s cubic-bezier(.3,1.6,.5,1) both; filter: drop-shadow(0 4px 6px rgba(0,0,0,0.45)); } .lu-medal svg { width: 100%; height: 100%; }
+  .lu-t { margin-top: 8px; font-family: 'Oswald', sans-serif; font-weight: 500; font-size: 16px; color: rgba(244,241,232,0.9); }
+  .lu-plate { display: inline-grid; place-items: center; margin-top: 8px; min-width: 96px; height: 62px; padding: 0 20px; border-radius: 12px; background: linear-gradient(180deg, rgba(255,255,255,0.10), transparent 40%), repeating-linear-gradient(92deg, rgba(0,0,0,0.06) 0 2px, transparent 2px 7px), linear-gradient(180deg, #9A6C40, #6B4828); box-shadow: inset 0 0 0 1.5px #3E2A16, inset 0 2px 0 rgba(255,236,200,0.22), 0 4px 10px rgba(0,0,0,0.35); }
+  .lu-plate b { font-family: 'Anton', Impact, sans-serif; font-weight: 400; font-size: 42px; line-height: 1; color: var(--cream); text-shadow: 0 -1px 0 rgba(0,0,0,0.45); font-variant-numeric: tabular-nums; }
+  .lu-rank { margin-top: 10px; font-family: 'Oswald', sans-serif; font-weight: 400; font-size: 15px; color: rgba(244,241,232,0.85); } .lu-rank b { font-weight: 600; color: var(--gold-hi); }
+  .lu-tok { display: inline-flex; align-items: center; gap: 6px; margin-top: 10px; height: 30px; padding: 0 12px 0 5px; border-radius: 15px; font-family: 'Oswald', sans-serif; font-weight: 500; font-size: 14px; color: var(--gold-hi); background: rgba(247,217,142,0.12); box-shadow: inset 0 0 0 1px rgba(247,217,142,0.3); } .lu-tok svg { width: 22px; height: 22px; }
+  .lu-go { display: block; width: 100%; margin-top: 16px; height: 50px; border: none; border-radius: 14px; cursor: pointer; font-family: 'Anton', Impact, sans-serif; font-size: 21px; color: #13202A; background: linear-gradient(160deg, #F7D98E, #E8B23D); box-shadow: 0 4px 0 #9C7422; }
+  .lu-go:active { transform: translateY(3px); box-shadow: 0 1px 0 #9C7422; }
+  @media (prefers-reduced-motion: reduce) { .lu-card, .lu-medal, .lu-overlay { animation: none; } }
 
   /* ---- Ladebildschirm "Kabinentafel" (Prompt 46, Optik/Zeitplan 1:1 aus prototypes/ladescreen-v2.html; alles unter #splash, Klassen ld-) ----
      Buehne 390x844 wird auf die verfuegbare Flaeche (ohne Safe-Areas) skaliert; die Bewegung kommt aus render(t) (ein rAF-Takt), keine CSS-Schleifen. */
@@ -4505,7 +4514,7 @@ function showToast(html) {
 }
 
 function launchConfetti(colors) {
-  const palette = colors || ["#E8B23D", "#F2EFE6", "#C1392B", "#2ecc71", "#4aa3ff"];
+  const palette = colors || ["#E8B23D", "#FFF1C8", "#7FE0A8", "#F7D98E"];
   for (let i = 0; i < 28; i++) {
     const el = document.createElement("div");
     el.className = "confetti-piece";
@@ -4519,33 +4528,43 @@ function launchConfetti(colors) {
 }
 function showLevelUpToast(newLevel, levelsGained) {
   if (celebrationQueue) { celebrationQueue.push(() => showLevelUpToast(newLevel, levelsGained)); return; } // Prompt 31
-  const rank = rankForLevel(newLevel);
-  const rankChanged = rankForLevel(newLevel - 1).name !== rank.name;
+  const rank = rankForLevel(newLevel), oldLevel = Math.max(1, newLevel - (levelsGained || 1));
+  const rankChanged = rankForLevel(oldLevel).name !== rank.name;
   const tokens = (levelsGained || 1) * ECONOMY.earnLevelUp;
-  launchConfetti(["#E8B23D", "#4aa3ff", "#F2EFE6"]);
+  launchConfetti(["#E8B23D", "#FFF1C8", "#7FE0A8", rank.c1]); // nur Gold, Creme, Mint und Rangfarbe (Prompt 49)
   const overlay = document.createElement("div");
-  overlay.className = "levelup-overlay";
+  overlay.className = "lu-overlay";
   overlay.innerHTML = `
-    <div class="levelup-card">
-      <div class="levelup-rank-icon" style="color:${DIFF_COLOR[Math.min(newLevel >= 30 ? 5 : Math.ceil(newLevel/6), 5)] || "#E8B23D"}">${rank.icon}</div>
-      <div class="levelup-title">Level Up</div>
-      <div class="levelup-level">${newLevel}</div>
-      <div class="levelup-rank-name">${(rankChanged ? "Neuer Rang: " + rank.name + " · " : "") + tokenCoin() + " +" + tokens + " Scout-Token verdient"}</div>
-      <button class="levelup-close" id="levelupClose">Weiter</button>
-    </div>`;
+    <div class="lu-card" role="dialog" aria-modal="true" aria-label="Level-Aufstieg"><div class="lu-in">
+      <div class="lu-medal">${hmRankIcon(hmRankKind(rank), rank.c1)}</div>
+      <div class="lu-t">Level-Aufstieg</div>
+      <div class="lu-plate"><b id="luNum">${REDUCED_MOTION ? newLevel : oldLevel}</b></div>
+      ${rankChanged ? `<div class="lu-rank">Neuer Rang: <b>${rank.name}</b></div>` : ""}
+      <div class="lu-tok">${tokenCoin(22)}+${tokens} Scout-Token</div>
+      <button class="lu-go" type="button" id="levelupClose">Weiter</button>
+    </div></div>`;
   document.body.appendChild(overlay);
+  if (!REDUCED_MOTION && newLevel > oldLevel) { // Levelzahl zaehlt einmalig von alt auf neu
+    const num = document.getElementById("luNum"), t0 = performance.now() + 450, D = 650;
+    const step = (now) => { const k = Math.max(0, Math.min(1, (now - t0) / D)); num.textContent = Math.round(oldLevel + (newLevel - oldLevel) * (1 - Math.pow(1 - k, 3))); if (k < 1 && num.isConnected) requestAnimationFrame(step); };
+    requestAnimationFrame(step);
+  }
   const close = () => overlay.remove();
   document.getElementById("levelupClose").onclick = close;
   overlay.addEventListener("click", (e) => { if (e.target === overlay) close(); });
-  setTimeout(close, 4500);
+  setTimeout(close, 7000);
+}
+// Meldungs-Typen (Prompt 49): XP = goldene Pille, Token = Scout-Muenze, Trophaee = gezeichneter Pokal, sonst nur Text
+function toastXP(amount, reason) { showToast(`<span class="tt-xp">+${amount} XP</span><span class="tt-tx">${duelEsc(reason)}</span>`); }
+function toastTrophy(kind, id, name, extra, tokens) {
+  showToast(`<span class="tt-ic">${hmTrophySVG(kind, true, "t" + String(id).replace(/\W/g, ""))}</span><span class="tt-tx">Trophäe gewonnen: <b>${duelEsc(name)}</b>${extra ? " " + extra : ""}</span>${tokens ? `<span class="tt-tok">${tokenCoin(20)}+${tokens}</span>` : ""}`);
 }
 function showAchievementToast(a) {
-  showToast(a.icon + " Trophäe gewonnen: <b>" + a.name + "</b>" + (a.title ? " (Titel: \"" + a.title + "\")" : "") + " · " + tokenCoin() + " +" + ECONOMY.earnAchievement);
+  toastTrophy("medal", a.id || a.name, a.name, a.title ? "(Titel: „" + duelEsc(a.title) + "“)" : "", ECONOMY.earnAchievement);
 }
 
-const TROPHY_KIND_ICON = { cup: "🏆", plate: "🥈", flame: "🔥", medal: "🎖️" };
 function showTrophyToast(t) {
-  showToast(TROPHY_KIND_ICON[t.kind] + " Trophäe gewonnen: <b>" + t.name + "</b>" + (t.noToken ? "" : " · " + tokenCoin() + " +" + ECONOMY.earnAchievement));
+  toastTrophy(t.kind, t.id, t.name, "", t.noToken ? 0 : ECONOMY.earnAchievement);
 }
 
 // Gewonnene Trophaeen (gleiche Quelle wie der Trophaeen-Reiter im Scout-Profil).
@@ -5100,7 +5119,7 @@ function fpOpenDraw(m) {
 }
 // "Nochmal (zufaellig)" im Ergebnis-Bildschirm nutzt dieselbe verdeckte Karte (ohne Wuerfel)
 function fpDrawAgain() {
-  if (poolForActiveLeague().length === 0) { showToast("⚠️ Für diese Filterkombination gibt's noch keine Aufstellung - Filter anpassen."); goBackTo("freeplay"); return; }
+  if (poolForActiveLeague().length === 0) { showToast("Für diese Filterkombination gibt's noch keine Aufstellung - Filter anpassen."); goBackTo("freeplay"); return; }
   const m = pickRandomMatch(); if (m) fpOpenDraw(m);
 }
 
@@ -5513,7 +5532,7 @@ function poolForActiveLeague() {
 function startFreeplayRandom() {
   const pool = poolForActiveLeague();
   if (pool.length === 0) {
-    showToast("⚠️ Für diese Filterkombination gibt's noch keine Aufstellung - Filter anpassen.");
+    showToast("Für diese Filterkombination gibt's noch keine Aufstellung - Filter anpassen.");
     return;
   }
   freeplaySource = "filter";
@@ -9943,7 +9962,7 @@ function evaluatePitch() {
   renderProfileBar();
   newlyUnlocked.forEach(showAchievementToast);
   newlyWonTrophies.forEach(showTrophyToast);
-  if (bonusXP > 0) showToast("+" + bonusXP + " XP — " + bonusReason);
+  if (bonusXP > 0) toastXP(bonusXP, bonusReason);
 
   if (document.activeElement && document.activeElement.blur) document.activeElement.blur();
   const spRootEl = pitchView.querySelector("#spRoot");
@@ -10493,7 +10512,7 @@ let activeInviteId = null;
 // Verarbeitet Link/Code (Start-Hash, hashchange); bei Fehler steht ein freundlicher Hinweis im Toast.
 function openDuelFromInput(text) {
   const res = handleDuelInput(text);
-  if (!res.ok) { showToast("⚠️ " + DUEL_ERRORS[res.error]); return res; }
+  if (!res.ok) { showToast(DUEL_ERRORS[res.error]); return res; }
   finishDuelOpen(res);
   return res;
 }
@@ -11103,7 +11122,7 @@ function finishDuelOpen(res) {
     activeInviteId = res.id; inviteFair = false; invitePath = "browser";
     if (navStack[navStack.length - 1] === "duelinvite") renderDuelInvite(); else navigate("duelinvite");
   } else {
-    showToast("✅ Ergebnis von " + res.name + " eingetragen");
+    showToast("Ergebnis von " + res.name + " eingetragen");
     const duel = profile.duels[res.id];
     if (duel && duel.result) { activeResultId = res.id; if (navStack[navStack.length - 1] === "duelresult") renderDuelResult(); else navigate("duelresult"); }
     else if (navStack[navStack.length - 1] === "duels") renderDuels(true);
