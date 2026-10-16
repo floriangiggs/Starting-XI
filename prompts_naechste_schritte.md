@@ -59,7 +59,7 @@ vorige umgesetzt, getestet und committet ist.
 | 45 | Kampagne-Weltenansicht im Taktiktafel-Stil (Saison-Brett, fünf Mini-Stadien mit Fortschrittsring, Kreideweg, „Du“-Magnet, Holzleiste mit Ziel) | ✅ erledigt (Weltenansicht als Taktiktafel: Saison-Brett, fünf Mini-Stadien mit Fortschrittsring, Kreideweg, „Du“-Magnet, Holzleiste mit Auswahl; Zeilenhöhe aus verfügbarer Höhe, drei Dichte-Stufen; Maskottchen auf dieser Seite weggelassen; alter Roadmap-/Stadion-Code entfernt) |
 | 46 | Ladebildschirm v2 „Kabinentafel“ (Taktiktafel-Stil, nicht überspringbar, Übergang in die Startseite) | ✅ erledigt (Ladebildschirm „Kabinentafel“ nach ladescreen-v2.html: render(t)-Zeitplan 4,5 s, nicht überspringbar, reduzierte Fassung ≈ 1,1 s, Halt bei 99 % bis Schriften geladen, Sicherheitsnetz 8 s, Startseite startet beim Ausblenden; Bühne 390×844 skaliert in die Fläche ohne Safe-Areas) |
 | 47 | Frei spielen im Taktiktafel-Stil (One-Pager: Wettbewerbs-Karten mit Flaggen/Zeichen, Stufen in Weltfarben, Hardcore-Schalter, Zähl-Brett + Auslosen mit verdeckter Karte, Tages-Archiv) | ✅ erledigt (Taktiktafel-Frei-spielen: Wettbewerbs-Karten mit Zeichen/Flaggen, Stufen-Kacheln, Hardcore-Schalter, Holzleiste mit Zähler + Würfel, verdeckte Ziehungs-Karte inkl. „Nochmal“ im Ergebnis, Tages-Archiv; Dichte-Stufen für kleine Handys; Hardcore-Pool jetzt strikt Stufe 4–5) |
-| 48 | 32 neue Aufstellungen für schwache Kategorien (England, Deutschland, Spanien/Italien, EM, WM) – in Paketen recherchiert, auf Kampagne/Tag verteilt, in allen Modi einsortiert | 41 (teaser) |
+| 48 | 32 neue Aufstellungen für schwache Kategorien (England, Deutschland, Spanien/Italien, EM, WM) – in Paketen recherchiert, auf Kampagne/Tag verteilt, in allen Modi einsortiert | ✅ erledigt (alle 32 Partien belegt und eingebaut: England 12, Deutschland 7, Spanien/Italien 9, EM/WM 4; 17 in die Kampagne als **Bonus-Level** (`bonus: true`, je Welt hinter den Pflicht-Level: 4/4/4/4/1 – `getCoreMatchesByTier`: Freischaltung, Pokal/Schale, Level-/Sterne-Zähler und Welt-Feier zählen nur Pflicht-Level, bestehende Stände bleiben), 15 in den Tages-Pool (`since` 17.10.2026); league-Werte „FA Cup“, „Copa del Rey“, „Coppa Italia“ in FREEPLAY_GROUPS und LEAGUE_GROUPS (+ „DFB-Pokal“, „Afrika-Cup“); Prüfskript prüft Bonus am Welt-Ende, Kategorie-Zuordnung und zeigt Kategorien-Zählung; Quellenlage und Abweichungen: siehe Bericht in Prompt 48 unten) |
 | 49 | Bugfix XP-Balken (zeigt immer „0 XP“), Schrift im Scout-Pass, XP-/Token-/Trophäen-Meldungen und Level-Up im Taktiktafel-Stil | ✅ erledigt (levelProgress() + tools/test-xp.mjs, Buttons erben Oswald, Meldungen als XP-Pille/Münze/Pokal, Level-Aufstieg als Holz-Tafel ohne Dauerpulsieren, Konfetti nur Gold/Creme/Mint/Rangfarbe) |
 | 50 | Blauer Balken am unteren Rand (Ladescreen + alle Bildschirme) weg, Platz unten gewinnen, Geräte-Test; richtiger Name wird sofort grün (nicht erst beim Verlassen) | ✅ erledigt (Rasen-Grund #173A29 für html/body/.stage/theme-color/Manifest, .stage fixed inset 0, unterer Abstand max(12px, safe+4px), ?debug=1-Messanzeige, Geräte-Matrix tools/check-geraete.mjs (8 Geräte ok), richtiger Name sofort grün mit Goldring, kein Auto-Sprung; offen: iPhone-Gegenprobe durch Florian; Blätter „So geht's/Regeln/Rückfrage“ bleiben bewusst Ink-Blau) |
 | 51 | Kampagne: Level-Pfad neu (Candy-Crush-Weg, jede Welt eigene Landschaft mit Tribünen und Platz-Requisiten, Holzschild, Kamerafahrt zum aktuellen Level, "Zu Level n"-Knopf) | ✅ erledigt (Level-Pfad nach level-pfad.html: eigene Weg-Art und Landschaft je Welt mit Tribünen, Holzschild + Zettel, Magnet-Knoten mit Sternen/Stift/Auge, „Du“-Magnet weicht Nachbarn aus, Tunnel/Pokal als Ziel, „Zu Level n“-Knopf, Einstiegs-Kamerafahrt, Szene gecacht (≈110 ms bei 4× CPU-Drosselung); tools/check-overlap prüft alle Welten × 3 Stände × 4 Breiten; TOP0 448 statt 360, damit „Du“ nicht auf dem Zettel liegt) |
@@ -3215,6 +3215,11 @@ A. Liga-Duell (Ping-Pong, wie Quizduell)
      Frankreich). Je Kategorie mind. ~20 Aufstellungen (Erweiterung mit
      Florian gemeinsam auswählen). Keine Aufstellung doppelt im selben
      Duell, kürzlich gegen denselben Gegner gespielte zurückstellen.
+     Zuordnung der league-Werte (Stand Prompt 48, wie LEAGUE_GROUPS/
+     FREEPLAY_GROUPS im Code): Deutschland = Bundesliga + 2. Bundesliga +
+     DFB-Pokal; England = Premier League + FA Cup; Europa = LaLiga + Copa
+     del Rey + Serie A + Coppa Italia (+ später Frankreich);
+     Nationalmannschaften = WM, EM, Copa América, Afrika-Cup.
    - Wertung: Summe aller Richtigen, bei Gleichstand Gesamtzeit.
    - Gegner-Ergebnis einer Runde erst sichtbar, wenn man sie selbst
      gespielt hat (versiegelt "?").
@@ -4219,6 +4224,47 @@ Tabelle; Screenshots Frei spielen (Karten-Zahlen) und Weltenkarte
 (Levelzahlen); CACHE_NAME erhöhen; Status-Tabelle: Prompt 48 erledigt.
 ```
 
+**Ergebnis Prompt 48 (16.10.2026)**
+- Alle 32 Partien sind belegt und eingebaut (nichts weggelassen). Quellen je
+  Partie: ESPN-Aufstellung (Startelf, Nummern, Nationalität, Position
+  links/rechts, Wechsel mit Gegenspieler, komplette Bank) plus mindestens eine
+  unabhängige zweite Quelle (Wikipedia-Spielartikel bzw. Kaderlisten,
+  fussballdaten.de, Transfermarkt, FotMob); Wechselminuten bei Abweichung
+  nach der Mehrheit der Quellen (Halbzeitwechsel 46', Nachspielzeit als
+  `in: 90, inExtra: n`). Alle Einträge stehen mit `source`/`benchSource` im Code.
+- Verteilung: Kampagne (17, alle `bonus: true`): Welt 1 W1, W3, E7, D3 · Welt 2
+  M1, M3, S4, E8 · Welt 3 D6, E6, S3, I4 · Welt 4 E2, S2, I2, D5 · Welt 5 I1;
+  Tages-Pool (15, `since` 17.10.2026): E1, E3, E4, E5, E9, E10, E11, E12, D1,
+  D2, D4, D7, S1, I3, I5. Reihenfolge der neuen Level je Welt per Skript so
+  gewählt, dass kein Team (beide Mannschaften) direkt hintereinander kommt,
+  auch über Weltwechsel; Tages-Pool: 120 simulierte Tage ohne Team-Wiederholung.
+- Bonus-Level (Florian): gilt für ALLE 17 neuen Kampagnen-Level als festes
+  Kennzeichen, nicht pro Spieler – Pflicht-Level je Welt bleiben 10/13/11/13/12.
+  Bonus-Level stehen am Ende des Level-Pfads (Knoten „B1 …“, Tunnel bleibt
+  offen), Pokal/Schale/Freischaltung/Zähler/Welt-Feier zählen nur die
+  Pflicht-Level; im Wissen-Reiter und bei „Weltmeister-Wissen“/
+  „Vollständigkeitsfanatiker“ zählen die neuen Partien mit (bereits
+  gewonnene Trophäen bleiben gewonnen; bei noch nicht gewonnenen wird nur der
+  Fortschrittsbalken länger).
+- Quellenlage, die Florian kennen sollte (Seite links/rechts oder Formation war
+  zwischen den Quellen nicht eindeutig, Auswahl = Mehrheit/ESPN, steht in
+  `source`): E1 Barry/Y. Touré (4-4-2 bestätigt, Doppelsechs-Seite offen), E3
+  Terry/Cahill, E9 Rooney/Welbeck, E10 Coquelin/Cazorla, S3 Barcelona 4-3-3
+  (ESPN/fussballdaten: 4-3-1-2), S2 Atlético 4-4-2 (Transfermarkt: 4-2-3-1),
+  M1 Deutschland 4-4-2 (Transfermarkt 4-2-3-1, fussballdaten 4-5-1), I5 Lazio
+  als 3-4-2-1 (Quellen: 3-4-3 bzw. 3-4-1-2), D1 Werder als Raute 4-3-1-2, D4
+  Caligiuri/Perišić (ESPN seitenverkehrt), D6 Dahoud/Delaney und Hazard/Brandt,
+  W3 Spanien Außen (Wikipedia seitenverkehrt zu fussballdaten/Transfermarkt).
+  Da sich Namen auf einer „falschen“ Position automatisch einsortieren,
+  betrifft das nur die Anzeige der Lösung, nicht die Lösbarkeit.
+- Abweichungen von der Liste: Spieltag/Runde/Datum aus den Quellen (z. B. E2
+  19.05.2013, E3 35. Spieltag, E8 33. Spieltag, D2 32. Spieltag); `comp` ohne
+  Spielernamen; Teamschreibweisen wie im Bestand (Reihenfolge der Reihenfolge-
+  Regel); „Spalier“ (E6) nicht als Wort übernommen, belegt ist: eine Woche nach
+  Liverpools Titel, Geisterspiel. Frei spielen zeigt nur Kampagnen-Level
+  (England 8, Spanien 7, Italien 7, Deutschland 12, WM 11, EM 9); die
+  Tages-Pool-Partien erscheinen nach ihrem Tag im Tages-Archiv.
+
 ---
 
 ## Prompt 49 – XP-Balken reparieren, Meldungen und Level-Up im neuen Stil
@@ -4765,8 +4811,12 @@ TV-Bilder, Vereinslogos oder Original-Trikots – stattdessen App-Aufnahmen
 - **Ergebnis-Bildschirm nach dem Auswerten neu gestalten** (Prototyp im
   Taktiktafel-Stil, eigener Prompt nach 42).
 
-- **Jahres-Lücken im Blick behalten** (Stand nach Prompt 35, geplant,
-  Kampagne + Tag zusammen, 104 Aufstellungen):
+- **Jahres-Lücken im Blick behalten** (Stand nach Prompt 48: 136 Aufstellungen,
+  Kampagne 76 + Tag 60 – 2008: 4 · 2009: 4 · 2010: 5 · 2011: 6 · 2012: 5 ·
+  2013: 3 · 2014: 12 · 2015: 6 · 2016: 14 · 2017: 8 · 2018: 8 · 2019: 4 ·
+  2020: 8 · 2021: 9 · 2022: 12 · 2023: 7 · 2024: 13 · 2025: 4 · 2026: 4.
+  Weiter dünn: 2013 (3), 2008/2009/2019/2025/2026 (je 4). Stand nach Prompt 35
+  siehe unten, Kampagne + Tag zusammen, 104 Aufstellungen):
   2008: 3 · 2009: 3 · 2010: 3 · 2011: 1 · 2012: 5 · 2013: 1 · 2014: 12 ·
   2015: 1 · 2016: 13 · 2017: 3 · 2018: 7 · 2019: 4 · 2020: 3 · 2021: 9 ·
   2022: 12 · 2023: 3 · 2024: 13 · 2025: 4 · 2026: 4
@@ -4785,52 +4835,57 @@ TV-Bilder, Vereinslogos oder Original-Trikots – stattdessen App-Aufnahmen
   - PSG – Barcelona 4:0, CL-Achtelfinale Hinspiel 2017 (PSG) – eher Tages-
     Pool, da das Rückspiel 6:1 in Welt 4 liegt
   - PSG – BVB 2:0, CL-Achtelfinale Rückspiel März 2020, Geisterspiel (PSG)
-  - ManUtd – ManCity 1:6, Oktober 2011 (ManCity)
-  - West Brom – ManUtd 5:5, Mai 2013, Fergusons letztes Spiel (ManUtd)
-  - Chelsea – Crystal Palace 1:0, Mai 2015, Meisterschaft (Chelsea)
-  - Arsenal – Chelsea 2:1, FA-Cup-Finale 2017 (Arsenal)
-  - Liverpool – ManUtd 7:0, März 2023 (Liverpool)
+  - ManUtd – ManCity 1:6, Oktober 2011 (ManCity)  ✅ Prompt 48
+  - West Brom – ManUtd 5:5, Mai 2013, Fergusons letztes Spiel (ManUtd)  ✅ Prompt 48
+  - Chelsea – Crystal Palace 1:0, Mai 2015, Meisterschaft (Chelsea)  ✅ Prompt 48
+  - Arsenal – Chelsea 2:1, FA-Cup-Finale 2017 (Arsenal)  ✅ Prompt 48
+  - Liverpool – ManUtd 7:0, März 2023 (Liverpool)  ✅ Prompt 48
   - ManUtd – Chelsea 1:1 n. V., 6:5 i. E., CL-Finale 2008 Moskau (ManUtd)
-  - Deutschland – Portugal 3:2, EM-Viertelfinale 2008 (Deutschland)
+  - Deutschland – Portugal 3:2, EM-Viertelfinale 2008 (Deutschland)  ✅ Prompt 48
   - Barcelona – ManUtd 2:0, CL-Finale 2009 Rom (Barcelona)
-  - Werder – Leverkusen 1:0, DFB-Pokal-Finale 2009 (Werder)
-  - Deutschland – England 4:1, WM-Achtelfinale 2010 (Deutschland)
+  - Werder – Leverkusen 1:0, DFB-Pokal-Finale 2009 (Werder)  ✅ Prompt 48
+  - Deutschland – England 4:1, WM-Achtelfinale 2010 (Deutschland)  ✅ Prompt 48
   - Deutschland – Argentinien 4:0, WM-Viertelfinale 2010 (Deutschland)
-  - Spanien – Niederlande 1:0 n. V., WM-Finale 2010 (Spanien)
-  - Real – Barcelona 1:0 n. V., Copa-del-Rey-Finale 2011 (Real)
-  - Atlético – Real 2:1 n. V., Copa-del-Rey-Finale 2013 (Atlético)
+  - Spanien – Niederlande 1:0 n. V., WM-Finale 2010 (Spanien)  ✅ Prompt 48
+  - Real – Barcelona 1:0 n. V., Copa-del-Rey-Finale 2011 (Real)  ✅ Prompt 48
+  - Atlético – Real 2:1 n. V., Copa-del-Rey-Finale 2013 (Atlético)  ✅ Prompt 48
   - Chile – Argentinien 0:0, 4:1 i. E., Copa-América-Finale 2015 (Chile)
-  - Real – Barcelona 2:3, April 2017 (Barcelona)
+  - Real – Barcelona 2:3, April 2017 (Barcelona)  ✅ Prompt 48
   - Tottenham – Real 3:1, CL-Gruppenphase November 2017 (Tottenham)
-  - ManCity – Liverpool 5:0, September 2017 (ManCity)
-  - ManCity – Liverpool 4:0, Juli 2020, Spalier für Meister Liverpool (ManCity)
+  - ManCity – Liverpool 5:0, September 2017 (ManCity)  ✅ Prompt 48
+  - ManCity – Liverpool 4:0, Juli 2020, Spalier für Meister Liverpool (ManCity)  ✅ Prompt 48
   - Sevilla – Inter 3:2, EL-Finale 2020 (Inter)
   - Lyon – ManCity 3:1, CL-Viertelfinale 2020 (Lyon)
   - Real – ManCity 1:2, CL-Achtelfinale Hinspiel Februar 2020 (ManCity)
-  - Barcelona – Real 1:2, Oktober 2023, Bellingham-Doppelpack (Real)
+  - Barcelona – Real 1:2, Oktober 2023, Bellingham-Doppelpack (Real)  ✅ Prompt 48
   - Liverpool – Real 2:5, CL-Achtelfinale Hinspiel Februar 2023 (Real)
   - Leverkusen – AS Rom, EL-Halbfinale 2023 (Leverkusen; Hin- oder
     Rückspiel nach Quellenlage)
-  - ManCity – Arsenal 4:1, April 2023 (Arsenal)
+  - ManCity – Arsenal 4:1, April 2023 (Arsenal)  ✅ Prompt 48
+  (✅ Prompt 48 = eingebaut; noch offen aus dieser Liste: PSG–Barcelona 2017,
+  PSG–BVB 2020, ManUtd–Chelsea CL-Finale 2008, Barcelona–ManUtd 2009,
+  Deutschland–Argentinien 2010, Chile–Argentinien 2015, Tottenham–Real 2017,
+  Sevilla–Inter 2020, Lyon–ManCity 2020, Real–ManCity 2020, Liverpool–Real
+  2023, Leverkusen–Roma 2023.)
   Hinweis: ManCity, Real und Deutschland kommen mehrfach vor – beim
   Einbauen über Welten/Tages-Pool verteilen (Reihenfolge-Regel), ggf. nicht
   alle auf einmal einbauen, damit keine Kategorie dominiert.
   Kandidaten, noch nicht entschieden:
   - 2011: Barcelona – ManUtd 3:1 CL-Finale (Barcelona); Inter – Schalke 2:5
-    CL-VF (Schalke); BVB – Nürnberg 2:0 Meisterschaft (BVB);
-    ManUtd – Arsenal 8:2 (ManUtd)
+    CL-VF (Schalke); BVB – Nürnberg 2:0 Meisterschaft (BVB) ✅ Prompt 48;
+    ManUtd – Arsenal 8:2 (ManUtd) ✅ Prompt 48
   - 2013: Bayern – Barcelona 4:0 CL-HF (Bayern); Brasilien – Spanien 3:0
     Confed-Finale (Brasilien); Chelsea – Benfica 2:1 EL-Finale (Chelsea)
-  - 2015: Bayern – Wolfsburg 5:1, Lewandowski (Bayern); Barcelona – Juventus
-    3:1 CL-Finale (Barcelona); Wolfsburg – BVB 3:1 Pokalfinale (BVB);
-    Arsenal – Aston Villa 4:0 FA-Cup-Finale (Arsenal)
+  - 2015: Bayern – Wolfsburg 5:1, Lewandowski (Bayern) ✅ Prompt 48; Barcelona –
+    Juventus 3:1 CL-Finale (Barcelona); Wolfsburg – BVB 3:1 Pokalfinale (BVB)
+    ✅ Prompt 48; Arsenal – Aston Villa 4:0 FA-Cup-Finale (Arsenal) ✅ Prompt 48
   - 2017: Deutschland – Chile 1:0 Confed-Finale (Deutschland); BVB –
-    Frankfurt 2:1 Pokalfinale (BVB); ManUtd – Ajax 2:0 EL-Finale (ManUtd)
-  - 2020: BVB – Schalke 4:0 Geisterderby (BVB); Leipzig – Atlético 2:1
-    CL-VF (Leipzig); Spanien – Deutschland 6:0 (Deutschland); Liverpool –
-    Crystal Palace 4:0 vor dem Titel (Liverpool); Arsenal – Chelsea 2:1
-    FA-Cup-Finale (Arsenal)
-  - 2023: BVB – Mainz 2:2 (BVB); Inter – Milan CL-HF (Milan); West Ham –
+    Frankfurt 2:1 Pokalfinale (BVB) ✅ Prompt 48; ManUtd – Ajax 2:0 EL-Finale (ManUtd)
+  - 2020: BVB – Schalke 4:0 Geisterderby (BVB) ✅ Prompt 48; Leipzig – Atlético
+    2:1 CL-VF (Leipzig); Spanien – Deutschland 6:0 (Deutschland); Liverpool –
+    Crystal Palace 4:0 vor dem Titel (Liverpool) ✅ Prompt 48; Arsenal – Chelsea
+    2:1 FA-Cup-Finale (Chelsea statt Arsenal abgefragt) ✅ Prompt 48
+  - 2023: BVB – Mainz 2:2 (BVB) ✅ Prompt 48; Inter – Milan CL-HF (Milan); West Ham –
     Fiorentina 2:1 Conference-League-Finale (West Ham); ManCity – Real
     4:0 CL-HF (ManCity); Newcastle – PSG 4:1 (Newcastle)
 - **Themen-Pakete**: Legendäre Finals, Underdogs, Dramen, Pfalz-Paket (FCK)

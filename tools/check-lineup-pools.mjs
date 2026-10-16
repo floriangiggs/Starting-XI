@@ -190,6 +190,24 @@ for (let i = 1; i < order.length; i++) {
   if (shared.length) err(`Kampagne: Team ${shared.join(",")} direkt hintereinander: ${order[i - 1].id} -> ${order[i].id}`);
 }
 
+// Bonus-Level (Prompt 48): stehen je Welt immer hinter allen Pflicht-Level (Freischaltung/Pokale zaehlen nur die Pflicht-Level)
+for (let t = 1; t <= 5; t++) {
+  const w = worlds[t - 1], firstBonus = w.findIndex((m) => m.bonus);
+  if (firstBonus >= 0 && w.slice(firstBonus).some((m) => !m.bonus)) err(`Welt ${t}: Bonus-Level stehen nicht am Ende der Welt`);
+  if (w.length && w.every((m) => m.bonus)) err(`Welt ${t}: nur Bonus-Level, keine Pflicht-Level`);
+}
+for (const m of DAILY) if (m.bonus) err(`Tag:${m.id}: bonus gilt nur fuer Kampagne`);
+
+// Kategorien: jeder league-Wert muss in LEAGUE_GROUPS (Wissen) UND FREEPLAY_GROUPS (Frei spielen) vorkommen
+const LGROUPS = grabConst("LEAGUE_GROUPS", "{", "}");
+const FGROUPS = grabConst("FREEPLAY_GROUPS");
+const inL = new Set(Object.values(LGROUPS).flat()), inF = new Set(FGROUPS.flatMap((g) => g.chips.flatMap((c) => c.leagues)));
+for (const lg of new Set([...LINEUPS, ...DAILY].map((m) => m.league))) {
+  if (!inL.has(lg)) err(`league "${lg}" fehlt in LEAGUE_GROUPS (Wissen)`);
+  if (!inF.has(lg)) err(`league "${lg}" fehlt in FREEPLAY_GROUPS (Frei spielen)`);
+}
+const catOf = (m) => (Object.entries(LGROUPS).find(([, v]) => v.includes(m.league)) || ["?"])[0];
+
 // Verteilung
 const cnt = (a, f) => Object.fromEntries(Object.entries(a.reduce((o, x) => { const k = f(x); o[k] = (o[k] || 0) + 1; return o; }, {})).sort());
 notes.push(`Kampagne: ${LINEUPS.length} Aufstellungen, je Welt ${counts.join("/")}`);
@@ -200,6 +218,10 @@ notes.push(`Jahre gesamt: ${JSON.stringify(cnt(all, yearOf))}`);
 notes.push(`Wettbewerb Kampagne: ${JSON.stringify(cnt(LINEUPS, (m) => m.league))}`);
 notes.push(`Wettbewerb Tag: ${JSON.stringify(cnt(DAILY, (m) => m.league))}`);
 for (let t = 1; t <= 5; t++) notes.push(`  Welt ${t}: ${JSON.stringify(cnt(worlds[t - 1], (m) => m.league))}`);
+notes.push(`Kategorien (Wissen) Kampagne: ${JSON.stringify(cnt(LINEUPS, catOf))}`);
+notes.push(`Kategorien (Wissen) Tag: ${JSON.stringify(cnt(DAILY, catOf))}`);
+notes.push(`Kategorien (Wissen) gesamt: ${JSON.stringify(cnt(all, catOf))}`);
+notes.push(`Bonus-Level je Welt: ${JSON.stringify(worlds.map((w) => w.filter((m) => m.bonus).length))} (Pflicht-Level: ${JSON.stringify(worlds.map((w) => w.filter((m) => !m.bonus).length))})`);
 notes.push(`Ersatzbank: Kampagne ${LINEUPS.filter((m) => m.bench).length} von ${LINEUPS.length}, Tages-Pool ${DAILY.filter((m) => m.bench).length} von ${DAILY.length} Aufstellungen mit Bank`);
 const since2015 = all.filter((m) => yearOf(m) >= 2015).length;
 notes.push(`ab 2015: ${since2015} von ${all.length}`);

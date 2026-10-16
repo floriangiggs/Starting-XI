@@ -5278,14 +5278,14 @@ function hmPickDuel() {
 }
 function renderModeTiles() {
   const tiles = document.getElementById("modeTiles");
-  const worlds = ROADMAP_NODES.map(n => n.tier).filter(t => getMatchesByTier(t).length > 0);
-  const isDone = t => getMatchesByTier(t).every(m => profile.campaign.levelPassed[m.id]);
+  const worlds = ROADMAP_NODES.map(n => n.tier).filter(t => getCoreMatchesByTier(t).length > 0);
+  const isDone = t => getCoreMatchesByTier(t).every(m => profile.campaign.levelPassed[m.id]);
   const allDone = worlds.every(isDone);
   const current = currentCampaignTier();
-  const curMatches = getMatchesByTier(current);
+  const curMatches = getCoreMatchesByTier(current);
   const firstOpen = curMatches.findIndex(m => !profile.campaign.levelPassed[m.id]);
   const campDraft = allDone ? null : campaignDraftLevel(); // angefangenes Level der aktuellen Welt (Prompt 34)
-  const lvNo = (campDraft ? campDraft.idx : Math.max(0, firstOpen)) + 1;
+  const lvNo = Math.min((campDraft ? campDraft.idx : Math.max(0, firstOpen)) + 1, curMatches.length);
   const campLine = allDone ? "Alle Welten geschafft" : `${DIFF_LABEL[current]} · Level ${lvNo} von ${curMatches.length}`;
   const started = allDone || campDraft || Object.keys(profile.campaign.levelPassed).some(k => profile.campaign.levelPassed[k]);
   const pick = hmPickDuel(), d = pick && pick.d, todo = d && d.status === "todo";
@@ -5504,9 +5504,9 @@ const FREEPLAY_GROUPS = [
   ] },
   { label: "Ligen & Pokal", chips: [
     { label: "Deutschland", leagues: ["Bundesliga", "2. Bundesliga", "Bundesliga / DFB-Pokal", "DFB-Pokal"], ic: "de" },
-    { label: "England", leagues: ["Premier League"], ic: "en" },
-    { label: "Spanien", leagues: ["LaLiga"], ic: "es" },
-    { label: "Italien", leagues: ["Serie A"], ic: "it" },
+    { label: "England", leagues: ["Premier League", "FA Cup"], ic: "en" },
+    { label: "Spanien", leagues: ["LaLiga", "Copa del Rey"], ic: "es" },
+    { label: "Italien", leagues: ["Serie A", "Coppa Italia"], ic: "it" },
     { label: "Niederlande", leagues: ["Eredivisie"], ic: "nl" }
   ] }
 ];
@@ -5674,8 +5674,18 @@ function fpDrawAgain() {
 let campaignTier = null;
 let currentLevelContext = null; // { tier, index, m } - gesetzt, wenn gerade ein Kampagnen-Level läuft
 
+// Alle Level einer Welt in Pfad-Reihenfolge, inklusive Bonus-Level (Prompt 48: m.bonus === true, stehen immer hinten im Pfad).
 function getMatchesByTier(tier) {
   return LINEUP_CHALLENGES.filter(m => m.difficulty === tier);
+}
+// Nur die Pflicht-Level einer Welt (ohne Bonus). Freischaltung der naechsten Welt, Welt-geschafft-Feier, Pokal/Schale, Level- und
+// Sterne-Zaehler rechnen ausschliesslich mit diesen - neu hinzukommende Bonus-Level aendern an bestehenden Staenden nichts.
+function getCoreMatchesByTier(tier) { return getMatchesByTier(tier).filter(m => !m.bonus); }
+// "Level 3 von 14" bzw. "Bonus-Level 2 von 4" fuer das Level mit Pfad-Index idx der Welt
+function campaignLevelLabel(tier, idx) {
+  const all = getMatchesByTier(tier), m = all[idx];
+  if (m && m.bonus) { const bo = all.filter(x => x.bonus); return `Bonus-Level ${bo.indexOf(m) + 1} von ${bo.length}`; }
+  const core = all.filter(x => !x.bonus); return `Level ${core.indexOf(m) + 1} von ${core.length}`;
 }
 
 // Sterne-Summe einer Stufe (Prompt 11, ab 13b aus profile.campaign.stars statt profile.best):
@@ -5693,7 +5703,7 @@ function isTierUnlocked(tier) {
   if (tier <= 1) return true;
   let t = tier - 1;
   while (t >= 1) {
-    const matches = getMatchesByTier(t);
+    const matches = getCoreMatchesByTier(t);
     if (matches.length === 0) { t--; continue; }
     return matches.every(m => profile.campaign.levelPassed[m.id]);
   }
@@ -5774,15 +5784,15 @@ function wmStadium(w, ring, pct, k) {
 let wmSel = null, wmLastCur = null, wmIntroTimer = null;
 function wmData() {
   const W = ROADMAP_NODES.map(({ tier }) => {
-    const matches = getMatchesByTier(tier), n = matches.length;
+    const all = getMatchesByTier(tier), matches = all.filter((m) => !m.bonus), bonus = all.filter((m) => m.bonus), n = matches.length;
     const p = matches.filter((m) => profile.campaign.levelPassed[m.id]).length;
     const s = starsSummaryForTier(matches);
-    return { w: tier, n, p, s: s.earned, smax: s.max, empty: n === 0, unlocked: n > 0 && isTierUnlocked(tier), done: n > 0 && p === n, plate: n > 0 && s.earned === s.max };
+    return { w: tier, n, p, s: s.earned, smax: s.max, b: bonus.length, bp: bonus.filter((m) => profile.campaign.levelPassed[m.id]).length, empty: n === 0, unlocked: n > 0 && isTierUnlocked(tier), done: n > 0 && p === n, plate: n > 0 && s.earned === s.max };
   });
   const cur = currentCampaignTier();
   return { W, cur };
 }
-function wmPrevTier(tier) { for (let t = tier - 1; t >= 1; t--) if (getMatchesByTier(t).length) return t; return null; }
+function wmPrevTier(tier) { for (let t = tier - 1; t >= 1; t--) if (getCoreMatchesByTier(t).length) return t; return null; }
 function renderCampaignWorlds() {
   const container = document.getElementById("campaignView"), scr = document.getElementById("screen-worldmap");
   const { W, cur } = wmData();
@@ -5838,8 +5848,9 @@ function wmPaintTray() {
     const prev = W[(wmPrevTier(x.w) || 1) - 1], left = prev.n - prev.p;
     felt.innerHTML = `<span class="dot" style="filter:saturate(.3)"></span><span class="tx"><b>${name} ist noch gesperrt</b><small>Schalte frei: noch ${left} Level in ${DIFF_LABEL[prev.w]} bestehen</small></span>${dis("Gesperrt")}`; return;
   }
-  const lv = x.done ? null : (getMatchesByTier(x.w).findIndex((m) => !profile.campaign.levelPassed[m.id]) + 1);
-  felt.innerHTML = `<span class="dot"></span><span class="tx"><b>${name}${lv ? ` · Level ${lv} von ${x.n}` : " · alle Level geschafft"}</b><small>${x.done ? (x.plate ? "Pokal und Schale gewonnen – Training jederzeit" : `Noch ${x.smax - x.s} Sterne bis zur Schale`) : TIER_INTRO[x.w]}</small></span>
+  const lv = x.done ? null : (getCoreMatchesByTier(x.w).findIndex((m) => !profile.campaign.levelPassed[m.id]) + 1);
+  const bonusLine = x.b ? ` · ${x.bp < x.b ? `${x.b - x.bp} von ${x.b} Bonus-Level offen` : `alle ${x.b} Bonus-Level geschafft`}` : "";
+  felt.innerHTML = `<span class="dot"></span><span class="tx"><b>${name}${lv ? ` · Level ${lv} von ${x.n}` : " · alle Level geschafft"}</b><small>${x.done ? (x.plate ? "Pokal und Schale gewonnen – Training jederzeit" : `Noch ${x.smax - x.s} Sterne bis zur Schale`) + bonusLine : TIER_INTRO[x.w]}</small></span>
     <button class="wm-go" type="button" id="wmGo">${x.done ? "Ansehen" : x.w === cur ? "Weiter" : "Spielen"}${WM_SV.chev}</button>`;
   document.getElementById("wmGo").onclick = () => wmOpen(x.w);
 }
@@ -6138,9 +6149,11 @@ function renderCampaignLevels(dir) {
   const scr = document.getElementById("screen-levelpath"), container = document.getElementById("levelPathView");
   if (lpAnim) cancelAnimationFrame(lpAnim);
   const W = campaignTier, matches = getMatchesByTier(W), n = matches.length, wc = DIFF_COLOR[W];
+  const coreM = matches.filter((m) => !m.bonus), nCore = coreM.length, bonusM = matches.filter((m) => m.bonus), nB = bonusM.length;
   const sc = lpScene(W, n), th = sc.th, phase = sc.phase, H = sc.H, goalY = sc.goalY, P = LP;
-  const curIdx = matches.findIndex((m) => !profile.campaign.levelPassed[m.id]), passed = matches.filter((m) => profile.campaign.levelPassed[m.id]).length;
-  const starsOf = (m) => profile.campaign.stars[m.id] || 0, summary = starsSummaryForTier(matches);
+  const curIdx = matches.findIndex((m) => !profile.campaign.levelPassed[m.id]), passed = coreM.filter((m) => profile.campaign.levelPassed[m.id]).length, bonusPassed = bonusM.filter((m) => profile.campaign.levelPassed[m.id]).length;
+  const starsOf = (m) => profile.campaign.stars[m.id] || 0, summary = starsSummaryForTier(coreM);
+  const nodeNo = (m, i) => m.bonus ? "B" + (bonusM.indexOf(m) + 1) : String(coreM.indexOf(m) + 1), nodeName = (m, i) => m.bonus ? "Bonus-Level " + (bonusM.indexOf(m) + 1) : "Level " + (coreM.indexOf(m) + 1);
   const nodesY = matches.map((m, i) => LP_TOP0 + i * LP_STEP);
   const dDone = (() => { const curY = curIdx >= 0 ? nodesY[curIdx] : goalY; const pts = []; for (let y = LP_TOP0 - 150; y <= goalY + 6; y += 6) if (y <= curY) pts.push([lpPathX(y, phase), y]); return "M" + pts.map((p) => lpF1(p[0]) + " " + lpF1(p[1])).join(" L"); })();
   scr.style.setProperty("--wc", wc); scr.style.setProperty("--shade", th.shade); scr.style.setProperty("--lpbg0", th.bg[0]); scr.style.setProperty("--lpbg1", th.bg[1]);
@@ -6158,10 +6171,10 @@ function renderCampaignLevels(dir) {
           <ellipse cx="${cx - R * 0.3}" cy="${cx - R * 0.42}" rx="${R * 0.42}" ry="${R * 0.22}" fill="rgba(255,255,255,0.35)" transform="rotate(-25 ${cx - R * 0.3} ${cx - R * 0.42})"/></svg>`;
     const starArc = st === "done" || (st === "cur" && s) ? `<svg class="lp-nstars" viewBox="0 0 60 18" aria-hidden="true"><rect x="1" y="1" width="58" height="16" rx="8" fill="rgba(10,22,16,0.72)" stroke="rgba(255,236,200,0.25)"/>${[0, 1, 2].map((k) => lpStarPath(k, s)).join("")}</svg>` : "";
     const badges = (st !== "lock" && profile.drafts["c:" + m.id] ? `<span class="lp-badge draft" title="angefangen">${LP_SV.pen}</span>` : "") + (st !== "lock" && profile.campaign.solutionSeen[m.id] && s < 3 ? `<span class="lp-badge seen" title="Lösung angesehen – Sterne eingefroren">${LP_SV.eye}</span>` : "");
-    return `<div class="lp-node ${st}" style="left:${lpF1(x)}px;top:${nodesY[i]}px" data-i="${i}">${starArc}<button class="lp-nbtn" type="button" aria-label="Level ${i + 1}${st === "lock" ? " (gesperrt)" : s ? ", " + s + " Sterne" : ""}">${disc}<b>${i + 1}</b></button>${badges}
-      ${st === "cur" ? `<span class="lp-ring"></span><span class="lp-du" style="left:${-28 + duShift(i, x)}px"><span class="lp-pin">Du</span><i></i><span class="lp-tag">Level ${i + 1}</span></span>` : ""}</div>`;
+    return `<div class="lp-node ${st}" style="left:${lpF1(x)}px;top:${nodesY[i]}px" data-i="${i}">${starArc}<button class="lp-nbtn" type="button" aria-label="${nodeName(m, i)}${st === "lock" ? " (gesperrt)" : s ? ", " + s + " Sterne" : ""}">${disc}<b>${nodeNo(m, i)}</b></button>${badges}
+      ${st === "cur" ? `<span class="lp-ring"></span><span class="lp-du" style="left:${-28 + duShift(i, x)}px"><span class="lp-pin">Du</span><i></i><span class="lp-tag">${nodeName(m, i)}</span></span>` : ""}</div>`;
   }).join("");
-  const allDone = passed === n && n > 0, gx = lpPathX(goalY, phase), nextW = (() => { for (let t = W + 1; t <= 5; t++) if (getMatchesByTier(t).length) return t; return 0; })();
+  const allDone = passed === nCore && nCore > 0, gx = lpPathX(goalY, phase), nextW = (() => { for (let t = W + 1; t <= 5; t++) if (getCoreMatchesByTier(t).length) return t; return 0; })();
   const sh = (x, y, rx, ry, o = 0.28) => lpSh(x, y, rx, ry, o);
   const goalArt = W < 5
     ? `<svg width="390" height="200" viewBox="0 0 390 200" style="position:absolute;left:0;top:${goalY - 120}px;overflow:visible" aria-hidden="true">
@@ -6184,17 +6197,17 @@ function renderCampaignLevels(dir) {
       ${goal}
       <div class="lp-sign" id="lpSign"><span class="lp-rope" style="left:34px"></span><span class="lp-rope" style="right:34px"></span>
         <div class="lp-board"><small>Welt ${W} von 5</small><h2>${DIFF_LABEL[W]}</h2>
-          <div class="lp-prog"><span class="lp-bar"><i id="lpPbar" style="width:${Math.max(3, n ? passed / n * 100 : 0)}%"></i></span><span><b>${passed}</b>/${n} Level</span></div></div></div>
+          <div class="lp-prog"><span class="lp-bar"><i id="lpPbar" style="width:${Math.max(3, nCore ? passed / nCore * 100 : 0)}%"></i></span><span><b>${passed}</b>/${nCore} Level${nB ? ` · <b>${bonusPassed}</b>/${nB} Bonus` : ""}</span></div></div></div>
       <div class="lp-note" id="lpNote"><span>${TIER_INTRO[W]}</span></div>
       ${nodes}
     </div></div>`;
   const fl = document.getElementById("lpFloat");
-  fl.querySelector("span").textContent = curIdx >= 0 ? "Zu Level " + (curIdx + 1) : "";
+  fl.querySelector("span").textContent = curIdx >= 0 ? "Zu " + nodeName(matches[curIdx], curIdx) : "";
   document.getElementById("lpScroll").scrollTop = 0;
   // Antippen: freie Level wie bisher in die Level-Vorschau (startMatch), gesperrte melden das kurz
   container.querySelectorAll(".lp-node").forEach((nd) => nd.querySelector(".lp-nbtn").onclick = () => {
     const i = +nd.dataset.i;
-    if (nd.classList.contains("lock")) { showToast("Level " + (i + 1) + " ist noch gesperrt"); return; }
+    if (nd.classList.contains("lock")) { showToast(nodeName(matches[i], i) + " ist noch gesperrt"); return; }
     currentLevelContext = { tier: W, index: i, m: matches[i] }; startMatch(matches[i]);
   });
   const gt = document.getElementById("lpGoTap"); if (gt) gt.onclick = () => { wmSel = nextW; goBackTo("worldmap"); };
@@ -6259,7 +6272,7 @@ window.addEventListener("resize", () => { if (lpState && lpState.started) { lpSt
 // abgeschlossene Welt, sonst Welt 5 (gleiche isCurrent-Logik wie renderCampaignWorlds).
 function currentCampaignTier() {
   for (const { tier } of ROADMAP_NODES) {
-    const matches = getMatchesByTier(tier);
+    const matches = getCoreMatchesByTier(tier);
     if (matches.length === 0) continue;
     const passedCount = matches.filter(m => profile.campaign.levelPassed[m.id]).length;
     if (passedCount < matches.length) return tier;
@@ -6270,7 +6283,7 @@ function currentCampaignTier() {
 // Sterne-Summe ueber alle 5 Welten (Start-Kachel), addiert starsSummaryForTier pro Tier.
 function starsSummaryTotal() {
   return ROADMAP_NODES.reduce((acc, { tier }) => {
-    const s = starsSummaryForTier(getMatchesByTier(tier));
+    const s = starsSummaryForTier(getCoreMatchesByTier(tier));
     return { earned: acc.earned + s.earned, max: acc.max + s.max };
   }, { earned: 0, max: 0 });
 }
@@ -6320,7 +6333,7 @@ function renderLevelBadge(m) {
   const matches = getMatchesByTier(tier);
   const color = DIFF_COLOR[tier];
   const dots = matches.map((x, i) => `<i class="${profile.campaign.levelPassed[x.id] ? "done" : ""}${i === index ? " now" : ""}"></i>`).join("");
-  return `<span class="lvl-badge" style="--wc:${color}">${DIFF_LABEL[tier]} · Level ${index + 1} von ${matches.length}</span><span class="lvl-dots" style="--wc:${color}" aria-hidden="true">${dots}</span>`;
+  return `<span class="lvl-badge" style="--wc:${color}">${DIFF_LABEL[tier]} · ${campaignLevelLabel(tier, index)}</span><span class="lvl-dots" style="--wc:${color}" aria-hidden="true">${dots}</span>`;
 }
 function renderDiffBadge(difficulty) {
   const color = DIFF_COLOR[difficulty];
@@ -6342,15 +6355,15 @@ const CAMPAIGN_TROPHIES = ROADMAP_NODES.flatMap(({ tier }) => {
       id: "cup_tier" + tier, group: "Kampagne", kind: "cup",
       name: worldName + "-Pokal", req: "Alle Level bestanden",
       desc: "Alle Level der Welt \"" + worldName + "\" bestanden.",
-      check: (p) => { const m = getMatchesByTier(tier); return m.length > 0 && m.every((x) => p.campaign.levelPassed[x.id]); },
-      progress: (p) => { const m = getMatchesByTier(tier); return [m.filter((x) => p.campaign.levelPassed[x.id]).length, m.length]; }
+      check: (p) => { const m = getCoreMatchesByTier(tier); return m.length > 0 && m.every((x) => p.campaign.levelPassed[x.id]); },
+      progress: (p) => { const m = getCoreMatchesByTier(tier); return [m.filter((x) => p.campaign.levelPassed[x.id]).length, m.length]; }
     },
     {
       id: "plate_tier" + tier, group: "Kampagne", kind: "plate",
       name: worldName + "-Schale", req: "Alle Level mit ⭐⭐⭐",
       desc: "Alle Level der Welt \"" + worldName + "\" mit drei Sternen gelöst.",
-      check: (p) => { const m = getMatchesByTier(tier); return m.length > 0 && m.every((x) => p.campaign.stars[x.id] === 3); },
-      progress: (p) => { const m = getMatchesByTier(tier); return [m.filter((x) => p.campaign.stars[x.id] === 3).length, m.length]; }
+      check: (p) => { const m = getCoreMatchesByTier(tier); return m.length > 0 && m.every((x) => p.campaign.stars[x.id] === 3); },
+      progress: (p) => { const m = getCoreMatchesByTier(tier); return [m.filter((x) => p.campaign.stars[x.id] === 3).length, m.length]; }
     }
   ];
 });
@@ -6416,14 +6429,15 @@ function nextRankInfo(level) {
   return next ? { name: next.name, levelsLeft: next.min - level } : null;
 }
 
-// Gruppierung der 11 league-Werte aus LINEUP_CHALLENGES fuer den Wissens-Reiter.
+// Gruppierung aller league-Werte aus LINEUP_CHALLENGES/DAILY_CHALLENGES fuer den Wissens-Reiter (Pokale gehoeren zu ihrem Land,
+// Prompt 48: DFB-Pokal, FA Cup, Copa del Rey, Coppa Italia; Afrika-Cup zu den Nationalmannschaften). Gleiche Zuordnung wie FREEPLAY_GROUPS.
 const LEAGUE_GROUPS = {
-  "Deutschland": ["Bundesliga", "2. Bundesliga", "Bundesliga / DFB-Pokal"],
-  "England": ["Premier League"],
-  "Spanien": ["LaLiga"],
-  "Italien": ["Serie A"],
+  "Deutschland": ["Bundesliga", "2. Bundesliga", "Bundesliga / DFB-Pokal", "DFB-Pokal"],
+  "England": ["Premier League", "FA Cup"],
+  "Spanien": ["LaLiga", "Copa del Rey"],
+  "Italien": ["Serie A", "Coppa Italia"],
   "Europapokal": ["Champions League", "Europa League"],
-  "Nationalmannschaften": ["Weltmeisterschaft", "Europameisterschaft", "Copa América"]
+  "Nationalmannschaften": ["Weltmeisterschaft", "Europameisterschaft", "Copa América", "Afrika-Cup"]
 };
 
 function matchYear(m) {
@@ -6660,7 +6674,7 @@ function renderLevelPreview(m) {
   const arrows = [[50, 90, 50, 64], [22, 40, 30, 22], [78, 40, 70, 22]];
   return `<div class="lv" id="lvRoot" style="--wc:${DIFF_COLOR[tier]}">${lvTopbarHTML()}
     <div class="lv-frame" id="lvFrame">
-      <div class="lv-kick" id="lvKick"><span class="t">${DIFF_LABEL[tier]} · Level ${index + 1} von ${matches.length}</span><span class="lv-dots" aria-hidden="true">${dots}</span></div>
+      <div class="lv-kick" id="lvKick"><span class="t">${DIFF_LABEL[tier]} · ${campaignLevelLabel(tier, index)}</span><span class="lv-dots" aria-hidden="true">${dots}</span></div>
       <div class="lv-comp" id="lvComp"><span class="n">${duelEsc(info.comp)}</span><span class="d">${info.date ? "\u00A0·\u00A0" + duelEsc(info.date) : ""}</span></div>
       <div class="lv-head"><div class="lv-teams" id="lvTeams"><span class="h">${duelEsc(info.home)}</span><em>gegen</em><span class="a">${duelEsc(info.away)}</span></div>
         <div class="lv-score"><b>${duelEsc(info.score)}</b><small>${info.note.length ? info.note.map(duelEsc).join("<br>") : "Endstand"}</small></div></div>
@@ -6853,7 +6867,7 @@ function selectPrefillAbbrs(positions, count, rng = Math.random) {
 function getPrefillAbbrs(m) {
   if (!currentLevelContext) return new Set(); // Freispielen bleibt voll fordernd
   const { tier, index } = currentLevelContext;
-  const levelCount = getMatchesByTier(tier).length;
+  const levelCount = getCoreMatchesByTier(tier).length; // Bonus-Level (Index >= levelCount) bekommen dadurch 0 Geschenke
   const rng = mulberry32((hashString(m.id) ^ profile.prefillSeed) >>> 0);
   return selectPrefillAbbrs(PITCH_LAYOUTS[m.formation], prefillCountForLevel(tier, index, levelCount), rng);
 }
@@ -10017,7 +10031,7 @@ function spKickHTML(m) {
   const dots = (n, now, color) => `<span class="sp-dots" aria-hidden="true">${Array.from({ length: n }, (_, i) => `<i class="${i < now ? "done" : ""}${i === now ? " now" : ""}"></i>`).join("")}</span>`;
   if (currentLevelContext) {
     const { tier, index } = currentLevelContext, ms = getMatchesByTier(tier);
-    return `<span class="t">${DIFF_LABEL[tier]} · Level ${index + 1} von ${ms.length}</span><span class="sp-dots" aria-hidden="true">${ms.map((x, i) => `<i class="${profile.campaign.levelPassed[x.id] ? "done" : ""}${i === index ? " now" : ""}"></i>`).join("")}</span>`;
+    return `<span class="t">${DIFF_LABEL[tier]} · ${campaignLevelLabel(tier, index)}</span><span class="sp-dots" aria-hidden="true">${ms.map((x, i) => `<i class="${profile.campaign.levelPassed[x.id] ? "done" : ""}${i === index ? " now" : ""}"></i>`).join("")}</span>`;
   }
   if (currentDailyChallenge) {
     const d = new Date(currentDailyChallenge.dateKey + "T00:00:00").toLocaleDateString("de-DE", { weekday: "short", day: "numeric", month: "long" });
@@ -10967,8 +10981,8 @@ function evaluatePitch() {
   // Die Warteschlange wird sofort geoeffnet, damit XP-/Trophaeen-Toasts und Level-Up erst NACH der Animation erscheinen.
   let celebrateTier = null;
   if (currentLevelContext && correct >= PASS_THRESHOLD) {
-    const ct = currentLevelContext.tier, cms = getMatchesByTier(ct);
-    if (!profile.worldCelebrated[ct] && !profile.campaign.levelPassed[m.id] && cms.every((x) => x.id === m.id || profile.campaign.levelPassed[x.id])) {
+    const ct = currentLevelContext.tier, cms = getCoreMatchesByTier(ct);
+    if (!m.bonus && !profile.worldCelebrated[ct] && !profile.campaign.levelPassed[m.id] && cms.every((x) => x.id === m.id || profile.campaign.levelPassed[x.id])) {
       celebrateTier = ct;
       profile.worldCelebrated[ct] = true;
       celebrationQueue = [];
@@ -11234,14 +11248,14 @@ function evaluatePitch() {
   }
   if (campaignResult) {
     const { tier, index, passed } = campaignResult;
-    const tierMatches = getMatchesByTier(tier);
-    const hasNext = index + 1 < tierMatches.length;
+    const tierMatches = getMatchesByTier(tier), coreN = getCoreMatchesByTier(tier).length, isBonusLv = !!m.bonus;
+    const hasNext = index + 1 < tierMatches.length && !(coreN && index === coreN - 1); // nach dem letzten Pflicht-Level endet die Welt (Bonus-Level folgen nur ueber den Pfad)
     // Prompt 30: links klein "‹ Pfad", rechts der Hauptknopf (naechstes Level / Welt geschafft / nochmal)
     const nextUnlocked = hasNext && index + 1 < unlockedLevelCount(tier);
     const pathBtn = `<button class="action btn-outline small-left" id="backBtn">‹ Pfad</button>`;
     if (passed && nextUnlocked) {
-      row.innerHTML = pathBtn + `<button class="action btn-gold" id="nextBtn">Level ${index + 2} ›</button>`;
-    } else if (passed && !hasNext) {
+      row.innerHTML = pathBtn + `<button class="action btn-gold" id="nextBtn">${tierMatches[index + 1].bonus ? "Bonus-Level " + (index + 2 - coreN) : "Level " + (index + 2)} ›</button>`;
+    } else if (passed && !hasNext && !isBonusLv) {
       row.innerHTML = pathBtn + `<button class="action btn-gold" id="nextBtn">🏆 Welt geschafft! Weiter ›</button>`;
     } else if (passed) {
       row.innerHTML = pathBtn;
@@ -13591,7 +13605,7 @@ function playWorldCelebration(tier, opts = {}) {
   let reduce = !!(window.matchMedia && matchMedia("(prefers-reduced-motion: reduce)").matches);
   const WORLDS = {};
   for (let n = 1; n <= 5; n++) WORLDS[n] = { name: DIFF_LABEL[n], color: DIFF_COLOR[n], teams: WC_TEAMS[n] };
-  const starSum = starsSummaryForTier(getMatchesByTier(tier));
+  const starSum = starsSummaryForTier(getCoreMatchesByTier(tier));
   const starTotal = starSum.max, starGot = starSum.earned;
   // Punkte: Spieltag 10 → 30. Dein Team startet letzter und endet klar vorn.
   const PTS = [[24, 66], [22, 62], [20, 57], [19, 53], [17, 49], [15, 43], [14, 39]];
