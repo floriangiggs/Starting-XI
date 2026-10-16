@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, viewport-fit=cover">
 <title>Starting XI</title>
 <link rel="manifest" href="./manifest.json">
-<meta name="theme-color" content="#14202B">
+<meta name="theme-color" content="#173A29">
 <link rel="icon" href="./icons/favicon-32.png">
 <link rel="apple-touch-icon" href="./icons/apple-touch-icon.png">
 <meta name="apple-mobile-web-app-capable" content="yes">
@@ -27,6 +27,7 @@
     --gold: #E8B23D;
     --red: #C1392B;
     --ink: #14202B;
+    --turf: #173A29; /* Rasen-Grund: Hintergrund hinter allem, damit unten/seitlich nie Ink-Blau durchscheint (Prompt 50) */
     --ink-2: #1C2B38;
     --line: rgba(242,239,230,0.14);
     --gold-2: #F4D58D;
@@ -38,7 +39,7 @@
   }
   * { box-sizing: border-box; }
   html { -webkit-text-size-adjust: 100%; }
-  html, body { margin: 0; padding: 0; height: 100%; background: var(--ink); color: var(--chalk); font-family: 'Oswald', sans-serif; touch-action: manipulation; overflow: hidden; }
+  html, body { margin: 0; padding: 0; height: 100%; background: var(--turf); color: var(--chalk); font-family: 'Oswald', sans-serif; touch-action: manipulation; overflow: hidden; }
   button, input { touch-action: manipulation; }
   button { font-family: inherit; } /* Prompt 49: Buttons erben die App-Schrift (Oswald) statt der Systemschrift; Klassen-Regeln mit eigener Schrift gewinnen weiter */
 
@@ -46,10 +47,10 @@
      Jeder <section class="screen"> ist ein eigener, bildschirmfuellender Bereich;
      Navigation zeigt/versteckt per hidden-Attribut + Slide-Transition, siehe
      showScreen()/navigate()/goBack() im Skript. */
-  .stage { position: relative; height: 100vh; height: 100dvh; max-width: 560px; margin: 0 auto; overflow: hidden; }
+  .stage { position: fixed; top: 0; bottom: 0; left: 0; right: 0; width: 100%; max-width: 560px; margin: 0 auto; overflow: hidden; background: var(--turf); } /* fixed + inset: fuellt auch im iOS-Standalone-Modus bis unter den Home-Balken (Prompt 50) */
   .screen {
     position: absolute; inset: 0; display: flex; flex-direction: column; overflow: hidden;
-    padding: max(14px, calc(env(safe-area-inset-top) + 10px)) 16px max(16px, calc(env(safe-area-inset-bottom) + 10px));
+    padding: max(14px, calc(env(safe-area-inset-top) + 10px)) 16px max(12px, calc(env(safe-area-inset-bottom) + 4px));
     background-image: repeating-linear-gradient(90deg, rgba(255,255,255,0.02) 0 2px, transparent 2px 40px);
     background-color: var(--ink);
     transition: transform 0.32s cubic-bezier(.2,.8,.2,1), opacity 0.32s; will-change: transform;
@@ -435,7 +436,7 @@
     --wood-edge: inset 0 0 0 1.5px #3E2A16, inset 0 2px 0 rgba(255,236,200,0.22); --felt: radial-gradient(110% 70% at 50% 12%, #33704D, #1D4530 78%);
     --f-display: Anton, Impact, "Arial Narrow", sans-serif; --f-text: Oswald, "Arial Narrow", system-ui, sans-serif; font-family: var(--f-text); }
   #screen-start.hm-home { --hd: 238px; --hm: 198px; --pass-h: 128px; justify-content: space-between; gap: 10px; overflow: hidden; color: var(--chalk);
-    padding: max(14px, calc(env(safe-area-inset-top, 0px) + 10px)) 12px max(16px, calc(env(safe-area-inset-bottom, 0px) + 8px)); text-align: left;
+    padding: max(14px, calc(env(safe-area-inset-top, 0px) + 10px)) 12px max(12px, calc(env(safe-area-inset-bottom, 0px) + 4px)); text-align: left;
     background: radial-gradient(130% 60% at 50% 0%, #3B7F59 0%, #235A3E 45%, #173A29 100%); }
   #screen-start.hm-home::before { content: ""; position: absolute; inset: 0; pointer-events: none; opacity: 0.55; background: repeating-linear-gradient(180deg, rgba(255,255,255,0.025) 0 38px, rgba(0,0,0,0.03) 38px 76px); }
   #screen-start.hm-home::after { content: ""; position: absolute; inset: 0; pointer-events: none; background: radial-gradient(70% 22% at 50% -4%, rgba(255,246,214,0.22), transparent 70%); }
@@ -498,7 +499,7 @@
   #screen-worldmap.wm { --wood: linear-gradient(180deg, rgba(255,255,255,0.10), transparent 40%), repeating-linear-gradient(92deg, rgba(0,0,0,0.06) 0 2px, transparent 2px 7px), linear-gradient(180deg, #9A6C40, #6B4828);
     --wood-edge: inset 0 0 0 1.5px #3E2A16, inset 0 2px 0 rgba(255,236,200,0.22); --felt: radial-gradient(110% 60% at 50% 8%, #33704D, #1D4530 80%);
     --f-display: Anton, Impact, "Arial Narrow", sans-serif; --f-text: Oswald, "Arial Narrow", system-ui, sans-serif; font-family: var(--f-text); color: var(--chalk);
-    padding: max(14px, calc(env(safe-area-inset-top, 0px) + 10px)) 14px max(16px, calc(env(safe-area-inset-bottom, 0px) + 8px)); text-align: left; overflow: hidden;
+    padding: max(14px, calc(env(safe-area-inset-top, 0px) + 10px)) 14px max(12px, calc(env(safe-area-inset-bottom, 0px) + 4px)); text-align: left; overflow: hidden;
     background: radial-gradient(130% 60% at 50% 0%, #3B7F59 0%, #235A3E 45%, #173A29 100%); }
   #screen-worldmap.wm::before { content: ""; position: absolute; inset: 0; pointer-events: none; opacity: 0.55; background: repeating-linear-gradient(180deg, rgba(255,255,255,0.025) 0 38px, rgba(0,0,0,0.03) 38px 76px); }
   #screen-worldmap.wm > * { position: relative; z-index: 1; }
@@ -599,7 +600,7 @@
     --wood: linear-gradient(180deg, rgba(255,255,255,0.10), transparent 40%), repeating-linear-gradient(92deg, rgba(0,0,0,0.06) 0 2px, transparent 2px 7px), linear-gradient(180deg, #9A6C40, #6B4828);
     --wood-edge: inset 0 0 0 1.5px #3E2A16, inset 0 2px 0 rgba(255,236,200,0.22); --felt: radial-gradient(110% 60% at 50% 8%, #33704D, #1D4530 80%);
     --f-display: Anton, Impact, "Arial Narrow", sans-serif; --f-text: Oswald, "Arial Narrow", system-ui, sans-serif; font-family: var(--f-text); color: var(--chalk);
-    padding: max(14px, calc(env(safe-area-inset-top, 0px) + 10px)) 14px max(16px, calc(env(safe-area-inset-bottom, 0px) + 8px)); text-align: left; overflow: hidden;
+    padding: max(14px, calc(env(safe-area-inset-top, 0px) + 10px)) 14px max(12px, calc(env(safe-area-inset-bottom, 0px) + 4px)); text-align: left; overflow: hidden;
     background: radial-gradient(130% 60% at 50% 0%, #3B7F59 0%, #235A3E 45%, #173A29 100%); }
   #screen-freeplay.fpv::before { content: ""; position: absolute; inset: 0; pointer-events: none; opacity: 0.55; background: repeating-linear-gradient(180deg, rgba(255,255,255,0.025) 0 38px, rgba(0,0,0,0.03) 38px 76px); }
   #screen-freeplay.fpv > * { position: relative; z-index: 1; }
@@ -741,7 +742,7 @@
   @media (prefers-reduced-motion: reduce) { #screen-freeplay.fpv *, #screen-freeplay.fpv *::before, #screen-freeplay.fpv *::after, .fp-ticket { animation: none !important; transition: none !important; } }
 
   /* ---- Level-Vorschau "Taktiktafel" (Prompt 41, Prototyp level-vorschau.html Variante C; alles unter .lv) ---- */
-  #screen-game.lv-on { overflow: hidden; padding: max(12px, calc(env(safe-area-inset-top) + 8px)) 12px max(18px, calc(env(safe-area-inset-bottom) + 10px));
+  #screen-game.lv-on { overflow: hidden; padding: max(12px, calc(env(safe-area-inset-top) + 8px)) 12px max(12px, calc(env(safe-area-inset-bottom) + 4px));
     background: repeating-radial-gradient(circle at 30% 20%, rgba(255,255,255,0.025) 0 2px, transparent 2px 6px), radial-gradient(120% 70% at 50% 25%, #357652, #1A3D2B 70%), #1A3D2B; }
   #screen-game.lv-on #pitchView { flex: 1; min-height: 0; display: flex; flex-direction: column; }
   .lv { --wc: #7fd99a; --gold-hi: #F7D98E; flex: 1; min-height: 0; display: flex; flex-direction: column; color: var(--chalk); font-family: 'Oswald', sans-serif; }
@@ -822,7 +823,7 @@
   .lv.lv-still *, .lv.lv-still *::before, .lv.lv-still *::after { animation: none !important; }
   .lv.lv-still .lv-chalk .ln { stroke-dashoffset: 0; } .lv.lv-still .lv-rail .seg i { transform: scaleX(1); }
   /* ---- Spiel-Ansicht "Taktiktafel" (Prompt 42, Prototyp spiel-ansicht.html: Holzreiter + Holzrahmen-Schilder; alles unter .sp) ---- */
-  #screen-game.sp-on { overflow: hidden; padding: max(12px, calc(env(safe-area-inset-top) + 8px)) 12px max(16px, calc(env(safe-area-inset-bottom) + 8px));
+  #screen-game.sp-on { overflow: hidden; padding: max(12px, calc(env(safe-area-inset-top) + 8px)) 12px max(12px, calc(env(safe-area-inset-bottom) + 4px));
     background: repeating-radial-gradient(circle at 30% 20%, rgba(255,255,255,0.025) 0 2px, transparent 2px 6px), radial-gradient(120% 70% at 50% 25%, #357652, #1A3D2B 70%), #1A3D2B; }
   #screen-game.sp-on #pitchView { flex: 1; min-height: 0; display: flex; flex-direction: column; }
   #screen-game.sp-on.sp-done { overflow-y: auto; -webkit-overflow-scrolling: touch; overscroll-behavior: contain; }
@@ -889,6 +890,12 @@
   .sp .pos-input.revealed { border: 1.5px solid var(--gold); background: #1E2C37; color: var(--gold-hi); font-weight: 600; box-shadow: 0 3px 8px rgba(0,0,0,0.35); }
   .sp .pos-input.prefilled { border: none; background: linear-gradient(180deg, #FBF8EF, #E6E0CF); color: #2A3640; font-weight: 500; box-shadow: 0 2px 0 #B9B19C, 0 4px 8px rgba(0,0,0,0.25); }
   .sp .pos-input.bad, .sp .pos-input.miss { border: 1.5px solid #E0705F; background: rgba(193,57,43,0.42); color: var(--chalk); box-shadow: none; }
+  /* Prompt 50: richtig/aufgedeckt/vorgegeben schlaegt die Auswahl - das gewaehlte Schild wird sofort gruen, die Auswahl bleibt nur als feiner Goldring aussen */
+  .sp .sp-slot.on .pos-input.ok { border: none; background: linear-gradient(180deg, #8BF0B6, var(--okg)); color: #0E2A1A; font-weight: 600; box-shadow: 0 2px 0 #23864F, 0 0 0 2.5px rgba(247,217,142,0.85), 0 4px 8px rgba(0,0,0,0.3); }
+  .sp .sp-slot.on .pos-input.near { border: 1.5px solid var(--gold); background: rgba(232,178,61,0.24); color: #FFF3D1; box-shadow: 0 0 0 2.5px rgba(247,217,142,0.55); }
+  .sp .sp-slot.on .pos-input.revealed { border: 1.5px solid var(--gold); background: #1E2C37; color: var(--gold-hi); box-shadow: 0 0 0 2.5px rgba(247,217,142,0.55), 0 3px 8px rgba(0,0,0,0.35); }
+  .sp .sp-slot.on .pos-input.prefilled { border: none; background: linear-gradient(180deg, #FBF8EF, #E6E0CF); color: #2A3640; font-weight: 500; box-shadow: 0 2px 0 #B9B19C, 0 0 0 2.5px rgba(247,217,142,0.85), 0 4px 8px rgba(0,0,0,0.25); }
+  .sp .sp-slot.on .pos-input.bad, .sp .sp-slot.on .pos-input.miss { border: 1.5px solid #E0705F; background: rgba(193,57,43,0.42); color: var(--chalk); box-shadow: none; }
   .sp .pos-input.sp-tight { padding: 0 1px; letter-spacing: -0.07em; }
   .sp .pos-input:disabled { opacity: 1; -webkit-text-fill-color: currentColor; }
   .sp-bdg { position: absolute; z-index: 3; top: calc(var(--pt) - 7px); right: calc(var(--w, var(--pw)) / -2 - 4px); width: 17px; height: 17px; padding: 0; border: none; border-radius: 50%; display: grid; place-items: center; pointer-events: none; animation: spBadgeIn 0.35s cubic-bezier(.3,1.6,.5,1) both; }
@@ -1013,7 +1020,7 @@
   .sp-sheet .save-btn.main { height: 52px; font-family: 'Anton', Impact, sans-serif; font-weight: 400; font-size: 20px; color: var(--ink); background: linear-gradient(160deg, var(--gold-hi), var(--gold)); box-shadow: 0 5px 0 #9C7422, 0 14px 30px rgba(0,0,0,0.3); }
   .sp-sheet .save-btn.main:active { transform: translateY(3px); box-shadow: 0 2px 0 #9C7422; }
   /* Duell-Runde in der Taktiktafel-Ansicht (Prompt 42) */
-  #screen-duelplay.sp-duel { overflow: hidden; padding: max(12px, calc(env(safe-area-inset-top) + 8px)) 12px max(16px, calc(env(safe-area-inset-bottom) + 8px));
+  #screen-duelplay.sp-duel { overflow: hidden; padding: max(12px, calc(env(safe-area-inset-top) + 8px)) 12px max(12px, calc(env(safe-area-inset-bottom) + 4px));
     background: repeating-radial-gradient(circle at 30% 20%, rgba(255,255,255,0.025) 0 2px, transparent 2px 6px), radial-gradient(120% 70% at 50% 25%, #357652, #1A3D2B 70%), #1A3D2B; }
   #screen-duelplay.sp-duel #duelPlayView { flex: 1; min-height: 0; display: flex; flex-direction: column; }
   .lv-top .tb.clock { padding: 0 10px; cursor: default; }
@@ -12794,6 +12801,23 @@ if ("serviceWorker" in navigator) {
 
 if (!storageSelfTest()) showStorageWarning();
 try { if (navigator.storage && navigator.storage.persist) navigator.storage.persist().catch(() => {}); } catch (e) { /* nicht unterstuetzt - ignorieren */ }
+// ?debug=1: Mess-Anzeige fuer Geraete-Tests (Prompt 50) - zeigt Viewport-, Safe-Area- und .stage-Werte, damit der untere Rand gemessen statt geraten wird
+if (/[?&]debug=1\b/.test(location.search)) {
+  const box = document.createElement("pre");
+  box.style.cssText = "position:fixed;left:6px;top:6px;z-index:9999;margin:0;padding:6px 8px;border-radius:8px;background:rgba(0,0,0,0.78);color:#7FE0A8;font:11px/1.3 ui-monospace,Menlo,monospace;pointer-events:none;white-space:pre";
+  document.body.appendChild(box);
+  const probe = document.createElement("div");
+  probe.style.cssText = "position:fixed;visibility:hidden;pointer-events:none;height:100vh;width:100%;padding:env(safe-area-inset-top,0px) env(safe-area-inset-right,0px) env(safe-area-inset-bottom,0px) env(safe-area-inset-left,0px)";
+  const probeD = probe.cloneNode(); probeD.style.height = "100dvh"; document.body.append(probe, probeD);
+  const paint = () => {
+    const cs = getComputedStyle(probe), st = document.querySelector(".stage").getBoundingClientRect(), vv = window.visualViewport;
+    box.textContent = [`innerH ${innerHeight}  innerW ${innerWidth}`, `visualViewport ${vv ? Math.round(vv.height) + "x" + Math.round(vv.width) : "-"}`, `screen ${screen.height}x${screen.width}`,
+      `100vh ${probe.getBoundingClientRect().height}  100dvh ${probeD.getBoundingClientRect().height}`, `safe t/r/b/l ${cs.paddingTop} ${cs.paddingRight} ${cs.paddingBottom} ${cs.paddingLeft}`,
+      `stage ${Math.round(st.left)},${Math.round(st.top)} ${Math.round(st.width)}x${Math.round(st.height)}`, `standalone ${isStandalone()}`].join("\n");
+  };
+  paint(); addEventListener("resize", paint); setInterval(paint, 1500);
+}
+
 maybeShowInstallTip();
 runSplash();
 </script>

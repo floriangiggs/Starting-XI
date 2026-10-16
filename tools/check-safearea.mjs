@@ -7,12 +7,14 @@ import path from "node:path";
 import fs from "node:fs";
 
 const file = process.argv[2] ? path.resolve(process.argv[2]) : path.join(path.dirname(fileURLToPath(import.meta.url)), "..", "startelf_check.html");
-const TOP = 59, BOTTOM = 34, W = 393, H = 852;
+// SA_DEVICE="Breite,Hoehe,oben,unten" ueberschreibt das Standardgeraet (iPhone 16 Pro: 393x852, 59/34); SA_NAME nur fuer die Ausgabe
+const [W, H, TOP, BOTTOM] = (process.env.SA_DEVICE || "393,852,59,34").split(",").map(Number);
 let html = fs.readFileSync(file, "utf8").replace(/env\(safe-area-inset-top(?:,\s*0px)?\)/g, TOP + "px").replace(/env\(safe-area-inset-bottom(?:,\s*0px)?\)/g, BOTTOM + "px");
 const tmp = path.join(path.dirname(file), ".safearea-test.html");
 fs.writeFileSync(tmp, html);
 const browser = await chromium.launch();
 const ctx = await browser.newContext({ viewport: { width: W, height: H }, hasTouch: true, serviceWorkers: "block" });
+const blueNotes = new Set();
 const page = await ctx.newPage();
 await page.emulateMedia({ reducedMotion: "reduce" }); // keine Einblend-Animationen beim Messen
 const errs = []; page.on("pageerror", (e) => errs.push(e.message));
@@ -41,7 +43,21 @@ const scan = (label) => page.evaluate(({ TOP, BOTTOM, label }) => {
 }, { TOP, BOTTOM, label });
 
 let issues = 0;
-const report = async (label) => { const b = await scan(label); b.forEach((x) => console.log("  " + x)); issues += b.length; };
+const frame = (label) => page.evaluate((label) => {
+  // Rahmen-Check (Prompt 50): .stage fuellt den Bildschirm bis ganz unten, nichts laeuft seitlich ueber, und der unterste Pixel ist nicht Ink-Blau
+  const out = [], st = document.querySelector(".stage").getBoundingClientRect(), vh = innerHeight;
+  if (Math.abs(st.top) > 0.5 || Math.abs(st.bottom - vh) > 0.5) out.push(`${label}: .stage deckt nicht ganz ab (${Math.round(st.top)}..${Math.round(st.bottom)} von ${vh})`);
+  if (document.documentElement.scrollWidth > innerWidth + 1) out.push(`${label}: horizontaler Ueberlauf`);
+  let el = document.elementFromPoint(Math.round(innerWidth / 2), vh - 1), col = "";
+  while (el) { col = getComputedStyle(el).backgroundColor; if (col && col !== "rgba(0, 0, 0, 0)" && col !== "transparent") break; el = el.parentElement; }
+  const m = col.match(/\d+/g) || [], blue = (+m[2] || 0) > (+m[1] || 0) + 12 && (+m[2] || 0) > (+m[0] || 0) + 12 && (+m[2] || 0) > 30;
+  return { out, blue: blue ? col : null };
+}, label);
+const report = async (label) => {
+  const b = await scan(label); b.forEach((x) => console.log("  " + x)); issues += b.length;
+  const f = await frame(label); f.out.forEach((x) => console.log("  " + x)); issues += f.out.length;
+  if (f.blue) blueNotes.add(label.replace(/^Bildschirm /, ""));
+};
 const screens = await page.evaluate(() => [...document.querySelectorAll(".screen")].map((s) => s.id.replace("screen-", "")));
 await page.evaluate(() => { profile.hintTokens = 5; profile.level = 12; saveProfile(profile); });
 for (const id of screens) {
@@ -85,5 +101,6 @@ for (const [name, fn] of Object.entries(sheets)) {
 }
 await browser.close(); fs.unlinkSync(tmp);
 if (errs.length) { console.log("Konsolenfehler:", errs.slice(0, 3)); issues += errs.length; }
-console.log(issues ? `\n${issues} PROBLEM(E)` : "OK - nichts Antippbares in der Sperrzone (oben 59 px / unten 34 px)");
+if (blueNotes.size) console.log("Hinweis (kein Fehler): unterster Rand noch blau bei: " + [...blueNotes].join(", "));
+console.log(issues ? `\n${issues} PROBLEM(E)` : `OK - nichts Antippbares in der Sperrzone (oben ${TOP} px / unten ${BOTTOM} px) bei ${W}x${H}`);
 process.exit(issues ? 1 : 0);
