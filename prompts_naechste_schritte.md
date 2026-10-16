@@ -62,8 +62,9 @@ vorige umgesetzt, getestet und committet ist.
 | 48 | 32 neue Aufstellungen für schwache Kategorien (England, Deutschland, Spanien/Italien, EM, WM) – in Paketen recherchiert, auf Kampagne/Tag verteilt, in allen Modi einsortiert | 41 (teaser) |
 | 49 | Bugfix XP-Balken (zeigt immer „0 XP“), Schrift im Scout-Pass, XP-/Token-/Trophäen-Meldungen und Level-Up im Taktiktafel-Stil | – |
 | 50 | Blauer Balken am unteren Rand (Ladescreen + alle Bildschirme) weg, Platz unten gewinnen, Geräte-Test; richtiger Name wird sofort grün (nicht erst beim Verlassen) | – |
+| 51 | Kampagne: Level-Pfad neu (Candy-Crush-Weg, jede Welt eigene Landschaft mit Tribünen und Platz-Requisiten, Holzschild, Kamerafahrt zum aktuellen Level, "Zu Level n"-Knopf) | 41, 43, 45, 50 |
 
-**Empfohlene Reihenfolge ab jetzt:** 49 → 50 (Bugfixes, sofort) → 39 → 41 → 42 → 43 → 44 → 45 → 46 → 47 → 48 → weitere Offline-Feinschliffe (u. a. Jahres-Lücken im Ideen-Speicher auffüllen) → Planung Online-Duell (inkl. 28/29) → 8 (Capacitor, erst wenn die App final ist; vorher Duell-Pflichtpunkt aus CLAUDE.md ansprechen)
+**Empfohlene Reihenfolge ab jetzt:** 49 → 50 (Bugfixes, sofort) → 39 → 41 → 42 → 43 → 44 → 45 → 46 → 47 → 48 → 49 → 50 → 51 → weitere Offline-Feinschliffe (u. a. Jahres-Lücken im Ideen-Speicher auffüllen) → Planung Online-Duell (inkl. 28/29) → 8 (Capacitor, erst wenn die App final ist; vorher Duell-Pflichtpunkt aus CLAUDE.md ansprechen)
 
 Prompt 7 steht bewusst vor der Tages-Challenge: Nur mit der neuen
 Update-Strategie kommen neue Tages-Aufstellungen zuverlässig auf dem iPhone an.
@@ -4398,6 +4399,157 @@ Ladescreen; Feld mit richtigem Namen, noch gewählt), Gerätetabelle aus
 B, CACHE_NAME erhöhen, Status-Tabelle: Prompt 50 erledigt. Am Ende
 Florian bitten: App am iPhone komplett schließen, neu öffnen, unteren
 Rand prüfen und ggf. ?debug=1-Screenshot schicken.
+```
+
+---
+
+## Prompt 51 – Kampagne: Level-Pfad neu (Weg, Welt-Landschaften, Tribünen)
+
+```
+Lies CLAUDE.md. Optischer Umbau eines Bildschirms → Plan Mode, Plan
+zeigen, dann in Paketen A–D umsetzen (je Paket Commit + Test).
+Voraussetzung: Prompts 41, 43, 45 und 50 erledigt (Holz-Bausteine,
+Scout-Münze, Safe-Area-Regeln, Weltenansicht, grüner Grund statt Ink).
+Optische Vorlage: prototypes/level-pfad.html (von Florian am 16.10.2026
+freigegeben, Fassung v2) – Optik, Maße, Farben, Schriften, Bewegungen
+1:1. Im Prototyp über das Regie-Pult alle 5 Welten und die Spielstände
+"neu / mittendrin / alles geschafft" ansehen.
+NICHT übernehmen: angedeutete Statusleiste/Dynamic Island/Home-Balken,
+Regie-Pult, Toasts "In der App: …", Beispiel-Spielstände, feste
+Levelanzahl N, eingebettete Schriften.
+
+Grundsatz: Logik bleibt (getMatchesByTier, unlockedCount, profile.
+campaign.levelPassed/stars/solutionSeen, profile.drafts "c:<id>",
+currentLevelContext, Antippen eines freien Levels öffnet wie bisher die
+Level-Vorschau aus 41, Rückweg zur Weltenansicht aus 45). Es ändern
+sich renderCampaignLevels(), pathDecoration(), TIER_INTRO, PATH_BG und
+das CSS von #screen-levelpath (.level-node, .path-deco*, .roadmap-path).
+
+A. Aufbau und Weg
+   1. Kopf fest oben (unter der Safe-Area wie 43): "‹ Welten"
+      (gezeichneter Chevron), rechts Sterne-Chip "★ x/max" der Welt und
+      Token-Chip mit Scout-Münze. Weicher Schatten unter dem Kopf, damit
+      der Inhalt darunter weg scrollt.
+   2. Oben im Pfad hängendes Holzschild an zwei Seilen: "Welt n von 5",
+      Weltname (Anton), Fortschrittsbalken in Weltfarbe + "x/N Level".
+      Darunter gelber Notizzettel mit dem Welt-Satz (TIER_INTRO neu, siehe
+      C). Ersetzt .path-intro.
+   3. Weg statt dünner gestrichelter Linie: breiter Weg (Breite 38 px +
+      Rand + weicher Schatten) als sanfte Sinus-Schlange über die ganze
+      Breite, Abstand der Level 132 px. Jede Welt hat eine eigene
+      Wegart (TH im Prototyp): 1 sandfarbener Trampelpfad mit Tritten,
+      2 roter Aschenplatz-Weg mit Rechenspuren, 3 Rasenweg mit
+      Kreidelinien, 4 dunkler Weg mit Lichterkette am Rand, 5 roter
+      Teppich mit Goldkante. Geschaffter Abschnitt bekommt eine Kreide-
+      Spur bis zum aktuellen Level.
+   4. Level-Knoten (keine Emojis):
+      - geschafft: glänzende Scheibe in Weltfarbe mit Nummer (Anton),
+        darunter dunkle Pille mit drei gezeichneten Sternen.
+      - aktuell: größer, goldener Ring, goldener "Du"-Magnet mit
+        Holzschild "Level n" darüber (ersetzt das Maskottchen hier).
+      - gesperrt: dunkle Scheibe mit Kreide-Strichkreis, blasse Nummer,
+        kleines goldenes Schloss-Abzeichen unten rechts.
+      - angefangen (Entwurf): kleines Stift-Abzeichen; Lösung angesehen:
+        Auge-Abzeichen (beide als SVG wie im Prototyp, ersetzen ✏️/👁
+        und den Text "angefangen").
+      - Trefferfläche mind. 44 px; Knoten, Sterne, Abzeichen und "Du"
+        dürfen sich nie mit Requisiten oder Nachbarknoten überdecken.
+   5. Ziel am Ende: Welt 1–4 Stadiontunnel (Steinbogen) mit Fahnen,
+      verschlossen mit Schloss bzw. offen mit Licht in der Farbe der
+      nächsten Welt; Holzschild "Alle Level bestehen / Tunnel offen ·
+      Weiter: <nächste Welt>". Welt 5: Pokal auf Podest mit Lorbeer,
+      Schild "Am Ende wartet / Geschafft · Der Weltklasse-Pokal". Ein Tipp
+      auf den offenen Tunnel führt zur Weltenansicht mit der nächsten
+      Welt ausgewählt.
+   6. Schwebender Knopf "↓ Zu Level n" (gold, unten mittig über der
+      Safe-Area): erscheint nur, wenn das aktuelle Level aus dem Bild
+      gescrollt ist (Pfeil zeigt nach oben bzw. unten), fährt weich
+      dorthin. Während der Einstiegs-Bewegung ausgeblendet.
+
+B. Welt-Landschaften (rein dekorativ, pointer-events: none)
+   Requisiten als SVG-Bausteine wie im Prototyp (Objekt P), seitlich
+   des Wegs platziert über freeSides()/place() mit festem Zufalls-Seed je
+   Welt (gleiches Bild bei jedem Öffnen). Mindestabstand zum Weg wie im
+   Prototyp; nichts liegt auf dem Weg oder unter Knoten.
+   1. Kreisliga: Bäume, Tannen, Büsche, Blumen, Holzzaun, Vereinsheim,
+      Tor, Heuballen, Bank, Hütchen, ein Flutlichtmast. Keine Tribüne.
+   2. Regionalliga: Stehtraversen links und rechts am Rand (Beton-
+      stufen, grüne Wellenbrecher, Wellblechdach, Zaun vorn, Fans in
+      Grün-Weiß mit Schals), Anzeigetafel "Heim 2 : 1 Gast",
+      Mannschaftsbus, zwei Trainerbänke, Freistoß-Dummies, Ballnetz,
+      Getränkekiste, Eckfahnen, Hütchen.
+   3. Bundesliga: Sitzplatz-Tribünen am Rand (unten rote, oben graue
+      Schalen, Mundlöcher an den Aufgängen, Bande mit goldenem LED-
+      Streifen OHNE Schrift), Videowand "TOR!", TV-Kamera, Trainerbank,
+      Fotografen, Fahnen, Ballnetz, Getränkekiste, Eckfahnen.
+   4. Champions League (Nacht): dunkle Ränge mit vereinzelten Handy-
+      lichtern, Strahler an der Dachkante, Lichtkegel, Sterne nur über
+      dem Rasen, TV-Kameras, Fotografen, bengalische Fackeln mit Rauch,
+      Eckfahnen. Keine Flutlichtmasten.
+   5. Weltklasse: rot-goldene Ränge mit Schals und Dachbeleuchtung,
+      goldener Schein, Kordel-Absperrung oben, Lorbeer, Funkeln,
+      Fotografen, Kameras, Fahnen; Konfetti nur über dem Rasen.
+   Tribünen (P.edgeStand im Prototyp) sind durchgehende Streifen am
+   linken und rechten Bildrand (ca. 58–60 px breit, von oben gesehen):
+   Reihen parallel zum Rand, Zuschauer als Schultern + Kopf mit Blick
+   zum Feld, Treppenaufgänge mit Geländer alle ~120–150 px, Dach außen
+   mit Schattenwurf auf die oberen Reihen, Schatten der Tribüne auf den
+   Rasen. Werte je Welt aus dem Prototyp übernehmen.
+   KEINE Werbebanden/Spruchbänder mit Text (ELF, KICK, LIGA usw.) und
+   keine freistehenden Mini-Tribünen-Blöcke – Florian hat beides
+   abgelehnt.
+   Leistung: Die Tribünen bestehen aus vielen kleinen SVG-Elementen. Je
+   Welt einmal als SVG-String bauen und cachen (nicht bei jedem Öffnen
+   neu würfeln); auf einem älteren iPhone (Playwright mit CPU-Drossel
+   4×) darf das Öffnen nicht ruckeln. Falls nötig, Tribünen-Streifen
+   einmal in ein Canvas/Bild rendern und als Hintergrund setzen – Optik
+   muss gleich bleiben.
+   Ebenen: Hintergrund + Tribünen fest; Himmels-Deko (Sterne, Konfetti,
+   Flecken) mit leichter Parallaxe (0.22); Weg; Requisiten; Knoten.
+   Die Parallaxe-Ebene darf die Scrollhöhe nicht vergrößern (overflow:
+   clip am Welt-Container).
+
+C. Bewegung, Texte, Breite
+   1. Einmalig beim Öffnen (prefers-reduced-motion: alles sofort fertig,
+      direkt beim aktuellen Level): Schild schwingt ein, Zettel fällt,
+      Kamera fährt in 1,5 s vom Kopf zum aktuellen Level, geschaffte
+      Kreide-Spur zeichnet sich, Knoten ploppen gestaffelt, "Du"-Magnet
+      fällt mit Federn, ein einzelner Ring breitet sich am aktuellen
+      Level aus. Tippen/Scrollen bricht die Fahrt ab. Keine Dauer-
+      schleifen (kein Schweben, kein Pulsieren – .level-node.current
+      animation entfernen). Bei Rückkehr aus einem Level ohne Intro
+      direkt auf das aktuelle Level.
+   2. TIER_INTRO an die neue Optik anpassen (gilt auch, wo 45 den Satz
+      gekürzt nutzt):
+      1 "Bolzplatz-Flair: Holzzaun, Vereinsheim, ein Flutlichtmast. Hier
+        beginnt jede Karriere."
+      2 "Aschenplatz, Stehtraverse mit Wellenbrechern und Wellblechdach.
+        Vereinsfußball zum Anfassen."
+      3 "Ausverkauftes Haus, Fahnen im Wind. Fußball am Wochenende."
+      4 "Flutlicht vom Stadiondach, Handylichter auf den Rängen. Große
+        europäische Nächte."
+      5 "Nur für Legenden. Goldenes Licht, und am Ende wartet der Pokal."
+   3. Levelanzahl dynamisch aus getMatchesByTier (Höhe = TOP0 + (n-1) ·
+      132 + 330). Die Landschaft ist für 390 px Breite gezeichnet: auf
+      breiteren Geräten mittig, daneben Rasen-Grün der Welt (kein Ink);
+      Tribünen bleiben am Rand der 390er-Fläche. Bei 360/375 px
+      skalieren (transform), nicht abschneiden.
+
+D. Aufräumen + Abschluss
+   - Alte Pfad-Stile und -Funktionen entfernen, wenn nicht mehr genutzt
+     (alte pathDecoration-Motive, .roadmap-path, .level-dot-Glanz,
+     Maskottchen im Pfad, Emoji 🔒/🏆/✏️/👁 auf dieser Seite).
+   - tools/check-overlap.mjs: Prüfung des Level-Pfads auf die neuen
+     Knoten anpassen (Knoten/Sterne/Abzeichen/"Du" überlappen nicht
+     untereinander, liegen nicht auf Requisiten, Tribünen nicht unter
+     Knoten); für alle 5 Welten.
+   - "So geht's"-Texte zum Level-Pfad prüfen.
+   - Screenshots 393×852 (Safe-Area simuliert), 430×932, 375×667 je Welt
+     in drei Spielständen: neu, mittendrin (mit Entwurf + angesehener
+     Lösung), alles geschafft (Tunnel offen / Pokal); dazu ein Bild mit
+     sichtbarem "Zu Level n"-Knopf und Einzelbilder der Einstiegs-
+     Bewegung (0 / 0,7 / 1,5 / 2,6 s).
+   - CACHE_NAME in sw.js erhöhen, Status-Tabelle: Prompt 51 erledigt.
 ```
 
 ---
