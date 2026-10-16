@@ -63,8 +63,9 @@ vorige umgesetzt, getestet und committet ist.
 | 49 | Bugfix XP-Balken (zeigt immer „0 XP“), Schrift im Scout-Pass, XP-/Token-/Trophäen-Meldungen und Level-Up im Taktiktafel-Stil | – |
 | 50 | Blauer Balken am unteren Rand (Ladescreen + alle Bildschirme) weg, Platz unten gewinnen, Geräte-Test; richtiger Name wird sofort grün (nicht erst beim Verlassen) | – |
 | 51 | Kampagne: Level-Pfad neu (Candy-Crush-Weg, jede Welt eigene Landschaft mit Tribünen und Platz-Requisiten, Holzschild, Kamerafahrt zum aktuellen Level, "Zu Level n"-Knopf) | 41, 43, 45, 50 |
+| 52 | Ersatzbank-Blatt im Taktiktafel-Stil (Holzrahmen + Filz, Kreide-Zeitleiste der Wechsel, Namensschilder der Eingewechselten, übrige Bank in Kreide), gleiche Darstellung im Duell-Rückblick | 42, 50 |
 
-**Empfohlene Reihenfolge ab jetzt:** 49 → 50 (Bugfixes, sofort) → 39 → 41 → 42 → 43 → 44 → 45 → 46 → 47 → 48 → 49 → 50 → 51 → weitere Offline-Feinschliffe (u. a. Jahres-Lücken im Ideen-Speicher auffüllen) → Planung Online-Duell (inkl. 28/29) → 8 (Capacitor, erst wenn die App final ist; vorher Duell-Pflichtpunkt aus CLAUDE.md ansprechen)
+**Empfohlene Reihenfolge ab jetzt:** 49 → 50 (Bugfixes, sofort) → 39 → 41 → 42 → 43 → 44 → 45 → 46 → 47 → 48 → 49 → 50 → 51 → 52 → weitere Offline-Feinschliffe (u. a. Jahres-Lücken im Ideen-Speicher auffüllen) → Planung Online-Duell (inkl. 28/29) → 8 (Capacitor, erst wenn die App final ist; vorher Duell-Pflichtpunkt aus CLAUDE.md ansprechen)
 
 Prompt 7 steht bewusst vor der Tages-Challenge: Nur mit der neuen
 Update-Strategie kommen neue Tages-Aufstellungen zuverlässig auf dem iPhone an.
@@ -4550,6 +4551,108 @@ D. Aufräumen + Abschluss
      sichtbarem "Zu Level n"-Knopf und Einzelbilder der Einstiegs-
      Bewegung (0 / 0,7 / 1,5 / 2,6 s).
    - CACHE_NAME in sw.js erhöhen, Status-Tabelle: Prompt 51 erledigt.
+```
+
+---
+
+## Prompt 52 – Ersatzbank-Blatt im Taktiktafel-Stil
+
+```
+Lies CLAUDE.md. Optischer Umbau eines Blatts → kurz Plan Mode, Plan
+zeigen, dann in Paketen A–C umsetzen (je Paket Commit + Test).
+Voraussetzung: Prompts 42 und 50 erledigt (Spiel-Ansicht Taktiktafel
+mit Bank-Knopf, Blatt-Rahmen des Scout-Rads, Safe-Area unten).
+Optische Vorlage: prototypes/bank-v2.html (von Florian am 16.10.2026
+freigegeben, Fassung v2) – maßgeblich ist NUR das Blatt (.sheet.bn,
+openBench(), CSS-Block "Ersatzbank-Blatt"). Optik, Maße, Farben,
+Schriften und Bewegung 1:1. Im Regie-Pult alle fünf Partien und "vor /
+nach dem Auswerten" ansehen.
+NICHT übernehmen: Spielfeld, Regie-Pult, Demo-Daten, eingebettete
+Schriften, angedeutete Statusleiste.
+
+Grundsatz: Logik aus Prompt 37 bleibt unverändert (benchOf(m), Knopf
+nur bei vollständiger Bank und nie in der Duell-Runde, BENCH_COST = 0,
+kein Einfluss auf Hilfen/Kombo/XP/Sterne/Teilen-Raster, benchReveal:
+"für <Name>" erst nach dem Auswerten bzw. in der Kampagne nach
+"Lösung anzeigen"). Es ändern sich openBenchSheet() und das CSS
+.bench-sheet/.bn-* (altes Ink-Blau mit ink-2-Zeilen).
+
+A. Blatt (ersetzt den Inhalt von openBenchSheet)
+   1. Rahmen wie das Scout-Rad-Blatt aus 42: Holzrahmen, Filz innen,
+      oben unter der Kopfzeile des Spiels beginnend (im Prototyp
+      top: 58px), unten über der Safe-Area (Regel aus 50). Dunkler
+      Schleier dahinter, Tippen daneben schließt.
+   2. Kopf: cremefarbene Kachel mit gezeichneter Trainerbank (SVG aus
+      BI.bench), "Ersatzbank" (Anton), darunter Oswald 300 "<Team> ·
+      <kurzer Wettbewerb> <Jahr>" (Wettbewerb = Teil vor dem ersten
+      Komma aus m.comp, "Champions-League-" → "CL-", z. B.
+      "Borussia Dortmund · CL-Halbfinale 2013"), runder ×-Knopf.
+   3. Abschnitt "Eingewechselt <Anzahl>" (Oswald 500 + Kreidelinie
+      rechts, keine Großbuchstaben-Sperrschrift):
+      - Kreide-Zeitleiste: Anpfiff – 45' – 90'; bei Verlängerung (ein
+        Wechsel nach 90 ohne inExtra oder "n.V."/"i.E." in m.teams) bis
+        120' mit 105'-Strich und leicht abgesetztem Bereich ab 90'.
+        Je Wechsel ein cremefarbenes Kreide-Trikot mit Rückennummer.
+        Dicht beieinander liegende Wechsel werden seitlich aufgefächert
+        (Mindestabstand 31 px, am rechten Rand zurückgeschoben),
+        schräge Kreidestriche zeigen auf die echte Minute (Punkt auf
+        der Linie). Nie überlappen.
+      - Darunter je Wechsel ein cremefarbenes Namensschild (wie die
+        Schilder auf dem Spielfeld, Höhe ca. 48 px): Trikot in
+        abgedunkelter Weltfarbe mit Nummer (Anton), Name Oswald 600
+        15,5 px, darunter Position als Wort (Tor, Abwehr, Mittelfeld,
+        Angriff) und
+        · vor dem Auswerten: gestrichelte Pille mit Schloss "für wen?"
+        · danach: "↓ für <Name des Startspielers>" (Pfeil als SVG, in
+          Tinte, KEIN Rot – Rot bleibt für Fehler).
+        Rechts grüne Minuten-Pille mit gezeichnetem Pfeil nach oben und
+        Minute in Anton; Nachspielzeit als "90" mit hochgestelltem "+2".
+        Sortiert nach Minute.
+      - Kampagne außerhalb einer Welt-Farbe (Freispiel, Tag): Trikot in
+        Stufenfarbe (DIFF_COLOR) der Aufstellung, abgedunkelt wie im
+        Prototyp (mixHex mit Ink, 0.38).
+   4. Abschnitt "Nicht eingesetzt <Anzahl>": Kreide-Kacheln auf dem
+      Filz, zweispaltig, gleich hoch wie die Namensschilder (ca. 48
+      px): Nummer im Kreide-Kreis (Anton), Name Oswald 500 16,5 px,
+      Position als Wort Oswald 300 darunter. Sortiert Tor, Abwehr,
+      Mittelfeld, Angriff, dann Nummer. Lange Namen mit … kürzen.
+   5. Gelber Notizzettel mit Stecknadel: vor dem Auswerten "Die Bank
+      verrät keine Startelf: für wen eingewechselt wurde, siehst du
+      erst nach dem Auswerten." – danach "Bei jedem Wechsel steht
+      jetzt, für wen der Spieler kam."
+   6. Unten fest: goldener Knopf "Zurück aufs Feld" (.cta-Stil aus 42).
+      Der Bereich dazwischen scrollt (lange Bänke wie EM 2024 mit 15
+      Spielern), Kopf und Knopf bleiben stehen.
+   7. Bewegung einmalig beim Öffnen: Linie zeichnet sich, Trikots
+      ploppen gestaffelt, Karten steigen gestaffelt ein.
+      prefers-reduced-motion: alles sofort. Keine Dauerschleifen.
+   8. Bedienung: ×, "Zurück aufs Feld", Tippen auf den Schleier und
+      Wischen nach unten schließen (wie die anderen Blätter seit 43).
+      Barrierefreiheit: role="dialog", aria-label, Minuten-Pille mit
+      aria-label "eingewechselt in Minute 63".
+
+B. Gleiche Darstellung im Duell-Rückblick
+   Die aufklappbare Bank im Duell-Rückblick (details.dz-bank in der
+   Spielhistorie/Detailansicht) nutzt dieselben Bausteine: eine
+   gemeinsame Funktion benchBodyHTML(m, reveal) liefert Zeitleiste,
+   Namensschilder und Kreide-Kacheln; dort immer reveal = true. Der
+   Aufklapp-Kopf bleibt, die Optik darin wie im Blatt. Die restliche
+   Duell-Zentrale wird NICHT umgestaltet (eigener Prompt später).
+
+C. Aufräumen + Abschluss
+   - Alte .bench-sheet/.bn-*-Regeln und dz-blist-Zeilen entfernen, wenn
+     nicht mehr genutzt; "⇡"-Textpfeil durch SVG ersetzen.
+   - "So geht's"/Regeln-Text zur Ersatzbank prüfen (sinngemäß gleich).
+   - Playwright: Blatt in allen Modi mit Bank öffnen (Kampagne vor und
+     nach "Lösung anzeigen", Freispiel vor/nach Auswerten, Tages-
+     Challenge); prüfen: "für wen" vorher nirgends im DOM, nachher
+     richtig; Zeitleisten-Trikots überlappen nicht (u. a. Dortmund
+     2013: 82', 83', 90+2'); Kacheln gleich hoch; nichts unter der
+     Safe-Area; Liste scrollt, Knopf bleibt sichtbar.
+   - Screenshots 393×852 (Safe-Area simuliert) und 375×667: WM-Finale
+     2014 (Verlängerung, vor/nach), EM 2024 (lange Bank), Dortmund 2013
+     (dichte Wechsel), Duell-Rückblick aufgeklappt.
+   - CACHE_NAME in sw.js erhöhen, Status-Tabelle: Prompt 52 erledigt.
 ```
 
 ---
