@@ -60,8 +60,9 @@ vorige umgesetzt, getestet und committet ist.
 | 46 | Ladebildschirm v2 „Kabinentafel“ (Taktiktafel-Stil, nicht überspringbar, Übergang in die Startseite) | ✅ erledigt (Ladebildschirm „Kabinentafel“ nach ladescreen-v2.html: render(t)-Zeitplan 4,5 s, nicht überspringbar, reduzierte Fassung ≈ 1,1 s, Halt bei 99 % bis Schriften geladen, Sicherheitsnetz 8 s, Startseite startet beim Ausblenden; Bühne 390×844 skaliert in die Fläche ohne Safe-Areas) |
 | 47 | Frei spielen im Taktiktafel-Stil (One-Pager: Wettbewerbs-Karten mit Flaggen/Zeichen, Stufen in Weltfarben, Hardcore-Schalter, Zähl-Brett + Auslosen mit verdeckter Karte, Tages-Archiv) | 🟡 umgesetzt, noch nicht abgenommen (Layout-Messung 393×852/430×932/375×667 ohne Überlauf; offen: Screenshots ansehen, Ziehungs-Karte/Neu-ziehen/Ergebnis-„Nochmal“ im Browser testen, check-safearea, „So geht's“-Text zu Frei spielen, Hardcore-Rückfall entfernt = Pool strikt Stufe 4–5) |
 | 48 | 32 neue Aufstellungen für schwache Kategorien (England, Deutschland, Spanien/Italien, EM, WM) – in Paketen recherchiert, auf Kampagne/Tag verteilt, in allen Modi einsortiert | 41 (teaser) |
+| 49 | Bugfix XP-Balken (zeigt immer „0 XP“), Schrift im Scout-Pass, XP-/Token-/Trophäen-Meldungen und Level-Up im Taktiktafel-Stil | – |
 
-**Empfohlene Reihenfolge ab jetzt:** 39 → 41 → 42 → 43 → 44 → 45 → 46 → 47 → 48 → weitere Offline-Feinschliffe (u. a. Jahres-Lücken im Ideen-Speicher auffüllen) → Planung Online-Duell (inkl. 28/29) → 8 (Capacitor, erst wenn die App final ist; vorher Duell-Pflichtpunkt aus CLAUDE.md ansprechen)
+**Empfohlene Reihenfolge ab jetzt:** 49 (Bugfix, sofort) → 39 → 41 → 42 → 43 → 44 → 45 → 46 → 47 → 48 → weitere Offline-Feinschliffe (u. a. Jahres-Lücken im Ideen-Speicher auffüllen) → Planung Online-Duell (inkl. 28/29) → 8 (Capacitor, erst wenn die App final ist; vorher Duell-Pflichtpunkt aus CLAUDE.md ansprechen)
 
 Prompt 7 steht bewusst vor der Tages-Challenge: Nur mit der neuen
 Update-Strategie kommen neue Tages-Aufstellungen zuverlässig auf dem iPhone an.
@@ -4213,6 +4214,88 @@ Abschluss: Hook check-lineups + Namensprüfung (Prompt 38) + Spoiler-
 Prüfung (Prompt 41) ohne Befund; Zählung je Kategorie vorher/nachher als
 Tabelle; Screenshots Frei spielen (Karten-Zahlen) und Weltenkarte
 (Levelzahlen); CACHE_NAME erhöhen; Status-Tabelle: Prompt 48 erledigt.
+```
+
+---
+
+## Prompt 49 – XP-Balken reparieren, Meldungen und Level-Up im neuen Stil
+
+```
+Lies CLAUDE.md. Bugfix + kleiner optischer Umbau → erst Ursache im Code
+bestätigen und zeigen, dann in Paketen A–C umsetzen (je Paket Commit +
+Test). Kein Plan Mode nötig, aber bei C kurz die Gestaltung zeigen.
+
+A. Bug: XP-Balken zeigt immer "Noch 0 XP bis Level n+1" (Florian)
+   Ursache (vorab geprüft, Stand main 83993f1):
+   - Level-Modell: levelFromXP() liefert das höchste Level L mit
+     xpForLevel(L) <= totalXP (Level 1 ab 0 XP). Level L beginnt also bei
+     xpForLevel(L) (L ≥ 2) bzw. 0 (L = 1) und endet bei xpForLevel(L+1).
+   - renderProfileBar() (Scout-Pass) und profileOverviewHTML() (Profil-
+     Blatt) rechnen aber mit baseXP = xpForLevel(level − 1) und nextXP =
+     xpForLevel(level) – eine Stufe zu niedrig. Da totalXP immer
+     ≥ xpForLevel(level) ist, wird remainingXP = 0 und der Balken voll.
+     Gemessen: 300 XP → Level 2, angezeigt "Noch 0 XP bis Level 3"
+     (richtig: 150 XP). Selbst Level 1 mit 0 XP zeigt "Noch 75 XP"
+     (richtig: 225 XP).
+   Fix:
+   1. Eine gemeinsame Funktion levelProgress(totalXP) → { level, base,
+      next, intoLevel, needed, remaining, pct } mit base = level === 1 ? 0
+      : xpForLevel(level), next = xpForLevel(level + 1). Beide Stellen
+      (Scout-Pass, Profil-Übersicht "x / y XP") und jede weitere Stelle,
+      die Fortschritt anzeigt (grep nach xpForLevel), nutzen nur noch
+      diese Funktion.
+   2. Test tools/test-xp.mjs: für totalXP 0, 1, 224, 225, 226, 449, 450,
+      1000, 5000 und je Level 1–35 Übergänge prüfen: level ==
+      levelFromXP, 0 ≤ pct < 1, remaining > 0, remaining == next −
+      totalXP, base ≤ totalXP < next. Ergebnis-Tabelle zeigen.
+   3. Kein Eingriff in gespeicherte Daten nötig (nur Anzeige); die
+      Lade-Korrektur (totalXP ≥ xpForLevel(level)) bleibt.
+   4. Schrift im Scout-Pass: .hm-pass ist ein <button> ohne font-family →
+      "Level n", XP-Zeile, Stempel und "Scout-Profil" laufen in der
+      Systemschrift statt Oswald. font-family: var(--f-text)/'Oswald' am
+      .hm-pass setzen und global prüfen, ob weitere <button> ohne
+      geerbte Schrift sind (Regel button { font-family: inherit } o. ä.,
+      ohne bestehende Optik zu ändern). Screenshot vorher/nachher.
+
+B. XP-, Token- und Trophäen-Meldungen (showToast) im neuen Stil
+   Heute: Ink-Blau (--ink-2) mit Goldrand, Text klein – alter Stil.
+   Neu (wie die Hinweise in den freigegebenen Prototypen
+   prototypes/spiel-ansicht.html, startseite.html):
+   - Hintergrund dunkles Grün rgba(14,24,18,0.95), feine Goldlinie innen
+     (inset 0 0 0 1px rgba(247,217,142,0.45)), Radius 14 px, Schatten,
+     Oswald 400 14.5 px, mittig; einmaliges Einblenden, kein Pulsieren.
+   - Typen mit kleinem Zeichen links statt Emoji: XP = goldene Pille mit
+     "+50 XP" (Anton) + Grund in Oswald ("Erster Stern"); Token =
+     Scout-Münze (tokenCoin) + "+1 Scout-Token"; Trophäe = kleiner
+     gezeichneter Pokal (wie Trophäenregal aus Prompt 44) + Name; sonst
+     nur Text. Aufrufer (showToast, showAchievementToast,
+     showTrophyToast, Bonus-XP-Toast, Tages-Serie usw.) auf diese Typen
+     umstellen; Stellen per grep auflisten.
+   - Position wie heute (oben unter der Statusleiste bzw. im Spiel unter
+     dem Tafel-Kopf, Prompt 42); mehrere Meldungen stapeln sauber, nie
+     über der Statusleiste (Safe-Area-Check aus 43).
+
+C. Level-Up im Taktiktafel-Stil (showLevelUpToast)
+   Heute: blau-dunkles Overlay, Emoji-Medaille mit DAUER-Pulsieren
+   (verstößt gegen CLAUDE.md), gesperrtes "LEVEL UP", blaues Konfetti.
+   Neu:
+   - Abdunkeln in dunklem Grün; in der Mitte eine kleine Holz-Tafel
+     (Filz + Holzrahmen wie Startseite) mit: Rang-Medaille als SVG
+     (hmRankIcon aus Prompt 44, Rangfarbe), "Level-Aufstieg" (Oswald 500,
+     normale Schreibweise), Levelzahl groß (Anton, cremefarben auf
+     Holzbrettchen wie die Anzeigetafel), bei Rangwechsel "Neuer Rang:
+     <Name>", darunter "+n Scout-Token" mit Münze, goldener Knopf
+     "Weiter" (Anton wie die anderen Haupt-Knöpfe).
+   - Bewegung einmalig: Tafel stempelt sich ein, Levelzahl zählt von
+     alt auf neu hoch, Medaille ploppt; Konfetti nur in Gold, Creme,
+     Mint und der Rangfarbe (kein Blau); kein Dauerpulsieren.
+     prefers-reduced-motion: ruhig einblenden.
+   - Warteschlange celebrationQueue (Prompt 31) unverändert beachten.
+
+Abschluss: Screenshots Scout-Pass (Level 1/0 XP, Level 2/300 XP, Level
+12), Profil-Übersicht, je ein XP-, Token-, Trophäen-Toast, Level-Up mit
+und ohne Rangwechsel; tools/test-xp.mjs ohne Fehler; CACHE_NAME erhöhen;
+Status-Tabelle: Prompt 49 erledigt.
 ```
 
 ---
