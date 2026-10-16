@@ -1111,6 +1111,9 @@
   .sp-sheet .save-box p { margin: 8px 0 14px; font-weight: 300; font-size: 15.5px; line-height: 1.45; color: rgba(244,241,232,0.88); }
   .sp-sheet .save-btn { display: block; width: 100%; margin-top: 8px; height: 46px; border-radius: 14px; font-family: 'Oswald', sans-serif; font-weight: 500; font-size: 16px; color: var(--chalk); background: none; border: none; box-shadow: inset 0 0 0 1.5px rgba(244,241,232,0.3); cursor: pointer; }
   .sp-sheet .save-btn.main { height: 52px; font-family: 'Anton', Impact, sans-serif; font-weight: 400; font-size: 20px; color: var(--ink); background: linear-gradient(160deg, var(--gold-hi), var(--gold)); box-shadow: 0 5px 0 #9C7422, 0 14px 30px rgba(0,0,0,0.3); }
+  .sp-sheet .save-box textarea { width: 100%; min-height: 96px; resize: none; border: none; border-radius: 11px; padding: 10px 11px; color: var(--chalk); background: rgba(8,22,14,0.45); box-shadow: inset 0 0 0 1.3px rgba(244,241,232,0.25); font-family: 'Oswald', sans-serif; font-weight: 400; font-size: 14px; }
+  .sp-sheet .save-box .sum { border: none; border-radius: 11px; background: rgba(8,22,14,0.32); box-shadow: inset 0 0 0 1.3px rgba(244,241,232,0.22); } .sp-sheet .save-box .sum b { color: var(--gold-hi); }
+  .sp-sheet .save-box .err { color: #FF9C8A; }
   .sp-sheet .save-btn.main:active { transform: translateY(3px); box-shadow: 0 2px 0 #9C7422; }
   /* Duell-Runde in der Taktiktafel-Ansicht (Prompt 42) */
   #screen-duelplay.sp-duel { overflow: hidden; padding: max(12px, calc(env(safe-area-inset-top) + 8px)) 12px max(12px, calc(env(safe-area-inset-bottom) + 4px));
@@ -12447,8 +12450,7 @@ function askSheet(innerHTML, buttons) {
 }
 function openSaveModal(inner) {
   const b = document.createElement("div");
-  const gs = document.getElementById("screen-game");
-  const fps = document.getElementById("screen-freeplay"); const wood = !!(gs && !gs.hidden && gs.classList.contains("sp-on")) || !!(fps && !fps.hidden); // Prompt 42: Rueckfragen im Spiel im Holz-Blatt-Stil
+  const wood = true; // Rueckfragen und Spielstand-Blaetter ueberall im Holz-Blatt-Stil (Prompt 42, ausgeweitet)
   b.className = "modal-backdrop" + (wood ? " sp-sbd" : "");
   b.style.zIndex = "45";
   b.innerHTML = wood ? `<div class="sp-sheet" role="dialog" aria-modal="true"><div class="in"><div class="save-box">${inner}</div></div></div>` : `<div class="modal-sheet" role="dialog" aria-modal="true"><div class="save-box">${inner}</div></div>`;
