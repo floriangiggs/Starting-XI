@@ -61,8 +61,9 @@ vorige umgesetzt, getestet und committet ist.
 | 47 | Frei spielen im Taktiktafel-Stil (One-Pager: Wettbewerbs-Karten mit Flaggen/Zeichen, Stufen in Weltfarben, Hardcore-Schalter, Zähl-Brett + Auslosen mit verdeckter Karte, Tages-Archiv) | 🟡 umgesetzt, noch nicht abgenommen (Layout-Messung 393×852/430×932/375×667 ohne Überlauf; offen: Screenshots ansehen, Ziehungs-Karte/Neu-ziehen/Ergebnis-„Nochmal“ im Browser testen, check-safearea, „So geht's“-Text zu Frei spielen, Hardcore-Rückfall entfernt = Pool strikt Stufe 4–5) |
 | 48 | 32 neue Aufstellungen für schwache Kategorien (England, Deutschland, Spanien/Italien, EM, WM) – in Paketen recherchiert, auf Kampagne/Tag verteilt, in allen Modi einsortiert | 41 (teaser) |
 | 49 | Bugfix XP-Balken (zeigt immer „0 XP“), Schrift im Scout-Pass, XP-/Token-/Trophäen-Meldungen und Level-Up im Taktiktafel-Stil | – |
+| 50 | Blauer Balken am unteren Rand (Ladescreen + alle Bildschirme) weg, Platz unten gewinnen, Geräte-Test; richtiger Name wird sofort grün (nicht erst beim Verlassen) | – |
 
-**Empfohlene Reihenfolge ab jetzt:** 49 (Bugfix, sofort) → 39 → 41 → 42 → 43 → 44 → 45 → 46 → 47 → 48 → weitere Offline-Feinschliffe (u. a. Jahres-Lücken im Ideen-Speicher auffüllen) → Planung Online-Duell (inkl. 28/29) → 8 (Capacitor, erst wenn die App final ist; vorher Duell-Pflichtpunkt aus CLAUDE.md ansprechen)
+**Empfohlene Reihenfolge ab jetzt:** 49 → 50 (Bugfixes, sofort) → 39 → 41 → 42 → 43 → 44 → 45 → 46 → 47 → 48 → weitere Offline-Feinschliffe (u. a. Jahres-Lücken im Ideen-Speicher auffüllen) → Planung Online-Duell (inkl. 28/29) → 8 (Capacitor, erst wenn die App final ist; vorher Duell-Pflichtpunkt aus CLAUDE.md ansprechen)
 
 Prompt 7 steht bewusst vor der Tages-Challenge: Nur mit der neuen
 Update-Strategie kommen neue Tages-Aufstellungen zuverlässig auf dem iPhone an.
@@ -4296,6 +4297,106 @@ Abschluss: Screenshots Scout-Pass (Level 1/0 XP, Level 2/300 XP, Level
 12), Profil-Übersicht, je ein XP-, Token-, Trophäen-Toast, Level-Up mit
 und ohne Rangwechsel; tools/test-xp.mjs ohne Fehler; CACHE_NAME erhöhen;
 Status-Tabelle: Prompt 49 erledigt.
+```
+
+---
+
+## Prompt 50 – Unterer Rand ohne blauen Balken, Geräte-Test, richtiger Name sofort grün
+
+```
+Lies CLAUDE.md. Zwei Funde vom iPhone-Test (Florian, 16.10.2026). Erst
+Ursachen im Code bestätigen und zeigen, dann in Paketen A–C umsetzen (je
+Paket Commit + Test). Kein Plan Mode nötig.
+
+A. Blauer Balken am unteren Rand (Ladescreen und alle Bildschirme)
+   Befund: Auf dem iPhone (installierte App) ist unten überall ein
+   blauer Streifen sichtbar – auch im Ladescreen.
+   Vorab geprüft (Stand main 83993f1):
+   - html, body haben background: var(--ink) (Ink-Blau); theme-color
+     (#14202B) und manifest background_color/theme_color sind ebenfalls
+     Ink-Blau. Alles, was die Bildschirme nicht abdecken, scheint blau
+     durch.
+   - .stage ist height: 100vh/100dvh, max-width 560px. Im Browser bei
+     393×852 deckt das alles ab (unten grün); auf dem iPhone im
+     Standalone-Modus mit black-translucent + viewport-fit=cover reicht
+     100dvh offenbar nicht bis unter den Home-Balken (bekanntes iOS-PWA-
+     Verhalten) → der blaue Body bleibt unten sichtbar. Auf breiten
+     Geräten (> 560 px, Tablets, Querformat) zusätzlich links/rechts.
+   - Noch Ink-Blau sind außerdem: #screen-duels (--dz-ink), #screen-
+     levelpath, #screen-duelinvite, #screen-duelplay, #screen-duelresult
+     (Standard-.screen-Hintergrund) – diese im Bericht auflisten, aber
+     nur den unteren Rand angleichen (eigene Umgestaltung folgt später).
+   Umsetzung:
+   1. Zuerst messen statt raten: kleine Debug-Anzeige hinter ?debug=1
+      (innerHeight, visualViewport.height, screen.height, berechnete
+      100dvh/100vh/100%, env(safe-area-inset-*), .stage-Rechteck). Florian
+      schickt davon einen Screenshot vom iPhone (Hinweis im Abschluss);
+      bis dahin die robuste Lösung unten umsetzen.
+   2. html, body und .stage bekommen den grünen Rasen-Grund der
+      Startseite (unterer Farbton #173A29) statt Ink-Blau; theme-color und
+      manifest background_color/theme_color auf dasselbe Grün. Damit ist
+      jeder Spalt höchstens grün statt blau.
+   3. .stage füllt garantiert den ganzen Bildschirm: position: fixed;
+      inset: 0 (bzw. height: 100% mit html/body 100%) statt nur 100dvh;
+      auf breiten Geräten ist der Bereich neben der 560-px-Spalte
+      ebenfalls Rasen-Grün (kein Blau, keine harte Kante).
+   4. Platz gewinnen: Hintergründe (Rasen, Tafel-Schatten, Holzleisten-
+      Schatten) laufen bis ganz unten unter den Home-Balken; nur
+      antippbare Elemente bleiben über der Safe-Area. Unterer Abstand
+      der Bildschirme von max(16px, safe-bottom + 10px) auf max(12px,
+      safe-bottom + 4px) senken (Home-Balken nie überdecken). Dadurch
+      werden auf iPhones mit Home-Balken unten ca. 6 px frei, auf Geräten
+      ohne ca. 4 px – an Tafeln/Spielfeld weitergeben. Ladescreen
+      ebenso.
+   5. Gleiche Prüfung für Blätter (Profil, Scout-Rad, Bank, Rückfragen):
+      Blatt-Hintergrund reicht bis ganz unten, Inhalt über der Safe-Area.
+
+B. Kompatibilität mit anderen Smartphones
+   - Prüfmatrix (Playwright, simulierte Safe-Areas): iPhone SE 375×667
+     (0/0), iPhone 13 mini 375×812 (50/34), iPhone 16 393×852 (59/34),
+     iPhone 16 Pro Max 440×956 (62/34), Android klein 360×780 (24/0),
+     Android groß 412×915 (24/24, Gesten-Navigation), Android mit
+     3-Tasten-Leiste 412×869 (24/0), Tablet hochkant 768×1024.
+   - Je Bildschirm (Ladescreen, Start, Profil-Blatt, Weltenkarte,
+     Level-Pfad, Level-Vorschau, Spiel inkl. Tastatur-Modus, Frei
+     spielen, Tages-Challenge, Duell-Zentrale, Duell-Runde, Ergebnis):
+     kein blauer Rand, nichts unter Status-/Navigationsleiste, nichts
+     abgeschnitten, kein Scrollen, wo One-Pager gewollt ist. Bestehende
+     tools/check-safearea.mjs und check-overlap.mjs erweitern; Ergebnis
+     als Tabelle (Gerät × Bildschirm: ok / Befund) zeigen, Befunde
+     beheben.
+   - Android: viewport-fit=cover + env()-Werte prüfen (Chrome liefert
+     sie seit Edge-to-Edge); manifest display "standalone" und
+     orientation "portrait" bleiben.
+
+C. Richtiger Name wird erst beim Verlassen des Felds grün (Florian)
+   Ursache (vorab geprüft): Die Live-Prüfung setzt sofort die Klasse
+   .ok und das Häkchen-Abzeichen erscheint auch. Aber die Regel für das
+   gewählte Feld ".sp .sp-slot.on .pos-input" (Goldrand, goldener
+   Schimmer) ist spezifischer als ".sp .pos-input.ok" (grün) und
+   überdeckt das Grün, solange das Feld gewählt ist. Grün wird es erst,
+   wenn eine andere Position gewählt wird. Das kann mit "Fast richtig"
+   (gold + Stift) verwechselt werden.
+   Fix:
+   1. Richtig schlägt Auswahl: Sobald ein Name akzeptiert ist, wird das
+      Schild sofort grün (gleiche Optik wie .ok), auch wenn es gewählt
+      ist. Die Auswahl bleibt nur als feiner Goldring außen sichtbar
+      (box-shadow), nicht als goldene Füllung. Gleiches für .revealed
+      und .prefilled (deren Optik gewinnt immer).
+   2. Einmaliger Pop + Häkchen wie im Prototyp, sofort beim Tippen.
+   3. Gilt in allen Modi inkl. Duell-Runde (.miss nach Abgabe bleibt).
+   4. Optional, im Plan kurz vorschlagen: nach richtigem Namen
+      automatisch zur nächsten freien Position springen (Tastatur bleibt
+      offen) – nur umsetzen, wenn Florian zustimmt.
+   5. Playwright-Test: Feld wählen, korrekten Namen tippen (ohne
+      Verlassen) → berechnete Hintergrundfarbe ist grün, data-st="ok";
+      fast richtigen Namen tippen → nach Tipppause gold + Stift.
+
+Abschluss: Screenshots vorher/nachher (unterer Rand Start, Spiel,
+Ladescreen; Feld mit richtigem Namen, noch gewählt), Gerätetabelle aus
+B, CACHE_NAME erhöhen, Status-Tabelle: Prompt 50 erledigt. Am Ende
+Florian bitten: App am iPhone komplett schließen, neu öffnen, unteren
+Rand prüfen und ggf. ?debug=1-Screenshot schicken.
 ```
 
 ---
