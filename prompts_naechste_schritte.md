@@ -67,8 +67,9 @@ vorige umgesetzt, getestet und committet ist.
 | 53 | Vorschau vor Tages-Challenge, Frei spielen und Tages-Archiv im Taktiktafel-Stil (wie Level-Vorschau, je Modus eigene Kopfzeile, Holzleiste und Knopf; ersetzt die blaue Info-Karte) | 41, 47 |
 | 54 | Duell im Taktiktafel-Stil: Rundenende an der Tafel mit „Weiter“-Knopf (statt 0,9 s + blauer Zwischenkarte), Duell-Zentrale, Schnell-Duell-Blatt, Einladung, Abpfiff; Emojis → SVG, Niederlage ohne Rot | 42, 50, 52 |
 | 55 | Töne: 11 empfohlene Stellen mit Web-Audio-Klängen aus dem Tonstudio (ohne Rauschen), Ton-Schalter + Lautstärke, Stummschalter respektieren | 49, 53, 54 |
+| 56 | Neues App-Icon „Taktiktafel“ (Variante A: Holzrahmen, Filz, Kreide, 11 Magnete) in allen Größen + Maskable + Favicon; Logo auf der Startseite ohne braunen Extra-Rand | 44 |
 
-**Empfohlene Reihenfolge ab jetzt:** 49 → 50 (Bugfixes, sofort) → 39 → 41 → 42 → 43 → 44 → 45 → 46 → 47 → 48 → 49 → 50 → 51 → 52 → 53 → 54 → 55 → weitere Offline-Feinschliffe (u. a. Jahres-Lücken im Ideen-Speicher auffüllen) → Planung Online-Duell (inkl. 28/29) → 8 (Capacitor, erst wenn die App final ist; vorher Duell-Pflichtpunkt aus CLAUDE.md ansprechen)
+**Empfohlene Reihenfolge ab jetzt:** 49 → 50 (Bugfixes, sofort) → 39 → 41 → 42 → 43 → 44 → 45 → 46 → 47 → 48 → 49 → 50 → 51 → 52 → 53 → 54 → 55 → 56 → weitere Offline-Feinschliffe (u. a. Jahres-Lücken im Ideen-Speicher auffüllen) → Planung Online-Duell (inkl. 28/29) → 8 (Capacitor, erst wenn die App final ist; vorher Duell-Pflichtpunkt aus CLAUDE.md ansprechen)
 
 Prompt 7 steht bewusst vor der Tages-Challenge: Nur mit der neuen
 Update-Strategie kommen neue Tages-Aufstellungen zuverlässig auf dem iPhone an.
@@ -5032,6 +5033,46 @@ C. Abschluss
    - CACHE_NAME in sw.js erhöhen, Status-Tabelle: Prompt 55 erledigt;
      Ideen-Speicher "Töne und Haptik" auf erledigt (Rest: Haptik mit
      Capacitor).
+```
+
+---
+
+## Prompt 56 – Neues App-Icon „Taktiktafel“, einheitlich mit dem Logo
+
+```
+Lies CLAUDE.md. Kein Plan Mode nötig (Grafik-Tausch), aber vorher kurz
+zeigen, welche Dateien sich ändern.
+Vorlage: prototypes/app-icon-v2.html (Variante A „Taktiktafel“, von
+Florian am 18.10.2026 gewählt). Fertige Quellen liegen in
+prototypes/app-icon-v2/: app-icon.svg (voll, mit Holzrahmen),
+app-icon-maskable.svg (nur Filz-Motiv, Safe-Zone für Android),
+app-icon-favicon.svg (vereinfacht für 16/32 px) + Vorschau-PNGs.
+
+1. icons/source/app-icon.svg, app-icon-maskable.svg und
+   app-icon-favicon.svg durch die drei neuen Dateien ersetzen (alte
+   Fassung nach icons/source/alt-navy/ verschieben, nicht löschen),
+   Vorschau-PNGs in icons/source/ aktualisieren.
+2. node tools/build-icons.mjs ausführen → icon-1024, icon-512, icon-192,
+   apple-touch-icon (180), Maskable 512/192, favicon-32/16 neu.
+   Prüfen: 1024er ohne Transparenz und ohne eigene runde Ecken (das Holz
+   füllt das ganze Quadrat – iOS/Android runden selbst ab); Maskable:
+   Motiv innerhalb des 80-%-Kreises; Favicon bei 16 px erkennbar.
+3. Logo in der App = dieselbe Datei (icons/icon-192.png): bei
+   .hm-brand img den braunen Doppelrand (box-shadow 0 0 0 1.5px #3E2A16,
+   0 0 0 3px #8A6038) entfernen – nur border-radius (ca. 22,5 % wie
+   iOS, bei 42 px ≈ 10 px) und weicher Schatten 0 4px 10px
+   rgba(0,0,0,0.45). Gilt auch für die kleinere Variante in
+   #screen-start (36 px) und überall, wo das Icon sonst noch angezeigt
+   wird (alle Vorkommen von icons/ in startelf_check.html, Teilen-Bild,
+   Ladescreen, Prototyp-Startseite prüfen und auflisten).
+4. manifest.json: Icons unverändert verlinkt; theme_color/background
+   bleiben Rasen-Grün aus Prompt 50.
+5. CACHE_NAME in sw.js erhöhen (Icons sind gecacht). Hinweis an Florian
+   im Abschluss: Auf dem iPhone übernimmt der Homescreen ein neues Icon
+   erst nach Entfernen und erneutem „Zum Home-Bildschirm“ – im Store
+   später automatisch.
+6. Screenshots: Startseiten-Kopf vorher/nachher (393×852), alle
+   erzeugten PNG-Größen nebeneinander. Status-Tabelle: Prompt 56 erledigt.
 ```
 
 ---
