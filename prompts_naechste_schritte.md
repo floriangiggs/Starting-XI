@@ -3207,6 +3207,11 @@ NICHT ausführen – Spezifikation für den eigenen Online-Duell-Plan (siehe
 Pflichtpunkte bei Prompt 8). Wird gebraucht, sobald Server/Accounts
 geplant werden. Optische Vorlage: prototypes/duell-ausbau.html (v3),
 Abschnitte "Liga-Duell", "Kategorie wählen", "Ranked", Walkout-Einbindung.
+UPDATE 18.10.2026 (Florian): Ranked hat eine neue Optik im Taktiktafel-
+Stil – prototypes/ranked-v2.html (Inhalt unverändert, nur Optik). Für
+Ranked gilt diese Vorlage statt des Ranked-Abschnitts aus duell-ausbau.html.
+Liga-Duell vor der Umsetzung ebenso im Taktiktafel-Stil neu gestalten
+(Basis: prototypes/duell-v2.html).
 
 A. Liga-Duell (Ping-Pong, wie Quizduell)
    - 6 Runden (später ggf. 4/6/8 wählbar). Wer dran ist, bekommt 3
