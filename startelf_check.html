@@ -787,6 +787,41 @@
   .lv-reroll:disabled { opacity: 0.5; }
   @keyframes swapOut { to { opacity: 0; transform: translateX(-40px) rotate(-2deg); } }
   .lv-frame.out > * { animation: swapOut 0.22s ease-in forwards !important; }
+  /* ---- Duell im Taktiktafel-Stil (Prompt 54, Prototyp duell-v2.html) ---- */
+  .du-mag { flex-shrink: 0; border-radius: 50%; display: inline-grid; place-items: center; font-family: 'Anton', Impact, sans-serif; font-weight: 400; color: #13202A; line-height: 1;
+    background: radial-gradient(circle at 35% 30%, #fff, var(--c) 58%, color-mix(in srgb, var(--c) 55%, #000)); box-shadow: 0 3px 7px rgba(0,0,0,0.4), inset 0 -2px 3px rgba(0,0,0,0.2); }
+  @keyframes duWrite { from { clip-path: inset(0 100% 0 0); } to { clip-path: inset(0 0 0 0); } }
+  @keyframes duStamp { from { opacity: 0; transform: rotate(-10deg) scale(1.7); } }
+  @keyframes duDrop { 0% { opacity: 0; transform: translateY(-16px) scale(1.3); } 70% { transform: translateY(1px); } 100% { opacity: 1; transform: none; } }
+  @keyframes duPop { 0% { opacity: 0; transform: scale(0.4); } 70% { transform: scale(1.08); } 100% { opacity: 1; transform: scale(1); } }
+  /* verpasste Namen: Kreide auf gestricheltem Schild (kein Rot) */
+  .sp .pos-input.miss, .sp .sp-slot.on .pos-input.miss { border: none; color: var(--chalk); font-weight: 500; background: rgba(8,22,14,0.42); box-shadow: inset 0 0 0 1.5px rgba(244,241,232,0.55); outline: 1.3px dashed rgba(244,241,232,0.38); outline-offset: -4.5px; animation: duWrite 0.5s ease-out both; }
+  .du-stamp { position: absolute; right: 4px; top: 6px; z-index: 3; padding: 3px 10px; border: 2px solid rgba(247,217,142,0.8); border-radius: 6px; font-family: 'Anton', Impact, sans-serif; font-size: 15px; color: var(--gold-hi, #F7D98E); transform: rotate(-6deg); pointer-events: none; animation: duStamp 0.45s 0.25s cubic-bezier(.3,1.6,.5,1) both; }
+  .sp-tmsg .du-lk { display: inline-block; vertical-align: -2px; margin-right: 3px; } .sp-tmsg .du-lk svg { width: 13px; height: 13px; }
+  .lv-top .tb.clock svg { width: 17px; height: 17px; } .lv-top .tb.clock small { font-weight: 400; font-size: 12px; color: rgba(244,241,232,0.75); }
+  .sp-felt.du-review { display: flex; flex-direction: column; gap: 8px; padding: 8px 10px 9px; }
+  .du-rres { display: grid; grid-template-columns: 1fr auto 1fr; gap: 8px; align-items: center; }
+  .du-rp { position: relative; display: flex; align-items: center; gap: 8px; height: 40px; padding: 0 10px 0 6px; border-radius: 11px; background: rgba(8,22,14,0.35); box-shadow: inset 0 0 0 1.2px rgba(244,241,232,0.18); min-width: 0; animation: duPop 0.45s 0.4s both; }
+  .du-rp:last-child { flex-direction: row-reverse; padding: 0 6px 0 10px; text-align: right; animation-delay: 0.6s; }
+  .du-rp .du-mag { width: 28px; height: 28px; }
+  .du-rp div { min-width: 0; }
+  .du-rp b { display: block; font-family: 'Anton', Impact, sans-serif; font-weight: 400; font-size: 19px; line-height: 1; color: var(--chalk); }
+  .du-rp b small { font-family: 'Oswald', sans-serif; font-weight: 400; font-size: 12px; color: rgba(244,241,232,0.65); }
+  .du-rp div > span { display: block; font-weight: 300; font-size: 11.5px; color: rgba(244,241,232,0.75); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .du-rp.win { background: linear-gradient(170deg, rgba(247,217,142,0.32), rgba(247,217,142,0.12)); box-shadow: inset 0 0 0 1.5px rgba(247,217,142,0.8); }
+  .du-rp.win b { color: var(--gold-hi, #F7D98E); }
+  .du-rp .crown { position: absolute; top: -12px; width: 22px; height: 16px; animation: duDrop 0.5s 0.95s both; }
+  .du-rp:first-child .crown { left: 10px; } .du-rp:last-child .crown { right: 10px; }
+  .du-rp.du-hid { opacity: 0.85; }
+  .du-rp.du-hid b { font-family: 'Oswald', sans-serif; font-weight: 500; font-size: 13.5px; display: flex; align-items: center; gap: 4px; justify-content: flex-end; }
+  .du-rp.du-hid b svg { width: 13px; height: 13px; }
+  .du-mid { display: grid; justify-items: center; font-weight: 400; font-size: 11px; color: rgba(244,241,232,0.7); }
+  .du-mid b { font-family: 'Anton', Impact, sans-serif; font-weight: 400; font-size: 21px; line-height: 1; color: var(--chalk); }
+  .du-next { position: relative; overflow: hidden; flex: 1; min-height: 40px; border: none; border-radius: 13px; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 6px; font-family: 'Anton', Impact, sans-serif; font-weight: 400; font-size: 19px; color: #13202A; background: linear-gradient(160deg, #F7D98E, #E8B23D); box-shadow: 0 4px 0 #9C7422; }
+  .du-next svg { width: 18px; height: 18px; } .du-next:active { transform: translateY(3px); box-shadow: 0 1px 0 #9C7422; }
+  .sp.d2 .du-rp, .sp.d3 .du-rp { height: 36px; } .sp.d2 .sp-felt.du-review, .sp.d3 .sp-felt.du-review { gap: 6px; padding: 6px 10px 7px; }
+  @media (prefers-reduced-motion: reduce) { .sp .pos-input.miss { animation: none; } .du-stamp, .du-rp, .du-rp .crown { animation: none; } }
+
   /* ---- Ersatzbank-Blatt im Taktiktafel-Stil (Prompt 52, Prototyp bank-v2.html; Koerper .bnb gilt auch im Duell-Rueckblick) ---- */
   .sp-sheet.bn { --bn-top: max(58px, calc(env(safe-area-inset-top, 0px) + 14px)); display: flex; flex-direction: column; max-height: none; height: calc(100dvh - var(--bn-top) - max(6px, env(safe-area-inset-bottom, 0px))); margin-bottom: max(6px, env(safe-area-inset-bottom, 0px)); }
   .sp-sheet.bn .in { flex: 1; min-height: 0; display: flex; flex-direction: column; padding: 14px; }
@@ -992,13 +1027,13 @@
   .sp .pos-input.near.shake { animation: spShake 0.4s; }
   .sp .pos-input.revealed { border: 1.5px solid var(--gold); background: #1E2C37; color: var(--gold-hi); font-weight: 600; box-shadow: 0 3px 8px rgba(0,0,0,0.35); }
   .sp .pos-input.prefilled { border: none; background: linear-gradient(180deg, #FBF8EF, #E6E0CF); color: #2A3640; font-weight: 500; box-shadow: 0 2px 0 #B9B19C, 0 4px 8px rgba(0,0,0,0.25); }
-  .sp .pos-input.bad, .sp .pos-input.miss { border: 1.5px solid #E0705F; background: rgba(193,57,43,0.42); color: var(--chalk); box-shadow: none; }
+  .sp .pos-input.bad { border: 1.5px solid #E0705F; background: rgba(193,57,43,0.42); color: var(--chalk); box-shadow: none; }
   /* Prompt 50: richtig/aufgedeckt/vorgegeben schlaegt die Auswahl - das gewaehlte Schild wird sofort gruen, die Auswahl bleibt nur als feiner Goldring aussen */
   .sp .sp-slot.on .pos-input.ok { border: none; background: linear-gradient(180deg, #8BF0B6, var(--okg)); color: #0E2A1A; font-weight: 600; box-shadow: 0 2px 0 #23864F, 0 0 0 2.5px rgba(247,217,142,0.85), 0 4px 8px rgba(0,0,0,0.3); }
   .sp .sp-slot.on .pos-input.near { border: 1.5px solid var(--gold); background: rgba(232,178,61,0.24); color: #FFF3D1; box-shadow: 0 0 0 2.5px rgba(247,217,142,0.55); }
   .sp .sp-slot.on .pos-input.revealed { border: 1.5px solid var(--gold); background: #1E2C37; color: var(--gold-hi); box-shadow: 0 0 0 2.5px rgba(247,217,142,0.55), 0 3px 8px rgba(0,0,0,0.35); }
   .sp .sp-slot.on .pos-input.prefilled { border: none; background: linear-gradient(180deg, #FBF8EF, #E6E0CF); color: #2A3640; font-weight: 500; box-shadow: 0 2px 0 #B9B19C, 0 0 0 2.5px rgba(247,217,142,0.85), 0 4px 8px rgba(0,0,0,0.25); }
-  .sp .sp-slot.on .pos-input.bad, .sp .sp-slot.on .pos-input.miss { border: 1.5px solid #E0705F; background: rgba(193,57,43,0.42); color: var(--chalk); box-shadow: none; }
+  .sp .sp-slot.on .pos-input.bad { border: 1.5px solid #E0705F; background: rgba(193,57,43,0.42); color: var(--chalk); box-shadow: none; }
   .sp .pos-input.sp-tight { padding: 0 1px; letter-spacing: -0.07em; }
   .sp .pos-input:disabled { opacity: 1; -webkit-text-fill-color: currentColor; }
   .sp-bdg { position: absolute; z-index: 3; top: calc(var(--pt) - 7px); right: calc(var(--w, var(--pw)) / -2 - 4px); width: 17px; height: 17px; padding: 0; border: none; border-radius: 50%; display: grid; place-items: center; pointer-events: none; animation: spBadgeIn 0.35s cubic-bezier(.3,1.6,.5,1) both; }
@@ -1648,11 +1683,6 @@
   #duelWo .wo-foot .wo-b { font-weight: 400; font-size: 12.5px; color: var(--muted); }
 
   /* Spiel */
-  #screen-duelplay .dplay { gap: 10px; min-height: 100%; }
-  #screen-duelplay .between { text-align: center; align-items: center; justify-content: center; flex: 1; display: flex; flex-direction: column; gap: 14px; }
-  #screen-duelplay .between .rb { font-family: 'Anton', Impact, sans-serif; font-size: 34px; line-height: 1.05; }
-  #screen-duelplay .between .rb span { color: var(--gold); }
-  #screen-duelplay .between .rs { font-family: 'Oswald', sans-serif; font-weight: 300; font-size: 15px; color: var(--muted); }
   /* Abpfiff */
   .dl .res2 { border-radius: 16px; padding: 14px 14px 12px; text-align: center; border: 1.5px solid rgba(232,178,61,0.65);
     background: repeating-linear-gradient(90deg, rgba(255,255,255,0.03) 0 16px, transparent 16px 32px), linear-gradient(150deg, #27603F, #173F2B 85%); }
@@ -1686,7 +1716,6 @@
   .dl .fpl span { display: inline-flex; align-items: center; gap: 4px; font-family: 'Oswald', sans-serif; font-weight: 500; font-size: 11.5px; padding: 2px 8px; border-radius: 10px; background: rgba(46,204,113,0.12); color: #8FE3B0; border: 1px solid rgba(46,204,113,0.35); }
   .dl .fpl span.warn { background: rgba(240,169,59,0.12); color: var(--flame); border-color: rgba(240,169,59,0.4); }
   @media (max-height: 700px) {
-    #screen-duelplay .dplay { gap: 8px; }
     .dl .res2 { padding: 10px 12px 9px; } .dl .res2 .big2 { font-size: 34px; margin-bottom: 6px; }
     .dl .rr .r { padding: 5px 10px; } .dl .rr { gap: 4px; }
   }
@@ -12733,7 +12762,7 @@ function endDuelRun() {
   const d = profile.duels[id];
   const played = d.playedRounds || d.mine.length;
   if (!d.xp) d.xp = { rounds: 0, win: 0 };
-  d.xp.rounds += duelAward(XP_RULES.duelRoundXP * played, "Duell gespielt");
+  if (!d.xp.rounds) d.xp.rounds = duelAward(XP_RULES.duelRoundXP * played, "Duell gespielt"); // nur einmal (Prompt 54: erneutes Oeffnen/Reload im Rundenende)
   d.lineups.forEach(l => { profile.duelRecent = profile.duelRecent.filter(x => x !== l); profile.duelRecent.push(l); });
   profile.duelRecent = profile.duelRecent.slice(-40);
   d.status = "waiting";
@@ -13374,6 +13403,62 @@ function duelClockHTML(s) {
   return `<span class="flip">${duelFlip(fmtMS(s))}</span>`;
 }
 
+/* ---- Duell im Taktiktafel-Stil (Prompt 54, Prototyp duell-v2.html): gemeinsame Bausteine ---- */
+const DU_SV = {
+  lock: '<svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><rect x="5" y="11" width="14" height="9" rx="2"/><path d="M8 11V8a4 4 0 0 1 8 0v3"/></svg>',
+  crown: '<svg class="crown" viewBox="0 0 28 20" aria-hidden="true"><path d="M2 17 L4 5 L10 11 L14 2 L18 11 L24 5 L26 17 Z" fill="#F7D98E" stroke="#9C7422" stroke-width="1.5" stroke-linejoin="round"/><circle cx="4" cy="5" r="2" fill="#E8B23D"/><circle cx="14" cy="2.5" r="2" fill="#E8B23D"/><circle cx="24" cy="5" r="2" fill="#E8B23D"/><rect x="2" y="16" width="24" height="3" rx="1" fill="#C9962E"/></svg>',
+  next: '<svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2.8" stroke-linecap="round" stroke-linejoin="round"><path d="M9 5l7 7-7 7"/></svg>',
+  hand: '<svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="#7FE0A8" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12l4-4 4 2 3-2 3 1 4 4"/><path d="M7 8l-4 4 5 5 2-1 2 2 2-1 2 1 3-3"/><path d="M11 12l2 2M13 11l2 2"/></svg>',
+  share: '<svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v12M7 8l5-5 5 5"/><path d="M5 13v6a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2v-6"/></svg>',
+  again: '<svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M4 12a8 8 0 0 1 13.7-5.6L20 9M20 4v5h-5M20 12a8 8 0 0 1-13.7 5.6L4 15M4 20v-5h5"/></svg>',
+  glass: '<svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M7 3h10M7 21h10M8 3c0 5 8 6 8 9s-8 4-8 9M16 3c0 5-8 6-8 9s8 4 8 9"/></svg>',
+  dots: '<svg viewBox="0 0 24 24" aria-hidden="true" fill="currentColor"><circle cx="5.5" cy="12" r="2"/><circle cx="12" cy="12" r="2"/><circle cx="18.5" cy="12" r="2"/></svg>',
+  plus: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 5v14M5 12h14" stroke="currentColor" stroke-width="3" stroke-linecap="round"/></svg>'
+};
+// Personen-Magnet: Initiale (Anton) in Personenfarbe (duelColor); spaeter werden daraus die Wappen aus der Kabine
+function duelMagHTML(person, size = 28) {
+  const nm = ((person && person.name) || "?").trim(), c = duelColor(person && person.deviceId);
+  return `<span class="du-mag" style="--c:${c};width:${size}px;height:${size}px;font-size:${Math.round(size * 0.44)}px">${duelEsc((nm[0] || "?").toUpperCase())}</span>`;
+}
+function duelRoundWinner(a, b) { // wie duelOutcome: mehr Richtige, sonst schnellere Zeit, sonst Remis
+  if (!a || !b) return null;
+  if (a.correct !== b.correct) return a.correct > b.correct ? "me" : "op";
+  if (a.seconds !== b.seconds) return a.seconds < b.seconds ? "me" : "op";
+  return "draw";
+}
+// Rundenende an der Tafel (Prompt 54): dieselbe Tafel der Runde wird umgeschaltet - Ergebnis ist schon gespeichert, nichts laeuft automatisch weiter
+function duelEnterReview(root, m, d, r, correct, seconds) {
+  const inputs = [...root.querySelectorAll(".pos-input")];
+  let k = 0;
+  inputs.forEach((i) => {
+    i.disabled = true;
+    if (!i.classList.contains("ok")) { i.value = m.players[i.dataset.abbr]; i.classList.add("miss"); i.style.animationDelay = (0.35 + (k++) * 0.12).toFixed(2) + "s"; }
+    applyNameFit(i);
+  });
+  if (document.activeElement && document.activeElement.blur) document.activeElement.blur();
+  const pitch = root.querySelector("#spPitch"); if (pitch) pitch.insertAdjacentHTML("beforeend", '<span class="du-stamp">Auflösung</span>');
+  const clock = root.querySelector(".tb.clock");
+  if (clock) { clock.setAttribute("aria-label", "Zeit gestoppt"); clock.innerHTML = `${DU_SV.lock}<span id="duelClock">${duelClockHTML(seconds)}</span><small>gestoppt</small>`; }
+  const o = d.opponent, me = duelMeInfo(), mine = d.mine[r.round], theirs = d.theirs && d.theirs[r.round];
+  const known = !!theirs, last = d.mine.length >= d.settings.rounds;
+  const w = known ? duelRoundWinner(mine, theirs) : null;
+  let a = 0, b = 0; if (known) for (let i = 0; i <= r.round; i++) { const x = duelRoundWinner(d.mine[i], d.theirs[i]); if (x === "me") a++; else if (x === "op") b++; }
+  const opName = o ? duelEsc(o.name) : "Gegner";
+  const felt = root.querySelector("#spTray .sp-felt");
+  felt.className = "sp-felt du-review";
+  felt.innerHTML = `<div class="du-rres">
+      <div class="du-rp${w === "me" ? " win" : ""}">${w === "me" ? DU_SV.crown : ""}${duelMagHTML(me, 28)}<div><b>${correct}<small>/11</small></b><span>Du · ${fmtMS(seconds)} · ${11 - correct} verpasst</span></div></div>
+      <div class="du-mid">${known ? `Stand<b>${a}:${b}</b>` : `Runde<b>${r.round + 1}</b>`}</div>
+      ${known ? `<div class="du-rp${w === "op" ? " win" : ""}">${w === "op" ? DU_SV.crown : ""}${duelMagHTML(o, 28)}<div><b>${theirs.correct}<small>/11</small></b><span>${opName} · ${fmtMS(theirs.seconds)}</span></div></div>`
+        : `<div class="du-rp du-hid">${o ? duelMagHTML(o, 28) : '<span class="du-mag" style="--c:#9AA6A1;width:28px;height:28px;font-size:13px">?</span>'}<div><b>${DU_SV.lock}verdeckt</b><span>${o ? opName + " spielt nach dir" : "Gegner noch offen"}</span></div></div>`}
+    </div>
+    <button type="button" class="du-next" id="duelNext">${last ? "Zum Abpfiff" : "Weiter zu Runde " + (r.round + 2)}${DU_SV.next}</button>`;
+  document.getElementById("duelNext").onclick = () => {
+    if (last) endDuelRun();
+    else { r.round++; r.phase = "walkout"; r.view = null; renderDuelPlay(); }
+  };
+}
+
 function startDuelRound() {
   const r = duelRun;
   if (!r || r.phase === "play") return;
@@ -13415,16 +13500,13 @@ function finishDuelRound(reason) {
   const inputs = [...document.querySelectorAll("#duelPlayView .pos-input")];
   const correct = inputs.filter(i => i.classList.contains("ok")).length;
   const seconds = reason === "time" ? r.limit : Math.min(r.limit, Math.max(1, Math.round((Date.now() - r.start) / 1000)));
-  inputs.forEach(i => { if (!i.classList.contains("ok")) { i.value = m.players[i.dataset.abbr]; i.classList.add("miss"); i.disabled = true; applyNameFit(i); } });
-  const give = document.getElementById("duelGive"); if (give) give.disabled = true;
-  r.timers.push(setTimeout(() => {
-    d.mine.push({ correct, seconds, left: r.left, ...duelRoundExtras(m, r.solved) });
-    d.playedRounds = (d.playedRounds || 0) + 1;
-    d.active = null;
-    saveProfile(profile);
-    if (d.mine.length >= d.settings.rounds) endDuelRun();
-    else { r.phase = "between"; r.view = null; renderDuelPlay(); }
-  }, REDUCED_MOTION ? 300 : 900));
+  // Ergebnis SOFORT speichern (Prompt 54): App schliessen im Rundenende verliert nichts und zaehlt nichts doppelt
+  d.mine.push({ correct, seconds, left: r.left, ...duelRoundExtras(m, r.solved) });
+  d.playedRounds = (d.playedRounds || 0) + 1;
+  d.active = null;
+  saveProfile(profile);
+  r.phase = "review"; r.view = "review:" + r.round;
+  duelEnterReview(document.getElementById("duelPlayView"), m, d, r, correct, seconds);
 }
 
 function duelTick() {
@@ -13510,11 +13592,11 @@ function renderDuelPlay() {
     return;
   }
   if (r.phase === "play") {
-    const o = d.opponent, oname = o ? duelEsc(o.name) : "Freund";
-    const kick = `<span class="t">Duell gegen ${oname} · Runde ${r.round + 1} von ${d.settings.rounds}</span><span class="sp-dots" aria-hidden="true">${Array.from({ length: d.settings.rounds }, (_, k) => `<i class="${k < r.round ? "done" : ""}${k === r.round ? " now" : ""}"></i>`).join("")}</span>`;
+    const o = d.opponent, oname = o ? duelEsc(o.name) : "Gegner";
+    const kick = `<span class="t">Duell${o ? " gegen " + oname : ""} · Runde ${r.round + 1} von ${d.settings.rounds}</span><span class="sp-dots" aria-hidden="true">${Array.from({ length: d.settings.rounds }, (_, k) => `<i class="${k < r.round ? "done" : ""}${k === r.round ? " now" : ""}"></i>`).join("")}</span>`;
     root.innerHTML = `<div class="sp intro" id="spRoot" style="--wc:#7fd99a">${lvTopbarHTML({ back: { id: "duelCancelBtn", label: "Abbrechen", icon: "x" }, tok: false, mid: `<span class="tb clock" role="timer" aria-label="Restzeit"><span id="duelClock">${duelClockHTML(r.limit)}</span></span>` })}
       ${spBoardHTML(m, { kick, combo: false, bench: false })}
-      <div class="sp-tray" id="spTray"><div class="sp-felt"><div class="sp-ttop"><span class="sp-ttag">Du</span><div class="sp-ttxt"><b><span class="sp-big" id="duelMyScore">0<small>/11</small></span> richtig</b><div class="sp-tmsg">${oname} · 🔒 Ergebnis verdeckt</div></div></div>
+      <div class="sp-tray" id="spTray"><div class="sp-felt"><div class="sp-ttop"><span class="sp-ttag">Du</span><div class="sp-ttxt"><b><span class="sp-big" id="duelMyScore">0<small>/11</small></span> richtig</b><div class="sp-tmsg">${o ? oname + " · " : ""}<span class="du-lk">${DU_SV.lock}</span>${o ? "Ergebnis verdeckt" : "Gegner noch offen"}</div></div></div>
         <div class="sp-tbtns"><button type="button" class="sp-tbtn gold" id="duelGive">Abgeben – Zeit stoppen</button></div></div></div></div>`;
     const spRoot = root.querySelector("#spRoot");
     bindDuelPitch(root, m);
@@ -13528,17 +13610,6 @@ function renderDuelPlay() {
     r.shown = -1; clearInterval(r.tick); r.tick = setInterval(duelTick, 250); duelTick();
     return;
   }
-  // Zwischenkarte
-  const last = d.mine[d.mine.length - 1];
-  root.innerHTML = `
-    <div class="between">
-      <div class="rb">Runde ${r.round + 1}: <span>${last.correct}/11</span> in ${fmtMS(last.seconds)}</div>
-      <div class="rs">Noch ${d.settings.rounds - d.mine.length} ${d.settings.rounds - d.mine.length === 1 ? "Aufstellung" : "Aufstellungen"}.</div>
-      <button type="button" class="startbtn" id="duelNextRound" style="max-width:340px">Weiter zu Runde ${r.round + 2} ›</button>
-      <button type="button" class="pastebtn" id="duelBetweenCancel">Duell abbrechen</button>
-    </div>`;
-  document.getElementById("duelNextRound").onclick = () => { r.round++; r.phase = "walkout"; r.view = null; renderDuelPlay(); };
-  document.getElementById("duelBetweenCancel").onclick = confirmDuelAbort;
 }
 
 /* ---- Bildschirm "duelresult" (Abpfiff) ---- */
