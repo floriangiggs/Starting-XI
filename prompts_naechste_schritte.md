@@ -4732,6 +4732,68 @@ TV-Bilder, Vereinslogos oder Original-Trikots – stattdessen App-Aufnahmen
 
 ## Ideen-Speicher (noch nicht ausgearbeitet)
 
+- **Kabine & Freunde / Konten – Planung mit Florian (18.10.2026, noch kein Prompt)**
+  Prototyp: `prototypes/kabine-freunde.html` (Fassung v2, von Florian abgenommen
+  als Grundlage). Nächster Schritt: Technik-Konzept (Datenmodell, Server-
+  Prüfung, Übernahme des Spielstands), daraus die Prompts. Gehört zum
+  Pflichtpunkt Duell/Accounts aus CLAUDE.md (vor dem Store-Release).
+  Entscheidungen:
+  1. Gastmodus bleibt: ohne Konto alles spielbar wie heute; Konto nur für
+     Freunde/Online. Bisheriger Spielstand zieht beim ersten Anmelden mit
+     (profile.deviceId aus Prompt 25).
+  2. Freunde sehen alles (Level, Liga-Rang, Sterne, Trophäen, Serie,
+     Trefferquote, heutiges Tages-Ergebnis). Fremde nur @Name, Wappen, Rang.
+  3. Menü am Logo = "Kabine" (Holz-Lasche am Logo, goldene Zahl = offene
+     Anfragen). Scout-Profil bleibt die Statistik, kein doppelter Profil-Ort.
+  4. Englisch erst später (mit Zufallsgegnern/Ranked).
+  5. Kein Chat; später höchstens feste Reaktionen ("Gut gespielt").
+  Inhalt der Kabine:
+  - Kopf: Gast = Vorteile + "Mit Apple / Google anmelden" (offizielle Knöpfe);
+    angemeldet = Kabinen-Ausweis (Wappen, @Name, Rang, Freundescode kopieren).
+  - Spielen: Freunde, Duelle, Scout-Profil; Freunde einladen, App bewerten.
+  - Einstellungen: Einstellungen (Ton, Vibration, Name ändern alle 30 Tage,
+    Konto löschen – Apple-Pflicht); Gast: Spielstand sichern; angemeldet:
+    Benachrichtigungen (Anfragen, "Du bist dran", Tages-Erinnerung – einzeln)
+    und Privatsphäre (Wer darf mich finden: alle / nur per Code oder Link /
+    niemand; Liste blockierter Spieler).
+  - Hilfe: So geht's, Hilfe & Kontakt (Fehler melden, Feedback – Apple will
+    eine Support-Adresse).
+  - Rechtliches: Datenschutz, Impressum & Regeln (Nutzungs-/Fairplay-Regeln,
+    weil Usernames Nutzerinhalte sind).
+  - Fuß: "Über Starting XI" (Version, Quellen der Aufstellungen), Abmelden.
+  Konto + Freunde:
+  - Username: eindeutig, 3–15 Zeichen (Buchstaben, Zahlen, _), Groß-/Klein
+    egal, Filter für Beleidigungen/gesperrte/echte Spielernamen, Vorschläge
+    bei vergebenen Namen; Wappen mit frei wählbarer Farbe.
+  - Freunde adden per Username-Suche, Freundescode/QR, Einladungslink
+    (Universal Link öffnet die App), aus bisherigen Duell-Gegnern.
+    Anfragen annehmen/ablehnen (ohne Benachrichtigung), entfernen,
+    blockieren, Namen melden. Limits gegen Spam.
+  - "Heute unter Freunden": Tages-Tabelle (gleiche Aufstellung, Richtige,
+    bei Gleichstand Zeit, Serie). Vergleich Du gegen Freund (Heute, Level,
+    Sterne, Trophäen, Serie, Trefferquote, Liga-Rang, Duell-Bilanz +
+    letzte Ergebnisse, "Herausfordern" per Push statt Link).
+  Technik (Vorschlag): Supabase (Postgres, Region Frankfurt, Auth mit
+  Apple/Google, Zugriffsregeln in der Datenbank) + Firebase Cloud Messaging
+  für Push (kostenlos). Ranked/Zufallsgegner nur servergeprüft (Lösungen auf
+  dem Server, Server misst Zeit) – Lösungen stehen sonst in der App-Datei.
+  Kosten (Stand 18.10.2026): bis zum Store fast 0 € (Supabase Free pausiert
+  nach 1 Woche ohne Nutzung – nur Test); ab Store ca. 30–35 €/Monat:
+  Supabase Pro 25 $/Monat (100.000 aktive Nutzer/Monat inklusive, danach ca.
+  3,25 $ je 1.000), Apple 99 $/Jahr, Google 25 $ einmalig, Domain ca.
+  10–15 €/Jahr. Ausgabenlimit bei Supabase einschalten.
+  Pflichten: Konto löschen in der App, "Mit Apple anmelden" wenn Google-Login,
+  Filter/Melden/Blockieren, Datenschutzerklärung + Impressum + AV-Vertrag,
+  Jugendschutz (unter 16 Einwilligung der Eltern bei Einwilligungs-Basis).
+
+- **Töne und Haptik (Florian, 18.10.2026 – später gemeinsam angehen)**
+  Bisher gibt es keine Töne; nur navigator.vibrate (geht auf dem iPhone im
+  Browser nicht – echte Haptik erst mit Capacitor). Ideen, dezent: Anpfiff-
+  Pfiff beim Start, leises Kreide-Kratzen beim Eintragen, Netz-Rascheln bei
+  richtigem Namen, Jubel bei 11/11, Schlusspfiff beim Auswerten. Schalter
+  "Ton an/aus" (Einstellungen in der Kabine), stumm bei stummgeschaltetem
+  Handy, Töne selbst erzeugt oder lizenzfrei. Erst Prototyp zum Anhören.
+
 - **Duell-Ausbau – Planung mit Florian (14.10.2026, noch kein Prompt)**
   Gestaltung: Duell ist der wichtigste Modus → optisch Meisterwerk,
   mindestens Quizduell-Niveau. Erst Gesamt-Prototyp, dann Prompts.
