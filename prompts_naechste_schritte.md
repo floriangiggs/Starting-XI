@@ -4734,8 +4734,8 @@ TV-Bilder, Vereinslogos oder Original-Trikots – stattdessen App-Aufnahmen
 
 - **Kabine & Freunde / Konten – Planung mit Florian (18.10.2026, noch kein Prompt)**
   Prototyp: `prototypes/kabine-freunde.html` (Fassung v2, von Florian abgenommen
-  als Grundlage). Nächster Schritt: Technik-Konzept (Datenmodell, Server-
-  Prüfung, Übernahme des Spielstands), daraus die Prompts. Gehört zum
+  als Grundlage). Technik-Konzept: `docs/technik-konzept-konten.md`
+  (18.10.2026) – daraus werden die Prompts K1–K8 (Abschnitt 15 dort). Gehört zum
   Pflichtpunkt Duell/Accounts aus CLAUDE.md (vor dem Store-Release).
   Entscheidungen:
   1. Gastmodus bleibt: ohne Konto alles spielbar wie heute; Konto nur für
