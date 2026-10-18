@@ -4973,9 +4973,8 @@ A. Ton-Modul
    3. Regeln: ein Ton derselben Art ersetzt den vorigen (nicht stapeln);
       Feiern (perfect, levelup, world, duelWin) warten, bis laufende
       Hinweistöne fertig sind, und laufen nie doppelt (gleiche
-      Warteschlange wie celebrationQueue). Kein Ton bei
-      prefers-reduced-motion? NEIN – Ton ist unabhängig davon; aber bei
-      document.hidden nichts abspielen.
+      Warteschlange wie celebrationQueue). prefers-reduced-motion ändert
+      an den Tönen nichts; bei document.hidden wird nichts abgespielt.
    4. Einstellung: profile.sound = { on: true, volume: 0.7 } (Migration:
       Standard an, 70 %). Schalter "Ton" + Lautstärke-Regler im Scout-
       Profil-Blatt beim Reiter mit "Spielstand sichern" (Holz-Rinne-
