@@ -65,8 +65,9 @@ vorige umgesetzt, getestet und committet ist.
 | 51 | Kampagne: Level-Pfad neu (Candy-Crush-Weg, jede Welt eigene Landschaft mit Tribünen und Platz-Requisiten, Holzschild, Kamerafahrt zum aktuellen Level, "Zu Level n"-Knopf) | ✅ erledigt (Level-Pfad nach level-pfad.html: eigene Weg-Art und Landschaft je Welt mit Tribünen, Holzschild + Zettel, Magnet-Knoten mit Sternen/Stift/Auge, „Du“-Magnet weicht Nachbarn aus, Tunnel/Pokal als Ziel, „Zu Level n“-Knopf, Einstiegs-Kamerafahrt, Szene gecacht (≈110 ms bei 4× CPU-Drosselung); tools/check-overlap prüft alle Welten × 3 Stände × 4 Breiten; TOP0 448 statt 360, damit „Du“ nicht auf dem Zettel liegt) |
 | 52 | Ersatzbank-Blatt im Taktiktafel-Stil (Holzrahmen + Filz, Kreide-Zeitleiste der Wechsel, Namensschilder der Eingewechselten, übrige Bank in Kreide), gleiche Darstellung im Duell-Rückblick | ✅ erledigt (Bank-Blatt nach bank-v2.html: Holzrahmen + Filz, Kreide-Zeitleiste, Namensschilder, Kreide-Kacheln, Notizzettel, feste Knöpfe; gemeinsamer Körper benchBodyHTML() auch im Duell-Rückblick; alle 59 Aufstellungen mit Bank × vor/nach Auswertung × 2 Größen geprüft: keine Überlappung, gleich hohe Kacheln, kein „für <Name>“ vor der Auswertung) |
 | 53 | Vorschau vor Tages-Challenge, Frei spielen und Tages-Archiv im Taktiktafel-Stil (wie Level-Vorschau, je Modus eigene Kopfzeile, Holzleiste und Knopf; ersetzt die blaue Info-Karte) | 41, 47 |
+| 54 | Duell im Taktiktafel-Stil: Rundenende an der Tafel mit „Weiter“-Knopf (statt 0,9 s + blauer Zwischenkarte), Duell-Zentrale, Schnell-Duell-Blatt, Einladung, Abpfiff; Emojis → SVG, Niederlage ohne Rot | 42, 50, 52 |
 
-**Empfohlene Reihenfolge ab jetzt:** 49 → 50 (Bugfixes, sofort) → 39 → 41 → 42 → 43 → 44 → 45 → 46 → 47 → 48 → 49 → 50 → 51 → 52 → 53 → weitere Offline-Feinschliffe (u. a. Jahres-Lücken im Ideen-Speicher auffüllen) → Planung Online-Duell (inkl. 28/29) → 8 (Capacitor, erst wenn die App final ist; vorher Duell-Pflichtpunkt aus CLAUDE.md ansprechen)
+**Empfohlene Reihenfolge ab jetzt:** 49 → 50 (Bugfixes, sofort) → 39 → 41 → 42 → 43 → 44 → 45 → 46 → 47 → 48 → 49 → 50 → 51 → 52 → 53 → 54 → weitere Offline-Feinschliffe (u. a. Jahres-Lücken im Ideen-Speicher auffüllen) → Planung Online-Duell (inkl. 28/29) → 8 (Capacitor, erst wenn die App final ist; vorher Duell-Pflichtpunkt aus CLAUDE.md ansprechen)
 
 Prompt 7 steht bewusst vor der Tages-Challenge: Nur mit der neuen
 Update-Strategie kommen neue Tages-Aufstellungen zuverlässig auf dem iPhone an.
@@ -4792,6 +4793,148 @@ C. Abschluss
    - CACHE_NAME in sw.js erhöhen, Status-Tabelle: Prompt 53 erledigt;
      Ideen-Punkt "Taktiktafel-VORSCHAU auch für Freispiel und Tages-
      Challenge" als erledigt markieren.
+```
+
+---
+
+## Prompt 54 – Duell im Taktiktafel-Stil, Rundenende an der Tafel
+
+```
+Lies CLAUDE.md. Größerer optischer Umbau des wichtigsten Modus → Plan
+Mode, Plan zeigen, dann in Paketen A–E umsetzen (je Paket Commit + Test).
+Optische Vorlage: prototypes/duell-v2.html (von Florian am 18.10.2026
+freigegeben, Fassung v2). Optik, Maße, Farben, Schriften, Bewegungen 1:1.
+NICHT übernehmen: Statusleiste/Island/Home-Balken, Regie-Pult,
+Beispieldaten und -Namen, eingebettete Schriften.
+Grundsatz: Duell-Logik bleibt (Prompts 25–29, 36, 39: Codes/Links,
+evaluateDuel, Wertung, XP, Fair Play, Fristen, Historie, Löschen,
+Bilanz pro Freund). Die Spiel-Ansicht während der Runde (Prompt 42) und
+der Walkout (Prompt 36) bleiben, nur wie unten beschrieben ergänzt.
+
+Befund (geprüft auf main 1c046f7, Screenshots im Chat vom 18.10.):
+- finishDuelRound(): Nach Abgeben/Zeit/11 richtig werden die fehlenden
+  Namen eingetragen und nach REDUCED_MOTION ? 300 : 900 ms wird auf die
+  blaue Zwischenkarte (.between in renderDuelPlay) bzw. nach der letzten
+  Runde direkt per endDuelRun() zum Abpfiff gewechselt. Die Auflösung ist
+  damit praktisch nicht einsehbar.
+- Noch im alten Stil (Ink-Blau, alte .back-btn "← DUELLE",
+  Sperrschrift, Emojis): Zwischenkarte, Abpfiff (renderDuelResult: 👑 🤝
+  📊 📤 🔁 🔒), Einladung (renderDuelInvite: "SCHRITT 1: BESTÄTIGEN",
+  🔒), Duell-Zentrale (#screen-duels, --dz-ink; Abzeichen "Niederlage"
+  rot), Schnell-Duell-Blatt (dzOpenNew), in der Runde "🔒 Ergebnis
+  verdeckt".
+
+A. Rundenende an der Tafel (ersetzt die Zwischenkarte)
+   1. finishDuelRound(): Ergebnis SOFORT speichern (d.mine.push, d.active
+      = null, saveProfile) – nicht erst nach einem Timeout. Danach neue
+      Phase r.phase = "review" (kein automatischer Wechsel).
+   2. Review-Ansicht = dieselbe Taktiktafel der Runde (spBoardHTML), nicht
+      neu aufgebaut, nur umgeschaltet:
+      - Uhr oben bleibt auf der gestoppten Zeit stehen, mit Schloss-SVG
+        und "gestoppt".
+      - Goldener Kreide-Stempel "Auflösung" oben rechts im Spielfeld
+        (einmalig, schräg).
+      - Richtige Namen bleiben grün mit Häkchen. Verpasste Namen als
+        Kreide-Schrift auf gestricheltem Schild (Filz durchscheinend,
+        doppelter gestrichelter Rand), nacheinander "geschrieben"
+        (clip-path, 0,12 s versetzt). KEIN Rot (.miss-Optik ersetzen).
+      - Keine Eingabe mehr möglich (Felder disabled), Tafel bleibt
+        scrollbar/lesbar, Scout-Rad/Tastatur aus.
+   3. Holzleiste (sp-tray) zeigt statt "Abgeben":
+      - links "Du": Magnet + "<n>/11" (Anton) + "Du · m:ss · x verpasst".
+      - Mitte: wenn das Ergebnis des Gegners für diese Runde bekannt ist
+        (Eingeladener: d.theirs[runde]) "Stand a:b" nach Runden, sonst
+        "Runde n".
+      - rechts Gegner: bekannt → Magnet + "<n>/11" + "<Name> · m:ss", der
+        Rundensieger (mehr Richtige, bei Gleichstand schnellere Zeit wie
+        in evaluateDuel) bekommt goldenen Rahmen + gezeichnete Krone, die
+        einmal herunterfällt. Unbekannt (Herausforderer) → Schloss-SVG
+        "verdeckt" + "<Name> spielt nach dir".
+      - Goldener Knopf "Weiter zu Runde n ›" → Walkout der nächsten Runde
+        (wie bisher r.round++, phase "walkout"); letzte Runde "Zum
+        Abpfiff ›" → endDuelRun().
+   4. Abbrechen im Review über ✕ oben (confirmDuelAbort; die gespielte
+      Runde ist schon gespeichert). Zurück-Geste wie bisher abfangen.
+      App im Review schließen → beim nächsten Öffnen geht es mit dem
+      Walkout der nächsten Runde bzw. dem Abpfiff weiter (nichts doppelt).
+   5. In der laufenden Runde "🔒 Ergebnis verdeckt" → Schloss-SVG; ohne
+      Gegnernamen (offene Herausforderung) "Gegner noch offen" statt
+      "Freund".
+   6. Die blaue .between-Zwischenkarte und ihr CSS entfernen.
+
+B. Abpfiff (renderDuelResult) im Taktiktafel-Stil
+   Topbar wie lvTopbarHTML ("‹ Duelle", Titel "Abpfiff"). Tafel mit
+   "Best of n gegen <Name>", großem Wort (Sieg! Gold mit einmaligem
+   Konfetti in Gold/Creme/Mint – Niederlage Kreide – Remis Creme –
+   Gespielt! Gold beim Warten), Magneten links/rechts und Holz-
+   Anzeigetafel mit dem Rundenstand ("?:?" beim Warten), Begründung.
+   Runden als Karton-Karten (eigene Zahl + Zeit links, "Runde n" +
+   Mannschaft + Jahr in der Mitte, Gegner rechts; gezeichnete Krone beim
+   Rundensieger; beim Warten Schloss "verdeckt"). Fair-Play-Chips mit
+   gezeichnetem Handschlag, XP-Zeile mit Münze, Bilanz-Zeile, Zettel beim
+   Warten. Knöpfe: Gold "Ergebnis an <Name> senden" / "Link teilen" (SVG
+   Teilen), Holz "Revanche" (SVG Pfeile) bzw. "Zur Übersicht". Alle
+   Texte/Logik wie bisher, nur Optik.
+
+C. Einladung (renderDuelInvite)
+   Topbar "‹ Duelle" + "Herausforderung". Tafel: "<Name> fordert dich zum
+   Duell", VS-Reihe mit Magneten (Personenfarbe duelColor) und Holz-
+   Medaille "VS", Holzleiste mit Format / Zeit pro Aufstellung /
+   Schwierigkeit, gelber Zettel (bei bereits gespieltem Gegner: "<Name> hat
+   schon gespielt. Nach jeder Runde siehst du, wie sie abgeschnitten hat –
+   das Gesamtergebnis gibt's beim Abpfiff."), Fairplay-Schalter (Holz-
+   Rinne, Magnet-Knopf, Mint wenn an), Anpfiff-Knopf (vorher deaktiviert
+   "Erst „Ich spiele fair“ antippen"), "Hier im Browser spielen" / "In der
+   App spielen (Code kopieren)" wie bisher, "Ablehnen" als Textknopf.
+   Keine Sperrschrift, kein "SCHRITT 1".
+
+D. Duell-Zentrale + Schnell-Duell-Blatt
+   1. #screen-duels auf Rasen-Grund (kein --dz-ink mehr): Topbar "‹ Start"
+      + gold "+ Neues Duell"; Duell-Pass aus Karton (Magnet, Name, @Name ·
+      Rang · Level, Stempelzeile Siege (gold) / Remis / Niederlagen, Form
+      S/U/N als Münzen: Sieg gold, Remis creme, Niederlage Umriss);
+      Sprung-Reiter aus Holz (aktiv cremefarben, Zähler als Goldmünze);
+      Modus-Kacheln (Schnell-Duell gold, Liga-Duell Filz mit "bald");
+      Tafel "Am Zug" mit Unterabschnitten "Du bist dran" (Karton-Karten,
+      Gold-Knopf Spielen/Ansehen, "…") und "Warten auf Antwort" (Filz-
+      Zeilen mit Sanduhr "Wartet"); Ranked als Holzplanke "bald"; Tafel
+      "Spielhistorie" (Balken Gold/Creme/Holz, Zeilen mit Ergebnis-Schild:
+      Sieg Gold, Remis Creme, Niederlage HOLZ statt Rot, Runden-Chips);
+      Tafel "Freunde & Trophäen" (Bilanz je Freund, Trophäen als SVG);
+      "Code einfügen" als Textlink. Alle Funktionen (Löschen, Aufklappen,
+      Filter Alle/Schnell, Ältere anzeigen, Rückgängig) bleiben.
+   2. Schnell-Duell-Blatt (dzOpenNew) als Holz-Blatt mit Filz (wie Scout-
+      Rad/Bank): Gegner als Magnet-Chips + "+ Neuer Freund", Auswahl-
+      Leisten aus Holz (aktiv creme) für Format, Zeit, Schwierigkeit (Mix +
+      1–5 mit Stufenfarbe), Fairplay-Schalter, Gold-Knopf "Anpfiff & Link
+      teilen", Zusammenfassung darunter. Wischen nach unten schließt (43).
+   3. Personen-Magnete überall mit duelColor(deviceId) und Initiale
+      (Anton). Später werden sie zu den Wappen aus der Kabine – Magnet als
+      eigene Funktion duelMagHTML(person, size) bauen.
+
+E. Rest + Abschluss
+   - Walkout: Sperrschrift (letter-spacing + uppercase) bei .wo-who,
+     .wo-slot small, .wo-lb, .wo-ready auf normale Schreibung Oswald
+     500/600 umstellen (Regel CLAUDE.md); Optik sonst unverändert.
+   - Duell-Rückfragen (Abbrechen, Name, Löschen) im Holz-Blatt-Stil
+     prüfen (ecf0a1f) – überall gleich.
+   - Alle Emojis im Duell durch SVG ersetzen (Liste im Befund); Rot nur
+     noch für echte Fehler.
+   - Playwright (tools/test-duell.mjs erweitern): Best of 3 als
+     Herausforderer und als Eingeladener durchspielen: nach jeder Runde
+     bleibt die Review-Ansicht stehen (auch nach 10 s), verpasste Namen
+     sichtbar, Gegner-Ergebnis nur als Eingeladener, Krone beim richtigen
+     Sieger (inkl. Gleichstand → Zeit), "Weiter" startet Walkout, letzte
+     Runde → Abpfiff; Reload im Review verliert nichts und zählt nichts
+     doppelt; XP nur einmal.
+   - Safe-Area-/Überlappungs-Check (check-safearea, check-overlap,
+     check-geraete) für alle Duell-Bildschirme inkl. Review.
+   - Screenshots 393×852 und 375×667: Zentrale (oben/Mitte/unten), Blatt,
+     Einladung, Review Runde 1 (Eingeladener/Herausforderer), Review letzte
+     Runde, Abpfiff Sieg/Niederlage/Remis/Warten.
+   - CACHE_NAME in sw.js erhöhen, Status-Tabelle: Prompt 54 erledigt;
+     Ideen-Speicher "restliche Navy-Bildschirme (Duell)" als erledigt
+     markieren.
 ```
 
 ---
