@@ -66,8 +66,9 @@ vorige umgesetzt, getestet und committet ist.
 | 52 | Ersatzbank-Blatt im Taktiktafel-Stil (Holzrahmen + Filz, Kreide-Zeitleiste der Wechsel, Namensschilder der Eingewechselten, übrige Bank in Kreide), gleiche Darstellung im Duell-Rückblick | ✅ erledigt (Bank-Blatt nach bank-v2.html: Holzrahmen + Filz, Kreide-Zeitleiste, Namensschilder, Kreide-Kacheln, Notizzettel, feste Knöpfe; gemeinsamer Körper benchBodyHTML() auch im Duell-Rückblick; alle 59 Aufstellungen mit Bank × vor/nach Auswertung × 2 Größen geprüft: keine Überlappung, gleich hohe Kacheln, kein „für <Name>“ vor der Auswertung) |
 | 53 | Vorschau vor Tages-Challenge, Frei spielen und Tages-Archiv im Taktiktafel-Stil (wie Level-Vorschau, je Modus eigene Kopfzeile, Holzleiste und Knopf; ersetzt die blaue Info-Karte) | 41, 47 |
 | 54 | Duell im Taktiktafel-Stil: Rundenende an der Tafel mit „Weiter“-Knopf (statt 0,9 s + blauer Zwischenkarte), Duell-Zentrale, Schnell-Duell-Blatt, Einladung, Abpfiff; Emojis → SVG, Niederlage ohne Rot | 42, 50, 52 |
+| 55 | Töne: 11 empfohlene Stellen mit Web-Audio-Klängen aus dem Tonstudio (ohne Rauschen), Ton-Schalter + Lautstärke, Stummschalter respektieren | 49, 53, 54 |
 
-**Empfohlene Reihenfolge ab jetzt:** 49 → 50 (Bugfixes, sofort) → 39 → 41 → 42 → 43 → 44 → 45 → 46 → 47 → 48 → 49 → 50 → 51 → 52 → 53 → 54 → weitere Offline-Feinschliffe (u. a. Jahres-Lücken im Ideen-Speicher auffüllen) → Planung Online-Duell (inkl. 28/29) → 8 (Capacitor, erst wenn die App final ist; vorher Duell-Pflichtpunkt aus CLAUDE.md ansprechen)
+**Empfohlene Reihenfolge ab jetzt:** 49 → 50 (Bugfixes, sofort) → 39 → 41 → 42 → 43 → 44 → 45 → 46 → 47 → 48 → 49 → 50 → 51 → 52 → 53 → 54 → 55 → weitere Offline-Feinschliffe (u. a. Jahres-Lücken im Ideen-Speicher auffüllen) → Planung Online-Duell (inkl. 28/29) → 8 (Capacitor, erst wenn die App final ist; vorher Duell-Pflichtpunkt aus CLAUDE.md ansprechen)
 
 Prompt 7 steht bewusst vor der Tages-Challenge: Nur mit der neuen
 Update-Strategie kommen neue Tages-Aufstellungen zuverlässig auf dem iPhone an.
@@ -4940,6 +4941,98 @@ E. Rest + Abschluss
    - CACHE_NAME in sw.js erhöhen, Status-Tabelle: Prompt 54 erledigt;
      Ideen-Speicher "restliche Navy-Bildschirme (Duell)" als erledigt
      markieren.
+```
+
+---
+
+## Prompt 55 – Töne (Tonstudio, ohne Rauschen)
+
+```
+Lies CLAUDE.md. Neues Querschnitts-Feature → kurz Plan Mode, Plan zeigen,
+dann in Paketen A–C umsetzen (je Paket Commit + Test).
+Vorlage: prototypes/tonstudio.html (von Florian am 18.10.2026 freigegeben,
+Fassung v2). Die Klänge werden dort live mit der Web-Audio-API erzeugt –
+genau so übernehmen: Bausteine tone(), bell(), wood(), marimba(),
+whistle(), brass(), kick(), snare(), pad(), env() und die Klangrezepte
+aus dem Objekt S 1:1 (Frequenzen, Längen, Lautstärken), jeweils
+Variante A. KEINE Rausch-/Wisch-Klänge (noise()/crowd() aus dem Prototyp
+NICHT übernehmen – Florian mag kein Rauschen und kein Kreide-Wischen).
+Keine Audiodateien, keine externen Quellen.
+Voraussetzung: Prompts 49, 53 und 54 erledigt (Level-Up-Tafel,
+Vorschau-Anpfiff, Duell-Rundenende).
+
+A. Ton-Modul
+   1. Eigener Block "TÖNE" in startelf_check.html: sfx(name, opts) als
+      einzige Schnittstelle. AudioContext erst bei der ersten
+      Nutzer-Geste anlegen bzw. fortsetzen (iOS), Master-Gain +
+      Kompressor wie im Prototyp.
+   2. Stummschalter respektieren: wo verfügbar navigator.audioSession.type
+      = "ambient" (Safari 16.4+), damit stumm geschaltete iPhones still
+      bleiben und laufende Musik nicht unterbrochen wird. Ohne Unterstützung
+      einfach normal abspielen.
+   3. Regeln: ein Ton derselben Art ersetzt den vorigen (nicht stapeln);
+      Feiern (perfect, levelup, world, duelWin) warten, bis laufende
+      Hinweistöne fertig sind, und laufen nie doppelt (gleiche
+      Warteschlange wie celebrationQueue). Kein Ton bei
+      prefers-reduced-motion? NEIN – Ton ist unabhängig davon; aber bei
+      document.hidden nichts abspielen.
+   4. Einstellung: profile.sound = { on: true, volume: 0.7 } (Migration:
+      Standard an, 70 %). Schalter "Ton" + Lautstärke-Regler im Scout-
+      Profil-Blatt beim Reiter mit "Spielstand sichern" (Holz-Rinne-
+      Schalter wie Fairplay in Prompt 54). Beim Einschalten kurz den
+      Ton "ok" als Probe spielen. Später wandert das in Kabine →
+      Einstellungen (Ideen-Speicher "Kabine & Freunde").
+
+B. Die 11 Stellen (alle Variante A)
+   1. ok – Name richtig: Glöckchen, Tonhöhe nach Kombo-Stufe
+      (C-Dur-pentatonisch, P[min(kombo, 8)] × 2). In allen Modi inkl.
+      Duell-Runde; auch bei automatischem Umsortieren auf eine andere
+      Position. Nicht beim Aufdecken per Token und nicht bei vorgegebenen
+      Namen.
+   2. wheel – Scout-Rad: Klick-Ratsche, die mit der Drehung langsamer wird
+      (Länge an die echte Drehdauer koppeln, Prototyp: 3,3 s), dann
+      Doppelglocke beim Stillstand.
+   3. coinIn – Token erhalten: Münz-Klassiker, bei jeder Gutschrift
+      (erste Hürde, perfekt, Tagesbonus, Level-Up, Erfolg) – bei mehreren
+      gleichzeitig nur einmal.
+   4. kick – Anpfiff: ein Pfiff beim Tippen auf den Start-Knopf der
+      Vorschau (Kampagne, Tages-Challenge, Frei spielen, Archiv; Prompt
+      53) und beim Anpfiff nach dem Duell-Walkout.
+   5. final – Abpfiff: Schlusspfiff (kurz, kurz, lang) beim Auswerten bzw.
+      Abgeben/Zeitende in der Duell-Runde, bevor das Ergebnis erscheint.
+   6. stars – Sterne: ein Ton pro Stern, synchron zur Sterne-Animation
+      (Kampagne + Tages-Challenge), nur so viele Töne wie Sterne.
+   7. perfect – 11 von 11: Fanfare + Glanz (statt Sterne-Ton, wenn
+      gleichzeitig; Sterne vorher, Fanfare danach).
+   8. levelup – Level-Aufstieg: Tafel-Plopp + Glocken + Fanfare, wenn die
+      Level-Up-Holztafel einfällt (Prompt 49).
+   9. world – Welt geschafft: Trommeln + Fanfare + Glanz, synchron zum
+      Beginn der Feier (playWorldCelebration). Bei "Überspringen" sofort
+      ausblenden (Gain in 0,2 s auf 0).
+   10. walk – Walkout: Herzschlag-Trommel + Akkord + Countdown-Klopfer +
+      Pfiff, an die Zeitachse von runWalkout gekoppelt (Countdown-Klopfer
+      genau auf die Countdown-Zahlen, Pfiff auf den Anpfiff). Beim
+      Überspringen/Tippen nachziehen bzw. ausblenden.
+   11. duelWin – Duell gewonnen: Fanfare + Glanz beim Abpfiff "Sieg!".
+   Nicht umsetzen (im Prototyp "Optional"/"Eher nicht"): near, shift,
+   pick, coinOut, reveal, deny, load, pass, fail, streak, trophy, tick,
+   roundWin, roundLose, duelLose, sheet. Den Code dafür nicht einbauen.
+
+C. Abschluss
+   - Haptik-Vorbereitung: an denselben Stellen ein leerer Haken
+     haptic(name) (für Capacitor, Prompt 8); jetzt nur navigator.vibrate
+     wo vorhanden (Android), kurze Muster: ok 8 ms, stars 12 ms je
+     Stern, perfect/duelWin [20, 40, 20].
+   - Playwright: alle 11 Töne einmal über OfflineAudioContext rendern
+     (wie __render im Prototyp): Spitzenpegel 0,05–0,6, keine Fehler;
+     Ton aus → sfx() spielt nichts; Kombo erhöht die Tonhöhe; nichts
+     doppelt bei mehreren Token-Gutschriften.
+   - Manuelle Prüfung auf dem iPhone (Florian): Stummschalter an → still,
+     aus → Töne hörbar; Musik läuft im Hintergrund weiter.
+   - "So geht's": ein Satz zum Ton-Schalter.
+   - CACHE_NAME in sw.js erhöhen, Status-Tabelle: Prompt 55 erledigt;
+     Ideen-Speicher "Töne und Haptik" auf erledigt (Rest: Haptik mit
+     Capacitor).
 ```
 
 ---
