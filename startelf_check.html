@@ -78,19 +78,6 @@
   .sub { color: rgba(242,239,230,0.6); font-size: 13.5px; margin-top: 5px; font-weight: 300; line-height: 1.35; max-width: 42ch; margin-left: auto; margin-right: auto; text-wrap: balance; }
 
   /* ---- Match picker ---- */
-  .lvl-badge { display: inline-block; font-family: 'Oswald', sans-serif; font-weight: 600; font-size: 12.5px; padding: 2px 11px; border-radius: 20px; color: var(--wc); line-height: 1.35; background: color-mix(in srgb, var(--wc) 14%, transparent); border: 1px solid color-mix(in srgb, var(--wc) 40%, transparent); }
-  .lvl-dots { display: flex; justify-content: center; align-items: center; gap: 4px; height: 11px; margin-top: 2px; }
-  .lvl-dots i { width: 7px; height: 7px; border-radius: 50%; border: 1.5px solid rgba(242,239,230,0.35); box-sizing: border-box; }
-  .lvl-dots i.done { background: var(--gold); border-color: var(--gold); }
-  .lvl-dots i.now { width: 11px; height: 11px; border: 2px solid var(--wc); box-shadow: 0 0 0 2px color-mix(in srgb, var(--wc) 25%, transparent); }
-  .lvl-dots i.now.done { background: var(--gold); }
-  .badge-row.lvl { margin-bottom: 1px !important; }
-  .badge-row.lvl.pl { margin-bottom: -2px !important; }
-  .badge-row.lvl + .bonus-text { margin-top: 0; }
-  .diff-badge { display: inline-flex; align-items: center; gap: 5px; font-family: 'Oswald', sans-serif; font-size: 10.5px; font-weight: 700; letter-spacing: 0.05em; padding: 4px 10px; border-radius: 20px; text-transform: uppercase; }
-  .diff-dots { display: inline-flex; gap: 2px; }
-  .diff-dot { width: 6px; height: 6px; border-radius: 50%; background: rgba(255,255,255,0.2); }
-  .diff-dot.on { background: currentColor; }
 
   #dailyCard:empty { display: none; }
 
@@ -777,6 +764,29 @@
   .lp-float.up svg { transform: rotate(180deg); }
   @media (prefers-reduced-motion: reduce) { #screen-levelpath.lp *, #screen-levelpath.lp *::before, #screen-levelpath.lp *::after { animation: none !important; transition: none !important; } }
 
+  .lv-streak { display: inline-flex; align-items: center; gap: 4px; height: 24px; padding: 0 9px 0 6px; border-radius: 12px; flex-shrink: 0; background: linear-gradient(170deg, #FFB347, #E8632B); color: #2A0F04; box-shadow: 0 2px 0 #9B3B12; animation: lvChipIn 0.45s 0.5s cubic-bezier(.3,1.6,.5,1) both; }
+  .lv-streak svg { width: 15px; height: 15px; }
+  .lv-streak b { font-family: Anton, Impact, sans-serif; font-weight: 400; font-size: 15px; line-height: 1; }
+  .lv-streak small { font-weight: 500; font-size: 12px; }
+  .lv-streak.off { background: rgba(10,22,16,0.4); color: rgba(244,241,232,0.85); box-shadow: inset 0 0 0 1px rgba(244,241,232,0.3); }
+  .lv-stage { display: inline-flex; align-items: center; gap: 3px; flex-shrink: 0; animation: lvChipIn 0.45s 0.5s cubic-bezier(.3,1.6,.5,1) both; }
+  .lv-stage i { width: 8px; height: 8px; border-radius: 50%; background: rgba(244,241,232,0.22); }
+  .lv-stage i.on { background: var(--wc); box-shadow: 0 0 0 1px rgba(0,0,0,0.2); }
+  .lv-tag { flex-shrink: 0; height: 22px; padding: 0 9px; border-radius: 11px; display: inline-flex; align-items: center; font-weight: 500; font-size: 12.5px; color: var(--ink); background: linear-gradient(180deg, #FBF3DF, #E9DCBC); box-shadow: inset 0 0 0 1px rgba(62,42,22,0.3); animation: lvChipIn 0.45s 0.5s cubic-bezier(.3,1.6,.5,1) both; }
+  /* Holzleiste Freispiel / Archiv */
+  .lv-row { position: absolute; left: 10px; right: 8px; top: 6px; height: 26px; display: flex; align-items: center; gap: 8px; }
+  .lv-row .lab { font-weight: 500; font-size: 13px; color: rgba(255,241,200,0.9); white-space: nowrap; }
+  .lv-row .lab small { font-weight: 300; font-size: 12px; color: rgba(255,241,200,0.7); margin-left: 3px; }
+  .lv-form { display: flex; gap: 4px; min-width: 0; }
+  .lv-form i { width: 24px; height: 22px; border-radius: 7px; display: grid; place-items: center; font-style: normal; font-family: Anton, Impact, sans-serif; font-size: 13px; line-height: 1; color: #F4F1E8; background: #2A1C0F; box-shadow: inset 0 0 0 1.2px rgba(244,241,232,0.2); animation: lvChipIn 0.4s cubic-bezier(.3,1.6,.5,1) both; }
+  .lv-form i.hi { color: var(--ink); background: linear-gradient(170deg, var(--gold-hi), var(--gold)); box-shadow: none; }
+  .lv-form i.no { color: rgba(244,241,232,0.35); }
+  .lv-reroll { margin-left: auto; height: 26px; padding: 0 11px 0 8px; border-radius: 13px; display: inline-flex; align-items: center; gap: 5px; flex-shrink: 0; font-weight: 500; font-size: 13.5px; color: var(--ink); background: linear-gradient(180deg, #FBF3DF, #E9DCBC); box-shadow: 0 2px 0 rgba(0,0,0,0.35), inset 0 0 0 1px rgba(62,42,22,0.3); animation: lvChipIn 0.45s 1.3s cubic-bezier(.3,1.6,.5,1) both; }
+  .lv-reroll svg { width: 16px; height: 16px; }
+  .lv-reroll:active { transform: translateY(1px); }
+  .lv-reroll:disabled { opacity: 0.5; }
+  @keyframes swapOut { to { opacity: 0; transform: translateX(-40px) rotate(-2deg); } }
+  .lv-frame.out > * { animation: swapOut 0.22s ease-in forwards !important; }
   /* ---- Ersatzbank-Blatt im Taktiktafel-Stil (Prompt 52, Prototyp bank-v2.html; Koerper .bnb gilt auch im Duell-Rueckblick) ---- */
   .sp-sheet.bn { --bn-top: max(58px, calc(env(safe-area-inset-top, 0px) + 14px)); display: flex; flex-direction: column; max-height: none; height: calc(100dvh - var(--bn-top) - max(6px, env(safe-area-inset-bottom, 0px))); margin-bottom: max(6px, env(safe-area-inset-bottom, 0px)); }
   .sp-sheet.bn .in { flex: 1; min-height: 0; display: flex; flex-direction: column; padding: 14px; }
@@ -1180,11 +1190,6 @@
   .match-shape { font-family: 'Oswald', sans-serif; font-weight: 300; font-size: 10.5px; color: rgba(242,239,230,0.45); }
 
   /* ---- Pitch ---- */
-  .bonus-panel { background: linear-gradient(180deg, rgba(193,57,43,0.10), var(--ink-2)); border: 1px solid rgba(193,57,43,0.35); border-radius: 10px; padding: 14px 16px; margin-bottom: 12px; box-shadow: 0 8px 24px rgba(0,0,0,0.28); }
-  .bonus-eyebrow { font-family: 'Oswald', sans-serif; font-weight: 600; font-size: 10.5px; letter-spacing: 0.1em; color: var(--red); text-transform: uppercase; text-align: center; margin-bottom: 4px; }
-  .bonus-title { font-family: 'Anton', sans-serif; font-size: clamp(18px, 5vw, 23px); text-align: center; margin: 0 0 4px; }
-  .bonus-text { font-size: 13px; color: rgba(242,239,230,0.75); line-height: 1.4; text-align: center; margin-bottom: 10px; }
-  .bonus-text b { color: var(--chalk); }
 
   /* ---- Scout-Rad (Prompt 6, Optik 1:1 aus prototypes/scout-rad.html) ---- */
   .sr-chips { display: flex; flex-wrap: wrap; gap: 6px; min-height: 26px; margin-bottom: 10px; }
@@ -6384,22 +6389,6 @@ function startArchiveMatch() {
   startMatch(m);
 }
 
-// Kampagne (Prompt 30): "<Weltname> · Level n von N" + Punktreihe der Welt (bestanden gold, aktuell gross, offen leer)
-function renderLevelBadge(m) {
-  const { tier, index } = currentLevelContext;
-  const matches = getMatchesByTier(tier);
-  const color = DIFF_COLOR[tier];
-  const dots = matches.map((x, i) => `<i class="${profile.campaign.levelPassed[x.id] ? "done" : ""}${i === index ? " now" : ""}"></i>`).join("");
-  return `<span class="lvl-badge" style="--wc:${color}">${DIFF_LABEL[tier]} · ${campaignLevelLabel(tier, index)}</span><span class="lvl-dots" style="--wc:${color}" aria-hidden="true">${dots}</span>`;
-}
-function renderDiffBadge(difficulty) {
-  const color = DIFF_COLOR[difficulty];
-  const dots = [1, 2, 3, 4, 5].map(n => `<span class="diff-dot${n <= difficulty ? " on" : ""}"></span>`).join("");
-  return `<span class="diff-badge" style="background:${color}22; color:${color}; border:1px solid ${color}66">
-    Stufe ${difficulty} · ${DIFF_LABEL[difficulty]} <span class="diff-dots">${dots}</span>
-  </span>`;
-}
-
 /* ================= SCOUT-PROFIL + TROPHÄEN (Prompt 12) =================
    Bottom-Sheet mit 3 Reitern, ersetzt das bisherige einfache Achievement-
    Modal. Optik/Aufbau 1:1 aus prototypes/scout-profil.html. */
@@ -6712,35 +6701,77 @@ function lvFitAnton(text, max, avail, min) { // wie fit() im Prototyp: Groesse s
   lvMeasure.font = "400 100px Anton, Impact, sans-serif";
   return Math.max(min, Math.min(max, Math.floor(avail * 100 / lvMeasure.measureText(text.toUpperCase()).width)));
 }
-function renderLevelPreview(m) {
-  const { tier, index } = currentLevelContext;
-  const matches = getMatchesByTier(tier), info = lvInfo(m), lay = PITCH_LAYOUTS[m.formation] || [];
-  const stars = (profile.campaign.stars && profile.campaign.stars[m.id]) || 0;
-  const draftN = lvDraftCount(m), best = profile.best[m.id] ? profile.best[m.id].correct : 0;
+// Vorschau je Modus (Prompt 53): campaign | daily | free | archive. Kampagne unveraendert (Prompt 41); die anderen Modi tauschen nur Kopfzeile, Holzleiste und Knopf.
+function lvDraftN(key) { // Zahl der Eintraege eines Entwurfs (null = kein Entwurf)
+  const d = profile.drafts && profile.drafts[key];
+  if (!d) return null;
+  return Object.values(d.entries || {}).filter(e => (e.v && String(e.v).trim()) || e.s === "revealed" || e.s === "corrected").length;
+}
+function lvMode() { return currentLevelContext ? "campaign" : currentDailyChallenge ? "daily" : freeplaySource === "archive" ? "archive" : "free"; }
+function archiveDayNum(m) { // Tag, an dem diese Aufstellung Tages-Challenge war (erster Treffer), sonst null
+  const todayNum = dayNumber(localDateKey());
+  for (let d = 1; d < todayNum; d++) if (getDailyChallenge(dailyDateKeyForDay(d)).id === m.id) return d;
+  return null;
+}
+const LV_FLAME = '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2c1 4 6 6 6 12a6 6 0 0 1-12 0c0-3 1.5-4.5 3-6 0 2 1 3 2 3 0-3-1-6 1-9z" fill="#FFF3D1"/><path d="M12 12c.5 2 3 3 3 5.5a3 3 0 0 1-6 0c0-1.5 1-2.5 3-5.5z" fill="#E8632B"/></svg>';
+const LV_FLAME_OFF = '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2c1 4 6 6 6 12a6 6 0 0 1-12 0c0-3 1.5-4.5 3-6 0 2 1 3 2 3 0-3-1-6 1-9z" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/></svg>';
+const LV_DICE = '<svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3.5" y="3.5" width="17" height="17" rx="4" fill="none" stroke="#3E2A16" stroke-width="2"/><circle cx="8.5" cy="8.5" r="1.5" fill="#3E2A16"/><circle cx="15.5" cy="15.5" r="1.5" fill="#3E2A16"/><circle cx="12" cy="12" r="1.5" fill="#3E2A16"/><circle cx="15.5" cy="8.5" r="1.5" fill="#3E2A16"/><circle cx="8.5" cy="15.5" r="1.5" fill="#3E2A16"/></svg>';
+function renderLevelPreview(m, mode = "campaign") {
+  const camp = mode === "campaign", info = lvInfo(m), lay = PITCH_LAYOUTS[m.formation] || [], tier = camp ? currentLevelContext.tier : m.difficulty;
   const goals = [[1, PASS_THRESHOLD + "/11", ""], [2, STAR2_THRESHOLD + "/11", ""], [3, "11/11", "ohne Hilfe"]];
-  const rail = goals.map(([n, b, sm], k) => {
-    const cls = stars >= n ? "got" : stars === n - 1 ? "next" : "";
-    return (k ? `<span class="seg">${stars >= n ? `<i style="animation-delay:${1.1 + k * 0.22}s"></i>` : ""}</span>` : "")
-      + `<span class="lv-chip ${cls}" style="animation-delay:${1.2 + k * 0.22}s"><span class="st">${"★".repeat(n)}</span><b>${b}</b>${sm ? `<small>${sm}</small>` : ""}</span>`;
-  }).join("");
-  const cta = draftN !== null ? ["Weiter aufstellen", draftN > 0 ? `${draftN} von 11 schon eingetragen` : "Weiter, wo du aufgehört hast"]
-    : stars >= 3 ? ["Nochmal aufstellen", "Alle Sterne geholt – trainieren macht trotzdem Spaß"]
-    : stars > 0 ? ["Nochmal aufstellen", `Bestwert ${best} von 11 · nächster Stern wartet`]
-    : ["Aufstellen", "Ziehe die Startelf an die Tafel"];
-  const dots = matches.map((x, i) => `<i class="${profile.campaign.levelPassed[x.id] ? "done" : ""}${i === index ? " now" : ""}"></i>`).join("");
+  const railAria = `Sterne: ${PASS_THRESHOLD} von 11 richtig, ${STAR2_THRESHOLD} von 11 richtig, 11 von 11 ohne Hilfe`;
+  let kick, tray, cta, back = { id: "lvBack", label: "Pfad", icon: "chev" };
+  if (camp) {
+    const { index } = currentLevelContext, matches = getMatchesByTier(tier);
+    const stars = (profile.campaign.stars && profile.campaign.stars[m.id]) || 0;
+    const draftN = lvDraftCount(m), best = profile.best[m.id] ? profile.best[m.id].correct : 0;
+    const rail = goals.map(([n, b, sm], k) => {
+      const cls = stars >= n ? "got" : stars === n - 1 ? "next" : "";
+      return (k ? `<span class="seg">${stars >= n ? `<i style="animation-delay:${1.1 + k * 0.22}s"></i>` : ""}</span>` : "")
+        + `<span class="lv-chip ${cls}" style="animation-delay:${1.2 + k * 0.22}s"><span class="st">${"★".repeat(n)}</span><b>${b}</b>${sm ? `<small>${sm}</small>` : ""}</span>`;
+    }).join("");
+    cta = draftN !== null ? ["Weiter aufstellen", draftN > 0 ? `${draftN} von 11 schon eingetragen` : "Weiter, wo du aufgehört hast"]
+      : stars >= 3 ? ["Nochmal aufstellen", "Alle Sterne geholt – trainieren macht trotzdem Spaß"]
+      : stars > 0 ? ["Nochmal aufstellen", `Bestwert ${best} von 11 · nächster Stern wartet`]
+      : ["Aufstellen", "Ziehe die Startelf an die Tafel"];
+    const dots = matches.map((x, i) => `<i class="${profile.campaign.levelPassed[x.id] ? "done" : ""}${i === index ? " now" : ""}"></i>`).join("");
+    kick = `<span class="t">${DIFF_LABEL[tier]} · ${campaignLevelLabel(tier, index)}</span><span class="lv-dots" aria-hidden="true">${dots}</span>`;
+    tray = `<div class="lv-rail" role="img" aria-label="${railAria}">${rail}</div>`;
+  } else {
+    const prev = navStack[navStack.length - 2];
+    back = { id: "lvBack", label: prev === "freeplay" ? "Frei spielen" : "Start", icon: "chev" };
+    if (mode === "daily") {
+      const dk = currentDailyChallenge.dateKey, streak = profile.streak.current, draftN = lvDraftN("d:" + dk);
+      kick = `<span class="t">Tages-Challenge · Spieltag ${dayNumber(dk)}</span>${streak ? `<span class="lv-streak" title="Serie">${LV_FLAME}<b>${streak}</b><small>${streak === 1 ? "Tag Serie" : "Tage Serie"}</small></span>` : `<span class="lv-streak off">${LV_FLAME_OFF}<small>Serie starten</small></span>`}`;
+      tray = `<div class="lv-rail" role="img" aria-label="${railAria}">${goals.map(([n, b, sm], k) => (k ? `<span class="seg"></span>` : "") + `<span class="lv-chip ${k === 0 ? "next" : ""}" style="animation-delay:${1.2 + k * 0.22}s"><span class="st">${"★".repeat(n)}</span><b>${b}</b>${sm ? `<small>${sm}</small>` : ""}</span>`).join("")}</div>`;
+      cta = draftN !== null ? ["Weiter aufstellen", (draftN > 0 ? `${draftN} von 11 schon eingetragen` : "Weiter, wo du aufgehört hast") + " · gilt nur heute"]
+        : ["Anpfiff", streak ? `Ein Versuch – zählt für deine Serie von ${streak} ${streak === 1 ? "Tag" : "Tagen"}` : "Ein Versuch – heute startet deine Serie"];
+    } else if (mode === "free") {
+      const draftN = lvDraftN("f:" + m.id), form = profile.freeplayForm.slice(-5), canRe = draftN === null && poolForActiveLeague().length > 1;
+      kick = `<span class="t">Frei spielen · Stufe ${tier} · ${DIFF_LABEL[tier]}</span><span class="lv-stage" role="img" aria-label="Stufe ${tier} von 5">${[1, 2, 3, 4, 5].map(i => `<i class="${i <= tier ? "on" : ""}"></i>`).join("")}</span>`;
+      tray = `<div class="lv-row">${form.length ? `<span class="lab">Form</span><span class="lv-form" role="img" aria-label="Letzte ${form.length} Freispiele: ${form.join(", ")} von 11">${form.map((v, k) => `<i class="${v === 11 ? "hi" : ""}" style="animation-delay:${1.2 + k * 0.07}s">${v}</i>`).join("")}</span>` : `<span class="lab"><small style="margin:0">Noch keine Freispiele</small></span>`}${draftN === null ? `<button class="lv-reroll" type="button" id="lvReroll"${canRe ? "" : " disabled"}>${LV_DICE}Andere Partie</button>` : ""}</div>`;
+      cta = draftN !== null ? ["Weiter aufstellen", draftN > 0 ? `${draftN} von 11 schon eingetragen` : "Weiter, wo du aufgehört hast"] : ["Aufstellen", "Training ohne Druck – XP gibt es trotzdem"];
+    } else {
+      const draftN = lvDraftN("f:" + m.id), day = archiveDayNum(m), canRe = draftN === null && archivedDailyChallenges().length > 1;
+      kick = `<span class="t">Tages-Archiv${day ? " · Spieltag " + day : ""}</span><span class="lv-tag">Training</span>`;
+      tray = `<div class="lv-row"><span class="lab">Ohne Sterne und Serie<small>nur für dich</small></span>${draftN === null ? `<button class="lv-reroll" type="button" id="lvReroll"${canRe ? "" : " disabled"}>${LV_DICE}Anderer Spieltag</button>` : ""}</div>`;
+      cta = draftN !== null ? ["Weiter aufstellen", draftN > 0 ? `${draftN} von 11 schon eingetragen` : "Weiter, wo du aufgehört hast"] : ["Aufstellen", "Wie damals – nur ohne Druck"];
+    }
+  }
   const arrows = [[50, 90, 50, 64], [22, 40, 30, 22], [78, 40, 70, 22]];
-  return `<div class="lv" id="lvRoot" style="--wc:${DIFF_COLOR[tier]}">${lvTopbarHTML()}
+  const noteText = camp && (profile.campaign.stars && profile.campaign.stars[m.id] >= 3) && m.context ? m.context : (m.teaser || m.context);
+  return `<div class="lv lv-${mode}" id="lvRoot" style="--wc:${DIFF_COLOR[tier]}">${lvTopbarHTML({ back })}
     <div class="lv-frame" id="lvFrame">
-      <div class="lv-kick" id="lvKick"><span class="t">${DIFF_LABEL[tier]} · ${campaignLevelLabel(tier, index)}</span><span class="lv-dots" aria-hidden="true">${dots}</span></div>
+      <div class="lv-kick" id="lvKick">${kick}</div>
       <div class="lv-comp" id="lvComp"><span class="n">${duelEsc(info.comp)}</span><span class="d">${info.date ? "\u00A0·\u00A0" + duelEsc(info.date) : ""}</span></div>
       <div class="lv-head"><div class="lv-teams" id="lvTeams"><span class="h">${duelEsc(info.home)}</span><em>gegen</em><span class="a">${duelEsc(info.away)}</span></div>
         <div class="lv-score"><b>${duelEsc(info.score)}</b><small>${info.note.length ? info.note.map(duelEsc).join("<br>") : "Endstand"}</small></div></div>
       <div class="lv-mid"><div class="lv-wanted" id="lvWanted"><small>Aufstellen:</small><b>${duelEsc(info.side)}</b><span class="pills"><span>${duelEsc(m.formation)}</span></span></div>
-        <div class="lv-note" id="lvNote"><b>Wusstest du?</b><span id="lvNoteText">${duelEsc(stars >= 3 && m.context ? m.context : (m.teaser || m.context))}</span></div></div>
+        <div class="lv-note" id="lvNote"><b>Wusstest du?</b><span id="lvNoteText">${duelEsc(noteText)}</span></div></div>
       <div class="lv-pitch" id="lvPitch" data-arrows='${JSON.stringify(arrows)}'><svg class="lv-chalk" id="lvChalk" aria-hidden="true"></svg>
         ${lay.map((q, k) => `<span class="lv-mag ${q.abbr === "TW" ? "tw" : ""}" style="left:${q.x}%;top:${Math.max(7, Math.min(93, q.y))}%;animation-delay:${1000 + k * 70}ms">${q.abbr}</span>`).join("")}</div>
     </div>
-    <div class="lv-tray"><div class="lv-rail" role="img" aria-label="Sterne: ${PASS_THRESHOLD} von 11 richtig, ${STAR2_THRESHOLD} von 11 richtig, 11 von 11 ohne Hilfe">${rail}</div></div>
+    <div class="lv-tray">${tray}</div>
     <div class="lv-bottom"><button class="lv-cta" id="toPitchBtn" type="button">${cta[0]}<small>${cta[1]}</small></button></div></div>`;
 }
 // Messen und Anpassen (nach dem Einfuegen und bei Groessenaenderung): nichts wird abgeschnitten, nichts ueberlappt.
@@ -6755,6 +6786,8 @@ function lvFit(root, still) {
   // Kopfzeile / Wettbewerb + Datum: erst Schrift, dann CL/EL abkuerzen, dann Ellipsis (Datum bleibt immer stehen)
   const kick = q("#lvKick"), kt = kick.querySelector(".t");
   kick.style.fontSize = ""; for (let s = 14; kt.scrollWidth > kt.clientWidth + 0.5 && s > 11; s -= 0.5) kick.style.fontSize = s + "px";
+  if (kt.scrollWidth > kt.clientWidth + 0.5) { kt.textContent = kt.textContent.replace("Bonus-Level ", "Bonus "); kick.style.fontSize = ""; for (let s = 14; kt.scrollWidth > kt.clientWidth + 0.5 && s > 11; s -= 0.5) kick.style.fontSize = s + "px"; }
+  if (kt.scrollWidth > kt.clientWidth + 0.5) { kt.textContent = kt.textContent.replace("Champions League", "CL").replace("Regionalliga", "RL"); kick.style.fontSize = ""; for (let s = 14; kt.scrollWidth > kt.clientWidth + 0.5 && s > 11; s -= 0.5) kick.style.fontSize = s + "px"; }
   const comp = q("#lvComp"), cn = comp.querySelector(".n"); comp.style.fontSize = "";
   const compFits = () => comp.scrollWidth <= comp.clientWidth + 0.5 && cn.scrollWidth <= cn.clientWidth + 0.5;
   for (let s = 14.5; !compFits() && s > 12.5; s -= 0.5) comp.style.fontSize = s + "px";
@@ -6789,30 +6822,25 @@ function startMatch(m) {
   draftCtx = null; // bis renderPitch() die Aufstellung (neu) aufbaut
   if (navStack[navStack.length - 1] !== "game") navigate("game");
   const gameScreen = document.getElementById("screen-game");
-  gameScreen.classList.toggle("lv-on", !!currentLevelContext); gameScreen.classList.remove("sp-on", "sp-done");
+  gameScreen.classList.add("lv-on"); gameScreen.classList.remove("sp-on", "sp-done");
   if (gameScreen) gameScreen.scrollTop = 0;
-  const pitchView = document.getElementById("pitchView");
-  if (currentLevelContext) { // Kampagne: Taktiktafel (Prompt 41)
-    pitchView.innerHTML = renderLevelPreview(m);
-    document.getElementById("toPitchBtn").onclick = renderPitch;
-    document.getElementById("lvBack").onclick = exitMatch;
-    document.getElementById("rulesBtn").onclick = openRulesModal;
-    const root = document.getElementById("lvRoot");
-    lvFit(root);
-    if (document.fonts && document.fonts.ready) document.fonts.ready.then(() => { if (document.getElementById("lvRoot") === root) lvFit(root, true); });
-    return;
-  }
-  pitchView.innerHTML = `
-    <div class="bonus-panel">
-      <button class="back-btn" id="exitMatchBtn"><span class="back-arrow">←</span>Abbrechen</button>
-      <div class="bonus-eyebrow">${m.comp}</div>
-      <div class="bonus-title">${m.teams}</div>
-      <div class="badge-row" style="text-align:center; margin-bottom:12px">${renderDiffBadge(m.difficulty)}</div>
-      <div class="bonus-text"><b>${m.side}</b><br>${m.teaser || m.context}</div>
-      <button class="action btn-gold" id="toPitchBtn" style="width:100%">Aufstellung eintragen</button>
-    </div>`;
+  const pitchView = document.getElementById("pitchView"), mode = lvMode(); // Vorschau in allen Modi (Prompt 53)
+  pitchView.innerHTML = renderLevelPreview(m, mode);
   document.getElementById("toPitchBtn").onclick = renderPitch;
-  document.getElementById("exitMatchBtn").onclick = exitMatch;
+  document.getElementById("lvBack").onclick = exitMatch;
+  document.getElementById("rulesBtn").onclick = openRulesModal;
+  const root = document.getElementById("lvRoot");
+  const rr = document.getElementById("lvReroll");
+  if (rr) rr.onclick = () => { // andere Partie: Tafel wischt kurz weg, dann neu aufbauen
+    let next = null;
+    if (mode === "free") next = pickRandomMatch(); // gleiche Regeln wie das Auslosen (Pool, Hardcore, nicht dieselbe wie zuletzt)
+    else { const pool = archivedDailyChallenges().filter(x => x.id !== m.id); next = pool.length ? pool[Math.floor(Math.random() * pool.length)] : null; if (next) lastShownId = next.id; }
+    if (!next || next.id === m.id) return;
+    const fr = document.getElementById("lvFrame"); if (fr && !REDUCED_MOTION) fr.classList.add("out");
+    setTimeout(() => startMatch(next), REDUCED_MOTION ? 0 : 230);
+  };
+  lvFit(root);
+  if (document.fonts && document.fonts.ready) document.fonts.ready.then(() => { if (document.getElementById("lvRoot") === root) lvFit(root, true); });
 }
 
 /* ---- Entwuerfe: angefangene Aufstellungen (Prompt 34) ---- */
