@@ -64,8 +64,9 @@ vorige umgesetzt, getestet und committet ist.
 | 50 | Blauer Balken am unteren Rand (Ladescreen + alle Bildschirme) weg, Platz unten gewinnen, Geräte-Test; richtiger Name wird sofort grün (nicht erst beim Verlassen) | ✅ erledigt (Rasen-Grund #173A29 für html/body/.stage/theme-color/Manifest, .stage fixed inset 0, unterer Abstand max(12px, safe+4px), ?debug=1-Messanzeige, Geräte-Matrix tools/check-geraete.mjs (8 Geräte ok), richtiger Name sofort grün mit Goldring, kein Auto-Sprung; offen: iPhone-Gegenprobe durch Florian; Blätter „So geht's/Regeln/Rückfrage“ bleiben bewusst Ink-Blau) |
 | 51 | Kampagne: Level-Pfad neu (Candy-Crush-Weg, jede Welt eigene Landschaft mit Tribünen und Platz-Requisiten, Holzschild, Kamerafahrt zum aktuellen Level, "Zu Level n"-Knopf) | ✅ erledigt (Level-Pfad nach level-pfad.html: eigene Weg-Art und Landschaft je Welt mit Tribünen, Holzschild + Zettel, Magnet-Knoten mit Sternen/Stift/Auge, „Du“-Magnet weicht Nachbarn aus, Tunnel/Pokal als Ziel, „Zu Level n“-Knopf, Einstiegs-Kamerafahrt, Szene gecacht (≈110 ms bei 4× CPU-Drosselung); tools/check-overlap prüft alle Welten × 3 Stände × 4 Breiten; TOP0 448 statt 360, damit „Du“ nicht auf dem Zettel liegt) |
 | 52 | Ersatzbank-Blatt im Taktiktafel-Stil (Holzrahmen + Filz, Kreide-Zeitleiste der Wechsel, Namensschilder der Eingewechselten, übrige Bank in Kreide), gleiche Darstellung im Duell-Rückblick | ✅ erledigt (Bank-Blatt nach bank-v2.html: Holzrahmen + Filz, Kreide-Zeitleiste, Namensschilder, Kreide-Kacheln, Notizzettel, feste Knöpfe; gemeinsamer Körper benchBodyHTML() auch im Duell-Rückblick; alle 59 Aufstellungen mit Bank × vor/nach Auswertung × 2 Größen geprüft: keine Überlappung, gleich hohe Kacheln, kein „für <Name>“ vor der Auswertung) |
+| 53 | Vorschau vor Tages-Challenge, Frei spielen und Tages-Archiv im Taktiktafel-Stil (wie Level-Vorschau, je Modus eigene Kopfzeile, Holzleiste und Knopf; ersetzt die blaue Info-Karte) | 41, 47 |
 
-**Empfohlene Reihenfolge ab jetzt:** 49 → 50 (Bugfixes, sofort) → 39 → 41 → 42 → 43 → 44 → 45 → 46 → 47 → 48 → 49 → 50 → 51 → 52 → weitere Offline-Feinschliffe (u. a. Jahres-Lücken im Ideen-Speicher auffüllen) → Planung Online-Duell (inkl. 28/29) → 8 (Capacitor, erst wenn die App final ist; vorher Duell-Pflichtpunkt aus CLAUDE.md ansprechen)
+**Empfohlene Reihenfolge ab jetzt:** 49 → 50 (Bugfixes, sofort) → 39 → 41 → 42 → 43 → 44 → 45 → 46 → 47 → 48 → 49 → 50 → 51 → 52 → 53 → weitere Offline-Feinschliffe (u. a. Jahres-Lücken im Ideen-Speicher auffüllen) → Planung Online-Duell (inkl. 28/29) → 8 (Capacitor, erst wenn die App final ist; vorher Duell-Pflichtpunkt aus CLAUDE.md ansprechen)
 
 Prompt 7 steht bewusst vor der Tages-Challenge: Nur mit der neuen
 Update-Strategie kommen neue Tages-Aufstellungen zuverlässig auf dem iPhone an.
@@ -4699,6 +4700,98 @@ C. Aufräumen + Abschluss
      2014 (Verlängerung, vor/nach), EM 2024 (lange Bank), Dortmund 2013
      (dichte Wechsel), Duell-Rückblick aufgeklappt.
    - CACHE_NAME in sw.js erhöhen, Status-Tabelle: Prompt 52 erledigt.
+```
+
+---
+
+## Prompt 53 – Vorschau vor Tages-Challenge, Frei spielen und Tages-Archiv
+
+```
+Lies CLAUDE.md. Optischer Umbau → kurz Plan Mode, Plan zeigen, dann in
+Paketen A–C umsetzen (je Paket Commit + Test).
+Optische Vorlage: prototypes/vorschau-tag.html (von Florian am
+18.10.2026 freigegeben). Basis ist die Level-Vorschau aus Prompt 41
+(renderLevelPreview, CSS .lv-*, lvFit) – deren Optik bleibt 1:1. Neu sind
+nur die modusabhängigen Teile (CSS-Block "NEU: modusabhängige Teile" im
+Prototyp: .lv-streak, .lv-stage, .lv-tag, .lv-row, .lv-form, .lv-reroll).
+NICHT übernehmen: Statusleiste/Island/Home-Balken, Regie-Pult,
+Beispieldaten, eingebettete Schriften, Bild der alten Karte.
+
+Befund (geprüft auf main 1c046f7): startMatch(m) zeigt außerhalb der
+Kampagne noch die alte .bonus-panel-Karte (blau, rote Wettbewerbszeile in
+Sperrschrift, Text-Pfeil "←", flacher Goldbalken, viel leerer Platz). Das
+betrifft Tages-Challenge, Frei spielen (inkl. Entwurf fortsetzen) und
+Tages-Archiv.
+
+A. Gemeinsame Vorschau
+   1. renderLevelPreview so verallgemeinern, dass sie einen Modus kennt
+      (campaign | daily | free | archive) – z. B. renderMatchPreview(m,
+      mode). Die Kampagne bleibt pixelgleich (Screenshot-Vergleich vorher/
+      nachher). startMatch() nutzt für alle Modi diese Vorschau; die alte
+      .bonus-panel-Karte und ihr CSS (.bonus-panel, .bonus-eyebrow,
+      .bonus-title, .bonus-text, soweit nicht anderswo genutzt) entfallen.
+   2. Gleich in allen Modi: Topbar (zurück, Token-Chip, Regeln mit Punkt),
+      Tafel mit Wettbewerb + Datum, Teams, Holz-Anzeigetafel, "Aufstellen:"
+      + Formation, Zettel "Wusstest du?" mit teaser (nie context vor dem
+      Spielen), Kreide-Spielfeld mit Magneten in Stufenfarbe (DIFF_COLOR
+      der Aufstellung), Bewegung und lvFit wie bisher, prefers-reduced-
+      motion beachten.
+
+B. Je Modus
+   1. Tages-Challenge (currentDailyChallenge):
+      - Zurück: "Start".
+      - Kopfzeile: "Tages-Challenge · Spieltag <dayNumber>", rechts die
+        Serie als Pille mit gezeichneter Flamme ("<n> Tage Serie", Anton
+        für die Zahl); ohne Serie dezente Pille "Serie starten".
+      - Holzleiste: Sterne-Stufen wie Kampagne (PASS_THRESHOLD/11,
+        STAR2_THRESHOLD/11, 11/11 ohne Hilfe), keine "got"-Chips (ein
+        Versuch, noch nicht gespielt).
+      - Knopf: "Anpfiff" + "Ein Versuch – zählt für deine Serie von <n>
+        Tagen" bzw. "Ein Versuch – heute startet deine Serie"; mit
+        Entwurf (drafts "d:<dateKey>"): "Weiter aufstellen" + "<n> von
+        11 schon eingetragen · gilt nur heute".
+   2. Frei spielen (freeplaySource "filter", auch "Entwurf fortsetzen"):
+      - Zurück: "Frei spielen" (zurück zum Freispiel-Bildschirm).
+      - Kopfzeile: "Frei spielen · Stufe <n> · <DIFF_LABEL>", rechts fünf
+        Stufen-Punkte (bis n in Stufenfarbe).
+      - Holzleiste: "Form" + die letzten 5 Ergebnisse aus
+        profile.freeplayForm als kleine Chips (Anton, 11 = Gold; leer →
+        "Noch keine Freispiele" in Oswald 300), rechts Knopf "Andere
+        Partie" (gezeichneter Würfel). Er zieht nach denselben Regeln wie
+        das Auslosen in Prompt 47 (poolForActiveLeague, nicht dieselbe wie
+        zuletzt, Hardcore beachten) und tauscht die Tafel mit kurzer
+        Wisch-Bewegung aus. Bei nur einer möglichen Aufstellung
+        deaktiviert. Beim Fortsetzen eines Entwurfs ausgeblendet.
+      - Knopf: "Aufstellen" + "Training ohne Druck – XP gibt es
+        trotzdem"; mit Entwurf "Weiter aufstellen" + "<n> von 11 schon
+        eingetragen".
+   3. Tages-Archiv (freeplaySource "archive"):
+      - Zurück: "Start" (bzw. dorthin, woher das Archiv geöffnet wurde).
+      - Kopfzeile: "Tages-Archiv · Spieltag <n>" – n = Tag, an dem diese
+        Aufstellung Tages-Challenge war (erster Tag d mit
+        getDailyChallenge(dailyDateKeyForDay(d)).id === m.id; ohne Treffer
+        nur "Tages-Archiv"); rechts cremefarbenes Schild "Training".
+      - Holzleiste: "Ohne Sterne und Serie" + klein "nur für dich",
+        rechts "Anderer Spieltag" (wie startArchiveMatch, nicht derselbe).
+      - Knopf: "Aufstellen" + "Wie damals – nur ohne Druck".
+   4. Regeln unverändert: keine Sterne im Freispiel/Archiv, Archiv ohne
+      Serie/earnDaily, Tages-Challenge nur ein Versuch. Kein Text darf
+      etwas anderes versprechen, als die Logik tut (bei Abweichung Text
+      anpassen, nicht die Regel).
+
+C. Abschluss
+   - tools/check-vorschau.mjs (oder neues Prüfskript) auf alle Modi
+     erweitern: nichts abgeschnitten/überlappt, Zettel-Text komplett,
+     Kopfzeile passt (lange Wettbewerbe, CL-Abkürzung wie lvFit), bei
+     393×852, 430×932, 375×667 und 360×780.
+   - Spoiler-Check: Vorschau zeigt nie context oder Spielernamen der
+     gesuchten Mannschaft (teaser-Regel aus CLAUDE.md).
+   - Screenshots: Tages-Challenge (mit/ohne Serie, mit Entwurf), Frei
+     spielen (vor/nach "Andere Partie", mit Entwurf), Tages-Archiv,
+     Kampagne vorher/nachher (unverändert).
+   - CACHE_NAME in sw.js erhöhen, Status-Tabelle: Prompt 53 erledigt;
+     Ideen-Punkt "Taktiktafel-VORSCHAU auch für Freispiel und Tages-
+     Challenge" als erledigt markieren.
 ```
 
 ---
