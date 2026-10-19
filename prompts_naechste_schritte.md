@@ -68,8 +68,9 @@ vorige umgesetzt, getestet und committet ist.
 | 54 | Duell im Taktiktafel-Stil: Rundenende an der Tafel mit „Weiter“-Knopf (statt 0,9 s + blauer Zwischenkarte), Duell-Zentrale, Schnell-Duell-Blatt, Einladung, Abpfiff; Emojis → SVG, Niederlage ohne Rot | 42, 50, 52 | ✅ erledigt (Paket A Rundenende an der Tafel mit Review + „Weiter“, sofort gespeichert; B Abpfiff (Sieg/Niederlage/Remis/Gespielt!, Anzeigetafel, Rundenkarten mit Krone, Fair-Play, XP, Bilanz); C Einladung (VS-Magnete, Holz-Fakten, Zettel, Fair-Schalter, Anpfiff); D Duell-Zentrale (Pass, Holzreiter, Kacheln, Tickets, Historie ohne Rot, Freunde/Trophäen als SVG, Schnell-Duell-Blatt Holz+Filz); E Walkout ohne Sperrschrift, Duell-Rückfragen aus Holz, Emojis → SVG, altes .dl-CSS entfernt; Tests: test-duell-flow/abpfiff/einladung/zentrale, check-safearea inkl. Review/Abpfiff; sw.js v70) |
 | 55 | Töne: 11 empfohlene Stellen mit Web-Audio-Klängen aus dem Tonstudio (ohne Rauschen), Ton-Schalter + Lautstärke, Stummschalter respektieren | 49, 53, 54 | ✅ erledigt (Modul „TÖNE“ mit sfx(name, opts) auf der Audio-Uhr, elf Töne Variante A ohne Rauschen/Dateien, Feiern reihen sich ein, Welt-Feier unterbricht, Ton ersetzt gleichen Ton; Stellen: ok mit Kombo-Tonhöhe, Rad-Ratsche + Doppelglocke, Münze einmal je Gutschrift, Anpfiff-Pfiff, Abpfiff, Sterne synchron zur Animation (gestaffelt 0,32 s), Fanfare 11/11, Level-Up-Tafel, Welt-Feier, Walkout (Herzschlag, Klopfer auf 3-2-1, Pfiff), Duell-Sieg; Ton-Schalter + Lautstärke im Scout-Profil, audioSession „ambient“, haptic()-Haken + vibrate; tools/test-sound.mjs 57 Prüfungen; sw.js v71; offen: iPhone-Test Stummschalter/Musik durch Florian) |
 | 56 | Neues App-Icon „Taktiktafel“ (Variante A: Holzrahmen, Filz, Kreide, 11 Magnete) in allen Größen + Maskable + Favicon; Logo auf der Startseite ohne braunen Extra-Rand | 44 | ✅ erledigt (icons/source = neue Taktiktafel-SVGs, alte in icons/source/alt-navy/; alle PNG-Größen neu (1024 ohne Transparenz/Rundung, Maskable-Motiv skaliert auf ≤ 0,8 Kreis, Favicons mit transparenten Ecken); .hm-brand img ohne Doppelrand; sw.js v72; iPhone: Homescreen-Icon erst nach Entfernen + erneutem „Zum Home-Bildschirm“) |
+| 57 | Bugfix: Scout-Profil schließt beim Hochscrollen (Wisch-zum-Schließen prüft das falsche Element); Kampagne-Kachel öffnet den Level-Pfad statt direkt das Level, „Pfad“-Knopf führt wirklich zum Pfad | 43, 44, 51 | offen |
 
-**Empfohlene Reihenfolge ab jetzt:** 49 → 50 (Bugfixes, sofort) → 39 → 41 → 42 → 43 → 44 → 45 → 46 → 47 → 48 → 49 → 50 → 51 → 52 → 53 → 54 → 55 → 56 → weitere Offline-Feinschliffe (u. a. Jahres-Lücken im Ideen-Speicher auffüllen) → Planung Online-Duell (inkl. 28/29) → 8 (Capacitor, erst wenn die App final ist; vorher Duell-Pflichtpunkt aus CLAUDE.md ansprechen)
+**Empfohlene Reihenfolge ab jetzt:** 49 → 50 (Bugfixes, sofort) → 39 → 41 → 42 → 43 → 44 → 45 → 46 → 47 → 48 → 49 → 50 → 51 → 52 → 53 → 54 → 55 → 56 → 57 → weitere Offline-Feinschliffe (u. a. Jahres-Lücken im Ideen-Speicher auffüllen) → Planung Online-Duell (inkl. 28/29) → 8 (Capacitor, erst wenn die App final ist; vorher Duell-Pflichtpunkt aus CLAUDE.md ansprechen)
 
 Prompt 7 steht bewusst vor der Tages-Challenge: Nur mit der neuen
 Update-Strategie kommen neue Tages-Aufstellungen zuverlässig auf dem iPhone an.
@@ -5077,6 +5078,81 @@ app-icon-favicon.svg (vereinfacht für 16/32 px) + Vorschau-PNGs.
    später automatisch.
 6. Screenshots: Startseiten-Kopf vorher/nachher (393×852), alle
    erzeugten PNG-Größen nebeneinander. Status-Tabelle: Prompt 56 erledigt.
+```
+
+---
+
+## Prompt 57 – Scout-Profil lässt sich nicht hochscrollen + Kampagne öffnet den Pfad
+
+**Beobachtung (Florian, 19.10.2026):**
+1. Scout-Profil öffnen, ganz nach unten scrollen – danach lässt es sich nicht mehr
+   hochscrollen: die Wischbewegung nach unten schließt das Blatt. Nur ein
+   Reiterwechsel bringt einen wieder nach oben.
+2. In der Kampagne kommt man von der Startseite aus direkt ins nächste Level,
+   nicht auf den Level-Pfad. Der Pfad soll von der Startseite aus erreichbar sein.
+
+**Vorab geprüft (Stand main 0dd5b98):**
+- Zu 1: `sheetEnhance()` (Herunterwischen, ca. Zeile 12065) entscheidet über
+  `sheet.scrollTop <= 0`, ob ein Wisch nach unten das Blatt zieht. Beim
+  Scout-Profil scrollt aber nicht `.hm-psheet`, sondern das innere `.hm-sh-in`
+  (`overflow-y: auto`). `sheet.scrollTop` ist dort immer 0, also wird jeder
+  Wisch nach unten außerhalb des Kopfes zum Schließen – egal wie weit man
+  gescrollt hat. Am Listenende fällt es am stärksten auf.
+- Zu 2: `modeTileCampaign.onclick` startet bei einem angefangenen Level
+  (`campaignDraftLevel()`) sofort `startCampaignLevel()`, sonst
+  `navigate("worldmap")` (dort muss man die Welt noch zweimal antippen). Im
+  ersten Fall zeigt die Level-Vorschau den Knopf „Pfad“, `exitMatch()` =
+  `goBack()` führt aber zur Startseite, weil `levelpath` nicht im Verlauf liegt.
+
+```
+Lies CLAUDE.md. Plan Mode, Plan zeigen. Zwei Teile, keine Optik-Änderung.
+
+TEIL A – Wisch-zum-Schließen respektiert inneres Scrollen (alle Blätter)
+1. In sheetEnhance(): beim touchstart den tatsächlich scrollenden Container
+   bestimmen: vom Touch-Ziel bis zum Blatt hochlaufen und das erste Element
+   nehmen, das scrollen kann (overflow-y auto/scroll UND scrollHeight >
+   clientHeight + 1). Gibt es keins, gilt das Blatt selbst.
+2. Wisch nach unten darf das Blatt nur ziehen, wenn (a) der Finger im Kopf/
+   Griff startet (hdr) ODER (b) dieser Container beim Start UND beim Beginn des
+   Ziehens ganz oben steht (scrollTop <= 0). Sonst normal scrollen lassen, kein
+   preventDefault.
+3. Kein Ziehen, wenn der Container erst während derselben Geste oben ankommt
+   (also nicht aus einem Scroll heraus ins Schließen übergehen – erst neue
+   Geste). iOS-Gummiband: scrollTop < 0 zählt als oben.
+4. Gilt für alle Blätter mit sheetEnhance (Scout-Profil, Bank, Anleitung,
+   Scout-Rad, Rückfragen, Duell-Blätter dz-sheet). Liste im Plan, welche ein
+   inneres Scroll-Element haben.
+5. Test: tools/test-sheet-scroll.mjs (Playwright, Touch-Emulation hasTouch,
+   393×852 und 375×667): Scout-Profil, alle drei Reiter → ganz nach unten
+   scrollen → nach oben wischen (Finger nach unten) → Blatt bleibt offen,
+   scrollTop wird kleiner; oben angekommen, neue Geste nach unten → schließt;
+   Wisch am Griff schließt immer; gleiches für Bank-Blatt und ein dz-Blatt.
+
+TEIL B – Kampagne von der Startseite: immer erst der Pfad
+1. Kachel „Kampagne“ öffnet den Level-Pfad der aktuellen Welt (die Welt mit
+   dem nächsten offenen Level, bei angefangenem Level dessen Welt), nicht das
+   Level selbst. Verlauf: start → worldmap → levelpath (worldmap still
+   einschieben, ohne sie zu zeigen), damit „Zurück“ im Pfad zur Weltkarte
+   und dort zur Startseite führt – wie wenn man über die Weltkarte kommt.
+2. Der Pfad fährt wie bisher (Prompt 51) zum aktuellen Level; ein angefangenes
+   Level hat schon das Stift-Abzeichen (lp-badge draft). Ein Tipp darauf
+   öffnet die Vorschau mit „Weiter aufstellen“ – also ein Tipp mehr als heute,
+   dafür sieht man den Pfad.
+3. Kachel-Text bleibt („Welt · Level n von m · angefangen“), Knopf heißt
+   „Zum Pfad“ statt „Weiter spielen“ (bei „Los geht's“ für Neue bleibt es).
+   Alle Welten geschafft: Weltkarte wie bisher.
+4. Danach prüfen, dass jeder Weg aus Level-Vorschau und Spiel mit „Pfad“
+   wirklich im Pfad landet (lvBack/exitMatch, backBtn → goBackTo("levelpath"),
+   Stufe geschafft → Weltkarte) und die Android-Zurück-Geste dieselbe Kette
+   geht. Falls goBackTo("levelpath") ohne Pfad im Verlauf navigate() aufruft
+   und so einen Rückweg ins Spiel erzeugt: beheben.
+5. Test: tools/test-kampagne-nav.mjs – Fälle neu / Level offen / Level
+   angefangen / alle Welten geschafft; je Kachel-Tipp → richtiger Pfad, Zurück-
+   Kette bis Startseite, Vorschau-„Pfad“ → Pfad, nach Auswerten „Pfad“ → Pfad.
+
+Abschluss: alle tools/-Skripte grün, CACHE_NAME in sw.js erhöhen, Screenshot
+Startseiten-Kachel vorher/nachher, Status-Tabelle: Prompt 57 erledigt.
+Kein Commit/Push ohne Zeigen der Testausgabe.
 ```
 
 ---
