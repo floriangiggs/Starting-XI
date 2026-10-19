@@ -4,6 +4,11 @@
   "version": "1.0.0",
   "description": "Dev-Tooling fuer startelf_check.html (Overlap-Check etc.)",
   "devDependencies": {
+    "@electric-sql/pglite": "^0.5.10",
     "playwright": "^1.48.0"
+  },
+  "scripts": {
+    "test:db": "node tools/test-db.mjs",
+    "gen:seed": "node tools/gen-supabase-seed.mjs"
   }
 }

@@ -229,6 +229,8 @@ Kein Commit/Push ohne Zeigen der Testausgabe.
 
 ### Prompt K1 – Server: Schema, Regeln, Funktionen
 
+*Status 19.10.2026: ✅ umgesetzt – `supabase/` (Migrationen 0001–0008, `seed.sql`, README), `tools/test-db.mjs` mit 187 Prüfungen gegen PGlite (Test-DB per npm, Entscheidung Florian). Offen für Florian: Supabase-Projekt (Frankfurt) anlegen, Migrationen + Seed einspielen, `pg_cron` einrichten (siehe `supabase/README.md`).*
+
 ```
 Lies CLAUDE.md und docs/technik-konzept-konten.md (Abschnitte 5–7, 9–10). Plan Mode.
 Ordner supabase/ im Repo: migrations/*.sql (Tabellen aus Abschnitt 5, RLS, Funktionen aus 6/7/9/10
