@@ -130,6 +130,21 @@ vom Server abgelehnt – eigene Regeltests in K1/K6.
 | **E10** | Wann Einnahmen (Werbung/Käufe)? Nach Store-Start (Version 1.x) oder gar nicht? | Nach dem Start, schrittweise (Fahrplan Punkt 3). Hängt an der Checkliste in Abschnitt 8a. |
 | **E9** | Altersfreigabe / Zielgruppe: ab 12? Für unter 16: Einwilligung der Eltern (Häkchen)? | Häkchen wie im Technik-Konzept; Store-Fragebogen später ehrlich ausfüllen. |
 
+## 7a. Entscheidungen von Florian (19.10.2026)
+
+| | Entscheidung | Folge im Plan |
+|---|---|---|
+| E1 | noch offen → **gilt Empfehlung:** 1.0 ohne Liga-Duell/Ranked | Pflichtpunkt 6 = Version 1.1 |
+| E2 | **Ja** – Markenrecherche zuerst | Ergebnis vor Domain, Apple-Konto und App-Name im Store |
+| E3 | noch offen → **gilt Empfehlung:** Punkt im Username erlaubt | wie Technik-Konzept Abschnitt 7 |
+| E4 | **Impressumsdienstleister** (nur Privatadresse vorhanden) | Dienst mit ladungsfähiger Anschrift wählen; vorher beim Anbieter klären, ob die Adresse auch als Händleradresse bei Apple/Google angegeben werden darf (Checkliste 8a) |
+| E5 | **Erst iPhone, danach Android** | 8b wird zweigeteilt: **8b-iOS** (Apple, TestFlight), später **8b-Android**. Google Play Console (25 $) und der 14-Tage-Test erst vor 8b-Android, Tester dann früh sammeln |
+| E6 | noch offen → **gilt Empfehlung:** iOS 16+, Android 8+ | – |
+| E7 | **Ja** – App-ID `de.startingxi.app`, **vorbehaltlich der Domain** | Die ID muss zur gekauften Domain passen (umgekehrt geschrieben); endgültig erst festlegen, wenn die Domain gekauft ist, danach nie mehr änderbar |
+| E8 | **Ja** – Duell nur mit Konto, Gäste behalten den Notfall-Code | Gastmodus bleibt im Store |
+| E9 | „wie es am besten ist“ → **Empfehlung:** Zielgruppe ab 12; Konto ab 16 oder mit Elternhäkchen; Store-Fragebogen ehrlich ausfüllen (Namen/Melden = nutzergenerierte Inhalte angeben) | in K2 (Häkchen) und K8 (Fragebogen) |
+| E10 | **Ja** – Einnahmen schrittweise nach dem Start | nicht Teil von 1.0, Checkliste 8a vorher |
+
 ## 8. Was du selbst erledigen musst – mit Vorlaufzeit
 
 | Wann | Was | Dauer/Kosten |
@@ -140,7 +155,7 @@ vom Server abgelehnt – eigene Regeltests in K1/K6.
 | **Vor K2** | Google-Cloud-Projekt + OAuth-Client | 1 Stunde |
 | **Vor K4** | Domain kaufen, Hosting für `.well-known` (GitHub Pages mit eigener Domain oder Cloudflare Pages) | 10–15 €/Jahr |
 | **Vor K6** | Firebase-Projekt (Push), Apple-Push-Schlüssel (APNs) im Apple-Konto erzeugen | 1 Stunde |
-| **Vor 8b** | Google Play Console | 25 $ einmalig |
+| **Vor 8b-Android** (später) | Google Play Console | 25 $ einmalig |
 | **Vor K8** | Datenschutzerklärung freigeben, AVV mit Supabase und Google abschließen, Impressum | 1–2 Tage |
 | **K8** | **Google Play – neue private Entwicklerkonten brauchen vor der Veröffentlichung einen geschlossenen Test mit einer Mindestzahl Tester über 14 Tage** (Stand meiner Kenntnis: 12 Tester – vor Start prüfen). Tester früh sammeln (Freunde, Kollegen). | 14 Tage Wartezeit |
 | **K8** | Apple-Prüfung (App Review) | meist 1–3 Tage, bei Ablehnung Nachbesserung |
@@ -280,7 +295,9 @@ Abnahme: Matrix D1–D9 und F1–F10 automatisiert mit zwei Konten gegen lokale 
 für Zeit/Fristen), Ergebnis als Tabelle zeigen. Optik: Taktiktafel-Stil wie Prompt 54.
 ```
 
-### Prompt 8b – Capacitor iOS + Android, Push, Links, Haptik
+### Prompt 8b – Capacitor iOS (zuerst), danach Android: Push, Links, Haptik
+
+*Entscheidung E5: erst nur iPhone. Beim Ausführen zuerst nur iOS-Plattform, TestFlight und iOS-Tests; Android als zweiter Durchgang mit demselben Prompt.*
 
 ```
 Lies CLAUDE.md und docs/plan-store-release.md. Plan Mode. Voraussetzungen: K1–K6 erledigt, Konten
