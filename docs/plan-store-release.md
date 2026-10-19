@@ -127,6 +127,7 @@ vom Server abgelehnt – eigene Regeltests in K1/K6.
 | **E6** | Mindest-iOS / Mindest-Android | iOS 16+, Android 8+ (Web-Audio, Safe-Areas, Push). |
 | **E7** | App-ID | Vorschlag `de.startingxi.app` (nur sinnvoll, wenn die Domain `startingxi.de` o. ä. wird – sonst die echte Domain umgekehrt). **Nie mehr änderbar** nach Veröffentlichung. |
 | **E8** | Gastmodus im Store: Duell nur mit Konto, Gäste behalten den Notfall-Code? | Ja – Apple akzeptiert Gastmodus; Konto nur für Online-Funktionen. |
+| **E10** | Wann Einnahmen (Werbung/Käufe)? Nach Store-Start (Version 1.x) oder gar nicht? | Nach dem Start, schrittweise (Fahrplan Punkt 3). Hängt an der Checkliste in Abschnitt 8a. |
 | **E9** | Altersfreigabe / Zielgruppe: ab 12? Für unter 16: Einwilligung der Eltern (Häkchen)? | Häkchen wie im Technik-Konzept; Store-Fragebogen später ehrlich ausfüllen. |
 
 ## 8. Was du selbst erledigen musst – mit Vorlaufzeit
@@ -146,6 +147,25 @@ vom Server abgelehnt – eigene Regeltests in K1/K6.
 
 Zugangsschlüssel (Service-Role, APNs-Schlüssel, Google-Secrets) **nie** ins Repo und nicht in den Chat –
 ich nutze nur den öffentlichen `anon key`; geheime Werte trägst du selbst im Supabase-/Firebase-Dashboard ein.
+
+## 8a. Checkliste: Hobby oder Gewerbe, Händlerstatus, Impressum
+
+Hinweise, keine Rechtsberatung. Vor dem Einreichen einmal mit Finanzamt, IHK-Gründungsberatung oder Steuerberater bestätigen.
+**Die Entscheidung fällt vor K8**, weil der Händlerstatus bei Apple und Google schon beim Einreichen angegeben werden muss.
+
+| Frage | Antwort / Folge |
+|---|---|
+| Soll die App Geld bringen (Werbung, Käufe, Abos) – jetzt oder später? | **Nein, dauerhaft kostenlos ohne Einnahmen:** meist Hobby, kein Gewerbe nötig. **Ja, geplant:** Gewerbe und Finanzamt klären, bevor die erste Einnahme entsteht (nicht erst danach). |
+| Gewerbe anmelden | Beim Gewerbeamt der Gemeinde (kleine Gebühr). Danach schickt das Finanzamt den „Fragebogen zur steuerlichen Erfassung“. Zeitpunkt: **vor dem Live-Gang von Werbung/Käufen.** |
+| Kleinunternehmerregelung | Bei kleinen Umsätzen möglich (keine Umsatzsteuer ausweisen). Im Fragebogen angeben, Steuerberater fragen, ob sie passt. |
+| Händlerstatus (Trader) bei Apple/Google | Wer gewerblich handelt, ist „Händler“: Name, Adresse, Telefon und E-Mail werden im Store öffentlich angezeigt. Rein kostenlose Hobby-App: eventuell „kein Händler“. Ehrlich angeben, im Zweifel Händler. |
+| Apple Developer Program | Als **Privatperson** möglich, Firma/Gewerbe nicht nötig. Firmenkonto braucht D-U-N-S-Nummer (dauert länger). |
+| Impressum | Pflicht für geschäftsmäßige Angebote. Praktisch immer anlegen, da der Store eine Support-Adresse verlangt. Zustellfähige Adresse nötig (E4: eigene Adresse oder Impressums-Dienstleister). |
+| Datenschutzerklärung | Pflicht für Konten, Push, Server (K8), unabhängig von Gewerbe. |
+| Werbung später | Werbeanbieter bringen eigene Pflichten (Einwilligungsabfrage, Datenschutz-Angaben in den Stores). Eigener Prompt nach dem Store-Start, **nicht** Teil von 1.0. |
+
+**Reihenfolge für dich:** (1) Einnahmeplan festlegen (E10), (2) Gewerbeamt/Finanzamt oder Steuerberater fragen,
+(3) Händlerstatus und Impressumsadresse festlegen (E4), (4) Apple/Google-Konto entsprechend anlegen, (5) K8 starten.
 
 ## 9. Store-Risiken und Gegenmittel
 
