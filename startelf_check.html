@@ -1556,145 +1556,8 @@
   @media (max-height: 700px) { .modal-sheet.gs.gw { padding: 7px; } .gs.gw .gw-in { gap: 8px; padding: 10px 12px 9px; } .gs.gw .sh-title { font-size: 24px; } .gs.gw .sp-x { width: 34px; height: 34px; } .gs.gw .panel { gap: 7px; } .gs.gw .modes > div { padding: 4px 4px; } .gs.gw .modes .ch { padding: 5px 4px 4px; } .gs.gw .mline p { font-size: 12.5px; line-height: 1.32; } .gs.gw .mline + .mline { margin-top: 5px; } .gs.gw .card { padding: 8px 11px; } .gs.gw .tabs button { padding: 4px 2px; } }
   @media (prefers-reduced-motion: reduce) { .modal-sheet.gs.gw { animation: none; } }
 
-  /* ---- Duell gegen Freunde (Prompt 25) - Optik 1:1 aus prototypes/duell.html, strikt gescoped ---- */
-
   @media (max-height: 700px) { #screen-start { gap: 6px; } .solo-line { font-size: 13px; line-height: 1; padding: 0 6px; } }
 
-  /* Duell-Bildschirme: gemeinsame Wurzel .dl */
-  .dl { --bad: #E0705F; --muted: rgba(242,239,230,0.7); --dim: rgba(242,239,230,0.45); display: flex; flex-direction: column; gap: 14px; min-height: 0; }
-  .dl > * { flex-shrink: 0; } /* Inhalte werden nie unter ihre Hoehe gequetscht (sonst ueberlappen hohe Tickets die naechsten Abschnitte) */
-  .dl .h1 { font-family: 'Anton', Impact, sans-serif; font-weight: 400; font-size: 30px; line-height: 0.95; flex: 1; }
-  .dl .h1 span { color: var(--gold); text-shadow: 0 0 18px rgba(232,178,61,0.3); }
-  .dl .topbar { margin-bottom: 0; }
-  #screen-duelinvite .dl .h1 { font-size: 24px; line-height: 1; }
-  .dl .st { display: flex; align-items: center; gap: 8px; }
-  .dl .st b { font-family: 'Oswald', sans-serif; font-weight: 600; font-size: 16px; }
-  .dl .st .cnt { min-width: 20px; height: 20px; border-radius: 10px; padding: 0 6px; display: grid; place-items: center; background: var(--gold); color: var(--ink); font-family: 'Anton', Impact, sans-serif; font-size: 12px; }
-  .dl .st em { margin-left: auto; font-style: normal; font-weight: 300; font-size: 13px; color: var(--dim); }
-  .dl .st .num { width: 22px; height: 22px; border-radius: 50%; display: grid; place-items: center; background: var(--gold); color: var(--ink); font-family: 'Anton', Impact, sans-serif; font-size: 12px; }
-  .dl .small { font-family: 'Oswald', sans-serif; font-weight: 300; font-size: 12.5px; color: var(--muted); line-height: 1.4; }
-  /* Klappziffern wie Tages-Karte */
-  .dl .flip { display: inline-flex; gap: 3px; align-items: center; }
-  .dl .flip b { font-family: 'Anton', Impact, sans-serif; font-weight: 400; line-height: 1; text-align: center; border-radius: 5px; color: var(--gold-2); position: relative;
-    background: linear-gradient(180deg, #0d171f 0 49%, #0a1218 51% 100%); box-shadow: inset 0 0 0 1px rgba(255,255,255,0.06), 0 2px 0 rgba(0,0,0,0.35); }
-  .dl .flip b::after { content: ""; position: absolute; left: 0; right: 0; top: 50%; height: 1px; background: rgba(0,0,0,0.6); }
-  .dl .flip i { font-style: normal; font-family: 'Anton', Impact, sans-serif; color: rgba(244,213,141,0.55); }
-  .dl .flip.xl b { font-size: 40px; min-width: 34px; padding: 6px 4px 5px; } .dl .flip.xl i { font-size: 32px; margin: 0 3px; }
-  /* Anzeigetafel */
-  .dl .board { border-radius: 16px; padding: 14px 14px 12px; border: 1.5px solid rgba(232,178,61,0.6); position: relative; overflow: hidden;
-    background: repeating-linear-gradient(90deg, rgba(255,255,255,0.03) 0 16px, transparent 16px 32px), linear-gradient(150deg, #27603F, #173F2B 85%); }
-  .dl .board .top2 { display: flex; justify-content: space-between; align-items: baseline; }
-  .dl .board .top2 span { font-family: 'Oswald', sans-serif; font-weight: 400; font-size: 14px; color: rgba(242,239,230,0.85); }
-  .dl .board .top2 em { font-style: normal; font-family: 'Oswald', sans-serif; font-weight: 500; font-size: 13px; color: var(--gold-2); }
-  .dl .board .mid { display: grid; grid-template-columns: 1fr auto 1fr; align-items: center; margin-top: 8px; }
-  .dl .board .lbl { font-family: 'Oswald', sans-serif; font-weight: 400; font-size: 13px; color: rgba(242,239,230,0.8); }
-  .dl .board .lbl.r { text-align: right; }
-  .dl .board .lbl b { display: block; font-family: 'Anton', Impact, sans-serif; font-weight: 400; font-size: 17px; color: var(--chalk); }
-  .dl .startbtn { border: none; border-radius: 14px; padding: 13px; width: 100%; display: flex; align-items: center; justify-content: center; gap: 10px; flex-shrink: 0; cursor: pointer;
-    font-family: 'Anton', Impact, sans-serif; font-size: 21px; letter-spacing: 0.02em; color: var(--gold-2);
-    background: repeating-linear-gradient(90deg, rgba(255,255,255,0.04) 0 14px, transparent 14px 28px), linear-gradient(150deg, #2F7A50, #1B4A32); box-shadow: 0 4px 0 #0E2A1C, inset 0 0 0 1.5px rgba(232,178,61,0.45); }
-  .dl .startbtn:disabled, .dl .startbtn.off { opacity: 0.55; cursor: default; filter: saturate(0.5); }
-  .dl .startbtn.off:active { transform: none; }
-  .dl .step1 { font-family: 'Oswald', sans-serif; font-weight: 600; font-size: 12px; letter-spacing: 0.08em; text-transform: uppercase; color: var(--gold-2); margin-bottom: -4px; flex-shrink: 0; }
-  .dl .fair.nudge { animation: fairNudge 0.9s ease-out 1; }
-  @keyframes fairNudge { 0% { box-shadow: 0 0 0 0 rgba(232,178,61,0.9); border-color: var(--gold); } 100% { box-shadow: 0 0 0 9px rgba(232,178,61,0); border-color: rgba(46,204,113,0.35); } }
-  @media (prefers-reduced-motion: reduce) { .dl .fair.nudge { animation: none; border-color: var(--gold); } }
-  .dl .startbtn:active:not(:disabled) { transform: translateY(2px); box-shadow: 0 2px 0 #0E2A1C, inset 0 0 0 1.5px rgba(232,178,61,0.45); }
-  .dl .ghost2 { border: 1px solid var(--line); background: transparent; border-radius: 12px; padding: 10px; width: 100%; font-family: 'Anton', Impact, sans-serif; font-size: 17px; color: var(--muted); flex-shrink: 0; cursor: pointer; }
-  .dl .spacer { flex: 1; }
-  /* Wappen */
-    background: linear-gradient(160deg, #9CCBFF, #5E95D6); clip-path: path("M19 0 L38 6 L38 22 C38 33 29 39 19 42 C9 39 0 33 0 22 L0 6 Z"); }
-    clip-path: path("M11 0 L22 3.5 L22 12.5 C22 19 17 23 11 25 C5 23 0 19 0 12.5 L0 3.5 Z"); }
-  /* Mini-Tickets */
-  .dl button.tk { cursor: pointer; }
-  /* Freunde-Bilanz */
-  .dl .fr { display: flex; flex-direction: column; gap: 6px; }
-  .dl .fr .r { display: grid; grid-template-columns: 6px 1fr auto; gap: 10px; align-items: center; }
-  .dl .fr .r .fbar { align-self: stretch; border-radius: 3px; min-height: 31px; }
-  .dl .fr .nm2 small { font-family: 'Oswald', sans-serif; font-weight: 300; font-size: 12.5px; color: var(--muted); margin-top: -3px; }
-  .dl .fr .nm2 { font-family: 'Oswald', sans-serif; font-weight: 500; font-size: 14.5px; display: flex; flex-direction: column; gap: 4px; min-width: 0; }
-  .dl .fr .bar { height: 5px; border-radius: 3px; background: rgba(242,239,230,0.12); overflow: hidden; display: flex; }
-  .dl .fr .bar i { background: var(--ok); } .dl .fr .bar u { background: rgba(224,112,95,0.55); }
-  .dl .fr .sc2 { font-family: 'Anton', Impact, sans-serif; font-size: 20px; } .dl .fr .sc2 em { font-style: normal; color: var(--dim); margin: 0 3px; }
-  /* Trophaeen-Regal */
-  .dl .dshelf { display: grid; grid-template-columns: repeat(4, minmax(0,1fr)); gap: 6px; padding-bottom: 6px; border-bottom: 4px solid #3A2A12; box-shadow: 0 6px 0 -2px rgba(0,0,0,0.3); }
-  .dl .dshelf div { text-align: center; display: flex; flex-direction: column; align-items: center; gap: 3px; }
-  .dl .dshelf i { font-style: normal; font-size: 26px; line-height: 1; filter: drop-shadow(0 3px 4px rgba(0,0,0,0.4)); }
-  .dl .dshelf span { font-family: 'Oswald', sans-serif; font-weight: 500; font-size: 12px; line-height: 1.15; }
-  .dl .dshelf .off i { filter: grayscale(1) brightness(0.45); } .dl .dshelf .off span { color: var(--dim); }
-  /* Leerzustand + Code einfuegen */
-  .dl .empty { border-radius: 12px; border: 1px dashed rgba(232,178,61,0.45); background: rgba(232,178,61,0.05); padding: 12px 14px; font-family: 'Oswald', sans-serif; font-weight: 300; font-size: 13.5px; line-height: 1.45; }
-  .dl .empty b { font-weight: 600; }
-  .dl .pastebtn { align-self: center; background: none; border: none; font-family: 'Oswald', sans-serif; font-weight: 500; font-size: 13px; color: var(--muted); text-decoration: underline; text-underline-offset: 3px; cursor: pointer; padding: 4px 8px; }
-  .dl [hidden] { display: none !important; }
-  .dl .paste { display: flex; flex-direction: column; gap: 6px; border-radius: 12px; border: 1px solid var(--line); background: var(--ink-2); padding: 10px 12px; }
-  .dl .paste input { width: 100%; border-radius: 9px; border: 1px solid var(--line); background: rgba(10,22,16,0.6); color: var(--chalk); font-family: 'Oswald', sans-serif; font-size: 14px; padding: 9px 10px; }
-  .dl .paste .row2 { display: flex; gap: 8px; }
-  .dl .paste button { flex: 1; border: 1px solid rgba(232,178,61,0.6); background: rgba(232,178,61,0.12); color: var(--gold-2); border-radius: 10px; padding: 8px; font-family: 'Oswald', sans-serif; font-weight: 600; font-size: 13.5px; cursor: pointer; }
-  .dl .paste .msg { font-family: 'Oswald', sans-serif; font-weight: 400; font-size: 12.5px; color: #F2A497; min-height: 0; }
-  /* Neues Duell */
-  .dl .fm { display: grid; grid-template-columns: repeat(3, minmax(0,1fr)); gap: 7px; }
-  .dl .fm button { border-radius: 12px; border: 1.5px solid var(--line); background: var(--ink-2); padding: 10px 4px 9px; display: flex; flex-direction: column; align-items: center; gap: 5px; color: inherit; cursor: pointer; font-family: inherit; }
-  .dl .fm b { font-family: 'Anton', Impact, sans-serif; font-weight: 400; font-size: 19px; line-height: 1; }
-  .dl .fm span { font-family: 'Oswald', sans-serif; font-weight: 300; font-size: 12px; color: var(--muted); }
-  .dl .fm button.on { border-color: rgba(232,178,61,0.8); background: linear-gradient(160deg, rgba(232,178,61,0.18), rgba(232,178,61,0.05)); }
-  .dl .fm button.on b { color: var(--gold-2); }
-  .dl .ring { width: 30px; height: 30px; }
-  .dl .ring circle { fill: none; stroke-width: 4; }
-  .dl .ring .bg { stroke: rgba(242,239,230,0.15); } .dl .ring .fg { stroke: rgba(242,239,230,0.45); stroke-linecap: round; transform: rotate(-90deg); transform-origin: 50% 50%; }
-  .dl .fm button.on .ring .fg { stroke: var(--gold); }
-  .dl .lvl2 { display: grid; grid-template-columns: repeat(6, minmax(0,1fr)); gap: 5px; }
-  .dl .lvl2 button { border-radius: 10px; border: 1.5px solid var(--line); background: var(--ink-2); padding: 7px 2px 6px; display: flex; flex-direction: column; align-items: center; gap: 4px; cursor: pointer; font-family: inherit; }
-  .dl .lvl2 .bars { display: flex; flex-direction: row; gap: 2px; height: 9px; align-items: center; } .dl .lvl2 .bars i { width: 4px; height: 9px; border-radius: 2px; background: rgba(255,255,255,0.15); } .dl .lvl2 .bars i.on { background: currentColor; }
-  .dl .lvl2 b { font-family: 'Oswald', sans-serif; font-weight: 600; font-size: 12.5px; line-height: 1; color: var(--chalk); }
-  .dl .lvl2 button.on { border-color: currentColor; background: color-mix(in srgb, currentColor 14%, transparent); }
-  .dl .rules2 { border-radius: 12px; border: 1px solid var(--line); padding: 10px 12px; display: flex; flex-direction: column; gap: 6px; }
-  .dl .rules2 p { margin: 0; font-family: 'Oswald', sans-serif; font-weight: 300; font-size: 13.5px; line-height: 1.4; display: flex; gap: 8px; } .dl .rules2 p b { font-weight: 600; }
-  .dl .rules2 p i { font-style: normal; width: 20px; flex-shrink: 0; text-align: center; }
-  .dl .fair { display: flex; gap: 11px; align-items: center; border-radius: 12px; padding: 9px 12px; border: 1px solid rgba(46,204,113,0.35); background: rgba(46,204,113,0.06); text-align: left; width: 100%; color: inherit; font-family: inherit; cursor: pointer; }
-  .dl .fair .sw { width: 38px; height: 22px; border-radius: 11px; background: rgba(242,239,230,0.2); position: relative; flex-shrink: 0; transition: background 0.2s; }
-  .dl .fair .sw::after { content: ""; position: absolute; top: 3px; left: 3px; width: 16px; height: 16px; border-radius: 50%; background: var(--chalk); transition: left 0.2s; }
-  .dl .fair.on .sw { background: var(--ok); } .dl .fair.on .sw::after { left: 19px; }
-  .dl .fair b { font-family: 'Oswald', sans-serif; font-weight: 600; font-size: 14px; display: block; }
-  .dl .fair span { font-family: 'Oswald', sans-serif; font-weight: 300; font-size: 12.5px; color: var(--muted); }
-  /* Einladung */
-  .dl .inv { border-radius: 16px; overflow: hidden; border: 1.5px solid rgba(232,178,61,0.65); }
-  .dl .inv .top3 { padding: 14px 14px 12px; text-align: center; position: relative;
-    background: repeating-linear-gradient(90deg, rgba(255,255,255,0.03) 0 16px, transparent 16px 32px), linear-gradient(150deg, #27603F, #173F2B 85%); }
-  .dl .inv .top3 .k2 { font-family: 'Oswald', sans-serif; font-weight: 400; font-size: 15px; color: rgba(242,239,230,0.9); }
-  .dl .inv .top3 .k2 b { font-weight: 600; color: var(--gold-2); }
-  .dl .inv .pair { display: grid; grid-template-columns: 1fr auto 1fr; align-items: center; margin-top: 12px; }
-  .dl .inv .pl { display: flex; flex-direction: column; align-items: center; gap: 5px; min-width: 0; }
-  .dl .inv .pl b { font-family: 'Anton', Impact, sans-serif; font-weight: 400; font-size: 22px; line-height: 1; max-width: 100%; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
-  .dl .inv .pl span { font-family: 'Oswald', sans-serif; font-weight: 300; font-size: 12.5px; color: rgba(242,239,230,0.8); }
-  .dl .inv .pl .pbar { display: block; width: 46px; height: 4px; border-radius: 2px; background: var(--pc, var(--gold)); margin-bottom: 4px; }
-  .dl .inv .pl small.hd { font-family: 'Oswald', sans-serif; font-weight: 300; font-size: 13px; color: var(--muted); margin-top: -3px; max-width: 100%; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
-  .dl .inv .vs2 { font-family: 'Anton', Impact, sans-serif; font-size: 30px; color: var(--gold); text-shadow: 0 0 18px rgba(232,178,61,0.5); padding: 0 8px; }
-  .dl .inv .strip { display: grid; grid-template-columns: repeat(3, 1fr); background: linear-gradient(160deg, #F6DA9C, #E8B23D 70%); color: var(--ink); border-top: 2.5px dotted rgba(20,32,43,0.4); }
-  .dl .inv .strip div { padding: 9px 4px; text-align: center; } .dl .inv .strip div + div { border-left: 1px solid rgba(20,32,43,0.18); }
-  .dl .inv .strip b { font-family: 'Anton', Impact, sans-serif; font-weight: 400; font-size: 18px; display: block; line-height: 1.1; }
-  .dl .inv .strip span { font-family: 'Oswald', sans-serif; font-weight: 500; font-size: 11.5px; color: rgba(20,32,43,0.75); }
-  .dl .note2 { display: flex; gap: 10px; align-items: center; border-radius: 12px; padding: 10px 12px; border: 1px solid var(--line); background: var(--ink-2); }
-  .dl .note2 i { font-style: normal; font-size: 20px; }
-  .dl .note2 p { margin: 0; font-family: 'Oswald', sans-serif; font-weight: 300; font-size: 13.5px; line-height: 1.4; } .dl .note2 p b { font-weight: 600; }
-  .dl .twoways { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
-  .dl .twoways button { border: 1px solid rgba(232,178,61,0.6); background: rgba(232,178,61,0.1); color: var(--gold-2); border-radius: 12px; padding: 9px 6px; font-family: 'Oswald', sans-serif; font-weight: 600; font-size: 13px; line-height: 1.2; cursor: pointer; }
-  .dl .twoways button.on { background: rgba(232,178,61,0.28); }
-  /* Kurze Handys (375x667): "Neues Duell" und "Einladung" etwas dichter, damit sie ohne Scrollen passen */
-  @media (max-height: 700px) {
-    .dl { gap: 9px; }
-    .dl .h1 { font-size: 26px; }
-    #screen-duelinvite .dl .h1 { font-size: 22px; }
-    .dl .fm button { padding: 7px 4px 6px; gap: 3px; }
-    .dl .ring { width: 26px; height: 26px; }
-    .dl .rules2 { padding: 8px 10px; gap: 4px; }
-    .dl .rules2 p { font-size: 13px; line-height: 1.3; }
-    .dl .fair { padding: 7px 12px; }
-    .dl .startbtn { padding: 11px; font-size: 19px; }
-    .dl .inv .top3 { padding: 11px 12px 10px; }
-    .dl .inv .pair { margin-top: 8px; }
-    .dl .note2 { padding: 8px 12px; }
-  }
   /* Duell-Name im Scout-Profil */
   .duel-name-row { display: flex; align-items: center; gap: 10px; margin-top: 12px; border-radius: 10px; border: 1px solid var(--line); background: var(--ink-3); padding: 9px 12px; font-family: 'Oswald', sans-serif; font-size: 13.5px; }
   .duel-name-row b { font-weight: 600; flex: 1; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
@@ -1704,6 +1567,11 @@
   .duel-name-box .hdrow .at { font-family: 'Anton', Impact, sans-serif; font-size: 20px; color: var(--gold-2); }
   .duel-name-box .hdnote { font-family: 'Oswald', sans-serif; font-weight: 300; font-size: 13px; line-height: 1.4; color: var(--muted); margin-top: -4px; }
   .duel-name-box .hdnote.err { color: #F2A497; font-weight: 400; }
+  .sp-sheet .duel-name-box { gap: 10px; }
+  .sp-sheet .duel-name-box input { border: none; border-radius: 11px; background: rgba(8,22,14,0.45); box-shadow: inset 0 0 0 1.3px rgba(244,241,232,0.25); color: var(--chalk); font-family: 'Oswald', sans-serif; font-size: 18px; padding: 10px 12px; width: 100%; }
+  .sp-sheet .duel-name-box .hdrow .at { color: var(--gold-hi); }
+  .sp-sheet .duel-name-box .hdnote { color: rgba(244,241,232,0.8); } .sp-sheet .duel-name-box .hdnote.err { color: #FF9C8A; }
+  .sp-sheet .duel-name-box > div:first-child { text-transform: none; letter-spacing: 0; }
   .duel-name-box input { border-radius: 10px; border: 1px solid var(--line); background: rgba(10,22,16,0.6); color: var(--chalk); font-family: 'Oswald', sans-serif; font-size: 18px; padding: 10px 12px; width: 100%; }
 
   /* ---- Duell Teil 2 (Prompt 26): Walkout, Spiel, Abpfiff - Optik aus prototypes/duell.html, gescoped ---- */
@@ -1733,7 +1601,7 @@
 
   /* Anstoß-Duo */
   #duelWo .wo-fo { position: absolute; left: 0; right: 0; top: 330px; text-align: center; transform-origin: 50% 0; }
-  #duelWo .wo-fo .wo-who { font-weight: 600; font-size: 11.5px; letter-spacing: 0.12em; text-transform: uppercase; color: var(--dim); }
+  #duelWo .wo-fo .wo-who { font-weight: 500; font-size: 13px; letter-spacing: 0; text-transform: none; color: var(--dim); }
   #duelWo .wo-fo .wo-nm { font-family: var(--f-display); font-size: 50px; line-height: 1.05; white-space: nowrap; }
   #duelWo .wo-fo .wo-op .wo-nm { color: var(--gold-hi); }
   #duelWo .wo-fo .wo-vs { font-weight: 300; font-size: 20px; color: var(--gold-hi); margin: 6px 0; }
@@ -1746,14 +1614,14 @@
   /* Merkliste */
   #duelWo .wo-sum { position: absolute; left: 16px; right: 16px; top: 108px; display: grid; gap: 6px; }
   #duelWo .wo-slot { display: grid; grid-template-columns: 92px minmax(0, 1fr); align-items: baseline; gap: 10px; padding: 7px 10px; border-radius: 9px; background: rgba(28,43,56,0.62); box-shadow: inset 0 0 0 1px rgba(242,239,230,0.06); opacity: 0; will-change: transform; }
-  #duelWo .wo-slot small { font-weight: 600; font-size: 10.5px; letter-spacing: 0.1em; text-transform: uppercase; color: var(--dim); }
+  #duelWo .wo-slot small { font-weight: 500; font-size: 11.5px; letter-spacing: 0; text-transform: none; color: var(--dim); }
   #duelWo .wo-slot span { font-weight: 500; font-size: 15px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; min-width: 0; }
   #duelWo .wo-slot.wo-team { background: rgba(232,178,61,0.13); box-shadow: inset 0 0 0 1px rgba(232,178,61,0.55); }
   #duelWo .wo-slot.wo-team span { color: var(--gold-hi); font-weight: 600; }
 
   /* Info-Karten */
   #duelWo .wo-card { position: absolute; left: 22px; right: 22px; top: 372px; transform-origin: 50% 0; opacity: 0; will-change: transform; }
-  #duelWo .wo-card .wo-lb { display: flex; align-items: center; gap: 10px; font-weight: 600; font-size: 12px; letter-spacing: 0.12em; text-transform: uppercase; color: var(--gold-hi); }
+  #duelWo .wo-card .wo-lb { display: flex; align-items: center; gap: 10px; font-weight: 500; font-size: 13.5px; letter-spacing: 0; text-transform: none; color: var(--gold-hi); }
   #duelWo .wo-card .wo-lb i { height: 2px; width: 0; background: var(--gold); border-radius: 1px; }
   #duelWo .wo-card .wo-val { margin-top: 8px; font-family: var(--f-display); line-height: 1.04; text-transform: uppercase; }
   #duelWo .wo-card .wo-ln { display: block; white-space: nowrap; will-change: transform; }
@@ -1772,7 +1640,7 @@
   #duelWo .wo-cd .wo-num span { display: block; font-family: var(--f-display); font-size: 126px; line-height: 148px; color: var(--gold-hi); text-shadow: 0 0 26px rgba(232,178,61,0.45); will-change: transform; opacity: 0; }
   #duelWo .wo-cd .wo-ko { position: absolute; left: -180px; top: -40px; width: 360px; text-align: center; font-family: var(--f-display); font-size: 62px; line-height: 80px; color: var(--chalk); text-shadow: 0 0 30px rgba(246,216,142,0.8); opacity: 0; }
   #duelWo .wo-cd .wo-burst { position: absolute; left: -84px; top: -84px; width: 168px; height: 168px; border-radius: 50%; border: 3px solid var(--gold-hi); opacity: 0; }
-  #duelWo .wo-cd .wo-ready { position: absolute; left: -150px; top: 104px; width: 300px; text-align: center; font-weight: 500; font-size: 13px; letter-spacing: 0.1em; text-transform: uppercase; color: var(--gold-hi); opacity: 0; }
+  #duelWo .wo-cd .wo-ready { position: absolute; left: -150px; top: 104px; width: 300px; text-align: center; font-weight: 500; font-size: 14.5px; letter-spacing: 0; text-transform: none; color: var(--gold-hi); opacity: 0; }
 
   #duelWo .wo-flash { position: absolute; inset: 0; background: #FFF6DC; opacity: 0; pointer-events: none; }
   #duelWo .wo-out { position: absolute; inset: 0; pointer-events: none; clip-path: circle(0px at 195px 470px);
@@ -1784,40 +1652,7 @@
 
   /* Spiel */
   /* Abpfiff */
-  .dl .res2 { border-radius: 16px; padding: 14px 14px 12px; text-align: center; border: 1.5px solid rgba(232,178,61,0.65);
-    background: repeating-linear-gradient(90deg, rgba(255,255,255,0.03) 0 16px, transparent 16px 32px), linear-gradient(150deg, #27603F, #173F2B 85%); }
-  .dl .res2.lost { background: var(--ink-2); border-color: var(--line); }
-  .dl .res2 .k3 { font-family: 'Oswald', sans-serif; font-weight: 400; font-size: 14px; color: rgba(242,239,230,0.85); }
-  .dl .res2 .big2 { font-family: 'Anton', Impact, sans-serif; font-size: 42px; line-height: 1; margin: 2px 0 10px; }
-  .dl .res2 .big2 span { color: var(--gold); text-shadow: 0 0 20px rgba(232,178,61,0.45); }
-  .dl .res2 .sb { display: grid; grid-template-columns: 1fr auto 1fr; align-items: center; }
-  .dl .res2 .sb .p { display: flex; flex-direction: column; align-items: center; gap: 4px; font-family: 'Oswald', sans-serif; font-weight: 500; font-size: 13px; min-width: 0; }
-  .dl .res2 .sb .p em { font-style: normal; max-width: 100%; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
-  .dl .res2 .sb .p b { font-family: 'Anton', Impact, sans-serif; font-weight: 400; font-size: 19px; line-height: 1.05; max-width: 100%; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
-  .dl .res2 .sb .p small.hd { font-family: 'Oswald', sans-serif; font-weight: 300; font-size: 12.5px; color: rgba(242,239,230,0.8); max-width: 100%; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
-  .dl .res2 .sb .p .pbar { display: block; width: 40px; height: 4px; border-radius: 2px; background: var(--pc, var(--gold)); margin-bottom: 3px; }
-  .dl .res2 .why2 { margin-top: 9px; font-family: 'Oswald', sans-serif; font-weight: 300; font-size: 13.5px; color: rgba(242,239,230,0.85); }
-  .dl .rr { display: flex; flex-direction: column; gap: 6px; }
-  .dl .rr .r { display: grid; grid-template-columns: 62px 1fr 26px 1fr; align-items: center; gap: 6px; padding: 7px 10px; border-radius: 10px; background: var(--ink-2); border: 1px solid var(--line); }
-  .dl .rr .r .n { font-family: 'Oswald', sans-serif; font-weight: 600; font-size: 13px; color: var(--muted); }
-  .dl .rr .r .v { font-family: 'Anton', Impact, sans-serif; font-size: 17px; line-height: 1; }
-  .dl .rr .r .v small { font-family: 'Oswald', sans-serif; font-weight: 300; font-size: 12px; color: var(--muted); margin-left: 5px; }
-  .dl .rr .r .v.b { text-align: right; }
-  .dl .rr .r .v.w { color: var(--gold-2); }
-  .dl .rr .r .c { text-align: center; font-size: 15px; }
-  .dl .rr .r .why3 { grid-column: 2 / span 3; font-family: 'Oswald', sans-serif; font-weight: 300; font-size: 11.5px; color: var(--dim); margin-top: -2px; }
-  .dl .xpt { display: flex; justify-content: space-between; align-items: center; border-radius: 12px; padding: 9px 12px; border: 1px solid rgba(46,204,113,0.3); background: rgba(46,204,113,0.06); }
-  .dl .xpt span { font-family: 'Oswald', sans-serif; font-weight: 400; font-size: 13.5px; } .dl .xpt span small { display: block; font-weight: 300; font-size: 12px; color: var(--muted); }
-  .dl .xpt b { font-family: 'Anton', Impact, sans-serif; font-weight: 400; font-size: 24px; color: #8FE3B0; }
-  .dl .send2 { border: none; border-radius: 12px; padding: 12px; width: 100%; font-family: 'Anton', Impact, sans-serif; font-size: 18px; letter-spacing: 0.02em; color: var(--ink); cursor: pointer;
-    background: linear-gradient(160deg, #f6da9c, var(--gold)); box-shadow: 0 3px 0 #9C7422; flex-shrink: 0; }
-  .dl .ghost2.light { color: var(--chalk); }
-  .dl .fpl { display: flex; gap: 6px; flex-wrap: wrap; }
-  .dl .fpl span { display: inline-flex; align-items: center; gap: 4px; font-family: 'Oswald', sans-serif; font-weight: 500; font-size: 11.5px; padding: 2px 8px; border-radius: 10px; background: rgba(46,204,113,0.12); color: #8FE3B0; border: 1px solid rgba(46,204,113,0.35); }
-  .dl .fpl span.warn { background: rgba(240,169,59,0.12); color: var(--flame); border-color: rgba(240,169,59,0.4); }
   @media (max-height: 700px) {
-    .dl .res2 { padding: 10px 12px 9px; } .dl .res2 .big2 { font-size: 34px; margin-bottom: 6px; }
-    .dl .rr .r { padding: 5px 10px; } .dl .rr { gap: 4px; }
   }
 
   body.theme-flutlicht .pitch { background: linear-gradient(180deg, #1a2a5c, #0f1638); }
@@ -1913,7 +1748,7 @@
   #worldCelebration .wc-ring { position: absolute; left: 195px; top: 422px; width: 140px; height: 140px; margin: -70px 0 0 -70px; border-radius: 50%; border: 2px solid var(--chalk); opacity: 0; }
 
   #worldCelebration .wc-hdr { position: absolute; left: 16px; right: 16px; top: 66px; }
-  #worldCelebration .wc-kicker { font-weight: 600; font-size: 12px; letter-spacing: 0.12em; text-transform: uppercase; color: var(--gold-hi); }
+  #worldCelebration .wc-kicker { font-weight: 500; font-size: 13.5px; letter-spacing: 0; text-transform: none; color: var(--gold-hi); }
   #worldCelebration .wc-h-title { font-family: var(--f-display); font-size: 38px; line-height: 1.05; margin-top: 4px; overflow: hidden; }
   #worldCelebration .wc-h-title span { display: inline-block; }
   #worldCelebration .wc-md { position: absolute; right: 0; top: -2px; text-align: right; }
@@ -11958,15 +11793,15 @@ window.addEventListener("hashchange", () => {
 /* ---- Duell-Name (einmal abfragen, im Scout-Profil aenderbar) ---- */
 function askDuelName(onDone) {
   const backdrop = document.createElement("div");
-  backdrop.className = "modal-backdrop";
-  backdrop.innerHTML = `<div class="modal-sheet"><div class="duel-name-box">
+  backdrop.className = "modal-backdrop sp-sbd";
+  backdrop.innerHTML = `<div class="sp-sheet" role="dialog" aria-modal="true"><div class="in"><div class="duel-name-box">
       <div class="guide-name-title" style="font-family:'Anton',Impact,sans-serif;font-size:24px">Dein Duell-Name</div>
       <div style="font-family:'Oswald',sans-serif;font-weight:300;font-size:14px;color:var(--muted)">So sehen dich deine Freunde im Duell (max. 16 Zeichen). Du kannst ihn später im Scout-Profil ändern.</div>
       <input type="text" id="duelNameInput" maxlength="16" autocomplete="off" spellcheck="false" placeholder="z. B. Flo" aria-label="Duell-Name" value="${duelEsc(profile.duelName || "")}">
       <div class="hdrow"><span class="at">@</span><input type="text" id="duelHandleInput" maxlength="20" autocomplete="off" autocapitalize="off" autocorrect="off" spellcheck="false" placeholder="benutzername" aria-label="Benutzername" value="${duelEsc(profile.duelHandle || "")}"></div>
       <div class="hdnote" id="duelHandleMsg" role="status">Dein Benutzername: a–z, 0–9, Punkt und Unterstrich, 3–20 Zeichen. Eindeutig wird er mit den Online-Konten.</div>
-      <div class="dl" style="gap:8px"><button type="button" class="startbtn" id="duelNameSave">Speichern</button><button type="button" class="ghost2" id="duelNameCancel">Abbrechen</button></div>
-    </div></div>`;
+      <button type="button" class="save-btn main" id="duelNameSave">Speichern</button><button type="button" class="save-btn quiet" id="duelNameCancel">Abbrechen</button>
+    </div></div></div>`;
   document.body.appendChild(backdrop);
   const input = backdrop.querySelector("#duelNameInput"), hInput = backdrop.querySelector("#duelHandleInput"), msg = backdrop.querySelector("#duelHandleMsg");
   let touched = !!profile.duelHandle; // vorhandenen Benutzernamen nicht überschreiben, solange er nicht gelöscht wird
@@ -12020,13 +11855,13 @@ function askDuelLabel(id) {
   const d = profile.duels[id];
   if (!d) return;
   const backdrop = document.createElement("div");
-  backdrop.className = "modal-backdrop";
-  backdrop.innerHTML = `<div class="modal-sheet"><div class="duel-name-box">
+  backdrop.className = "modal-backdrop sp-sbd";
+  backdrop.innerHTML = `<div class="sp-sheet" role="dialog" aria-modal="true"><div class="in"><div class="duel-name-box">
       <div style="font-family:'Anton',Impact,sans-serif;font-size:24px">Für wen ist das Duell?</div>
       <div style="font-family:'Oswald',sans-serif;font-weight:300;font-size:14px;color:var(--muted)">Gib dem Duell einen Namen (z. B. den deines Freundes), dann erkennst du es in der Übersicht wieder. Nur für dich sichtbar.</div>
       <input type="text" id="duelLabelInput" maxlength="16" autocomplete="off" spellcheck="false" placeholder="z. B. Lisa" value="${duelEsc(d.label || "")}">
-      <div class="dl" style="gap:8px"><button type="button" class="startbtn" id="duelLabelSave">Speichern</button><button type="button" class="ghost2" id="duelLabelCancel">Abbrechen</button></div>
-    </div></div>`;
+      <button type="button" class="save-btn main" id="duelLabelSave">Speichern</button><button type="button" class="save-btn quiet" id="duelLabelCancel">Abbrechen</button>
+    </div></div></div>`;
   document.body.appendChild(backdrop);
   const input = backdrop.querySelector("#duelLabelInput");
   input.focus();
@@ -12731,8 +12566,8 @@ function maybeShowInstallTip() {
 // Duell-Name im Scout-Profil (Uebersicht)
 function duelNameRowHTML() {
   const s = profile.duelStats;
-  const stats = `<div class="duel-name-row"><span>⚔️ Duelle</span><b>${s.wins} : ${s.losses}${s.draws ? " · " + s.draws + " Remis" : ""}${s.streak ? " · 🔥 " + s.streak : ""}</b></div>`;
-  return stats + `<div class="duel-name-row"><span>⚔️ Duell-Name</span><b>${profile.duelName ? duelEsc(profile.duelName) + (profile.duelHandle ? ` <small style="font-weight:300;color:var(--muted)">@${duelEsc(profile.duelHandle)}</small>` : "") : "noch nicht festgelegt"}</b><button type="button" id="duelNameEdit">${profile.duelName ? "ändern" : "festlegen"}</button></div>`;
+  const stats = `<div class="duel-name-row"><span>Duelle</span><b>${s.wins} : ${s.losses}${s.draws ? " · " + s.draws + " Remis" : ""}${s.streak ? " · Serie " + s.streak : ""}</b></div>`;
+  return stats + `<div class="duel-name-row"><span>Duell-Name</span><b>${profile.duelName ? duelEsc(profile.duelName) + (profile.duelHandle ? ` <small style="font-weight:300;color:var(--muted)">@${duelEsc(profile.duelHandle)}</small>` : "") : "noch nicht festgelegt"}</b><button type="button" id="duelNameEdit">${profile.duelName ? "ändern" : "festlegen"}</button></div>`;
 }
 function bindDuelNameRow() {
   const b = document.getElementById("duelNameEdit");
@@ -13614,13 +13449,13 @@ function confirmDuelAbort() {
   if (!duelRun || document.getElementById("duelAbortBox")) return;
   const d = profile.duels[duelRun.id];
   const backdrop = document.createElement("div");
-  backdrop.className = "modal-backdrop";
+  backdrop.className = "modal-backdrop sp-sbd";
   backdrop.id = "duelAbortBox";
-  backdrop.innerHTML = `<div class="modal-sheet"><div class="duel-name-box">
+  backdrop.innerHTML = `<div class="sp-sheet" role="dialog" aria-modal="true"><div class="in"><div class="duel-name-box">
       <div style="font-family:'Anton',Impact,sans-serif;font-size:24px">Duell abbrechen?</div>
       <div style="font-family:'Oswald',sans-serif;font-weight:300;font-size:14px;color:var(--muted)">${d.mine.length || duelRun.phase === "play" ? "Die laufende Runde zählt mit dem aktuellen Stand, die übrigen Runden zählen 0 von 11." : "Du hast noch nichts gespielt – das Duell bleibt offen und du kannst später starten."}</div>
-      <div class="dl" style="gap:8px"><button type="button" class="startbtn" id="duelAbortNo">Weiterspielen</button><button type="button" class="ghost2" id="duelAbortYes">Abbrechen</button></div>
-    </div></div>`;
+      <button type="button" class="save-btn main" id="duelAbortNo">Weiterspielen</button><button type="button" class="save-btn quiet" id="duelAbortYes">Abbrechen</button>
+    </div></div></div>`;
   document.body.appendChild(backdrop);
   backdrop.querySelector("#duelAbortNo").onclick = () => backdrop.remove();
   backdrop.querySelector("#duelAbortYes").onclick = () => { backdrop.remove(); abortDuelRun(); };

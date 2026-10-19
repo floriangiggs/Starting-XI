@@ -87,6 +87,9 @@ await page.evaluate(() => { profile.duelName = "Anna"; profile.duelHandle = "ann
 await page.waitForTimeout(1500); await report("Duell-Walkout");
 await page.evaluate(() => startDuelRound()); await page.waitForTimeout(900); await report("Duell-Runde");
 await page.evaluate(() => { const id = createDuel({ rounds: 3, seconds: 120, difficulty: 0 }); const d = profile.duels[id]; d.role = "opponent"; d.opponent = { name: "Tim", deviceId: "t1", handle: "tim" }; d.status = "todo"; activeInviteId = id; navigate("duelinvite"); }); await page.waitForTimeout(900); await report("Duell-Einladung");
+await page.evaluate(() => document.getElementById("duelGive") && document.getElementById("duelGive").click()); await page.waitForTimeout(900); await report("Duell-Rundenende (Review)");
+await page.evaluate(() => { const R = (c, s) => ({ correct: c, seconds: s, left: 0 }); for (const done of [false, true]) { const id = createDuel({ rounds: 3, seconds: 120, difficulty: 0 }), d = profile.duels[id]; d.opponent = { name: "Tim", deviceId: "t2", handle: "tim" }; d.mine = [R(9, 90), R(8, 100), R(7, 110)]; d.playedRounds = 3; if (done) { d.theirs = [R(7, 90), R(6, 100), R(7, 120)]; evaluateDuel(id); } else d.status = "waiting"; window["__r" + done] = id; } activeResultId = window.__rfalse; duelRun = null; navStack.length = 0; navigate("start"); navigate("duelresult"); }); await page.waitForTimeout(900); await report("Duell-Abpfiff (wartet)");
+await page.evaluate(() => { activeResultId = window.__rtrue; renderDuelResult(); }); await page.waitForTimeout(900); await report("Duell-Abpfiff (Ergebnis)");
 // Blaetter
 const sheets = {
   "Neues Duell": () => { navigate("duels"); setTimeout(() => dzOpenNew(), 700); },
