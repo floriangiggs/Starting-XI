@@ -504,6 +504,10 @@ ausgeliefert wird.
 >    Kopie fremder Optik. Dazu Impressum/Datenschutz.
 > Hochprofessionell und vollständig getestet umsetzen – dafür einen eigenen
 > Plan mit Prompts schreiben, BEVOR Prompt 8 ausgeführt wird.
+>
+> **Plan liegt vor (19.10.2026): `docs/plan-store-release.md`** – Reihenfolge 8a → K1–K6 → 8b → K8,
+> Abnahme-Matrix, Entscheidungen E1–E9, fertige Prompt-Texte. Prompt 8 unten gilt als Teil „8a“ (Spielstand-
+> Export/Import ist seit Prompt 32 erledigt).
 
 ```
 Bereite das Projekt für Capacitor vor, ohne schon Android/iOS hinzuzufügen:
