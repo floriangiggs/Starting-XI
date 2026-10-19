@@ -14,7 +14,7 @@ const root = path.join(__dirname, "..");
 const iconsDir = path.join(root, "icons");
 const sourceDir = path.join(iconsDir, "source");
 
-async function renderSvg(page, svgFile, size) {
+async function renderSvg(page, svgFile, size, transparent = false) {
   const svgMarkup = fs.readFileSync(path.join(sourceDir, svgFile), "utf8");
   await page.setViewportSize({ width: size, height: size });
   await page.setContent(
@@ -23,7 +23,7 @@ async function renderSvg(page, svgFile, size) {
       svg{display:block;width:${size}px;height:${size}px;}
     </style></head><body>${svgMarkup}</body></html>`
   );
-  return page.screenshot({ omitBackground: false });
+  return page.screenshot({ omitBackground: transparent });
 }
 
 const browser = await chromium.launch();
@@ -57,7 +57,7 @@ for (const { out, size } of maskableTargets) {
 // Motiv mit 11 Punkten ist bei 16/32px nicht mehr erkennbar (geprueft),
 // daher reduziert auf Feld-Farbstimmung + leuchtender Punkt + Goldrahmen.
 for (const size of [32, 16]) {
-  const png = await renderSvg(page, "app-icon-favicon.svg", size);
+  const png = await renderSvg(page, "app-icon-favicon.svg", size, true); // abgerundete Ecken bleiben transparent (Prompt 56)
   fs.writeFileSync(path.join(iconsDir, `favicon-${size}.png`), png);
   console.log(`geschrieben: icons/favicon-${size}.png (${size}x${size}, aus app-icon-favicon.svg)`);
 }

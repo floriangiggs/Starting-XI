@@ -1,19 +1,11 @@
-<svg viewBox="0 0 1024 1024" xmlns="http://www.w3.org/2000/svg">
-      <!-- Vereinfachte Variante NUR fuer die Favicons (16/32px): das volle
-           Motiv aus app-icon.svg (11 Punkte, Spielfeldlinien) verschwimmt bei
-           so kleinen Groessen zu einem unklaren Fleck. Reduziert auf das, was
-           bei 16px noch erkennbar bleibt - Feld-Farbstimmung + ein leuchtender
-           Punkt im Goldrahmen - mit denselben Farben/Gradienten wie die
-           Hauptvorlage, kein neues Motiv. -->
-      <defs>
-        <radialGradient id="fxb0" cx="50%" cy="8%" r="105%"><stop offset="0" stop-color="#3B5E45"></stop><stop offset=".4" stop-color="#14202B"></stop><stop offset="1" stop-color="#070C11"></stop></radialGradient>
-        <radialGradient id="fxw6" cx="50%" cy="100%" r="70%"><stop offset="0" stop-color="#E8B23D" stop-opacity=".45"></stop><stop offset="1" stop-color="#E8B23D" stop-opacity="0"></stop></radialGradient>
-        <radialGradient id="fxh4"><stop offset="0" stop-color="#FFFFFF" stop-opacity="1"></stop><stop offset=".3" stop-color="#FFF1C4" stop-opacity=".8"></stop><stop offset="1" stop-color="#E8B23D" stop-opacity="0"></stop></radialGradient>
-        <linearGradient id="fxr2" x1="0" x2="1" y1="0" y2="1"><stop offset="0" stop-color="#FFF1C4"></stop><stop offset=".35" stop-color="#F4D58D"></stop><stop offset=".7" stop-color="#E8B23D"></stop><stop offset="1" stop-color="#8A6118"></stop></linearGradient>
-      </defs>
-      <rect width="1024" height="1024" fill="url(#fxb0)"></rect>
-      <rect width="1024" height="1024" fill="url(#fxw6)"></rect>
-      <circle cx="512" cy="460" r="300" fill="url(#fxh4)"></circle>
-      <circle cx="512" cy="460" r="110" fill="#FFFFFF" stroke="#E8B23D" stroke-width="22"></circle>
-      <rect x="17" y="17" width="990" height="990" rx="212" fill="none" stroke="url(#fxr2)" stroke-width="60"></rect>
-    </svg>
+<svg width="1024" height="1024" viewBox="0 0 1024 1024" xmlns="http://www.w3.org/2000/svg"><defs>
+    <linearGradient id="a9w" x1="0" x2="0" y1="0" y2="1"><stop offset="0" stop-color="#A57444"/><stop offset=".55" stop-color="#7E5530"/><stop offset="1" stop-color="#5A3B1F"/></linearGradient>
+    <pattern id="a9g" width="1024" height="34" patternUnits="userSpaceOnUse"><path d="M0 9 C 200 4, 420 15, 640 8 S 900 12, 1024 7" stroke="rgba(0,0,0,0.12)" stroke-width="3" fill="none"/><path d="M0 25 C 260 30, 520 20, 760 27 S 960 22, 1024 26" stroke="rgba(255,236,200,0.08)" stroke-width="2" fill="none"/></pattern>
+    <radialGradient id="a9f" cx="50%" cy="22%" r="85%"><stop offset="0" stop-color="#3C7E57"/><stop offset=".55" stop-color="#245A3C"/><stop offset="1" stop-color="#163C29"/></radialGradient>
+    <radialGradient id="a9m" cx="35%" cy="30%" r="70%"><stop offset="0" stop-color="#FFF6D6"/><stop offset=".45" stop-color="#E8B23D"/><stop offset="1" stop-color="#9C6C14"/></radialGradient>
+    <radialGradient id="a9t" cx="35%" cy="30%" r="70%"><stop offset="0" stop-color="#FFFFFF"/><stop offset=".55" stop-color="#ECE7DA"/><stop offset="1" stop-color="#A9A493"/></radialGradient>
+    <radialGradient id="a9s" cx="50%" cy="15%" r="60%"><stop offset="0" stop-color="#FFF4CF" stop-opacity=".5"/><stop offset="1" stop-color="#FFF4CF" stop-opacity="0"/></radialGradient>
+    <radialGradient id="a9h"><stop offset="0" stop-color="#FFF4CF" stop-opacity=".55"/><stop offset=".5" stop-color="#FFF4CF" stop-opacity=".15"/><stop offset="1" stop-color="#FFF4CF" stop-opacity="0"/></radialGradient>
+    <linearGradient id="a9r" x1="0" x2="1" y1="0" y2="1"><stop offset="0" stop-color="#FFF1C4"/><stop offset=".4" stop-color="#F4D58D"/><stop offset=".75" stop-color="#E8B23D"/><stop offset="1" stop-color="#8A6118"/></linearGradient>
+    <filter id="a9d" x="-30%" y="-30%" width="160%" height="170%"><feDropShadow dx="0" dy="14" stdDeviation="10" flood-color="#000" flood-opacity=".45"/></filter>
+    <filter id="a9i" x="-5%" y="-5%" width="110%" height="110%"><feGaussianBlur stdDeviation="14"/></filter></defs><rect width="1024" height="1024" rx="200" fill="url(#a9w)"/><rect x="96" y="96" width="832" height="832" rx="120" fill="url(#a9f)"/><path d="M96 512 H928" stroke="rgba(244,241,232,0.85)" stroke-width="40"/><circle cx="512" cy="512" r="150" fill="none" stroke="rgba(244,241,232,0.85)" stroke-width="40"/><circle cx="512" cy="250" r="120" fill="url(#a9m)" stroke="#8A5E12" stroke-width="12"/><circle cx="290" cy="512" r="110" fill="url(#a9m)" stroke="#8A5E12" stroke-width="11"/><circle cx="734" cy="512" r="110" fill="url(#a9m)" stroke="#8A5E12" stroke-width="11"/><circle cx="512" cy="780" r="120" fill="url(#a9t)" stroke="#8C887A" stroke-width="12"/></svg>
