@@ -837,7 +837,8 @@
   .du-screen .lv-top .tb { background: rgba(10,22,16,0.38); }
   .du-h1 { margin: 0; font-family: 'Anton', Impact, sans-serif; font-weight: 400; font-size: 27px; line-height: 1; text-transform: none; letter-spacing: 0; color: #FBF7EC; text-shadow: 0 2px 0 rgba(0,0,0,0.25); }
   .du-view { flex: 1; min-height: 0; display: flex; flex-direction: column; }
-  .du-body { flex: 1; min-height: 0; overflow-y: auto; margin: 10px -14px 0; padding: 4px 14px 22px; scrollbar-width: none; overscroll-behavior: contain; }
+  .dz-ov { --cream: #FFF1C8; --gold-hi: #F7D98E; --mint: #7FE0A8; --wood: linear-gradient(180deg, rgba(255,255,255,0.10), transparent 40%), repeating-linear-gradient(92deg, rgba(0,0,0,0.06) 0 2px, transparent 2px 7px), linear-gradient(180deg, #9A6C40, #6B4828); --wood-edge: inset 0 0 0 1.5px #3E2A16, inset 0 2px 0 rgba(255,236,200,0.22); --felt: radial-gradient(110% 70% at 50% 12%, #33704D, #1D4530 78%); }
+  .du-body { position: relative; flex: 1; min-height: 0; overflow-y: auto; margin: 10px -14px 0; padding: 4px 14px 22px; scrollbar-width: none; overscroll-behavior: contain; }
   .du-body::-webkit-scrollbar { display: none; }
   .du-rise { animation: duRise 0.45s cubic-bezier(.2,.9,.3,1) both; }
   @keyframes duRise { from { opacity: 0; transform: translateY(16px); } }
@@ -1969,233 +1970,242 @@
   #worldCelebration .wc-hint { position: absolute; left: 0; right: 0; bottom: 22px; text-align: center; font-weight: 300; font-size: 12.5px; color: var(--dim); }
   #worldCelebration canvas.wc-fx { position: absolute; inset: 0; width: 100%; height: 100%; pointer-events: none; }
 
-  /* ===== Duell-Zentrale v2 (Prompt 39) - Seiten-CSS aus prototypes/duell-ausbau.html (v3), alle Klassen/Variablen/Keyframes mit dz-Praefix ===== */
-  #screen-duels, .dz-ov {
-    --dz-ink: #13202A; --dz-ink-deep: #0A1118; --dz-ink-2: #1B2A36; --dz-grass-1: #2E7D52; --dz-grass-2: #236543; --dz-grass-3: #184A31; --dz-grass-4: #0F3322; --dz-mint: #7FE0A8;
-    --dz-chalk: #F4F1E8; --dz-gold: #E8B23D; --dz-gold-hi: #F7D98E; --dz-win: #3DDC84; --dz-loss: #FF8A73; --dz-draw: #F2C14E; --dz-opp: #8CC8FF;
-    --dz-line: rgba(244,241,232,0.13); --dz-muted: rgba(244,241,232,0.78); --dz-dim: rgba(244,241,232,0.52);
-    --dz-f-display: Anton, Impact, "Arial Narrow", sans-serif; --dz-f-text: Oswald, "Arial Narrow", system-ui, sans-serif;
-  }
-  #screen-duels { padding: 0; background-image: none; background-color: var(--dz-ink); }
-  .dz-root { min-height: 100%; font-family: var(--dz-f-text); color: var(--dz-chalk); }
-  :where(.dz-root, .dz-ov) button { font-family: inherit; color: inherit; cursor: pointer; border: none; background: none; padding: 0; text-align: inherit; }
-  .dz-root button:focus-visible, .dz-ov button:focus-visible { outline: 2px solid var(--dz-gold-hi); outline-offset: 2px; }
-  .dz-page { min-height: 100%; padding-bottom: max(34px, calc(env(safe-area-inset-bottom) + 20px)); background: linear-gradient(180deg, var(--dz-grass-3) 0, var(--dz-ink) 520px, var(--dz-ink) 100%); }
-  .dz-hero { text-align: left; }
-  .dz-who h1 { text-transform: none; }
-  .dz-ov { font-family: var(--dz-f-text); color: var(--dz-chalk); }
-  /* Bewegung: einmalig beim Laden, gestaffelt */
-  .dz-rise { animation: dz-rise 0.7s cubic-bezier(.2,.9,.25,1) both; animation-delay: calc(var(--d, 0) * 70ms + 120ms); }
-  @keyframes dz-rise { from { opacity: 0; transform: translateY(18px); } }
-  
-  /* ---------- Kopf (Stadion) ---------- */
-  .dz-hero { position: relative; padding: max(14px, calc(env(safe-area-inset-top, 0px) + 10px)) 18px 22px; overflow: hidden; /* gleiche Formel wie .screen (Prompt 43) */
-    background: repeating-linear-gradient(180deg, rgba(255,255,255,0.035) 0 46px, rgba(0,0,0,0.035) 46px 92px),
-      radial-gradient(60% 50% at 12% 0%, rgba(255,246,214,0.28), transparent 70%), radial-gradient(60% 50% at 88% 0%, rgba(255,246,214,0.22), transparent 70%),
-      linear-gradient(180deg, var(--dz-grass-1), var(--dz-grass-3)); }
-  .dz-hero::after { content: ""; position: absolute; left: -20%; right: -20%; bottom: -1px; height: 60px; background: linear-gradient(180deg, transparent, var(--dz-grass-3)); pointer-events: none; }
-  .dz-hero .dz-sweep { position: absolute; top: 0; bottom: 0; width: 40%; left: -60%; background: linear-gradient(100deg, transparent, rgba(255,250,230,0.22), transparent); transform: skewX(-16deg); animation: dz-sweep 1.6s 0.5s ease-out 1 both; pointer-events: none; }
-  @keyframes dz-sweep { to { left: 130%; } }
-  .dz-top { position: relative; z-index: 2; display: flex; align-items: center; justify-content: space-between; padding-top: 4px; }
-  .dz-chipbtn { display: inline-flex; align-items: center; gap: 6px; height: 36px; padding: 0 14px; border-radius: 18px; background: rgba(10,17,24,0.35); box-shadow: inset 0 0 0 1px rgba(244,241,232,0.22); font-weight: 500; font-size: 14.5px; backdrop-filter: blur(6px); }
-  .dz-chipbtn.dz-gold { background: linear-gradient(160deg, var(--dz-gold-hi), var(--dz-gold)); color: var(--dz-ink); box-shadow: 0 3px 0 #9C7422; font-weight: 600; }
-  .dz-who { position: relative; z-index: 2; margin-top: 22px; }
-  .dz-who .dz-k { font-weight: 400; font-size: 15px; color: rgba(244,241,232,0.85); }
-  .dz-who h1 { margin: 2px 0 0; font-family: var(--dz-f-display); font-weight: 400; font-size: 52px; line-height: 0.98; letter-spacing: 0.005em; text-shadow: 0 4px 18px rgba(0,0,0,0.25); }
-  .dz-who .dz-h { margin-top: 4px; font-weight: 300; font-size: 15px; color: rgba(244,241,232,0.88); }
-  .dz-who .dz-h b { font-weight: 500; color: var(--dz-gold-hi); }
-  .dz-rec { position: relative; z-index: 2; display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; margin-top: 18px; }
-  .dz-rec div { padding: 10px 10px 9px; border-radius: 16px; background: rgba(10,17,24,0.32); box-shadow: inset 0 0 0 1px rgba(244,241,232,0.14); backdrop-filter: blur(4px); }
-  .dz-rec b { display: block; font-family: var(--dz-f-display); font-weight: 400; font-size: 34px; line-height: 1; font-variant-numeric: tabular-nums; }
-  .dz-rec span { font-weight: 400; font-size: 13.5px; color: rgba(244,241,232,0.82); }
-  .dz-rec .dz-w b { color: var(--dz-win); } .dz-rec .dz-d b { color: var(--dz-draw); } .dz-rec .dz-l b { color: var(--dz-loss); }
-  .dz-form { position: relative; z-index: 2; display: flex; align-items: center; gap: 6px; margin-top: 12px; font-weight: 400; font-size: 13.5px; color: rgba(244,241,232,0.82); }
-  .dz-form i { width: 22px; height: 22px; border-radius: 7px; display: grid; place-items: center; font-style: normal; font-weight: 600; font-size: 12px; color: var(--dz-ink); animation: dz-pop 0.45s cubic-bezier(.3,1.6,.5,1) both; animation-delay: calc(var(--d) * 80ms + 600ms); }
-  .dz-form i.dz-w { background: var(--dz-win); } .dz-form i.dz-l { background: var(--dz-loss); } .dz-form i.dz-d { background: var(--dz-draw); }
-  @keyframes dz-pop { from { transform: scale(0); opacity: 0; } }
+  /* ===== Duell-Zentrale im Taktiktafel-Stil (Prompt 54 D, Prototyp duell-v2.html) - Klassen mit dz-Praefix, Bildschirm = .du-screen ===== */
+  .dz-ov { font-family: 'Oswald', sans-serif; color: var(--chalk); }
+  :where(.dz-ov) button { font-family: inherit; color: inherit; cursor: pointer; border: none; background: none; padding: 0; text-align: inherit; }
+  .dz-ov button:focus-visible { outline: 2px solid var(--gold-hi); outline-offset: 2px; }
+  .du-screen .lv-top .tb.gold { color: var(--ink); background: linear-gradient(160deg, var(--gold-hi), var(--gold)); box-shadow: 0 3px 0 #9C7422; padding: 0 14px 0 10px; }
+  @keyframes dzFlipIn { from { transform: perspective(200px) rotateX(-90deg); opacity: 0; } }
+  @keyframes dzPop { 0% { opacity: 0; transform: scale(0.4); } 70% { transform: scale(1.08); } 100% { opacity: 1; transform: scale(1); } }
+  @keyframes dzPop2 { from { opacity: 0; transform: scale(0.92); } }
+  @keyframes dzDrain { to { transform: scaleX(0); } }
 
-  /* Abschnitts-Navigation */
-  .dz-snav { position: sticky; top: 0; z-index: 10; display: flex; gap: 6px; padding: 10px 14px; background: rgba(19,32,42,0.92); backdrop-filter: blur(10px); box-shadow: 0 1px 0 var(--dz-line); overflow-x: auto; scrollbar-width: none; }
-  .dz-snav button { flex-shrink: 0; height: 34px; padding: 0 14px; border-radius: 17px; font-weight: 500; font-size: 14.5px; color: var(--dz-muted); box-shadow: inset 0 0 0 1px var(--dz-line); transition: background 0.2s, color 0.2s; }
-  .dz-snav button.dz-on { background: var(--dz-grass-2); color: var(--dz-chalk); box-shadow: inset 0 0 0 1px rgba(127,224,168,0.45); }
-  .dz-snav .dz-n { display: inline-grid; place-items: center; min-width: 19px; height: 19px; margin-left: 6px; padding: 0 5px; border-radius: 10px; background: var(--dz-gold); color: var(--dz-ink); font-size: 11.5px; font-weight: 600; }
+  /* Duell-Pass */
+  .dz-pass { position: relative; border-radius: 16px; overflow: hidden; color: #13202A; background: var(--paper); box-shadow: 0 2px 0 #C9BB98, 0 14px 30px rgba(0,0,0,0.38); }
+  .dz-pass::before { content: ""; position: absolute; left: 0; top: 0; bottom: 0; width: 8px; background: linear-gradient(180deg, var(--gold-hi), #A8771A); }
+  .dz-pass .row { display: flex; gap: 13px; align-items: center; padding: 12px 14px 10px 22px; }
+  .dz-pass .who { min-width: 0; }
+  .dz-pass .who small { display: block; font-weight: 400; font-size: 12.5px; color: #6A5A3C; }
+  .dz-pass .who b { display: block; font-family: 'Anton', Impact, sans-serif; font-weight: 400; font-size: 27px; line-height: 1.02; color: #1C2B36; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  .dz-pass .who span { display: block; font-weight: 400; font-size: 13px; color: #5B4D33; margin-top: 1px; }
+  .dz-link { font-weight: 500; font-size: 13.5px; color: #7A5532; text-decoration: underline; text-underline-offset: 3px; padding: 4px 0; }
+  .dz-stamps { display: flex; flex-wrap: wrap; align-items: center; gap: 4px 14px; min-height: 40px; padding: 6px 12px 6px 22px; border-top: 1.5px dashed rgba(120,90,40,0.3); background: rgba(120,90,40,0.06); }
+  .dz-stp { display: inline-flex; align-items: baseline; gap: 5px; font-weight: 400; font-size: 13px; color: #5B4D33; white-space: nowrap; }
+  .dz-stp b { font-family: 'Anton', Impact, sans-serif; font-weight: 400; font-size: 19px; line-height: 1; color: #1C2B36; }
+  .dz-stp.w b { color: #A8771A; }
+  .dz-pform { margin-left: auto; display: flex; gap: 3px; align-items: center; }
+  .dz-pform i { width: 19px; height: 19px; border-radius: 50%; display: grid; place-items: center; font-style: normal; font-family: 'Anton', Impact, sans-serif; font-size: 10.5px; line-height: 1; }
+  .dz-pform i.w { background: radial-gradient(circle at 35% 30%, #FFF4CF, var(--gold) 65%, #A8771A); color: #13202A; }
+  .dz-pform i.d { background: #E2D6B8; color: #5B4D33; box-shadow: inset 0 0 0 1px rgba(90,70,40,0.3); }
+  .dz-pform i.l { box-shadow: inset 0 0 0 1.4px rgba(60,40,10,0.45); color: rgba(60,40,10,0.7); }
 
-  .dz-sect { padding: 22px 16px 6px; scroll-margin-top: 54px; }
-  .dz-sh { display: flex; align-items: baseline; justify-content: space-between; gap: 10px; margin-bottom: 12px; }
-  .dz-sh h2 { margin: 0; font-family: var(--dz-f-display); font-weight: 400; font-size: 30px; line-height: 1; }
-  .dz-sh h2 em { font-style: normal; color: var(--dz-gold-hi); }
-  .dz-sh span { font-weight: 300; font-size: 14px; color: var(--dz-dim); }
+  /* Sprungleiste */
+  .dz-snav { display: flex; gap: 6px; margin: 14px 0 12px; overflow-x: auto; scrollbar-width: none; }
+  .dz-snav::-webkit-scrollbar { display: none; }
+  .dz-snav button { flex-shrink: 0; height: 34px; padding: 0 13px; border-radius: 9px 9px 4px 4px; display: inline-flex; align-items: center; gap: 6px; font-weight: 500; font-size: 14.5px; color: var(--cream); background: var(--wood); box-shadow: var(--wood-edge), 0 2px 0 rgba(0,0,0,0.3); }
+  .dz-snav button.dz-on { color: #13202A; background: linear-gradient(180deg, #FBF3DF, #E9DCBC); box-shadow: inset 0 0 0 1px rgba(62,42,22,0.35), 0 2px 0 rgba(0,0,0,0.3); }
+  .dz-snav .dz-n { min-width: 19px; height: 19px; padding: 0 5px; border-radius: 10px; display: grid; place-items: center; font-family: 'Anton', Impact, sans-serif; font-size: 11.5px; color: #13202A; background: radial-gradient(circle at 35% 30%, #FFF4CF, var(--gold) 65%, #A8771A); }
 
   /* Modus-Kacheln */
-  .dz-modes { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
-  .dz-mode { position: relative; overflow: hidden; border-radius: 22px; padding: 14px; min-height: 168px; display: flex; flex-direction: column; justify-content: flex-end; gap: 4px; box-shadow: 0 10px 26px rgba(0,0,0,0.3), inset 0 0 0 1px rgba(255,255,255,0.12); transition: transform 0.15s ease; }
-  .dz-mode:active { transform: scale(0.97); }
-  .dz-mode.dz-quick { background: radial-gradient(90% 80% at 100% 0%, rgba(255,255,255,0.45), transparent 60%), linear-gradient(160deg, #F7D98E, #E8B23D 55%, #C48B1C); color: var(--dz-ink); }
-  .dz-mode.dz-liga { background: radial-gradient(90% 80% at 100% 0%, rgba(127,224,168,0.45), transparent 60%), linear-gradient(160deg, #36A066, #236543 55%, #154A30); }
-  .dz-mode b { font-family: var(--dz-f-display); font-weight: 400; font-size: 26px; line-height: 1; }
-  .dz-mode span { font-weight: 400; font-size: 13.5px; line-height: 1.35; }
-  .dz-mode .dz-art { position: absolute; top: 12px; left: 12px; width: 64px; height: 64px; }
-  .dz-mode .dz-art svg { width: 100%; height: 100%; overflow: visible; }
-  .dz-mode .dz-tag { position: absolute; top: 14px; right: 12px; font-weight: 500; font-size: 12px; padding: 3px 9px; border-radius: 10px; background: rgba(10,17,24,0.45); color: var(--dz-mint); }
-  .dz-draw { stroke-dasharray: 160; stroke-dashoffset: 160; animation: dz-drawIn 0.9s 0.5s ease-out forwards; }
-  @keyframes dz-drawIn { to { stroke-dashoffset: 0; } }
-  .dz-ball { animation: dz-ballFly 1.1s 0.6s cubic-bezier(.3,.6,.4,1) both; }
-  @keyframes dz-ballFly { 0% { transform: translate(0,0); } 50% { transform: translate(34px,-10px); } 100% { transform: translate(0,0); } }
+  .dz-modes { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 14px; }
+  .dz-mode { position: relative; min-height: 138px; border-radius: 15px; padding: 14px 14px 12px; text-align: left; overflow: hidden; display: flex; flex-direction: column; }
+  .dz-mode.dz-quick { color: #13202A; background: radial-gradient(120% 90% at 20% 10%, #FFE9A8, #F2C452 55%, #D9A030); box-shadow: 0 4px 0 #9C7422, 0 12px 24px rgba(0,0,0,0.35), inset 0 1px 0 rgba(255,255,255,0.5); }
+  .dz-mode.dz-liga { background: var(--felt); box-shadow: inset 0 0 0 5px #7A5532, inset 0 0 0 7px #3E2A16, 0 12px 24px rgba(0,0,0,0.35); padding: 16px; }
+  .dz-mode svg.ic { width: 30px; height: 30px; margin-bottom: auto; }
+  .dz-mode b { font-family: 'Anton', Impact, sans-serif; font-weight: 400; font-size: 23px; line-height: 1; margin-top: 8px; }
+  .dz-mode .dz-mt2 { font-weight: 400; font-size: 12.5px; line-height: 1.3; margin-top: 4px; opacity: 0.85; }
+  .dz-soon { height: 20px; padding: 0 8px; border-radius: 10px; display: inline-grid; place-items: center; font-weight: 500; font-size: 11.5px; color: #13202A; background: linear-gradient(180deg, #FBF3DF, #E9DCBC); }
+  .dz-mode .dz-soon { position: absolute; right: 12px; top: 12px; }
 
-  /* Tickets (offene Duelle) */
-  .dz-grp { font-weight: 500; font-size: 15px; color: var(--dz-muted); margin: 16px 2px 8px; display: flex; justify-content: space-between; }
-  .dz-grp em { font-style: normal; font-weight: 300; color: var(--dz-dim); }
-  .dz-tickets { display: grid; gap: 8px; }
-  .dz-tk-wrap { position: relative; border-radius: 18px; overflow: hidden; transition: height 0.32s ease, opacity 0.25s ease, margin 0.32s ease; }
+  /* Tafeln */
+  .dz-bh { display: flex; align-items: baseline; justify-content: space-between; gap: 8px; margin: 0 2px 10px; }
+  .dz-bh h2 { margin: 0; font-family: 'Anton', Impact, sans-serif; font-weight: 400; font-size: 24px; line-height: 1; text-transform: none; letter-spacing: 0; }
+  .dz-bh h2 em { font-style: normal; color: var(--gold-hi); }
+  .dz-bh small { font-weight: 300; font-size: 13px; color: rgba(244,241,232,0.72); }
+  .dz-grp { display: flex; align-items: center; gap: 8px; margin: 12px 2px 7px; font-weight: 500; font-size: 14px; color: rgba(244,241,232,0.88); }
+  .dz-grp em { font-style: normal; font-weight: 300; color: rgba(244,241,232,0.65); }
+  .dz-grp::after { content: ""; flex: 1; height: 1.4px; background: linear-gradient(90deg, rgba(244,241,232,0.3), rgba(244,241,232,0)); }
+  .dz-bh + .dz-grp { margin-top: 0; }
+  .dz-bd + .dz-bd, .dz-plank + .dz-bd, .dz-bd + .dz-plank { margin-top: 14px; }
+  .dz-note { margin: 8px 2px 0; font-weight: 300; font-size: 13.5px; line-height: 1.45; color: rgba(244,241,232,0.72); }
+  .dz-plank { display: flex; align-items: center; gap: 10px; min-height: 52px; padding: 0 14px; margin: 14px 0; border-radius: 12px; width: 100%; text-align: left; color: var(--cream); background: var(--wood); box-shadow: var(--wood-edge), 0 6px 14px rgba(0,0,0,0.35); }
+  .dz-plank svg { width: 24px; height: 24px; flex-shrink: 0; }
+  .dz-plank b { font-family: 'Anton', Impact, sans-serif; font-weight: 400; font-size: 19px; line-height: 1; }
+  .dz-plank small { display: block; font-weight: 300; font-size: 12.5px; color: rgba(255,241,200,0.82); margin-top: 2px; }
+  .dz-plank .dz-soon { margin-left: auto; flex-shrink: 0; }
+
+  /* Tickets (Duell-Zeilen) */
+  .dz-tickets { display: grid; gap: 6px; }
+  .dz-tk-wrap { position: relative; border-radius: 13px; overflow: hidden; transition: height 0.32s ease, opacity 0.25s ease, margin 0.32s ease; }
   .dz-tk-del { position: absolute; inset: 0; display: flex; justify-content: flex-end; background: linear-gradient(90deg, rgba(193,57,43,0) 35%, #B23A26); }
   .dz-tk-del button { width: 96px; display: grid; place-content: center; justify-items: center; gap: 4px; font-weight: 500; font-size: 13.5px; color: #fff; }
   .dz-tk-del svg { width: 22px; height: 22px; }
-  .dz-tk { position: relative; display: grid; grid-template-columns: 6px minmax(0,1fr) auto; gap: 12px; align-items: center; padding: 12px 10px 12px 0; border-radius: 18px; background: var(--dz-ink-2); box-shadow: inset 0 0 0 1px var(--dz-line); touch-action: pan-y; transition: transform 0.25s cubic-bezier(.2,.8,.2,1); width: 100%; }
+  .dz-tk { position: relative; display: grid; grid-template-columns: 38px minmax(0,1fr) auto; gap: 10px; align-items: center; min-height: 58px; padding: 8px 4px 8px 9px; width: 100%; text-align: left; border-radius: 13px; color: #13202A; background: var(--card); box-shadow: 0 2px 0 rgba(0,0,0,0.28); touch-action: pan-y; transition: transform 0.25s cubic-bezier(.2,.8,.2,1); }
   .dz-tk.dz-drag { transition: none; }
-  .dz-tk .dz-stripe { align-self: stretch; border-radius: 0 4px 4px 0; background: var(--c, var(--dz-dim)); }
-  .dz-tk .dz-t2 { min-width: 0; display: grid; gap: 2px; }
-  .dz-tk .dz-opp { font-family: var(--dz-f-display); font-weight: 400; font-size: 23px; line-height: 1.05; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-  .dz-tk .dz-opp small { font-family: var(--dz-f-text); font-weight: 300; font-size: 13.5px; color: var(--dz-dim); margin-left: 6px; }
-  .dz-tk .dz-meta { font-weight: 400; font-size: 14px; color: var(--dz-muted); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-  .dz-tk .dz-side { display: flex; align-items: center; gap: 4px; }
-  .dz-tk .dz-go { font-weight: 600; font-size: 14.5px; color: var(--dz-ink); background: linear-gradient(160deg, var(--dz-gold-hi), var(--dz-gold)); padding: 9px 14px; border-radius: 13px; box-shadow: 0 3px 0 #9C7422; }
-  .dz-tk .dz-wt { font-weight: 400; font-size: 13px; color: var(--dz-muted); text-align: right; line-height: 1.25; }
-  .dz-tk.dz-hot { background: linear-gradient(110deg, rgba(46,125,82,0.55), rgba(27,42,54,0.95) 60%), #1B2A36; box-shadow: inset 0 0 0 1.5px rgba(127,224,168,0.45); }
-  .dz-tk.dz-exp { background: #18232C; }
-  .dz-tk.dz-exp .dz-t2, .dz-tk.dz-exp .dz-side { opacity: 0.55; }
-  .dz-badge-l { display: inline-block; font-family: var(--dz-f-text); font-weight: 500; font-size: 12px; padding: 1px 8px; border-radius: 9px; background: rgba(127,224,168,0.18); color: var(--dz-mint); margin-right: 6px; vertical-align: 3px; }
-  .dz-dots { width: 34px; height: 34px; border-radius: 11px; display: grid; place-items: center; color: var(--dz-dim); }
-  .dz-sweep-btn { width: 100%; margin-top: 10px; display: flex; align-items: center; justify-content: center; gap: 8px; height: 46px; border-radius: 14px; box-shadow: inset 0 0 0 1px rgba(244,241,232,0.2); font-weight: 500; font-size: 15px; color: var(--dz-muted); }
+  .dz-tk .du-mag { width: 38px; height: 38px; font-size: 17px; }
+  .dz-t2 { min-width: 0; display: block; }
+  .dz-t2 b { display: block; font-weight: 600; font-size: 16px; line-height: 1.15; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .dz-t2 b small { font-weight: 400; font-size: 12.5px; color: rgba(19,32,42,0.6); margin-left: 4px; }
+  .dz-t2 > small { display: block; font-weight: 400; font-size: 12.5px; color: rgba(19,32,42,0.7); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .dz-tk.dz-wait, .dz-tk.dz-exp { color: var(--chalk); background: #23513A; box-shadow: inset 0 0 0 1.2px rgba(244,241,232,0.16); }
+  .dz-tk.dz-wait .dz-t2 b small, .dz-tk.dz-wait .dz-t2 > small, .dz-tk.dz-exp .dz-t2 b small, .dz-tk.dz-exp .dz-t2 > small { color: rgba(244,241,232,0.68); }
+  .dz-tk.dz-exp .dz-t2, .dz-tk.dz-exp .du-mag, .dz-tk.dz-exp .dz-side > span { opacity: 0.55; }
+  .dz-side { display: flex; align-items: center; gap: 2px; }
+  .dz-go { height: 34px; padding: 0 14px; display: inline-flex; align-items: center; border-radius: 17px; font-weight: 600; font-size: 14.5px; color: #13202A; background: linear-gradient(160deg, var(--gold-hi), var(--gold)); box-shadow: 0 2px 0 #9C7422; }
+  .dz-waittag { display: inline-flex; align-items: center; gap: 4px; height: 26px; padding: 0 10px 0 7px; border-radius: 13px; font-weight: 500; font-size: 13px; color: rgba(244,241,232,0.85); box-shadow: inset 0 0 0 1.2px rgba(244,241,232,0.3); }
+  .dz-waittag svg { width: 14px; height: 14px; }
+  .dz-wt { font-weight: 400; font-size: 13px; color: rgba(244,241,232,0.78); text-align: right; line-height: 1.25; padding-right: 4px; }
+  .dz-dots { width: 28px; height: 34px; display: grid; place-items: center; color: rgba(19,32,42,0.55); }
+  .dz-dots svg { width: 18px; height: 18px; }
+  .dz-tk.dz-wait .dz-dots, .dz-tk.dz-exp .dz-dots { color: rgba(244,241,232,0.55); }
+  .dz-sweep-btn { width: 100%; margin-top: 10px; display: flex; align-items: center; justify-content: center; gap: 8px; min-height: 46px; border-radius: 13px; box-shadow: inset 0 0 0 1.3px rgba(244,241,232,0.3); background: rgba(10,22,16,0.3); font-weight: 500; font-size: 14.5px; color: rgba(244,241,232,0.9); }
   .dz-sweep-btn svg { width: 19px; height: 19px; }
-  .dz-note { margin: 8px 2px 0; font-weight: 300; font-size: 13.5px; line-height: 1.45; color: var(--dz-dim); }
-  .dz-menu { position: absolute; z-index: 30; min-width: 200px; padding: 6px; border-radius: 16px; background: #233340; box-shadow: 0 14px 40px rgba(0,0,0,0.55), inset 0 0 0 1px var(--dz-line); transform-origin: top right; animation: dz-pop2 0.16s ease-out both; }
-  @keyframes dz-pop2 { from { opacity: 0; transform: scale(0.92); } }
-  .dz-menu button { width: 100%; display: flex; align-items: center; gap: 10px; padding: 11px 12px; border-radius: 10px; font-weight: 500; font-size: 15px; }
-  .dz-menu button:hover { background: rgba(244,241,232,0.06); }
+  .dz-menu { position: fixed; z-index: 96; min-width: 200px; padding: 6px; border-radius: 14px; background: var(--felt); box-shadow: 0 14px 40px rgba(0,0,0,0.55), inset 0 0 0 3px #7A5532, inset 0 0 0 4.5px #3E2A16; transform-origin: top right; animation: dzPop2 0.16s ease-out both; }
+  .dz-menu button { width: 100%; display: flex; align-items: center; gap: 10px; padding: 11px 12px; border-radius: 10px; font-weight: 500; font-size: 15px; color: var(--cream); }
+  .dz-menu button:active { background: rgba(244,241,232,0.08); }
   .dz-menu button.dz-danger { color: #FFB3A3; }
   .dz-menu svg { width: 18px; height: 18px; }
 
   /* Historie */
-  .dz-hsum { display: flex; height: 10px; border-radius: 5px; overflow: hidden; background: rgba(244,241,232,0.08); }
-  .dz-hsum i { background: var(--dz-win); } .dz-hsum u { background: var(--dz-draw); } .dz-hsum s { background: var(--dz-loss); }
-  .dz-hsum > * { transform-origin: 0 50%; animation: dz-growX 0.8s 0.3s cubic-bezier(.2,.9,.25,1) both; }
-  .dz-hleg { display: flex; gap: 14px; margin-top: 7px; font-weight: 400; font-size: 13.5px; color: var(--dz-muted); }
-  .dz-hleg b { font-family: var(--dz-f-display); font-weight: 400; font-size: 17px; margin-right: 4px; }
-  .dz-hleg .dz-w b { color: var(--dz-win); } .dz-hleg .dz-d b { color: var(--dz-draw); } .dz-hleg .dz-l b { color: var(--dz-loss); }
-  .dz-filters { display: flex; gap: 6px; margin: 14px 0 10px; }
-  .dz-filters button { height: 34px; padding: 0 14px; border-radius: 17px; font-weight: 500; font-size: 14.5px; color: var(--dz-muted); box-shadow: inset 0 0 0 1px var(--dz-line); }
-  .dz-filters button[aria-pressed="true"] { background: var(--dz-grass-2); color: var(--dz-chalk); box-shadow: inset 0 0 0 1px rgba(127,224,168,0.45); }
-  .dz-hist { display: grid; gap: 8px; }
-  .dz-hc { border-radius: 18px; background: var(--dz-ink-2); box-shadow: inset 0 0 0 1px var(--dz-line); overflow: hidden; }
-  .dz-hc.dz-open { box-shadow: inset 0 0 0 1.5px rgba(127,224,168,0.45); background: #1C2D37; }
-  .dz-hc-row { width: 100%; display: grid; grid-template-columns: 6px minmax(0,1fr) auto; gap: 12px; align-items: center; padding: 12px 14px 12px 0; }
-  .dz-hc-row .dz-stripe { align-self: stretch; border-radius: 0 4px 4px 0; background: var(--c); }
-  .dz-hc.dz-w { --c: var(--dz-win); } .dz-hc.dz-l { --c: var(--dz-loss); } .dz-hc.dz-d { --c: var(--dz-draw); }
-  .dz-hc-row .dz-mid { min-width: 0; display: grid; gap: 3px; }
-  .dz-hc-row .dz-opp { font-family: var(--dz-f-display); font-weight: 400; font-size: 22px; line-height: 1.05; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-  .dz-hc-row .dz-opp small { font-family: var(--dz-f-text); font-weight: 300; font-size: 13.5px; color: var(--dz-dim); }
-  .dz-hc-row .dz-meta { font-weight: 400; font-size: 13.5px; color: var(--dz-muted); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-  .dz-rchips { display: flex; gap: 4px; flex-wrap: wrap; }
-  .dz-rchips span { font-weight: 400; font-size: 12px; padding: 1px 8px; border-radius: 9px; background: rgba(0,0,0,0.25); color: rgba(244,241,232,0.85); white-space: nowrap; }
-  .dz-hc-row .dz-res { text-align: right; }
-  .dz-hc-row .dz-res b { display: block; font-family: var(--dz-f-display); font-weight: 400; font-size: 30px; line-height: 1; }
-  .dz-hc-row .dz-res span { display: inline-block; margin-top: 4px; font-weight: 500; font-size: 13px; padding: 1px 8px; border-radius: 9px; color: var(--dz-ink); background: var(--c); }
-  .dz-more { width: 100%; margin-top: 10px; height: 46px; border-radius: 14px; box-shadow: inset 0 0 0 1px var(--dz-line); font-weight: 500; font-size: 15px; color: var(--dz-muted); text-align: center; }
+  .dz-hsum { display: flex; height: 10px; border-radius: 5px; overflow: hidden; margin: 2px 2px 6px; box-shadow: inset 0 1px 2px rgba(0,0,0,0.3); }
+  .dz-hsum > * { display: block; text-decoration: none; transform-origin: 0 50%; animation: duGrow 0.8s 0.3s cubic-bezier(.2,.9,.25,1) both; }
+  .dz-hsum i { background: linear-gradient(90deg, #E8B23D, #F7D98E); } .dz-hsum u { background: #E9DCBC; } .dz-hsum s { background: #7A5532; }
+  .dz-hleg { display: flex; gap: 14px; margin: 0 2px 10px; font-weight: 400; font-size: 13px; color: rgba(244,241,232,0.8); }
+  .dz-hleg b { font-family: 'Anton', Impact, sans-serif; font-weight: 400; font-size: 16px; margin-right: 3px; color: var(--chalk); }
+  .dz-hleg .dz-w b { color: var(--gold-hi); }
+  .dz-filters { display: flex; gap: 6px; margin: 4px 0 10px; }
+  .dz-filters button { height: 32px; padding: 0 14px; border-radius: 16px; font-weight: 500; font-size: 14px; color: rgba(244,241,232,0.88); background: rgba(8,22,14,0.3); box-shadow: inset 0 0 0 1.2px rgba(244,241,232,0.2); }
+  .dz-filters button[aria-pressed="true"] { color: #13202A; background: linear-gradient(180deg, #FBF3DF, #E9DCBC); box-shadow: 0 0 0 2px var(--gold-hi); }
+  .dz-hist { display: grid; gap: 6px; }
+  .dz-hc { border-radius: 13px; background: rgba(8,22,14,0.3); box-shadow: inset 0 0 0 1.2px rgba(244,241,232,0.16); overflow: hidden; }
+  .dz-hc.dz-open { box-shadow: inset 0 0 0 1.5px rgba(247,217,142,0.55); }
+  .dz-hc-row { width: 100%; display: grid; grid-template-columns: minmax(0,1fr) auto; gap: 8px; align-items: center; padding: 10px 10px 10px 12px; text-align: left; }
+  .dz-mid { min-width: 0; display: block; }
+  .dz-opp { display: block; font-weight: 500; font-size: 16px; line-height: 1.2; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .dz-opp small { font-weight: 300; font-size: 12.5px; color: rgba(244,241,232,0.68); margin-left: 4px; }
+  .dz-meta { display: block; font-weight: 300; font-size: 12.5px; color: rgba(244,241,232,0.72); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .dz-rchips { display: flex; flex-wrap: wrap; gap: 4px; margin-top: 6px; }
+  .dz-rchips span { height: 20px; padding: 0 7px; border-radius: 6px; display: inline-flex; align-items: center; font-weight: 400; font-size: 11.5px; color: rgba(244,241,232,0.86); background: rgba(8,22,14,0.35); white-space: nowrap; }
+  .dz-res { display: grid; justify-items: center; min-width: 74px; padding: 6px 8px; border-radius: 10px; }
+  .dz-res b { font-family: 'Anton', Impact, sans-serif; font-weight: 400; font-size: 24px; line-height: 1; }
+  .dz-res span { font-weight: 500; font-size: 12px; margin-top: 2px; }
+  .dz-hc.dz-w .dz-res { color: #13202A; background: linear-gradient(170deg, var(--gold-hi), var(--gold)); box-shadow: 0 2px 0 #9C7422; }
+  .dz-hc.dz-l .dz-res { color: var(--cream); background: var(--wood); box-shadow: var(--wood-edge), 0 2px 0 rgba(0,0,0,0.3); }
+  .dz-hc.dz-d .dz-res { color: #13202A; background: linear-gradient(180deg, #FBF3DF, #E9DCBC); box-shadow: 0 2px 0 rgba(0,0,0,0.25); }
+  .dz-more { width: 100%; margin-top: 10px; min-height: 44px; border-radius: 13px; box-shadow: inset 0 0 0 1.3px rgba(244,241,232,0.3); background: rgba(10,22,16,0.3); font-weight: 500; font-size: 14.5px; color: rgba(244,241,232,0.9); text-align: center; }
   .dz-hc-body { display: grid; grid-template-rows: 0fr; transition: grid-template-rows 0.45s cubic-bezier(.2,.9,.25,1); }
   .dz-hc.dz-open .dz-hc-body { grid-template-rows: 1fr; }
   .dz-hc-body > div { overflow: hidden; }
-  .dz-det { padding: 0 12px 14px; }
+  .dz-det { padding: 0 10px 14px; }
 
-  /* Anzeigetafel im Detail */
-  .dz-board { border-radius: 20px; padding: 14px 14px 12px; background: radial-gradient(90% 70% at 50% 0%, rgba(232,178,61,0.2), transparent 70%), linear-gradient(170deg, #22465A, #172836); }
+  /* Detail: Anzeigetafel */
+  .dz-board { border-radius: 12px; padding: 14px 14px 12px; background: var(--felt); box-shadow: inset 0 0 0 4px #7A5532, inset 0 0 0 5.5px #3E2A16, inset 0 0 24px rgba(0,0,0,0.35); }
   .dz-bnames { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
   .dz-bnames div:last-child { text-align: right; }
-  .dz-bnames b { display: block; font-family: var(--dz-f-display); font-weight: 400; font-size: 22px; line-height: 1; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-  .dz-bnames span { font-weight: 300; font-size: 13px; color: var(--dz-muted); }
-  .dz-bnames .dz-me b { color: var(--dz-gold-hi); } .dz-bnames .dz-op b { color: var(--dz-opp); }
+  .dz-bnames b { display: block; font-family: 'Anton', Impact, sans-serif; font-weight: 400; font-size: 21px; line-height: 1; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .dz-bnames span { font-weight: 300; font-size: 12.5px; color: rgba(244,241,232,0.75); }
+  .dz-bnames .dz-me b { color: var(--gold-hi); }
   .dz-bscore { display: flex; justify-content: center; margin-top: 8px; }
-  .dz-verdict { margin-top: 8px; text-align: center; font-family: var(--dz-f-display); font-size: 24px; }
-  .dz-verdict.dz-w { color: var(--dz-win); } .dz-verdict.dz-l { color: var(--dz-loss); } .dz-verdict.dz-d { color: var(--dz-draw); }
-  .dz-why { text-align: center; font-weight: 300; font-size: 13.5px; color: var(--dz-muted); }
-  .dz-totals { display: grid; grid-template-columns: 1fr auto 1fr; gap: 6px 10px; margin-top: 12px; padding-top: 10px; border-top: 1px solid var(--dz-line); align-items: center; }
-  .dz-totals .dz-v { font-family: var(--dz-f-display); font-size: 22px; font-variant-numeric: tabular-nums; }
+  .dz-verdict { margin-top: 8px; text-align: center; font-family: 'Anton', Impact, sans-serif; font-size: 24px; }
+  .dz-verdict.dz-w { color: var(--gold-hi); } .dz-verdict.dz-l { color: var(--chalk); } .dz-verdict.dz-d { color: #FBF3DF; }
+  .dz-why { text-align: center; font-weight: 300; font-size: 13.5px; color: rgba(244,241,232,0.8); }
+  .dz-totals { display: grid; grid-template-columns: 1fr auto 1fr; gap: 6px 10px; margin-top: 12px; padding-top: 10px; border-top: 1px solid rgba(244,241,232,0.18); align-items: center; }
+  .dz-totals .dz-v { font-family: 'Anton', Impact, sans-serif; font-size: 22px; font-variant-numeric: tabular-nums; }
   .dz-totals .dz-v.dz-r { text-align: right; }
-  .dz-totals .dz-v.dz-best { color: var(--dz-gold-hi); }
-  .dz-totals .dz-k { font-weight: 400; font-size: 13px; color: var(--dz-dim); text-align: center; }
+  .dz-totals .dz-v.dz-best { color: var(--gold-hi); }
+  .dz-totals .dz-k { font-weight: 400; font-size: 13px; color: rgba(244,241,232,0.65); text-align: center; }
   .dz-bar2 { grid-column: 1 / -1; display: flex; height: 6px; border-radius: 3px; overflow: hidden; gap: 2px; }
-  .dz-bar2 i { background: var(--dz-gold); border-radius: 3px; transform-origin: 0 50%; animation: dz-growX 0.7s 0.2s ease-out both; }
-  .dz-bar2 u { background: var(--dz-opp); border-radius: 3px; transform-origin: 100% 50%; animation: dz-growX 0.7s 0.2s ease-out both; }
-
+  .dz-bar2 i { background: var(--gold); border-radius: 3px; transform-origin: 0 50%; animation: duGrow 0.7s 0.2s ease-out both; }
+  .dz-bar2 u { background: #8CC8FF; border-radius: 3px; text-decoration: none; transform-origin: 100% 50%; animation: duGrow 0.7s 0.2s ease-out both; }
   .dz-flip { display: inline-flex; gap: 4px; align-items: center; }
-  .dz-flip b { font-family: var(--dz-f-display); font-weight: 400; line-height: 1; text-align: center; border-radius: 8px; color: var(--dz-gold-hi); position: relative;
-    background: linear-gradient(180deg, #24333F 0 50%, #1A2833 50% 100%); box-shadow: 0 3px 0 rgba(0,0,0,0.45), inset 0 0 0 1px rgba(244,241,232,0.07); }
-  .dz-flip b::after { content: ""; position: absolute; left: 0; right: 0; top: 50%; height: 1px; background: rgba(0,0,0,0.65); }
-  .dz-flip i { font-style: normal; font-family: var(--dz-f-display); color: rgba(247,217,142,0.55); }
-  .dz-flip.dz-xl b { font-size: 52px; min-width: 44px; padding: 8px 6px 7px; } .dz-flip.dz-xl i { font-size: 40px; margin: 0 3px; }
-  .dz-flip.dz-l b { font-size: 40px; min-width: 34px; padding: 6px 5px 5px; } .dz-flip.dz-l i { font-size: 32px; margin: 0 2px; }
-  .dz-flip b.dz-fl { animation: dz-flipIn 0.55s cubic-bezier(.3,1.4,.5,1) both; }
-  @keyframes dz-flipIn { from { transform: perspective(200px) rotateX(-90deg); opacity: 0; } }
-
+  .dz-flip b { font-family: 'Anton', Impact, sans-serif; font-weight: 400; line-height: 1; text-align: center; border-radius: 9px; color: #FFF1C8; background: var(--wood); box-shadow: var(--wood-edge), 0 6px 12px rgba(0,0,0,0.4); font-variant-numeric: tabular-nums; }
+  .dz-flip i { font-style: normal; font-family: 'Anton', Impact, sans-serif; color: rgba(255,241,200,0.6); }
+  .dz-flip.dz-xl b { font-size: 46px; min-width: 40px; padding: 7px 6px 6px; } .dz-flip.dz-xl i { font-size: 36px; margin: 0 3px; }
+  .dz-flip b.dz-fl { animation: dzFlipIn 0.55s cubic-bezier(.3,1.4,.5,1) both; }
   .dz-rtabs { display: flex; gap: 6px; margin-top: 12px; overflow-x: auto; scrollbar-width: none; }
-  .dz-rtab { flex: 1 0 82px; padding: 8px 6px; border-radius: 13px; text-align: center; box-shadow: inset 0 0 0 1px var(--dz-line); }
-  .dz-rtab small { display: flex; justify-content: center; align-items: center; gap: 5px; font-weight: 400; font-size: 12.5px; color: var(--dz-dim); }
+  .dz-rtab { flex: 1 0 82px; padding: 8px 6px; border-radius: 11px; text-align: center; background: rgba(8,22,14,0.3); box-shadow: inset 0 0 0 1.2px rgba(244,241,232,0.18); }
+  .dz-rtab small { display: flex; justify-content: center; align-items: center; gap: 5px; font-weight: 400; font-size: 12.5px; color: rgba(244,241,232,0.75); }
   .dz-rtab small i { width: 8px; height: 8px; border-radius: 50%; background: var(--c); }
-  .dz-rtab b { font-family: var(--dz-f-display); font-weight: 400; font-size: 20px; }
-  .dz-rtab.dz-w { --c: var(--dz-win); } .dz-rtab.dz-l { --c: var(--dz-loss); } .dz-rtab.dz-d { --c: var(--dz-draw); }
-  .dz-rtab[aria-pressed="true"] { background: rgba(46,125,82,0.35); box-shadow: inset 0 0 0 1.5px rgba(127,224,168,0.6); }
+  .dz-rtab b { font-family: 'Anton', Impact, sans-serif; font-weight: 400; font-size: 20px; }
+  .dz-rtab.dz-w { --c: #E8B23D; } .dz-rtab.dz-l { --c: #C9976A; } .dz-rtab.dz-d { --c: #E9DCBC; }
+  .dz-rtab[aria-pressed="true"] { color: #13202A; background: linear-gradient(180deg, #FBF3DF, #E9DCBC); box-shadow: 0 0 0 2px var(--gold-hi); }
+  .dz-rtab[aria-pressed="true"] small { color: rgba(19,32,42,0.7); }
   .dz-mt { margin-top: 14px; }
-  .dz-mt small { font-weight: 400; font-size: 13.5px; color: var(--dz-mint); }
-  .dz-mt b { display: block; font-family: var(--dz-f-display); font-weight: 400; font-size: 21px; line-height: 1.1; margin-top: 2px; }
-  .dz-mt span { font-weight: 300; font-size: 14px; color: var(--dz-muted); }
+  .dz-mt small { font-weight: 400; font-size: 13.5px; color: var(--gold-hi); }
+  .dz-mt b { display: block; font-family: 'Anton', Impact, sans-serif; font-weight: 400; font-size: 21px; line-height: 1.1; margin-top: 2px; }
+  .dz-mt span { font-weight: 300; font-size: 14px; color: rgba(244,241,232,0.8); }
   .dz-cmp { display: grid; grid-template-columns: 1fr 1fr; gap: 6px; margin-top: 10px; }
-  .dz-cmp div { padding: 8px 11px; border-radius: 12px; background: rgba(10,17,24,0.4); }
+  .dz-cmp div { padding: 8px 11px; border-radius: 12px; background: rgba(8,22,14,0.35); }
   .dz-cmp small { font-weight: 400; font-size: 13px; }
-  .dz-cmp .dz-me small { color: var(--dz-gold-hi); } .dz-cmp .dz-op small { color: var(--dz-opp); }
-  .dz-cmp b { display: block; font-family: var(--dz-f-display); font-weight: 400; font-size: 22px; }
-  .dz-cmp b em { font-style: normal; font-family: var(--dz-f-text); font-weight: 300; font-size: 13.5px; color: var(--dz-muted); margin-left: 6px; }
-
-  .dz-pitch { position: relative; margin-top: 10px; border-radius: 16px; overflow: hidden; aspect-ratio: 0.8; background: repeating-linear-gradient(180deg, #2C7A4F 0 9%, #256A44 9% 18%); box-shadow: inset 0 0 0 2px rgba(244,241,232,0.25); container-type: inline-size; }
+  .dz-cmp .dz-me small { color: var(--gold-hi); } .dz-cmp .dz-op small { color: #8CC8FF; }
+  .dz-cmp b { display: block; font-family: 'Anton', Impact, sans-serif; font-weight: 400; font-size: 22px; }
+  .dz-cmp b em { font-style: normal; font-family: 'Oswald', sans-serif; font-weight: 300; font-size: 13.5px; color: rgba(244,241,232,0.8); margin-left: 6px; }
+  .dz-pitch { position: relative; margin-top: 10px; border-radius: 14px; overflow: hidden; aspect-ratio: 0.8; background: repeating-linear-gradient(180deg, #2C7A4F 0 9%, #256A44 9% 18%); box-shadow: inset 0 0 0 2px rgba(244,241,232,0.25); container-type: inline-size; }
   .dz-pitch svg.dz-lines { position: absolute; inset: 0; width: 100%; height: 100%; }
-  .dz-ps { position: absolute; transform: translate(-50%, -50%); width: 26cqw; animation: dz-pop 0.45s cubic-bezier(.3,1.5,.5,1) both; animation-delay: calc(var(--d) * 45ms + 150ms); }
+  .dz-ps { position: absolute; transform: translate(-50%, -50%); width: 26cqw; animation: dzPop 0.45s cubic-bezier(.3,1.5,.5,1) both; animation-delay: calc(var(--d) * 45ms + 150ms); }
   .dz-ps button { width: 100%; display: grid; justify-items: center; gap: 3px; }
   .dz-ps .dz-nm { max-width: 100%; padding: 4px 7px; border-radius: 8px; font-weight: 500; font-size: 13px; line-height: 1.1; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; background: var(--bg); color: var(--fg); box-shadow: 0 2px 6px rgba(0,0,0,0.3); }
   .dz-ps .dz-mk { display: flex; gap: 3px; }
   .dz-ps .dz-mk i { width: 16px; height: 16px; border-radius: 50%; display: grid; place-items: center; font-style: normal; font-size: 10px; font-weight: 600; }
-  .dz-ps .dz-mk .dz-y { background: var(--dz-gold); color: var(--dz-ink); } .dz-ps .dz-mk .dz-o { background: var(--dz-opp); color: var(--dz-ink); }
-  .dz-ps .dz-mk .dz-x { background: rgba(10,17,24,0.6); color: rgba(244,241,232,0.5); box-shadow: inset 0 0 0 1px rgba(244,241,232,0.25); }
+  .dz-ps .dz-mk .dz-y { background: var(--gold); color: #13202A; } .dz-ps .dz-mk .dz-o { background: #8CC8FF; color: #13202A; }
+  .dz-ps .dz-mk .dz-x { background: rgba(10,22,16,0.6); color: rgba(244,241,232,0.5); box-shadow: inset 0 0 0 1px rgba(244,241,232,0.25); }
   .dz-ps.dz-both { --bg: #F4F1E8; --fg: #13202A; } .dz-ps.dz-me { --bg: linear-gradient(135deg, #F7D98E, #E8B23D); --fg: #13202A; }
-  .dz-ps.dz-op { --bg: linear-gradient(135deg, #C3E2FF, #8CC8FF); --fg: #13202A; } .dz-ps.dz-none { --bg: rgba(10,17,24,0.72); --fg: rgba(244,241,232,0.85); }
+  .dz-ps.dz-op { --bg: linear-gradient(135deg, #C3E2FF, #8CC8FF); --fg: #13202A; } .dz-ps.dz-none { --bg: rgba(10,22,16,0.72); --fg: rgba(244,241,232,0.85); }
   .dz-legend { display: flex; flex-wrap: wrap; gap: 6px 14px; margin-top: 8px; }
-  .dz-legend span { display: flex; align-items: center; gap: 6px; font-weight: 400; font-size: 13px; color: var(--dz-muted); }
+  .dz-legend span { display: flex; align-items: center; gap: 6px; font-weight: 400; font-size: 13px; color: rgba(244,241,232,0.82); }
   .dz-legend i { width: 14px; height: 14px; border-radius: 4px; background: var(--bg); box-shadow: inset 0 0 0 1px rgba(244,241,232,0.2); }
-  .dz-tip { position: absolute; z-index: 4; transform: translate(-50%, calc(-100% - 12px)); min-width: 176px; padding: 10px 12px; border-radius: 13px; background: #0E1720; box-shadow: 0 10px 26px rgba(0,0,0,0.6), inset 0 0 0 1px rgba(244,241,232,0.14); font-size: 13.5px; animation: dz-pop2 0.14s ease-out both; pointer-events: none; }
+  .dz-tip { position: absolute; z-index: 4; transform: translate(-50%, calc(-100% - 12px)); min-width: 176px; padding: 10px 12px; border-radius: 12px; background: #10261A; box-shadow: 0 10px 26px rgba(0,0,0,0.6), inset 0 0 0 1px rgba(244,241,232,0.18); font-size: 13.5px; animation: dzPop2 0.14s ease-out both; pointer-events: none; }
   .dz-tip b { display: block; font-weight: 500; font-size: 15px; margin-bottom: 4px; }
-  .dz-tip div { display: flex; justify-content: space-between; gap: 10px; color: var(--dz-muted); }
-  .dz-tl { margin-top: 12px; padding: 12px; border-radius: 14px; background: rgba(10,17,24,0.4); }
+  .dz-tip div { display: flex; justify-content: space-between; gap: 10px; color: rgba(244,241,232,0.82); }
+  .dz-tl { margin-top: 12px; padding: 12px; border-radius: 13px; background: rgba(8,22,14,0.35); }
   .dz-tl > b { font-weight: 500; font-size: 14.5px; }
   .dz-track { position: relative; height: 26px; margin-top: 8px; margin-left: 46px; }
-  .dz-track::before { content: ""; position: absolute; left: 0; right: 0; top: 50%; height: 2px; background: rgba(244,241,232,0.12); }
+  .dz-track::before { content: ""; position: absolute; left: 0; right: 0; top: 50%; height: 2px; background: rgba(244,241,232,0.16); }
   .dz-track .dz-who2 { position: absolute; left: -46px; top: 4px; font-weight: 400; font-size: 13px; }
-  .dz-track.dz-y .dz-who2 { color: var(--dz-gold-hi); } .dz-track.dz-o .dz-who2 { color: var(--dz-opp); }
-  .dz-track .dz-pt { position: absolute; top: 50%; width: 12px; height: 12px; margin: -6px 0 0 -6px; border-radius: 50%; background: var(--c); box-shadow: 0 0 0 2px #0E1720; animation: dz-pop 0.35s ease-out both; animation-delay: var(--t); }
-  .dz-track.dz-y { --c: var(--dz-gold); } .dz-track.dz-o { --c: var(--dz-opp); }
-  .dz-axis { display: flex; justify-content: space-between; margin-left: 46px; font-weight: 300; font-size: 12px; color: var(--dz-dim); margin-top: 2px; }
-  .dz-fastest { margin-top: 6px; font-weight: 300; font-size: 13.5px; color: var(--dz-muted); }
-  details.dz-bank { margin-top: 10px; border-radius: 14px; background: rgba(10,17,24,0.4); }
-  details.dz-bank summary { list-style: none; cursor: pointer; display: flex; align-items: center; gap: 10px; padding: 12px; font-weight: 500; font-size: 15px; color: var(--dz-gold-hi); }
+  .dz-track.dz-y .dz-who2 { color: var(--gold-hi); } .dz-track.dz-o .dz-who2 { color: #8CC8FF; }
+  .dz-track .dz-pt { position: absolute; top: 50%; width: 12px; height: 12px; margin: -6px 0 0 -6px; border-radius: 50%; background: var(--c); box-shadow: 0 0 0 2px #10261A; animation: dzPop 0.35s ease-out both; animation-delay: var(--t); }
+  .dz-track.dz-y { --c: var(--gold); } .dz-track.dz-o { --c: #8CC8FF; }
+  .dz-axis { display: flex; justify-content: space-between; margin-left: 46px; font-weight: 300; font-size: 12px; color: rgba(244,241,232,0.6); margin-top: 2px; }
+  .dz-fastest { margin-top: 6px; font-weight: 300; font-size: 13.5px; color: rgba(244,241,232,0.8); }
+  details.dz-bank { margin-top: 10px; border-radius: 13px; background: rgba(8,22,14,0.35); }
+  details.dz-bank summary { list-style: none; cursor: pointer; display: flex; align-items: center; gap: 10px; padding: 12px; font-weight: 500; font-size: 15px; color: var(--gold-hi); }
   details.dz-bank summary::-webkit-details-marker { display: none; }
-  details.dz-bank summary .dz-tile { width: 26px; height: 26px; border-radius: 8px; display: grid; place-items: center; background: linear-gradient(135deg, var(--dz-gold), #f4d58d); }
-  details.dz-bank summary em { margin-left: auto; font-style: normal; font-weight: 300; font-size: 13px; color: var(--dz-dim); }
+  details.dz-bank summary .dz-tile { width: 26px; height: 26px; border-radius: 8px; display: grid; place-items: center; background: linear-gradient(135deg, var(--gold), #f4d58d); }
+  details.dz-bank summary em { margin-left: auto; font-style: normal; font-weight: 300; font-size: 13px; color: rgba(244,241,232,0.6); }
   .dz-acts { display: grid; grid-template-columns: 1fr auto; gap: 8px; margin-top: 12px; }
-  .dz-delbtn { height: 54px; padding: 0 16px; border-radius: 16px; box-shadow: inset 0 0 0 1px rgba(255,138,115,0.45); color: #FFB3A3; font-weight: 500; font-size: 15px; display: flex; align-items: center; gap: 6px; }
+  .dz-acts .du-cta { height: 50px; font-size: 18px; }
+  .dz-delbtn { height: 50px; padding: 0 16px; border-radius: 14px; box-shadow: inset 0 0 0 1.3px rgba(255,179,163,0.5); color: #FFB3A3; font-weight: 500; font-size: 15px; display: flex; align-items: center; gap: 6px; }
   .dz-delbtn svg { width: 18px; height: 18px; }
 
-  /* Overlays */
-  .dz-shade { position: fixed; inset: 0; z-index: 90; background: rgba(5,10,8,0.62); opacity: 0; pointer-events: none; transition: opacity 0.3s; }
+  /* Freunde, Trophaeen, Code */
+  .dz-frow { display: grid; grid-template-columns: 34px minmax(0,1fr) auto; gap: 10px; align-items: center; min-height: 48px; padding: 7px 12px 7px 8px; margin-bottom: 6px; border-radius: 12px; background: rgba(8,22,14,0.26); }
+  .dz-frow .du-mag { width: 34px; height: 34px; font-size: 15px; }
+  .dz-frow b { display: block; font-weight: 500; font-size: 15.5px; line-height: 1.15; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .dz-frow small { display: block; font-weight: 300; font-size: 12px; color: rgba(244,241,232,0.7); }
+  .dz-frow .bl { font-family: 'Anton', Impact, sans-serif; font-weight: 400; font-size: 19px; }
+  .dz-troph { display: grid; grid-template-columns: repeat(4, 1fr); gap: 6px; margin-top: 4px; }
+  .dz-tr { display: grid; justify-items: center; gap: 4px; padding: 8px 4px; border-radius: 12px; background: rgba(8,22,14,0.26); text-align: center; }
+  .dz-tr svg { width: 34px; height: 34px; }
+  .dz-tr span { font-weight: 400; font-size: 12px; color: rgba(244,241,232,0.82); }
+  .dz-tr.off svg { opacity: 0.35; } .dz-tr.off span { color: rgba(244,241,232,0.5); }
+  .dz-codelink { display: block; margin: 16px auto 0; font-weight: 400; font-size: 14px; color: rgba(244,241,232,0.8); text-decoration: underline; text-underline-offset: 3px; padding: 6px 10px; }
+  .dz-paste { margin: 10px 2px 0; display: grid; gap: 8px; }
+  .dz-paste input { width: 100%; height: 46px; padding: 0 12px; border: none; border-radius: 12px; font-family: 'Oswald', sans-serif; font-weight: 400; font-size: 16px; color: var(--chalk); background: rgba(8,22,14,0.45); box-shadow: inset 0 0 0 1.2px rgba(244,241,232,0.25); }
+  .dz-paste input::placeholder { color: rgba(244,241,232,0.5); }
+  .dz-paste .msg { font-weight: 400; font-size: 13px; color: #FFB3A3; min-height: 0; }
+  .dz-paste .row2 { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+  .dz-paste .row2 button { height: 44px; border-radius: 12px; font-weight: 500; font-size: 14.5px; display: flex; align-items: center; justify-content: center; gap: 6px; box-shadow: inset 0 0 0 1.3px rgba(244,241,232,0.3); background: rgba(10,22,16,0.3); }
+  .dz-paste .row2 button svg { width: 17px; height: 17px; }
+  .dz-paste .row2 #duelPasteGo { color: #13202A; background: linear-gradient(160deg, var(--gold-hi), var(--gold)); box-shadow: 0 3px 0 #9C7422; }
+
+  /* Blaetter (Schnell-Duell, Info): Holzrahmen mit Filz */
+  .dz-shade { position: fixed; inset: 0; z-index: 90; background: rgba(5,12,8,0.62); opacity: 0; pointer-events: none; transition: opacity 0.3s; }
   .dz-shade.dz-on { opacity: 1; pointer-events: auto; }
-  .dz-sheet { position: absolute; left: 0; right: 0; bottom: 0; z-index: 21; max-height: 92%; overflow-y: auto; border-radius: 26px 26px 0 0; padding: 10px 18px max(22px, calc(env(safe-area-inset-bottom, 0px) + 12px)); transform: translateY(105%); transition: transform 0.45s cubic-bezier(.2,.9,.25,1);
-    background: radial-gradient(90% 30% at 50% 0%, rgba(232,178,61,0.18), transparent 70%), var(--dz-ink); box-shadow: 0 -12px 40px rgba(0,0,0,0.5), inset 0 1px 0 rgba(244,241,232,0.1); }
-  .dz-sheet.dz-on { transform: none; }
+  .dz-sheet { position: fixed; left: 50%; width: min(100%, 560px); bottom: 0; z-index: 91; max-height: calc(100% - env(safe-area-inset-top, 0px) - 24px); overflow-y: auto; overscroll-behavior: contain; scrollbar-width: none; border-radius: 22px 22px 0 0; padding: 7px 7px 0;
+    background: linear-gradient(180deg, #8A6038, #4A3119); box-shadow: 0 -10px 40px rgba(0,0,0,0.5); transform: translate(-50%, 105%); transition: transform 0.42s cubic-bezier(.25,1.12,.35,1); }
+  .dz-sheet::-webkit-scrollbar { display: none; }
+  .dz-sheet.dz-on { transform: translate(-50%, 0); }
+  .dz-sheet .in { border-radius: 16px 16px 0 0; padding: 14px 16px max(22px, calc(env(safe-area-inset-bottom, 0px) + 12px)); background: var(--felt); box-shadow: inset 0 2px 8px rgba(0,0,0,0.45); }
   /* Blaetter (Prompt 43): Schliessen-Knopf, Abdunkel-Streifen oben bleibt antippbar, kein Mit-Scrollen */
   .sheet-x { position: absolute; top: 6px; right: 8px; z-index: 5; width: 44px; height: 44px; padding: 0; border: none; background: none; display: grid; place-items: center; color: var(--chalk, #F2EFE6); cursor: pointer; -webkit-tap-highlight-color: transparent; }
   .sheet-x::before { content: ""; position: absolute; inset: 5px; border-radius: 50%; background: rgba(10,17,24,0.45); box-shadow: inset 0 0 0 1px rgba(244,241,232,0.28); }
@@ -2203,73 +2213,46 @@
   .modal-sheet, .sp-sheet { position: relative; overscroll-behavior: contain; }
   .modal-sheet { max-height: calc(100dvh - env(safe-area-inset-top, 0px) - 24px); }
   .sp-sheet { max-height: calc(100dvh - env(safe-area-inset-top, 0px) - 24px); }
-  .dz-sheet { max-height: calc(100% - env(safe-area-inset-top, 0px) - 24px); overscroll-behavior: contain; }
-  .dz-sheet .sheet-x { top: 4px; }
+  .dz-sheet .sheet-x { top: 12px; right: 12px; }
   .sheet-drag { touch-action: none; }
-  .dz-grab { width: 42px; height: 4px; border-radius: 2px; background: rgba(244,241,232,0.28); margin: 0 auto 14px; }
-  .dz-sheet h3 { margin: 0; font-family: var(--dz-f-display); font-weight: 400; font-size: 32px; }
-  .dz-sheet .dz-lead2 { margin: 4px 0 6px; font-weight: 300; font-size: 15px; color: var(--dz-muted); line-height: 1.45; }
-  .dz-fld { margin-top: 16px; }
-  .dz-fld > small { display: block; font-weight: 500; font-size: 14.5px; color: var(--dz-muted); margin-bottom: 8px; }
-  .dz-friends { display: flex; gap: 8px; flex-wrap: wrap; }
-  .dz-friend { height: 44px; padding: 0 14px; border-radius: 22px; display: inline-flex; align-items: center; gap: 8px; box-shadow: inset 0 0 0 1px var(--dz-line); font-weight: 500; font-size: 15px; }
-  .dz-friend i { width: 10px; height: 10px; border-radius: 50%; background: var(--fc); }
-  .dz-friend small { font-weight: 300; font-size: 12.5px; color: var(--dz-dim); }
-  .dz-friend[aria-pressed="true"] { background: rgba(46,125,82,0.4); box-shadow: inset 0 0 0 1.5px rgba(127,224,168,0.7); }
-  .dz-friend.dz-add { color: var(--dz-gold-hi); box-shadow: inset 0 0 0 1.5px rgba(232,178,61,0.5); }
-  .dz-seg { display: grid; grid-auto-flow: column; grid-auto-columns: 1fr; gap: 4px; padding: 4px; border-radius: 15px; background: var(--dz-ink-2); box-shadow: inset 0 0 0 1px var(--dz-line); }
-  .dz-seg button { height: 48px; border-radius: 11px; font-weight: 500; font-size: 15.5px; color: var(--dz-muted); display: grid; place-content: center; text-align: center; line-height: 1.05; transition: background 0.2s, color 0.2s; }
-  .dz-seg button small { font-weight: 300; font-size: 12px; color: var(--dz-dim); }
-  .dz-seg button[aria-pressed="true"] { background: linear-gradient(160deg, #3DA86C, #26794C); color: #fff; }
-  .dz-seg button[aria-pressed="true"] small { color: rgba(255,255,255,0.75); }
-  .dz-seg.dz-time button { font-family: var(--dz-f-display); font-weight: 400; font-size: 21px; }
-  .dz-sumline { margin-top: 12px; text-align: center; font-weight: 300; font-size: 14.5px; color: var(--dz-muted); }
-  .dz-sumline b { font-weight: 500; color: var(--dz-chalk); }
+  .dz-grab { width: 40px; height: 5px; border-radius: 3px; background: rgba(244,241,232,0.35); margin: -4px auto 10px; }
+  .dz-sheet h3 { margin: 0; padding-right: 44px; font-family: 'Anton', Impact, sans-serif; font-weight: 400; font-size: 27px; line-height: 1.02; text-transform: none; letter-spacing: 0; }
+  .dz-sheet .dz-lead2 { margin: 4px 0 6px; font-weight: 300; font-size: 14px; color: rgba(244,241,232,0.82); line-height: 1.35; }
+  .dz-fld { margin-top: 13px; }
+  .dz-fld > small { display: block; font-weight: 500; font-size: 14.5px; color: rgba(244,241,232,0.9); margin: 0 2px 7px; }
+  .dz-friends { display: flex; gap: 6px; flex-wrap: wrap; }
+  .dz-friend { height: 38px; padding: 0 12px 0 5px; border-radius: 19px; display: inline-flex; align-items: center; gap: 7px; font-weight: 500; font-size: 14.5px; background: rgba(8,22,14,0.3); box-shadow: inset 0 0 0 1.2px rgba(244,241,232,0.22); }
+  .dz-friend .du-mag { width: 28px; height: 28px; font-size: 13px; }
+  .dz-friend small { font-weight: 300; font-size: 12px; opacity: 0.7; }
+  .dz-friend[aria-pressed="true"] { color: #13202A; background: linear-gradient(180deg, #FBF3DF, #E9DCBC); box-shadow: 0 0 0 2px var(--gold-hi); }
+  .dz-friend.dz-add { padding: 0 13px; color: var(--gold-hi); box-shadow: inset 0 0 0 1.4px rgba(247,217,142,0.6); }
+  .dz-friend.dz-add[aria-pressed="true"] { color: #13202A; box-shadow: 0 0 0 2px var(--gold-hi); }
+  .dz-seg { display: flex; padding: 4px; gap: 4px; border-radius: 13px; background: linear-gradient(180deg, #5A3D22, #4A3119); box-shadow: inset 0 2px 4px rgba(0,0,0,0.4), 0 1px 0 rgba(255,236,200,0.15); }
+  .dz-seg button { flex: 1; height: 42px; border-radius: 10px; display: grid; place-items: center; align-content: center; font-weight: 500; font-size: 15px; line-height: 1.05; color: rgba(255,241,200,0.85); text-align: center; }
+  .dz-seg button small { display: block; font-weight: 300; font-size: 11px; margin-top: -2px; opacity: 0.8; }
+  .dz-seg.dz-time button { font-family: 'Anton', Impact, sans-serif; font-weight: 400; font-size: 19px; }
+  .dz-seg button[aria-pressed="true"] { color: #13202A; background: linear-gradient(180deg, #FBF3DF, #E9DCBC); box-shadow: 0 2px 0 rgba(0,0,0,0.35); }
+  .dz-seg button i { display: block; width: 10px; height: 10px; border-radius: 50%; margin: 0 auto 2px; }
+  .dz-sumline { margin-top: 12px; text-align: center; font-weight: 300; font-size: 14.5px; color: rgba(244,241,232,0.82); }
+  .dz-sumline b { font-weight: 500; color: var(--chalk); }
 
-  .dz-toast { position: absolute; left: 14px; right: 14px; bottom: 22px; z-index: 40; display: flex; align-items: center; gap: 12px; padding: 12px 12px 12px 16px; border-radius: 15px; background: #2A3B47; box-shadow: 0 14px 34px rgba(0,0,0,0.5), inset 0 0 0 1px var(--dz-line); transform: translateY(150%); transition: transform 0.35s cubic-bezier(.2,.9,.25,1); overflow: hidden; }
-  .dz-toast.dz-on { transform: none; }
-  .dz-toast span { flex: 1; font-weight: 400; font-size: 15px; }
-  .dz-toast button { font-weight: 600; font-size: 14.5px; color: var(--dz-gold-hi); padding: 7px 11px; border-radius: 10px; background: rgba(232,178,61,0.14); }
-  .dz-toast i { position: absolute; left: 0; bottom: 0; height: 3px; width: 100%; background: var(--dz-gold); transform-origin: 0 50%; }
-  .dz-toast.dz-on i { animation: dz-drain 5s linear forwards; }
-  @keyframes dz-drain { to { transform: scaleX(0); } }
-
-  /* Wischen/Menue/Rueckgaengig/Sheets im App-Kontext (fixiert, max. 560 px wie .stage) */
-  .dz-sheet { position: fixed; left: 50%; right: auto; width: min(100%, 560px); bottom: 0; z-index: 91; transform: translate(-50%, 105%); }
-  .dz-sheet.dz-on { transform: translate(-50%, 0); }
-  .dz-toast { position: fixed; left: 50%; right: auto; width: min(calc(100% - 28px), 532px); bottom: max(22px, calc(env(safe-area-inset-bottom) + 12px)); z-index: 95; transform: translate(-50%, 160%); transition: transform 0.35s cubic-bezier(.2,.9,.25,1); }
+  .dz-toast { position: fixed; left: 50%; width: min(calc(100% - 28px), 532px); bottom: max(22px, calc(env(safe-area-inset-bottom) + 12px)); z-index: 95; overflow: hidden; display: flex; align-items: center; gap: 12px; padding: 12px 12px 12px 16px; border-radius: 14px; color: var(--cream); background: var(--wood); box-shadow: var(--wood-edge), 0 14px 34px rgba(0,0,0,0.5); transform: translate(-50%, 160%); transition: transform 0.35s cubic-bezier(.2,.9,.25,1); }
   .dz-toast.dz-on { transform: translate(-50%, 0); }
-  .dz-menu { position: fixed; z-index: 96; }
-  .dz-fairrow { display: flex; align-items: center; gap: 12px; width: 100%; margin-top: 16px; padding: 12px 14px; border-radius: 16px; box-shadow: inset 0 0 0 1px var(--dz-line); text-align: left; }
-  .dz-fairrow .dz-sw { flex-shrink: 0; width: 42px; height: 24px; border-radius: 12px; background: rgba(244,241,232,0.18); position: relative; transition: background 0.2s; }
-  .dz-fairrow .dz-sw::after { content: ""; position: absolute; left: 3px; top: 3px; width: 18px; height: 18px; border-radius: 50%; background: var(--dz-chalk); transition: transform 0.2s; }
-  .dz-fairrow[aria-pressed="true"] { box-shadow: inset 0 0 0 1.5px rgba(127,224,168,0.6); background: rgba(46,125,82,0.25); }
-  .dz-fairrow[aria-pressed="true"] .dz-sw { background: #3DA86C; }
-  .dz-fairrow[aria-pressed="true"] .dz-sw::after { transform: translateX(18px); }
-  .dz-fairrow b { display: block; font-weight: 500; font-size: 15px; }
-  .dz-fairrow span span { display: block; font-weight: 300; font-size: 13px; color: var(--dz-muted); }
-  .dz-cta { display: block; width: 100%; height: 54px; border-radius: 16px; background: linear-gradient(160deg, var(--dz-gold-hi), var(--dz-gold)); color: var(--dz-ink); font-family: var(--dz-f-display); font-weight: 400; font-size: 20px; text-align: center; box-shadow: 0 4px 0 #9C7422; }
-  .dz-cta:disabled, .dz-cta.dz-off { opacity: 0.45; box-shadow: none; }
-  .dz-cta:active:not(:disabled) { transform: translateY(2px); box-shadow: 0 2px 0 #9C7422; }
-  .dz-flip.dz-xl b, .dz-flip.dz-l b { font-variant-numeric: tabular-nums; }
-  .dz-strip { display: flex; align-items: center; justify-content: space-between; width: 100%; margin-top: 14px; padding: 12px 14px; border-radius: 16px; background: linear-gradient(110deg, rgba(31,77,54,0.7), rgba(27,42,54,0.95)); box-shadow: inset 0 0 0 1px rgba(127,224,168,0.3); text-align: left; }
-  .dz-strip b { font-family: var(--dz-f-display); font-weight: 400; font-size: 19px; }
-  .dz-strip span { font-weight: 400; font-size: 13.5px; color: var(--dz-muted); }
-  .dz-strip .dz-tag2 { font-weight: 500; font-size: 12px; padding: 3px 9px; border-radius: 10px; background: rgba(10,17,24,0.45); color: var(--dz-mint); }
-  .dz-more2 .dl { margin-top: 4px; }
-  .dz-root .dz-old-note { font-weight: 300; font-size: 13.5px; color: var(--dz-dim); }
+  .dz-toast span { flex: 1; font-weight: 400; font-size: 15px; }
+  .dz-toast button { font-weight: 600; font-size: 14.5px; color: #13202A; padding: 7px 12px; border-radius: 10px; background: linear-gradient(160deg, var(--gold-hi), var(--gold)); }
+  .dz-toast i { position: absolute; left: 0; bottom: 0; height: 3px; width: 100%; background: var(--gold-hi); transform-origin: 0 50%; }
+  .dz-toast.dz-on i { animation: dzDrain 5s linear forwards; }
 
   .dz-still *, .dz-still *::before, .dz-still *::after { animation: none !important; }
-  @media (prefers-reduced-motion: reduce) { .dz-root *, .dz-root *::before, .dz-root *::after, .dz-ov, .dz-ov * { animation-duration: 0.01ms !important; animation-delay: 0ms !important; transition-duration: 0.01ms !important; } }
+  @media (prefers-reduced-motion: reduce) { .dz-ov, .dz-ov * { animation-duration: 0.01ms !important; animation-delay: 0ms !important; transition-duration: 0.01ms !important; } }
   @media (max-height: 720px) {
     .dz-sheet .dz-lead2 { display: none; }
-    .dz-sheet .dz-fld { margin-top: 11px; }
-    .dz-sheet .dz-fld > small { margin-bottom: 6px; }
-    .dz-sheet .dz-seg button { height: 44px; }
-    .dz-sheet .dz-friend { height: 40px; }
-    .dz-sheet h3 { font-size: 28px; }
-    .dz-sheet .dz-fairrow { margin-top: 11px; padding: 9px 12px; }
-    .dz-sheet .dz-cta { height: 50px; }
+    .dz-sheet .dz-fld { margin-top: 10px; }
+    .dz-sheet .dz-fld > small { margin-bottom: 5px; }
+    .dz-sheet .dz-seg button { height: 40px; }
+    .dz-sheet h3 { font-size: 24px; }
+    .dz-sheet .du-fair { margin-top: 10px; padding: 8px 12px; }
+    .dz-sheet .du-cta { height: 50px; }
   }
 </style>
 </head>
@@ -2318,7 +2301,7 @@
   </section>
 
   <!-- DUELL (Prompt 25) -->
-  <section class="screen scroll-y" id="screen-duels" aria-label="Deine Duelle" hidden><div class="dz-root" id="duelsView"></div></section>
+  <section class="screen du-screen" id="screen-duels" aria-label="Deine Duelle" hidden><div class="du-view dz-root" id="duelsView"></div></section>
   <section class="screen du-screen" id="screen-duelinvite" aria-label="Einladung" hidden><div id="duelInviteView" class="du-view"></div></section>
   <section class="screen" id="screen-duelplay" aria-label="Duell" hidden><div id="duelPlayView"></div></section>
   <section class="screen du-screen" id="screen-duelresult" aria-label="Abpfiff" hidden><div id="duelResultView" class="du-view"></div></section>
@@ -12067,8 +12050,6 @@ const DZ_ICON = {
   bell: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 16V11a6 6 0 0 1 12 0v5l2 2H4z"/><path d="M10 21h4"/></svg>',
   pen: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 20l4-1 11-11-3-3L5 16z"/><path d="M14 6l3 3"/></svg>',
   bench: '<svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="#13202A" stroke-width="2.4" stroke-linecap="round" aria-hidden="true"><path d="M4 7h16M4 11h16M3 15h18M6 15v5M18 15v5M6 7v8M18 7v8"/></svg>',
-  quickArt: '<svg viewBox="0 0 64 64"><circle cx="32" cy="32" r="24" fill="none" stroke="#13202A" stroke-width="3.5" class="dz-draw"/><path d="M32 18v14l9 6" fill="none" stroke="#13202A" stroke-width="3.5" stroke-linecap="round" class="dz-draw"/><path d="M28 6h8" stroke="#13202A" stroke-width="3.5" stroke-linecap="round"/></svg>',
-  ligaArt: '<svg viewBox="0 0 64 64"><path d="M8 22h40l-8-8" fill="none" stroke="#F4F1E8" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round" class="dz-draw"/><path d="M56 42H16l8 8" fill="none" stroke="#F4F1E8" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round" class="dz-draw"/><circle cx="14" cy="32" r="5" fill="#F7D98E" class="dz-ball"/></svg>'
 };
 let dzFilter = "all", dzHistAll = false, dzOpenHist = null, dzDetRound = 0, dzTipKey = null;
 const dzFlip = (str, size, anim) => `<span class="dz-flip dz-${size}">${[...String(str)].map((c, i) => /[0-9]/.test(c) ? `<b class="${anim ? "dz-fl" : ""}" style="animation-delay:${i * 80 + 100}ms">${c}</b>` : `<i>${c}</i>`).join("")}</span>`;
@@ -12081,18 +12062,20 @@ function dzSince(ts) {
 // Wer steht gegenueber? Gegner (Name/@handle/Farbe) oder, solange unbekannt, der eigene Name fuer das Duell
 function dzPerson(d) {
   const o = d.opponent;
-  return { name: o ? o.name : (d.label || "Offenes Duell"), handle: o && o.handle ? "@" + o.handle : "", color: o ? duelColor(o.deviceId) : "var(--dz-dim)", known: !!o };
+  return { name: o ? o.name : (d.label || "Offenes Duell"), handle: o && o.handle ? "@" + o.handle : "", color: o ? duelColor(o.deviceId) : "rgba(244,241,232,0.55)", known: !!o };
 }
 function dzKind(d) { return duelExpired(d) ? "exp" : d.status === "todo" ? "hot" : "wait"; }
 function dzTicket(id, d) {
   const kind = dzKind(d), p = dzPerson(d);
   const meta = kind === "hot" ? (d.role === "opponent" ? "fordert dich heraus · " : "noch nicht gespielt · ") + dzMeta(d)
     : kind === "exp" ? dzMeta(d) + " · keine Reaktion seit " + dzDays(duelActivity(d)) + " Tagen"
-    : dzMeta(d) + " · du hast gespielt";
-  const right = kind === "hot" ? `<span class="dz-go">Spielen</span>` : `<span class="dz-wt">${kind === "exp" ? "abgelaufen" : dzSince(duelActivity(d))}</span>`;
+    : dzMeta(d) + " · du hast gespielt · " + dzSince(duelActivity(d));
+  const right = kind === "hot" ? `<span class="dz-go">${d.role === "opponent" && !(d.mine && d.mine.length) ? "Ansehen" : "Spielen"}</span>`
+    : kind === "exp" ? `<span class="dz-wt">abgelaufen</span>` : `<span class="dz-waittag">${DU_SV.glass}Wartet</span>`;
+  const mag = duelMagHTML({ name: p.known ? p.name : "?", deviceId: d.opponent ? d.opponent.deviceId : "" }, 38);
   return `<div class="dz-tk-wrap" data-id="${id}"><div class="dz-tk-del"><button type="button" data-del="${id}">${DZ_ICON.trash}Löschen</button></div>
-    <div class="dz-tk dz-${kind}" data-tk="${id}" style="--c:${p.color}"><span class="dz-stripe"></span>
-      <span class="dz-t2"><span class="dz-opp">${duelEsc(p.name)}${p.handle ? `<small>${duelEsc(p.handle)}</small>` : ""}</span><span class="dz-meta">${duelEsc(meta)}</span></span>
+    <div class="dz-tk dz-${kind}" data-tk="${id}">${mag}
+      <span class="dz-t2"><b>${duelEsc(p.name)}${p.handle ? `<small>${duelEsc(p.handle)}</small>` : ""}</b><small>${duelEsc(meta)}</small></span>
       <span class="dz-side">${right}<button class="dz-dots" type="button" data-menu="${id}" aria-label="Optionen">${DZ_ICON.dots}</button></span>
     </div></div>`;
 }
@@ -12107,8 +12090,8 @@ function dzHistRow(id, d) {
   const chips = d.mine.slice(0, 3).map((r, i) => { const tag = duelRoundTag(d.lineups[i]); return tag ? `<span>${tag} · ${r.correct}:${d.theirs && d.theirs[i] ? d.theirs[i].correct : "?"}</span>` : ""; }).join("") + (d.mine.length > 3 ? `<span>+${d.mine.length - 3}</span>` : "");
   const when = duelWhen(d.finished || d.created, false);
   return `<div class="dz-hc dz-${k} ${dzOpenHist === id ? "dz-open" : ""}" data-hc="${id}">
-    <button class="dz-hc-row" type="button" data-h="${id}" aria-expanded="${dzOpenHist === id}"><span class="dz-stripe" style="background:${p.color}"></span>
-      <span class="dz-mid"><span class="dz-opp">gegen ${duelEsc(p.name)}${p.handle ? ` <small>${duelEsc(p.handle)}</small>` : ""}</span><span class="dz-meta">${duelEsc(dzMeta(d))} · ${when}</span><span class="dz-rchips">${chips}</span></span>
+    <button class="dz-hc-row" type="button" data-h="${id}" aria-expanded="${dzOpenHist === id}">
+      <span class="dz-mid"><span class="dz-opp">gegen ${duelEsc(p.name)}${p.handle ? `<small>${duelEsc(p.handle)}</small>` : ""}</span><span class="dz-meta">${duelEsc(dzMeta(d))} · ${when}</span><span class="dz-rchips">${chips}</span></span>
       <span class="dz-res"><b>${res.mw}:${res.ow}</b><span>${DZ_LBL[k]}</span></span></button>
     <div class="dz-hc-body"><div>${dzOpenHist === id ? dzDetailHTML(id, d) : ""}</div></div></div>`;
 }
@@ -12121,61 +12104,53 @@ function dzPageHTML() {
   const cnt = (k) => shown.filter(([, d]) => dzOutcomeKey(d) === k).length;
   const visible = dzHistAll ? shown : shown.slice(0, 10);
   const friends = Object.entries(st.perOpponent).filter(([, f]) => f.w + f.l + f.d > 0).sort((a, b) => (b[1].w + b[1].l + b[1].d) - (a[1].w + a[1].l + a[1].d));
-  const won = duelTrophyStates();
-  const formI = (st.form || []).map((x, i) => `<i class="dz-${x}" style="--d:${i}">${x === "w" ? "S" : x === "l" ? "N" : "U"}</i>`).join("");
-  return `<div class="dz-page">
-    <div class="dz-hero" id="dz-sec-top"><span class="dz-sweep"></span>
-      <div class="dz-top dz-rise" style="--d:0"><button class="dz-chipbtn" type="button" id="dzBack">← Start</button><button class="dz-chipbtn dz-gold" type="button" data-new>+ Neues Duell</button></div>
-      <div class="dz-who"><div class="dz-k dz-rise" style="--d:1">Duell</div><h1 class="dz-rise" style="--d:2">${profile.duelName ? duelEsc(profile.duelName) : "Dein Name"}</h1>
-        <div class="dz-h dz-rise" style="--d:3">${profile.duelName ? `<b>${me.handle ? "@" + duelEsc(me.handle) : ""}</b>${me.handle ? " · " : ""}${duelEsc(me.rank)} · Level ${me.level}` : `<button type="button" class="dz-chipbtn" id="dzNameBtn">Name und Benutzername festlegen</button>`}</div></div>
-      <div class="dz-rec"><div class="dz-w dz-rise" style="--d:4"><b data-count="${st.wins}">${st.wins}</b><span>Siege</span></div><div class="dz-d dz-rise" style="--d:5"><b data-count="${st.draws}">${st.draws}</b><span>Remis</span></div><div class="dz-l dz-rise" style="--d:6"><b data-count="${st.losses}">${st.losses}</b><span>Niederlagen</span></div></div>
-      ${formI ? `<div class="dz-form dz-rise" style="--d:7">Form${formI}</div>` : ""}
-    </div>
-    <nav class="dz-snav" id="dzSnav"><button type="button" data-s="open" class="dz-on">Am Zug${hot.length ? `<span class="dz-n">${hot.length}</span>` : ""}</button><button type="button" data-s="hist">Historie</button><button type="button" data-s="more">Freunde</button></nav>
-    <section class="dz-sect" style="padding-top:16px">
+  const won = duelTrophyStates(), TSV = { duel_first: DU_SV.t1, duel_ten: DU_SV.t2, duel_streak5: DU_SV.t3, duel_sweep: DU_SV.t4 };
+  const formI = (st.form || []).map((x) => `<i class="${x}">${x === "w" ? "S" : x === "l" ? "N" : "U"}</i>`).join("");
+  const formLbl = (st.form || []).map((x) => x === "w" ? "Sieg" : x === "l" ? "Niederlage" : "Remis").join(", ");
+  const chev = '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M15 5l-7 7 7 7" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/></svg>';
+  const rise = (i) => `class="du-rise" style="animation-delay:${(i * 0.05).toFixed(2)}s"`;
+  return `<div class="lv-top"><button type="button" class="tb back" id="dzBack">${chev}Start</button><span class="lv-sp"></span><button type="button" class="tb gold" data-new>${DU_SV.plus}Neues Duell</button></div>
+    <div class="du-body" id="dzBodyEl">
+      <div class="dz-pass du-rise"><div class="row">${duelMagHTML(me, 56)}<div class="who"><small>Duell-Pass</small>${profile.duelName
+          ? `<b>${duelEsc(profile.duelName)}</b><span>${me.handle ? "@" + duelEsc(me.handle) + " · " : ""}${duelEsc(me.rank)} · Level ${me.level}</span>`
+          : `<b>Dein Name</b><span><button type="button" class="dz-link" id="dzNameBtn">Name und Benutzername festlegen</button></span>`}</div></div>
+        <div class="dz-stamps"><span class="dz-stp w"><b data-count="${st.wins}">${st.wins}</b>Siege</span><span class="dz-stp"><b data-count="${st.draws}">${st.draws}</b>Remis</span><span class="dz-stp"><b data-count="${st.losses}">${st.losses}</b>Niederlagen</span>${formI ? `<span class="dz-pform" role="img" aria-label="Form: ${formLbl}">${formI}</span>` : ""}</div></div>
+      <nav class="dz-snav du-rise" style="animation-delay:.05s" id="dzSnav"><button type="button" data-s="open" class="dz-on">Am Zug${hot.length ? `<span class="dz-n">${hot.length}</span>` : ""}</button><button type="button" data-s="hist">Historie</button><button type="button" data-s="more">Freunde</button></nav>
       <div class="dz-modes">
-        <button class="dz-mode dz-quick dz-rise" style="--d:3" type="button" data-new><span class="dz-art">${DZ_ICON.quickArt}</span><b>Schnell-Duell</b><span>Gleiche Aufstellungen, gleiche Uhr. Einzel, Bo3 oder Bo5.</span></button>
-        <button class="dz-mode dz-liga dz-rise" style="--d:4" type="button" data-info="liga"><span class="dz-art">${DZ_ICON.ligaArt}</span><span class="dz-tag">bald</span><b>Liga-Duell</b><span>6 Runden im Wechsel, wer dran ist, wählt die Kategorie.</span></button>
+        <button class="dz-mode dz-quick du-rise" style="animation-delay:.1s" type="button" data-new>${DU_SV.clock}<b>Schnell-Duell</b><span class="dz-mt2">Gleiche Aufstellungen, gleiche Uhr. Einzel, Best of 3 oder 5.</span></button>
+        <button class="dz-mode dz-liga du-rise" style="animation-delay:.15s" type="button" data-info="liga"><span class="dz-soon">bald</span>${DU_SV.swap}<b>Liga-Duell</b><span class="dz-mt2">6 Runden im Wechsel – wer dran ist, wählt die Kategorie.</span></button>
       </div>
-    </section>
-    <section class="dz-sect" id="dz-sec-open">
-      <div class="dz-sh"><h2>Am <em>Zug</em></h2><span>${all.length} offen</span></div>
-      ${hot.length ? `<div class="dz-grp">Du bist dran<em>${hot.length}</em></div><div class="dz-tickets">${hot.map(([id, d]) => dzTicket(id, d)).join("")}</div>` : ""}
-      ${wait.length ? `<div class="dz-grp">Warten auf Gegner<em>${wait.length}</em></div><div class="dz-tickets">${wait.map(([id, d]) => dzTicket(id, d)).join("")}</div>` : ""}
-      ${exp.length ? `<div class="dz-grp">Abgelaufen<em>14 Tage ohne Reaktion</em></div><div class="dz-tickets">${exp.map(([id, d]) => dzTicket(id, d)).join("")}</div>
-        <button class="dz-sweep-btn" type="button" id="dzSweepBtn">${DZ_ICON.broom}${exp.length} abgelaufene${exp.length === 1 ? "s Duell" : " Duelle"} aufräumen</button>
-        <p class="dz-note">Sonst werden sie nach weiteren 30 Tagen automatisch gelöscht. Deine Bilanz bleibt immer erhalten.</p>` : ""}
-      ${!all.length ? `<p class="dz-note">Keine offenen Duelle. Fordere jemanden heraus: Ihr spielt dieselben Aufstellungen, jeder für sich und mit Zeitlimit – wer mehr Spieler kennt, gewinnt. Der Link geht per WhatsApp, Nachricht oder was du magst.</p>` : ""}
-      <button class="dz-strip" type="button" data-info="ranked"><span><b>Ranked · Divisionen</b><br><span>Aufsteigen bis zur Legenden-Division</span></span><span class="dz-tag2">bald</span></button>
-    </section>
-    <section class="dz-sect" id="dz-sec-hist">
-      <div class="dz-sh"><h2>Spiel<em>historie</em></h2><span>${dzHistAll ? "alle gespeicherten" : "letzte 10"}</span></div>
-      ${shown.length ? `<div class="dz-hsum"><i style="flex:${cnt("w")}"></i><u style="flex:${cnt("d")}"></u><s style="flex:${cnt("l")}"></s></div>
-        <div class="dz-hleg"><span class="dz-w"><b>${cnt("w")}</b>Siege</span><span class="dz-d"><b>${cnt("d")}</b>Remis</span><span class="dz-l"><b>${cnt("l")}</b>Niederlagen</span></div>
-        <div class="dz-filters" id="dzHf">${[["all", "Alle"], ["quick", "Schnell"]].map(([k, n]) => `<button type="button" data-f="${k}" aria-pressed="${dzFilter === k}">${n}</button>`).join("")}</div>
-        <div class="dz-hist">${visible.map(([id, d]) => dzHistRow(id, d)).join("")}</div>
-        ${shown.length > 10 ? `<button class="dz-more" type="button" id="dzMore">${dzHistAll ? "Weniger anzeigen" : `Ältere anzeigen (${shown.length - 10})`}</button>` : ""}
-        <p class="dz-note" style="text-align:center">Gespeichert werden die letzten ${DUEL_HISTORY_KEEP} beendeten Duelle. Deine Bilanz bleibt immer erhalten.</p>`
-        : `<p class="dz-note">Noch keine beendeten Duelle. Sobald ein Duell entschieden ist, steht es hier – mit Details zu jeder Runde.</p>`}
-    </section>
-    <section class="dz-sect dz-more2" id="dz-sec-more">
-      <div class="dz-sh"><h2>Freunde &amp; <em>Trophäen</em></h2></div>
-      <div class="dl">
-        ${friends.length ? `<div class="st"><b>Gegen deine Freunde</b><em>Siege : Niederlagen</em></div><div class="fr">${friends.map(([dev, f]) => {
-          const t = f.w + f.l; const pw = t ? Math.round(f.w / t * 100) : 0;
-          return `<div class="r"><i class="fbar" style="background:${duelColor(dev)}"></i><span class="nm2">${duelEsc(f.name)}${f.handle ? `<small>@${duelEsc(f.handle)}</small>` : ""}<span class="bar"><i style="width:${pw}%"></i><u style="width:${t ? 100 - pw : 0}%"></u></span></span><span class="sc2">${f.w}<em>:</em>${f.l}</span></div>`;
-        }).join("")}</div>` : ""}
-        <div class="st"><b>Duell-Trophäen</b><em>${won.filter(t => t.won).length} von ${won.length}</em></div>
-        <div class="dshelf">${won.map(t => `<div class="${t.won ? "" : "off"}"><i>${t.icon}</i><span>${t.name}</span></div>`).join("")}</div>
-        <button type="button" class="pastebtn" id="duelPasteToggle">Code einfügen</button>
-        <div class="paste" id="duelPaste" hidden>
-          <input type="text" id="duelPasteInput" placeholder="Duell-Link oder Code hier einfügen" autocomplete="off" spellcheck="false" aria-label="Duell-Link oder Code">
-          <div class="msg" id="duelPasteMsg" role="status"></div>
-          <div class="row2"><button type="button" id="duelPasteClip">📋 Aus Zwischenablage</button><button type="button" id="duelPasteGo">Öffnen</button></div>
-        </div>
+      <div class="du-board dz-bd du-rise" style="animation-delay:.2s" id="dz-sec-open"><div class="dz-bh"><h2>Am <em>Zug</em></h2><small>${all.length} offen</small></div>
+        ${hot.length ? `<div class="dz-grp">Du bist dran<em>${hot.length}</em></div><div class="dz-tickets">${hot.map(([id, d]) => dzTicket(id, d)).join("")}</div>` : ""}
+        ${wait.length ? `<div class="dz-grp">Warten auf Antwort<em>${wait.length}</em></div><div class="dz-tickets">${wait.map(([id, d]) => dzTicket(id, d)).join("")}</div>` : ""}
+        ${exp.length ? `<div class="dz-grp">Abgelaufen<em>14 Tage ohne Reaktion</em></div><div class="dz-tickets">${exp.map(([id, d]) => dzTicket(id, d)).join("")}</div>
+          <button class="dz-sweep-btn" type="button" id="dzSweepBtn">${DZ_ICON.broom}${exp.length} abgelaufene${exp.length === 1 ? "s Duell" : " Duelle"} aufräumen</button>
+          <p class="dz-note">Sonst werden sie nach weiteren 30 Tagen automatisch gelöscht. Deine Bilanz bleibt immer erhalten.</p>` : ""}
+        ${!all.length ? `<p class="dz-note" style="margin-top:0">Keine offenen Duelle. Fordere jemanden heraus: Ihr spielt dieselben Aufstellungen, jeder für sich und mit Zeitlimit – wer mehr Spieler kennt, gewinnt. Der Link geht per WhatsApp, Nachricht oder was du magst.</p>` : ""}
       </div>
-    </section>
-  </div>`;
+      <button class="dz-plank du-rise" style="animation-delay:.25s" type="button" data-info="ranked">${DU_SV.ladder}<span><b>Ranked · Divisionen</b><small>Aufsteigen bis zur Legenden-Division</small></span><span class="dz-soon">bald</span></button>
+      <div class="du-board dz-bd du-rise" style="animation-delay:.3s" id="dz-sec-hist"><div class="dz-bh"><h2>Spiel<em>historie</em></h2><small>${dzHistAll ? "alle gespeicherten" : "letzte 10"}</small></div>
+        ${shown.length ? `<div class="dz-hsum"><i style="flex:${cnt("w")}"></i><u style="flex:${cnt("d")}"></u><s style="flex:${cnt("l")}"></s></div>
+          <div class="dz-hleg"><span class="dz-w"><b>${cnt("w")}</b>Siege</span><span><b>${cnt("d")}</b>Remis</span><span><b>${cnt("l")}</b>Niederlagen</span></div>
+          <div class="dz-filters" id="dzHf">${[["all", "Alle"], ["quick", "Schnell"]].map(([k, n]) => `<button type="button" data-f="${k}" aria-pressed="${dzFilter === k}">${n}</button>`).join("")}</div>
+          <div class="dz-hist">${visible.map(([id, d]) => dzHistRow(id, d)).join("")}</div>
+          ${shown.length > 10 ? `<button class="dz-more" type="button" id="dzMore">${dzHistAll ? "Weniger anzeigen" : `Ältere anzeigen (${shown.length - 10})`}</button>` : ""}
+          <p class="dz-note" style="text-align:center">Gespeichert werden die letzten ${DUEL_HISTORY_KEEP} beendeten Duelle. Deine Bilanz bleibt immer erhalten.</p>`
+          : `<p class="dz-note" style="margin-top:0">Noch keine beendeten Duelle. Sobald ein Duell entschieden ist, steht es hier – mit Details zu jeder Runde.</p>`}
+      </div>
+      <div class="du-board dz-bd du-rise" style="animation-delay:.35s" id="dz-sec-more"><div class="dz-bh"><h2>Freunde &amp; <em>Trophäen</em></h2><small>Siege : Niederlagen</small></div>
+        ${friends.map(([dev, f]) => { const n = f.w + f.l + f.d; return `<div class="dz-frow">${duelMagHTML({ name: f.name, deviceId: dev }, 34)}<span><b>${duelEsc(f.name)}</b><small>${f.handle ? "@" + duelEsc(f.handle) + " · " : ""}${n} ${n === 1 ? "Duell" : "Duelle"}</small></span><span class="bl">${f.w}:${f.l}</span></div>`; }).join("")}
+        ${friends.length ? "" : `<p class="dz-note" style="margin-top:0">Hier erscheinen deine Gegner mit der Bilanz gegeneinander.</p>`}
+        <div class="dz-grp" style="margin-top:12px">Duell-Trophäen <em>${won.filter(t => t.won).length} von ${won.length}</em></div>
+        <div class="dz-troph">${won.map(t => `<div class="dz-tr ${t.won ? "" : "off"}">${TSV[t.id] || DU_SV.t1}<span>${t.name}</span></div>`).join("")}</div>
+      </div>
+      <button class="dz-codelink" type="button" id="duelPasteToggle">Code einfügen</button>
+      <div class="dz-paste" id="duelPaste" hidden>
+        <input type="text" id="duelPasteInput" placeholder="Duell-Link oder Code hier einfügen" autocomplete="off" spellcheck="false" aria-label="Duell-Link oder Code">
+        <div class="msg" id="duelPasteMsg" role="status"></div>
+        <div class="row2"><button type="button" id="duelPasteClip">${DU_SV.clip}Aus Zwischenablage</button><button type="button" id="duelPasteGo">Öffnen</button></div>
+      </div>
+    </div>`;
 }
 
 /* ================= BLAETTER-BAUKASTEN (Prompt 43) =================
@@ -12265,7 +12240,7 @@ function dzOpenSheet(html, bind) {
   dzCloseSheet();
   const shade = document.createElement("div"); shade.className = "dz-ov dz-shade";
   const sheet = document.createElement("div"); sheet.className = "dz-ov dz-sheet"; sheet.setAttribute("role", "dialog"); sheet.setAttribute("aria-modal", "true");
-  sheet.innerHTML = `<div class="dz-grab"></div>` + html;
+  sheet.innerHTML = `<div class="in"><div class="dz-grab"></div>${html}</div>`;
   document.body.append(shade, sheet);
   void sheet.offsetWidth;
   shade.classList.add("dz-on"); sheet.classList.add("dz-on");
@@ -12323,12 +12298,12 @@ function dzOpenNew(pre) {
   let friends = Object.entries(profile.duelStats.perOpponent).filter(([, f]) => f.w + f.l + f.d > 0).sort((a, b) => (b[1].w + b[1].l + b[1].d) - (a[1].w + a[1].l + a[1].d)).slice(0, 6);
   if (friend && !friends.some(([dev]) => dev === friend) && profile.duelStats.perOpponent[friend]) friends = [[friend, profile.duelStats.perOpponent[friend]], ...friends.slice(0, 5)]; // Revanche gegen jemanden ausserhalb der Top 6
   const build = () => `<h3>Schnell-Duell</h3><p class="dz-lead2">Ihr spielt dieselben Aufstellungen mit derselben Uhr. Mehr Richtige gewinnen die Runde.</p>
-    <div class="dz-fld"><small>Gegen wen?</small><div class="dz-friends">${friends.map(([dev, f]) => `<button class="dz-friend" type="button" data-fr="${dev}" style="--fc:${duelColor(dev)}" aria-pressed="${friend === dev}"><i></i>${duelEsc(f.name)}${f.handle ? `<small>@${duelEsc(f.handle)}</small>` : ""}</button>`).join("")}<button class="dz-friend dz-add" type="button" data-fr="" aria-pressed="${friend === ""}">+ Neuer Freund</button></div></div>
+    <div class="dz-fld"><small>Gegen wen?</small><div class="dz-friends">${friends.map(([dev, f]) => `<button class="dz-friend" type="button" data-fr="${dev}" aria-pressed="${friend === dev}">${duelMagHTML({ name: f.name, deviceId: dev }, 28)}${duelEsc(f.name)}</button>`).join("")}<button class="dz-friend dz-add" type="button" data-fr="" aria-pressed="${friend === ""}">+ Neuer Freund</button></div></div>
     <div class="dz-fld"><small>Format</small><div class="dz-seg" data-g="rounds">${DUEL_FORMATS.map(f => `<button type="button" data-v="${f.rounds}" aria-pressed="${duelDraft.rounds === f.rounds}">${f.label}<small>${f.sub}</small></button>`).join("")}</div></div>
     <div class="dz-fld"><small>Zeit pro Aufstellung</small><div class="dz-seg dz-time" data-g="seconds">${DUEL_TIMES.map(t => `<button type="button" data-v="${t.seconds}" aria-pressed="${duelDraft.seconds === t.seconds}">${t.seconds / 60}:00</button>`).join("")}</div></div>
-    <div class="dz-fld"><small>Schwierigkeit</small><div class="dz-seg" data-g="difficulty">${[0, 1, 2, 3, 4, 5].map(n => `<button type="button" data-v="${n}" aria-pressed="${duelDraft.difficulty === n}">${n ? n : "Mix"}</button>`).join("")}</div></div>
-    <button type="button" class="dz-fairrow" id="dzFair" aria-pressed="${duelDraft.fair}"><span class="dz-sw"></span><span><b>Ich spiele fair</b><span>Ohne Google, KI oder Hilfe von außen.</span></span></button>
-    <div class="dz-fld"><button class="dz-cta ${duelDraft.fair ? "" : "dz-off"}" type="button" id="dzSend" aria-disabled="${!duelDraft.fair}">Anpfiff &amp; Link teilen</button><div class="dz-sumline" id="dzSum"></div></div>`;
+    <div class="dz-fld"><small>Schwierigkeit</small><div class="dz-seg" data-g="difficulty">${[0, 1, 2, 3, 4, 5].map(n => `<button type="button" data-v="${n}" aria-pressed="${duelDraft.difficulty === n}">${n ? `<i style="background:${DIFF_COLOR[n]}"></i>${n}` : "Mix"}</button>`).join("")}</div></div>
+    <button type="button" class="du-fair" id="dzFair" aria-pressed="${duelDraft.fair}"><span class="du-sw${duelDraft.fair ? " on" : ""}"></span><span><b>Ich spiele fair</b><small>Ohne Google, KI oder Hilfe von außen</small></span></button>
+    <div style="height:12px"></div><button class="du-cta" type="button" id="dzSend" aria-disabled="${!duelDraft.fair}">${duelDraft.fair ? `${DU_SV.share}Anpfiff &amp; Link teilen` : "Erst „Ich spiele fair“ antippen"}</button><div class="dz-sumline" id="dzSum"></div>`;
   const sum = () => {
     const el = document.getElementById("dzSum"); if (!el) return;
     const f = friend && profile.duelStats.perOpponent[friend];
@@ -12336,7 +12311,7 @@ function dzOpenNew(pre) {
     el.innerHTML = `${f ? duelEsc(f.name) + " · " : ""}<b>${n} ${n === 1 ? "Aufstellung" : "Aufstellungen"}</b> · je <b>${duelDraft.seconds / 60}:00 Min</b> · ${duelDraft.difficulty ? "Stufe " + duelDraft.difficulty : "Schwierigkeit gemischt"}`;
   };
   dzOpenSheet(build(), (sheet) => {
-    const rebuild = () => { sheet.innerHTML = `<div class="dz-grab"></div>` + build(); sum(); };
+    const rebuild = () => { sheet.querySelector(".in").innerHTML = `<div class="dz-grab"></div>` + build(); sum(); };
     sum();
     sheet.onclick = (e) => {
       const f = e.target.closest("[data-fr]");
@@ -12369,7 +12344,7 @@ function dzOpenInfo(kind) {
     <div class="dz-fld"><div class="dz-sumline" style="text-align:left;font-size:15.5px;line-height:1.55">${liga
       ? `<b>6 Runden im Wechsel.</b> Wer dran ist, bekommt drei zufällige Kategorien (zum Beispiel Champions League, WM oder Deutschland) und wählt eine. Beide spielen dieselbe Aufstellung, je 2:00 Min.<br><br>Gewertet wird die Summe aller Richtigen, bei Gleichstand die Gesamtzeit. Das Ergebnis des anderen siehst du pro Runde erst, wenn du sie selbst gespielt hast.`
       : `<b>Divisionen von 10 bis 1</b> und oben die Legenden-Division. In jeder Division steigst du über eine Leiter mit 6 Sprossen auf: Sieg +1, Remis ±0, Niederlage −1, ab dem dritten Sieg in Folge +2.<br><br>Ein Match sind 3 Aufstellungen à 2:00 Min. Dazu gibt es eine Wochen-Tabelle mit Belohnungen. Gespielt wird gegen Gegner deiner Division.`}</div></div>
-    <div class="dz-fld"><button class="dz-cta" type="button" id="dzInfoOk">Verstanden</button></div>`, (sheet) => { sheet.querySelector("#dzInfoOk").onclick = dzCloseSheet; });
+    <div class="dz-fld"><button class="du-cta" type="button" id="dzInfoOk">Verstanden</button></div>`, (sheet) => { sheet.querySelector("#dzInfoOk").onclick = dzCloseSheet; });
 }
 
 /* ---- Seite zeichnen und verdrahten ---- */
@@ -12380,15 +12355,16 @@ function dzCountUp(el, n) {
   const f = (t) => { const p = Math.min(1, (t - t0) / D); el.textContent = Math.round(n * (1 - Math.pow(1 - p, 3))); if (p < 1) requestAnimationFrame(f); };
   requestAnimationFrame(f);
 }
+const dzBody = () => document.querySelector("#duelsView .du-body");
 function dzScrollTo(key) {
-  const screen = document.getElementById("screen-duels"), el = document.getElementById("dz-sec-" + key);
-  if (el) screen.scrollTo({ top: el.offsetTop - 50, behavior: REDUCED_MOTION ? "auto" : "smooth" });
+  const sc = dzBody(), el = document.getElementById("dz-sec-" + key);
+  if (sc && el) sc.scrollTo({ top: el.offsetTop - 12, behavior: REDUCED_MOTION ? "auto" : "smooth" });
 }
 function dzSyncNav() {
-  const screen = document.getElementById("screen-duels"), nav = document.getElementById("dzSnav");
-  if (!nav || screen.hidden) return; // unsichtbar: alle Abstaende sind 0, die Markierung bleibt bei "Am Zug"
+  const sc = dzBody(), nav = document.getElementById("dzSnav"), screen = document.getElementById("screen-duels");
+  if (!sc || !nav || screen.hidden) return; // unsichtbar: alle Abstaende sind 0, die Markierung bleibt bei "Am Zug"
   let cur = "open";
-  ["open", "hist", "more"].forEach(k => { const el = document.getElementById("dz-sec-" + k); if (el && el.offsetTop - 70 <= screen.scrollTop) cur = k; });
+  ["open", "hist", "more"].forEach(k => { const el = document.getElementById("dz-sec-" + k); if (el && el.offsetTop - 70 <= sc.scrollTop) cur = k; });
   nav.querySelectorAll("button").forEach(b => b.classList.toggle("dz-on", b.dataset.s === cur));
 }
 function dzBindSwipe(root) {
@@ -12417,14 +12393,15 @@ function dzBindSwipe(root) {
   });
 }
 function renderDuels(still) {
-  const root = document.getElementById("duelsView"), screen = document.getElementById("screen-duels");
-  const keep = screen.scrollTop;
-  root.className = "dz-root" + (still ? " dz-still" : "");
+  const root = document.getElementById("duelsView");
+  const keep = dzBody() ? dzBody().scrollTop : 0;
+  root.className = "du-view dz-root" + (still ? " dz-still" : "");
   root.innerHTML = dzPageHTML();
-  if (still) screen.scrollTop = keep;
+  const sc = dzBody();
+  if (still && sc) sc.scrollTop = keep;
   dzBind(root);
   root.querySelectorAll("[data-count]").forEach(el => { if (!still) dzCountUp(el, +el.dataset.count); });
-  screen.onscroll = dzSyncNav;
+  if (sc) sc.onscroll = dzSyncNav;
   dzSyncNav();
 }
 function dzBind(root) {
@@ -12519,7 +12496,7 @@ function dzDetailHTML(id, d) {
         <span class="dz-v ${ta < tb ? "dz-best" : ""}">${fmtMS(ta)}</span><span class="dz-k">Zeit gesamt</span><span class="dz-v dz-r ${tb < ta ? "dz-best" : ""}">${hasOp ? fmtMS(tb) : "–"}</span></div></div>
     ${rounds > 1 ? `<div class="dz-rtabs" data-rt>${d.mine.map((r, i) => `<button class="dz-rtab dz-${dzRoundOutcome(d, i)}" type="button" data-r="${i}" aria-pressed="${i === dzDetRound}"><small><i></i>Runde ${i + 1}</small><b>${r.correct}:${d.theirs && d.theirs[i] ? d.theirs[i].correct : "?"}</b></button>`).join("")}</div>` : ""}
     <div data-round>${dzRoundHTML(d, dzDetRound)}</div>
-    <div class="dz-acts"><button class="dz-cta" type="button" data-rev="${id}">Revanche gegen ${duelEsc(p.name)}</button><button class="dz-delbtn" type="button" data-hdel="${id}">${DZ_ICON.trash}Löschen</button></div>
+    <div class="dz-acts"><button class="du-cta" type="button" data-rev="${id}">${DU_SV.again}Revanche gegen ${duelEsc(p.name)}</button><button class="dz-delbtn" type="button" data-hdel="${id}">${DZ_ICON.trash}Löschen</button></div>
     <p class="dz-note">Löschen entfernt nur die Details. Die Bilanz gegen ${duelEsc(p.name)} bleibt.</p></div>`;
 }
 function dzShowTip(btn) {
@@ -12561,7 +12538,7 @@ function dzToggleHist(id) {
     if (k === dzOpenHist) { body.innerHTML = dzDetailHTML(k, profile.duels[k]); requestAnimationFrame(() => c.classList.add("dz-open")); row.setAttribute("aria-expanded", "true"); }
     else if (c.classList.contains("dz-open")) { c.classList.remove("dz-open"); row.setAttribute("aria-expanded", "false"); setTimeout(() => { if (!c.classList.contains("dz-open")) body.innerHTML = ""; }, 520); } // erst nach dem Zuklappen leeren
   });
-  if (dzOpenHist) setTimeout(() => { const c = document.querySelector(`#duelsView .dz-hc[data-hc="${dzOpenHist}"]`); if (c) document.getElementById("screen-duels").scrollTo({ top: c.offsetTop - 60, behavior: REDUCED_MOTION ? "auto" : "smooth" }); }, 120);
+  if (dzOpenHist) setTimeout(() => { const c = document.querySelector(`#duelsView .dz-hc[data-hc="${dzOpenHist}"]`), sc = dzBody(); if (c && sc) sc.scrollTo({ top: c.offsetTop - 60, behavior: REDUCED_MOTION ? "auto" : "smooth" }); }, 120);
 }
 
 // Gemeinsamer Abschluss nach erfolgreichem handleDuelInput (Feld "Code einfuegen"): Einladung oeffnen bzw. Rueckmeldung melden.
@@ -13511,6 +13488,14 @@ const DU_SV = {
   again: '<svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M4 12a8 8 0 0 1 13.7-5.6L20 9M20 4v5h-5M20 12a8 8 0 0 1-13.7 5.6L4 15M4 20v-5h5"/></svg>',
   glass: '<svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M7 3h10M7 21h10M8 3c0 5 8 6 8 9s-8 4-8 9M16 3c0 5-8 6-8 9s8 4 8 9"/></svg>',
   dots: '<svg viewBox="0 0 24 24" aria-hidden="true" fill="currentColor"><circle cx="5.5" cy="12" r="2"/><circle cx="12" cy="12" r="2"/><circle cx="18.5" cy="12" r="2"/></svg>',
+  clock: '<svg class="ic" viewBox="0 0 32 32" fill="none" stroke="#3A2A08" stroke-width="2.6" stroke-linecap="round" aria-hidden="true"><circle cx="16" cy="18" r="11"/><path d="M16 11v7l5 3M12 3h8M16 3v4"/></svg>',
+  swap: '<svg class="ic" viewBox="0 0 32 32" fill="none" stroke="#F7D98E" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 11h20l-5-5M27 21H7l5 5"/></svg>',
+  ladder: '<svg viewBox="0 0 24 24" fill="none" stroke="#FFF1C8" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M7 3v18M17 3v18M7 7h10M7 12h10M7 17h10"/></svg>',
+  clip: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="6" y="5" width="12" height="16" rx="2"/><path d="M9 5V3h6v2M9 11h6M9 15h4"/></svg>',
+  t1: '<svg viewBox="0 0 40 40" aria-hidden="true"><circle cx="20" cy="18" r="12" fill="#E8B23D" stroke="#9C7422" stroke-width="1.5"/><path d="M15 29l-3 9 8-4 8 4-3-9" fill="#5B3D22"/><path d="M20 11l2 4.3 4.7.6-3.4 3.2.9 4.6L20 21.5l-4.2 2.2.9-4.6-3.4-3.2 4.7-.6z" fill="#FFF1C8"/></svg>',
+  t2: '<svg viewBox="0 0 40 40" aria-hidden="true"><path d="M10 6h20v6c0 7-4 12-10 12S10 19 10 12z" fill="#E8B23D" stroke="#9C7422" stroke-width="1.5"/><path d="M10 9H5c0 5 3 7 6 7M30 9h5c0 5-3 7-6 7" fill="none" stroke="#C9962E" stroke-width="2.2"/><rect x="17" y="24" width="6" height="6" fill="#C9962E"/><rect x="12" y="30" width="16" height="5" rx="1.5" fill="#5B3D22"/></svg>',
+  t3: '<svg viewBox="0 0 40 40" aria-hidden="true"><path d="M20 4c2 7 10 9 10 19a10 10 0 0 1-20 0c0-5 2.5-7.5 5-10 0 3.5 2 5 3.5 5 0-5-1.5-10 1.5-14z" fill="#E8B23D" stroke="#9C7422" stroke-width="1.5"/><path d="M20 20c1 3 5 5 5 9a5 5 0 0 1-10 0c0-2.5 1.6-4.2 5-9z" fill="#FFF1C8"/></svg>',
+  t4: '<svg viewBox="0 0 40 40" aria-hidden="true"><path d="M8 32 L20 6 L32 32 Z" fill="none" stroke="#E8B23D" stroke-width="2.2" stroke-linejoin="round"/><path d="M12 24h16M15 17h10" stroke="#E8B23D" stroke-width="2"/><circle cx="20" cy="6" r="3" fill="#F7D98E"/></svg>',
   plus: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 5v14M5 12h14" stroke="currentColor" stroke-width="3" stroke-linecap="round"/></svg>'
 };
 // Personen-Magnet: Initiale (Anton) in Personenfarbe (duelColor); spaeter werden daraus die Wappen aus der Kabine
