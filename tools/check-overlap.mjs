@@ -149,16 +149,23 @@ for (const width of WIDTHS) {
         const R = (el) => { const r = el.getBoundingClientRect(); return { left: r.left, top: r.top, width: r.width, height: r.height }; };
         const parts = [];
         document.querySelectorAll("#lpWorld .lp-node").forEach((nd, i) => {
-          nd.querySelectorAll(".lp-nbtn, .lp-nstars, .lp-badge, .lp-du").forEach((el) => parts.push({ node: i, kind: el.className.baseVal || el.className.split(" ")[0], ...R(el) }));
+          nd.querySelectorAll(".lp-nbtn, .lp-nstars, .lp-badge, .lp-du, .lp-wsign").forEach((el) => parts.push({ node: i, kind: el.className.baseVal || el.className.split(" ")[0], ...R(el) }));
         });
         const props = [...document.querySelectorAll("#lpWorld svg.lp-near > g, #lpWorld svg.lp-road > g")].map(R).filter((r) => r.width > 0);
-        return { parts, props, sign: R(document.getElementById("lpSign")), note: R(document.getElementById("lpNote")) };
+        return { parts, props, sign: R(document.getElementById("lpSign")), note: R(document.getElementById("lpNote")), world: R(document.getElementById("lpWorld")) };
       }, { tier, state });
       if (result.skip) continue;
       const issues = [];
       const parts = result.parts;
       for (let i = 0; i < parts.length; i++) for (let j = i + 1; j < parts.length; j++) {
         if (parts[i].node !== parts[j].node && overlap(parts[i], parts[j])) issues.push(`Level ${parts[i].node + 1} ${parts[i].kind} <-> Level ${parts[j].node + 1} ${parts[j].kind}`);
+      }
+      // Holzschild "Weiter aufstellen" (Prompt 57): nicht auf Teilen des eigenen Knotens, nicht auf Schild/Zettel/Requisiten, im Spielfeld
+      for (const ws of parts.filter((x) => x.kind.includes("lp-wsign"))) {
+        for (const o of parts) if (o !== ws && o.node === ws.node && overlap(ws, o)) issues.push(`Level ${ws.node + 1} Weiter-Schild <-> ${o.kind}`);
+        if (overlap(ws, result.note) || overlap(ws, result.sign)) issues.push(`Level ${ws.node + 1} Weiter-Schild auf Schild/Zettel`);
+        // Requisiten (Baeume, Pylonen) duerfen hinter dem Schild stehen - die App weicht ihnen aus, wo es geht (lpPlaceSign), deckt sie sonst aber nur zu
+        if (ws.left < result.world.left - 0.5 || ws.left + ws.width > result.world.left + result.world.width + 0.5) issues.push(`Level ${ws.node + 1} Weiter-Schild ausserhalb des Spielfelds`);
       }
       for (const pt of parts) {
         if (pt.kind.includes("lp-du") && (overlap(pt, result.note) || overlap(pt, result.sign))) issues.push(`Level ${pt.node + 1} "Du" auf Schild/Zettel`);

@@ -341,7 +341,7 @@
   .hm-wbtn { height: 44px; border-radius: 12px; display: flex; align-items: center; justify-content: center; gap: 7px; font-weight: 500; font-size: 14.5px; color: var(--cream); background: var(--wood); box-shadow: var(--wood-edge), 0 3px 6px rgba(0,0,0,0.3); }
   .hm-wbtn svg { width: 17px; height: 17px; }
   .hm-sound { display: grid; gap: 8px; }
-  .hm-sound .du-fair { margin-top: 0; }
+  .hm-sound .du-fair { margin-top: 0; color: var(--chalk); }
   .hm-vol { display: grid; grid-template-columns: auto 1fr auto; align-items: center; gap: 12px; padding: 10px 12px; border-radius: 12px; background: rgba(10,22,16,0.35); box-shadow: inset 0 0 0 1px rgba(244,241,232,0.2); font-weight: 500; font-size: 14.5px; }
   .hm-vol.off { opacity: 0.5; }
   .hm-vol b { font-family: 'Anton', Impact, sans-serif; font-weight: 400; font-size: 16px; color: var(--gold-hi); min-width: 46px; text-align: right; }
@@ -729,6 +729,13 @@
   .lp-badge svg { width: 14px; height: 14px; }
   .lp-badge.draft { background: linear-gradient(170deg, var(--gold-hi), var(--gold)); }
   .lp-badge.seen { background: #FBF8EF; right: auto; left: -40px; }
+  /* Holzschild am angefangenen Level (Prompt 57): statisch, kein Blinken; sitzt seitlich vom Knoten, Pfeil zeigt zum Knoten */
+  .lp-wsign { position: absolute; z-index: 5; top: -15px; height: 30px; padding: 0 10px 0 8px; border: none; border-radius: 9px; display: inline-flex; align-items: center; gap: 5px; white-space: nowrap; cursor: pointer;
+    font-family: 'Oswald', sans-serif; font-weight: 600; font-size: 12.5px; line-height: 1; color: var(--cream); background: var(--wood); box-shadow: var(--wood-edge), 0 4px 8px rgba(0,0,0,0.4); }
+  .lp-wsign.r { left: 50px; } .lp-wsign.l { right: 50px; flex-direction: row-reverse; padding: 0 8px 0 10px; }
+  .lp-wsign::after { content: ""; position: absolute; inset: -7px; } /* Trefferflaeche mind. 44 px */
+  .lp-wsign svg { width: 14px; height: 14px; flex-shrink: 0; }
+  .lp-wsign:active { transform: scale(0.96); }
   .lp-du { position: absolute; z-index: 6; left: -28px; top: -112px; width: 56px; pointer-events: none; display: grid; justify-items: center; }
   .lp-du .lp-pin { width: 40px; height: 40px; border-radius: 50%; display: grid; place-items: center; font-weight: 600; font-size: 14px; color: #13202A;
     background: radial-gradient(circle at 35% 30%, #FFF4CF, var(--gold) 58%, #8C6214); box-shadow: 0 6px 12px rgba(0,0,0,0.45), inset 0 -2px 3px rgba(0,0,0,0.2); }
@@ -4459,7 +4466,18 @@ function goBack() {
 // Zurueckspulen exakt den damals gespeicherten (kuerzeren) Stack wieder her.
 function goBackTo(id) {
   const idx = navStack.lastIndexOf(id);
-  if (idx === -1) { navigate(id); return; }
+  if (idx === -1) {
+    // Pfad/Weltkarte nicht im Verlauf (z. B. Spiel direkt geoeffnet): die oberste Ebene ersetzen statt eine neue davorzuschieben -
+    // sonst fuehrt "Zurueck" aus dem Pfad wieder ins Spiel (Prompt 57)
+    if ((id === "levelpath" || id === "worldmap") && navStack.length > 1) {
+      if (currentLevelContext) campaignTier = currentLevelContext.tier;
+      navStack[navStack.length - 1] = id;
+      history.replaceState({ stack: navStack.slice() }, "", "#" + id);
+      showScreen(id, "back");
+      return;
+    }
+    navigate(id); return;
+  }
   const delta = idx - (navStack.length - 1);
   if (delta === 0) return;
   if (historyNavPending) return;
@@ -5307,16 +5325,16 @@ function renderModeTiles() {
     <button type="button" class="hm-board hm-sm hm-mode hm-camp" id="modeTileCampaign">
       <span class="hm-m-h"><b>Kampagne</b><small>${campLine}${campDraft ? " · angefangen" : ""}</small></span>
       <span class="hm-m-art">${hmCampPath(allDone ? 6 : worlds.indexOf(current) + 1)}</span>
-      <span class="hm-m-btn">${started ? "Weiter spielen" : "Los geht's"}${HM_SV.chev("#F7D98E")}</span>
+      <span class="hm-m-btn">${allDone ? "Zur Weltkarte" : started ? "Zum Pfad" : "Los geht's"}${HM_SV.chev("#F7D98E")}</span>
     </button>
     <button type="button" class="hm-board hm-sm hm-mode hm-duel" id="modeTileDuel">
       <span class="hm-m-h"><b>Duell</b><small>${d ? `Gegen ${opp} · ${d.settings.rounds} ${d.settings.rounds === 1 ? "Runde" : "Runden"}` : "Gegen Freunde"}</small></span>
       <span class="hm-m-art">${duelArt}</span>
       <span class="hm-m-btn">${d ? (todo ? "Jetzt spielen" : "Zur Zentrale") : "Herausfordern"}${HM_SV.chev("#F7D98E")}</span>
     </button>`;
-  document.getElementById("modeTileCampaign").onclick = () => {
-    const dr = campaignDraftLevel();
-    if (dr) startCampaignLevel(dr.tier, dr.idx); else navigate("worldmap");
+  document.getElementById("modeTileCampaign").onclick = () => { // immer erst der Level-Pfad (Prompt 57); alle Welten geschafft: Weltkarte
+    const dr = campaignDraftLevel(), t = dr ? dr.tier : currentCampaignTier();
+    if (allDone) navigate("worldmap"); else openCampaignPath(t);
   };
   document.getElementById("modeTileDuel").onclick = () => navigate("duels");
 }
@@ -5861,6 +5879,15 @@ function wmOpen(w) {
   const x = wmData().W[w - 1]; if (!x || !x.unlocked) return;
   campaignTier = w; navigate("levelpath");
 }
+// Von der Startseite direkt in den Level-Pfad (Prompt 57): die Weltkarte wird still in den Verlauf geschoben, damit "Zurueck" im Pfad
+// zur Weltkarte und dort zur Startseite fuehrt - genau wie beim Weg ueber die Weltkarte.
+function openCampaignPath(tier) {
+  if (historyNavPending) return;
+  wmSel = tier; campaignTier = tier;
+  navStack.push("worldmap");
+  history.pushState({ stack: navStack.slice() }, "", "#worldmap");
+  navigate("levelpath");
+}
 function wmPaintTray() {
   const felt = document.getElementById("wmFelt"); if (!felt) return;
   const { W, cur } = wmData(), x = W[wmSel - 1], name = DIFF_LABEL[x.w];
@@ -5929,6 +5956,7 @@ const LP_TH = {
 const LP_SV = {
   back: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M15 5l-7 7 7 7" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/></svg>',
   star: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2.5l2.9 6.1 6.6.8-4.9 4.6 1.3 6.6L12 17.3l-5.9 3.3 1.3-6.6-4.9-4.6 6.6-.8z" fill="#F7D98E" stroke="#9C7422" stroke-width="1.2"/></svg>',
+  chalkArrow: (toLeft) => `<svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="rgba(244,241,232,0.92)" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round">${toLeft ? '<path d="M20 12H5M11 5.5L4.5 12l6.5 6.5"/>' : '<path d="M4 12h15M13 5.5l6.5 6.5-6.5 6.5"/>'}</svg>`, // Kreide-Pfeil zum Knoten (Prompt 57)
   pen: '<svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="#13202A" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M4 20l4-1 11-11-3-3L5 16z"/></svg>',
   eye: '<svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="#13202A" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 12s3.6-6.5 10-6.5S22 12 22 12s-3.6 6.5-10 6.5S2 12 2 12z"/><circle cx="12" cy="12" r="3"/></svg>',
   down: '<svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="#13202A" stroke-width="2.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 5v14M6 13l6 6 6-6"/></svg>'
@@ -6182,6 +6210,7 @@ function renderCampaignLevels(dir) {
   scr.style.setProperty("--wc", wc); scr.style.setProperty("--shade", th.shade); scr.style.setProperty("--lpbg0", th.bg[0]); scr.style.setProperty("--lpbg1", th.bg[1]);
   // "Du"-Magnet sitzt ueber dem aktuellen Level; steht der Vorgaenger-Knoten fast darueber, rutscht er seitlich weg (nie auf Sternen/Scheibe des Nachbarn), bleibt aber im Feld zwischen den Tribuenen
   const duShift = (i, x) => { if (!i) return 0; const xp = lpPathX(nodesY[i - 1], phase), need = 66; if (Math.abs(x - xp) >= need) return 0; const cands = [xp - need, xp + need].filter((c) => c >= 92 && c <= 298).sort((c1, c2) => Math.abs(c1 - x) - Math.abs(c2 - x)); return cands.length ? cands[0] - x : 0; };
+  const unl = unlockedLevelCount(W), draftIdx = matches.findIndex((m, i) => i < unl && profile.drafts["c:" + m.id]); // angefangenes Level dieser Welt (Prompt 57)
   const nodes = matches.map((m, i) => {
     const x = lpPathX(nodesY[i], phase), st = profile.campaign.levelPassed[m.id] ? "done" : i === curIdx ? "cur" : "lock", s = starsOf(m);
     const big = st === "cur", R = big ? 38 : 31, cx = big ? 45 : 37;
@@ -6195,6 +6224,7 @@ function renderCampaignLevels(dir) {
     const starArc = st === "done" || (st === "cur" && s) ? `<svg class="lp-nstars" viewBox="0 0 60 18" aria-hidden="true"><rect x="1" y="1" width="58" height="16" rx="8" fill="rgba(10,22,16,0.72)" stroke="rgba(255,236,200,0.25)"/>${[0, 1, 2].map((k) => lpStarPath(k, s)).join("")}</svg>` : "";
     const badges = (st !== "lock" && profile.drafts["c:" + m.id] ? `<span class="lp-badge draft" title="angefangen">${LP_SV.pen}</span>` : "") + (st !== "lock" && profile.campaign.solutionSeen[m.id] && s < 3 ? `<span class="lp-badge seen" title="Lösung angesehen – Sterne eingefroren">${LP_SV.eye}</span>` : "");
     return `<div class="lp-node ${st}" style="left:${lpF1(x)}px;top:${nodesY[i]}px" data-i="${i}">${starArc}<button class="lp-nbtn" type="button" aria-label="${nodeName(m, i)}${st === "lock" ? " (gesperrt)" : s ? ", " + s + " Sterne" : ""}">${disc}<b>${nodeNo(m, i)}</b></button>${badges}
+      ${i === draftIdx ? `<button type="button" class="lp-wsign ${x <= 195 ? "r" : "l"}" aria-label="Weiter aufstellen: ${nodeName(m, i)}">${LP_SV.chalkArrow(x <= 195)}<span>Weiter aufstellen</span></button>` : ""}
       ${st === "cur" ? `<span class="lp-ring"></span><span class="lp-du" style="left:${-28 + duShift(i, x)}px"><span class="lp-pin">Du</span><i></i><span class="lp-tag">${nodeName(m, i)}</span></span>` : ""}</div>`;
   }).join("");
   const allDone = passed === nCore && nCore > 0, gx = lpPathX(goalY, phase), nextW = (() => { for (let t = W + 1; t <= 5; t++) if (getCoreMatchesByTier(t).length) return t; return 0; })();
@@ -6225,7 +6255,7 @@ function renderCampaignLevels(dir) {
       ${nodes}
     </div></div>`;
   const fl = document.getElementById("lpFloat");
-  fl.querySelector("span").textContent = curIdx >= 0 ? "Zu " + nodeName(matches[curIdx], curIdx) : "";
+  fl.querySelector("span").textContent = draftIdx >= 0 ? "Weiter: " + nodeName(matches[draftIdx], draftIdx) : curIdx >= 0 ? "Zu " + nodeName(matches[curIdx], curIdx) : "";
   document.getElementById("lpScroll").scrollTop = 0;
   // Antippen: freie Level wie bisher in die Level-Vorschau (startMatch), gesperrte melden das kurz
   container.querySelectorAll(".lp-node").forEach((nd) => nd.querySelector(".lp-nbtn").onclick = () => {
@@ -6233,8 +6263,9 @@ function renderCampaignLevels(dir) {
     if (nd.classList.contains("lock")) { showToast(nodeName(matches[i], i) + " ist noch gesperrt"); return; }
     currentLevelContext = { tier: W, index: i, m: matches[i] }; startMatch(matches[i]);
   });
+  const ws = container.querySelector(".lp-wsign"); if (ws) ws.onclick = () => ws.closest(".lp-node").querySelector(".lp-nbtn").click(); // Tipp auf das Schild = Tipp auf den Knoten
   const gt = document.getElementById("lpGoTap"); if (gt) gt.onclick = () => { wmSel = nextW; goBackTo("worldmap"); };
-  lpState = { W, n, curIdx, nodesY, goalY, H, intro: dir === "fwd" && !REDUCED_MOTION, started: false, passed };
+  lpState = { W, n, curIdx, nodesY, goalY, H, intro: dir === "fwd" && !REDUCED_MOTION, started: false, passed, draftIdx, openDraft: () => { currentLevelContext = { tier: W, index: draftIdx, m: matches[draftIdx] }; startMatch(matches[draftIdx]); } };
   if (!scr.hidden) lpLayout();
 }
 // Skalierung auf die Bildschirmbreite, Kamera/Einstiegs-Bewegung (erst wenn der Bildschirm sichtbar ist)
@@ -6243,20 +6274,37 @@ function lpLayout() {
   if (!lpState || !world || !scr.clientWidth) return;
   const S = Math.min(1, scr.clientWidth / 390), st = lpState;
   world.style.transform = `scale(${S})`; sizer.style.width = (390 * S) + "px"; sizer.style.height = (st.H * S) + "px";
+  lpPlaceSign();
   const far = document.getElementById("lpFar"), upd = () => { far.style.transform = `translateY(${(scrollEl.scrollTop * 0.22 / S).toFixed(1)}px)`; lpFloat(); };
   scrollEl.onscroll = upd;
   const off = sizer.offsetTop, curY = (st.curIdx >= 0 ? st.nodesY[st.curIdx] : st.goalY) * S + off, target = Math.max(0, curY - scrollEl.clientHeight * 0.56);
   st.S = S; st.off = off; st.curY = curY; st.target = target;
-  document.getElementById("lpFloat").onclick = () => lpSmoothTo(target, 700);
+  st.draftY = st.draftIdx >= 0 ? st.nodesY[st.draftIdx] * S + off : null;
+  document.getElementById("lpFloat").onclick = () => st.draftIdx >= 0 ? st.openDraft() : lpSmoothTo(target, 700); // angefangenes Level: direkt die Vorschau (Prompt 57)
   if (st.started) { upd(); return; }
   st.started = true;
   if (!st.intro) { scrollEl.scrollTop = target; upd(); return; }
   lpIntro(scrollEl, S);
 }
+// Holzschild "Weiter aufstellen": steht es auf einer Requisite (Baum, Pylone ...) oder ausserhalb des Spielfelds, wechselt es auf die andere Seite des Knotens (Prompt 57)
+function lpPlaceSign() {
+  const ws = document.querySelector("#lpWorld .lp-wsign"), wl = document.getElementById("lpWorld"); if (!ws || !wl) return;
+  const props = [...wl.querySelectorAll("svg.lp-near > g, svg.lp-road > g")].map((g) => g.getBoundingClientRect()).filter((r) => r.width > 0), wr = wl.getBoundingClientRect();
+  const score = () => { const m = ws.getBoundingClientRect(); return props.filter((r) => m.left < r.right && r.left < m.right && m.top < r.bottom && r.top < m.bottom).length + (m.left >= wr.left - 0.5 && m.right <= wr.right + 0.5 ? 0 : 100); };
+  const apply = (r, dy) => { ws.classList.toggle("r", r); ws.classList.toggle("l", !r); ws.querySelector("svg").outerHTML = LP_SV.chalkArrow(r); ws.style.top = (-15 + dy) + "px"; };
+  const r0 = ws.classList.contains("r");
+  let best = null;
+  for (const [r, dy] of [[r0, 0], [!r0, 0], [r0, -16], [r0, 16], [!r0, -16], [!r0, 16]]) { // erst die Standardseite, dann die andere, dann leicht nach oben/unten versetzt
+    apply(r, dy); const sc = score();
+    if (!best || sc < best.sc) best = { r, dy, sc };
+    if (!sc) break;
+  }
+  apply(best.r, best.dy);
+}
 function lpFloat() {
   const st = lpState, scrollEl = document.getElementById("lpScroll"), fl = document.getElementById("lpFloat"); if (!st || !fl) return;
-  if (st.curIdx < 0 || st.introOn) { fl.classList.remove("on"); return; }
-  const vis = st.curY - scrollEl.scrollTop, hdr = document.querySelector("#screen-levelpath .lp-top").getBoundingClientRect().bottom, off = vis < hdr + 40 || vis > scrollEl.clientHeight - 80;
+  if ((st.draftIdx < 0 && st.curIdx < 0) || st.introOn) { fl.classList.remove("on"); return; }
+  const vis = (st.draftIdx >= 0 && st.draftY != null ? st.draftY : st.curY) - scrollEl.scrollTop, hdr = document.querySelector("#screen-levelpath .lp-top").getBoundingClientRect().bottom, off = vis < hdr + 40 || vis > scrollEl.clientHeight - 80;
   fl.classList.toggle("on", off); fl.classList.toggle("up", vis < hdr + 40);
 }
 function lpSmoothTo(target, ms) {
@@ -12064,13 +12112,27 @@ function sheetEnhance(el) {
   obs.observe(document.body, { childList: true, subtree: true });
   // Herunterwischen (Touch; Maus als Ersatz fuer Desktop/Tests)
   const base = isDz ? (dy) => `translate(-50%, ${dy}px)` : (dy) => `translateY(${dy}px)`;
-  let y0 = null, t0 = 0, dy = 0, dragging = false, fromTop = false;
+  let y0 = null, t0 = 0, dy = 0, dragging = false, fromTop = false, hdrStart = false, sc = sheet, sc0 = 0, scrolled = false;
   const hdr = (t) => { const r = sheet.getBoundingClientRect(); return t.clientY - r.top < 56; }; // Griff/Kopf
-  const start = (pt) => { y0 = pt.clientY; t0 = performance.now(); dy = 0; dragging = false; fromTop = hdr(pt) || sheet.scrollTop <= 0; };
+  // Das Element, das unter dem Finger tatsaechlich scrollt (Prompt 57): vom Touch-Ziel nach oben laufen, erstes mit eigenem Scrollbereich; sonst das Blatt selbst
+  const scrollerOf = (target) => {
+    for (let n = target; n && n.nodeType === 1; n = n.parentElement) {
+      if (n === sheet) break;
+      const o = getComputedStyle(n).overflowY;
+      if ((o === "auto" || o === "scroll") && n.scrollHeight > n.clientHeight + 1) return n;
+    }
+    return sheet;
+  };
+  const start = (pt, target) => {
+    y0 = pt.clientY; t0 = performance.now(); dy = 0; dragging = false;
+    sc = scrollerOf(target); sc0 = sc.scrollTop; scrolled = false;
+    hdrStart = hdr(pt); fromTop = hdrStart || sc.scrollTop <= 0; // scrollTop < 0 (iOS-Gummiband) zaehlt als oben
+  };
   const move = (pt, ev) => {
     if (y0 === null) return;
     const d = pt.clientY - y0;
-    if (!dragging && d > 8 && fromTop && (hdr({ clientY: y0 }) || sheet.scrollTop <= 0)) { dragging = true; sheet.style.transition = "none"; }
+    if (sc.scrollTop !== sc0) scrolled = true; // wer gescrollt hat, schliesst in DERSELBEN Geste nicht mehr - erst eine neue Geste
+    if (!dragging && d > 8 && !scrolled && (hdrStart || (fromTop && sc.scrollTop <= 0))) { dragging = true; sheet.style.transition = "none"; }
     if (dragging) { dy = Math.max(0, d); sheet.style.transform = base(dy); if (ev && ev.cancelable) ev.preventDefault(); }
   };
   const end = () => {
@@ -12082,10 +12144,10 @@ function sheetEnhance(el) {
     if (dy > 90 || (v > 0.6 && dy > 30)) { sheet.style.transform = base(sheet.offsetHeight + 40); close(); }
     else sheet.style.transform = isDz ? "" : "";
   };
-  sheet.addEventListener("touchstart", (e) => start(e.touches[0]), { passive: true });
+  sheet.addEventListener("touchstart", (e) => start(e.touches[0], e.target), { passive: true });
   sheet.addEventListener("touchmove", (e) => move(e.touches[0], e), { passive: false });
   sheet.addEventListener("touchend", end); sheet.addEventListener("touchcancel", end);
-  sheet.addEventListener("mousedown", (e) => { if (e.button === 0 && hdr(e)) { start(e); const mm = (ev) => move(ev, ev), mu = () => { end(); document.removeEventListener("mousemove", mm); document.removeEventListener("mouseup", mu); }; document.addEventListener("mousemove", mm); document.addEventListener("mouseup", mu); } });
+  sheet.addEventListener("mousedown", (e) => { if (e.button === 0 && hdr(e)) { start(e, e.target); const mm = (ev) => move(ev, ev), mu = () => { end(); document.removeEventListener("mousemove", mm); document.removeEventListener("mouseup", mu); }; document.addEventListener("mousemove", mm); document.addEventListener("mouseup", mu); } });
 }
 new MutationObserver((recs) => {
   recs.forEach(r => r.addedNodes.forEach(n => { if (n.nodeType === 1 && (n.classList.contains("modal-backdrop") || n.classList.contains("dz-sheet"))) sheetEnhance(n); }));
