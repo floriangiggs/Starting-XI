@@ -69,9 +69,9 @@ vorige umgesetzt, getestet und committet ist.
 | 55 | Töne: 11 empfohlene Stellen mit Web-Audio-Klängen aus dem Tonstudio (ohne Rauschen), Ton-Schalter + Lautstärke, Stummschalter respektieren | 49, 53, 54 | ✅ erledigt (Modul „TÖNE“ mit sfx(name, opts) auf der Audio-Uhr, elf Töne Variante A ohne Rauschen/Dateien, Feiern reihen sich ein, Welt-Feier unterbricht, Ton ersetzt gleichen Ton; Stellen: ok mit Kombo-Tonhöhe, Rad-Ratsche + Doppelglocke, Münze einmal je Gutschrift, Anpfiff-Pfiff, Abpfiff, Sterne synchron zur Animation (gestaffelt 0,32 s), Fanfare 11/11, Level-Up-Tafel, Welt-Feier, Walkout (Herzschlag, Klopfer auf 3-2-1, Pfiff), Duell-Sieg; Ton-Schalter + Lautstärke im Scout-Profil, audioSession „ambient“, haptic()-Haken + vibrate; tools/test-sound.mjs 57 Prüfungen; sw.js v71; offen: iPhone-Test Stummschalter/Musik durch Florian) |
 | 56 | Neues App-Icon „Taktiktafel“ (Variante A: Holzrahmen, Filz, Kreide, 11 Magnete) in allen Größen + Maskable + Favicon; Logo auf der Startseite ohne braunen Extra-Rand | 44 | ✅ erledigt (icons/source = neue Taktiktafel-SVGs, alte in icons/source/alt-navy/; alle PNG-Größen neu (1024 ohne Transparenz/Rundung, Maskable-Motiv skaliert auf ≤ 0,8 Kreis, Favicons mit transparenten Ecken); .hm-brand img ohne Doppelrand; sw.js v72; iPhone: Homescreen-Icon erst nach Entfernen + erneutem „Zum Home-Bildschirm“) |
 | 57 | Bugfix: Scout-Profil schließt beim Hochscrollen (Wisch-zum-Schließen prüft das falsche Element); Kampagne-Kachel öffnet den Level-Pfad statt direkt das Level, „Pfad“-Knopf führt wirklich zum Pfad | 43, 44, 51 | offen |
-| 58 | App-Name „Startelo XI“ statt „Starting XI“ (17 sichtbare Stellen, interne Schlüssel bleiben, gesperrte Nutzernamen ergänzen) | Markenrecherche Startelo (Florian) | ⏸ wartet auf Freigabe der Markenrecherche |
+| 58 | App-Name „Startelo XI“ statt „Starting XI“ (17 sichtbare Stellen, interne Schlüssel bleiben, gesperrte Nutzernamen ergänzen) | Markenrecherche Startelo (Florian) | freigegeben 20.10.2026 (docs/markenrecherche.md) – offen |
 
-**Empfohlene Reihenfolge ab jetzt:** 49 → 50 (Bugfixes, sofort) → 39 → 41 → 42 → 43 → 44 → 45 → 46 → 47 → 48 → 49 → 50 → 51 → 52 → 53 → 54 → 55 → 56 → 57 → 58 (nach Markenfreigabe) → weitere Offline-Feinschliffe (u. a. Jahres-Lücken im Ideen-Speicher auffüllen) → Planung Online-Duell (inkl. 28/29) → 8 (Capacitor, erst wenn die App final ist; vorher Duell-Pflichtpunkt aus CLAUDE.md ansprechen)
+**Empfohlene Reihenfolge ab jetzt:** 49 → 50 (Bugfixes, sofort) → 39 → 41 → 42 → 43 → 44 → 45 → 46 → 47 → 48 → 49 → 50 → 51 → 52 → 53 → 54 → 55 → 56 → 57 → 58 → weitere Offline-Feinschliffe (u. a. Jahres-Lücken im Ideen-Speicher auffüllen) → Planung Online-Duell (inkl. 28/29) → 8 (Capacitor, erst wenn die App final ist; vorher Duell-Pflichtpunkt aus CLAUDE.md ansprechen)
 
 Prompt 7 steht bewusst vor der Tages-Challenge: Nur mit der neuen
 Update-Strategie kommen neue Tages-Aufstellungen zuverlässig auf dem iPhone an.
@@ -5160,8 +5160,8 @@ Kein Commit/Push ohne Zeigen der Testausgabe.
 
 ## Prompt 58 – App heißt „Startelo XI“ (statt „Starting XI“)
 
-**ERST AUSFÜHREN, WENN FLORIAN DIE MARKENRECHERCHE „STARTELO“ FREIGEGEBEN HAT**
-(DPMAregister, TMview Kl. 9/28/41/42, Domains; Protokoll in docs/markenrecherche.md).
+**FREIGEGEBEN am 20.10.2026** – Markenrecherche „Startelo“ abgeschlossen, Ergebnis in
+docs/markenrecherche.md (DPMAregister, TMview, WIPO, Stores, Domains, Social Media: frei).
 
 **Hintergrund (20.10.2026):** Bei Google Play gibt es „Starting XI • Fußball Manager“
 von „Starting XI Studio“. „Starting XI“ ist außerdem beschreibend und kaum schützbar.
@@ -5170,7 +5170,7 @@ Neuer Name: **Startelo** (eigenes Kunstwort, Marke + Domain), überall angezeigt
 (11 Zeichen) wie „Starting XI“, Layouts sollten ohne Änderung passen.
 
 ```
-Lies CLAUDE.md. Plan Mode, Plan zeigen. Nur Name/Texte, keine Optik- oder Logikänderung.
+Lies CLAUDE.md und docs/markenrecherche.md. Plan Mode, Plan zeigen. Nur Name/Texte, keine Optik- oder Logikänderung.
 
 1. Sichtbare Stellen „Starting XI“ → „Startelo XI“ (vorher per grep vollständig
    auflisten, Stand main 0dd5b98 sind es diese):
