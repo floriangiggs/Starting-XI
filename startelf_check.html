@@ -3,14 +3,14 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, viewport-fit=cover">
-<title>Starting XI</title>
+<title>Startelo XI</title>
 <link rel="manifest" href="./manifest.json">
 <meta name="theme-color" content="#173A29">
 <link rel="icon" href="./icons/favicon-32.png">
 <link rel="apple-touch-icon" href="./icons/apple-touch-icon.png">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-<meta name="apple-mobile-web-app-title" content="Starting XI">
+<meta name="apple-mobile-web-app-title" content="Startelo XI">
 <style>
   /* Lokal eingebundene Schriften statt Google-Fonts-CDN (DSGVO + Offline-Start).
      oswald-variable.woff2 deckt die Gewichte 300-700 über eine wght-Achse ab -
@@ -2115,7 +2115,7 @@
   <section class="screen hm-home hm-intro hm-wait" id="screen-start" aria-label="Start">
     <div class="install-tip" id="installTip" role="note" hidden><p><b>Tipp:</b> Zum Home-Bildschirm hinzufügen, dann bleibt dein Spielstand sicher und die App startet im Vollbild.</p><button type="button" id="installTipClose" aria-label="Tipp schließen">✕</button></div>
     <div class="hm-head">
-      <div class="hm-brand"><img src="icons/icon-192.png" alt="" width="42" height="42"><div><b>Starting <em>XI</em></b><small>Echte Spiele. Deine Startelf.</small></div></div>
+      <div class="hm-brand"><img src="icons/icon-192.png" alt="" width="42" height="42"><div><b>Startelo <em>XI</em></b><small>Echte Spiele. Deine Startelf.</small></div></div>
       <span class="hm-chip hm-tok" data-tokchip data-big role="img" aria-label="Scout-Token"></span>
       <button class="hm-chip hm-wood" type="button" id="helpBtn"><svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="#FFF1C8" stroke-width="2.2" stroke-linecap="round"><circle cx="12" cy="12" r="9.2"/><path d="M9.3 9.4a2.8 2.8 0 1 1 3.9 2.6c-.8.4-1.2 1-1.2 1.9v.4"/><circle cx="12" cy="17.2" r="0.6" fill="#FFF1C8"/></svg>So geht's<span class="help-dot" id="helpDot"></span></button>
     </div>
@@ -2160,11 +2160,11 @@
   </section>
 
   <!-- LADESCREEN "Kabinentafel" (Prompt 46) - eigenes Overlay ueber allen Screens, kein Nav-Eintrag, nicht ueberspringbar -->
-  <div class="splash" id="splash" role="status" aria-live="polite" aria-label="Starting XI wird geladen">
+  <div class="splash" id="splash" role="status" aria-live="polite" aria-label="Startelo XI wird geladen">
     <div class="ld-beam l" id="ldBl"></div><div class="ld-beam r" id="ldBr"></div>
     <div class="ld-flash" id="ldFlash"></div>
     <div class="ld-stage" id="ldStage">
-      <div class="ld-brand" id="ldBrand"><h1>Starting <em>XI</em></h1></div>
+      <div class="ld-brand" id="ldBrand"><h1>Startelo <em>XI</em></h1></div>
       <div class="ld-claim" id="ldClaim">Elf Namen. Ein Spiel. Dein Fußballwissen.</div>
       <div class="ld-board" id="ldBoard">
         <svg viewBox="0 0 200 260" preserveAspectRatio="none" aria-hidden="true">
@@ -4951,7 +4951,7 @@ function showStorageWarning() {
     b.className = "modal-backdrop";
     b.innerHTML = `<div class="modal-sheet" role="dialog" aria-modal="true"><div class="save-box">
       <div class="t">Spielstand nicht gesichert</div>
-      <p><b>Dein Spielstand kann hier nicht gespeichert werden.</b> Öffne Starting XI in Safari (nicht im privaten Modus) und füge es über Teilen → „Zum Home-Bildschirm“ hinzu.</p>
+      <p><b>Dein Spielstand kann hier nicht gespeichert werden.</b> Öffne Startelo XI in Safari (nicht im privaten Modus) und füge es über Teilen → „Zum Home-Bildschirm“ hinzu.</p>
       <button type="button" class="save-btn main" id="storageWarnOk">Verstanden</button>
     </div></div>`;
     document.body.appendChild(b);
@@ -9928,8 +9928,8 @@ async function drawDailyShareCanvas({ dayNum, dateKey, correct, stars, streak, f
   const L = S ? { top0: 130, by: 420, bh: 900, ry: 1360, rh: 188, ver: 72, leg: 66, cta: 1740, cth: 76, brand: 104 } : { top0: 40, by: 244, bh: 696, ry: 966, rh: 128, ver: 52, leg: 50, cta: 1238, cth: 66, brand: 92 };
   const top0 = L.top0;
   x.font = `400 ${L.brand}px Anton, Impact, sans-serif`;
-  { const aw = x.measureText("Starting ").width, bw = x.measureText("XI").width, s0 = W / 2 - (aw + bw) / 2;
-    shadow(0, 5, 0.3); text("Starting ", s0, top0 + L.brand * 0.82, `400 ${L.brand}px Anton, Impact, sans-serif`, "#FBF7EC"); text("XI", s0 + aw, top0 + L.brand * 0.82, `400 ${L.brand}px Anton, Impact, sans-serif`, GOLDHI); noShadow(); }
+  { const aw = x.measureText("Startelo ").width, bw = x.measureText("XI").width, s0 = W / 2 - (aw + bw) / 2;
+    shadow(0, 5, 0.3); text("Startelo ", s0, top0 + L.brand * 0.82, `400 ${L.brand}px Anton, Impact, sans-serif`, "#FBF7EC"); text("XI", s0 + aw, top0 + L.brand * 0.82, `400 ${L.brand}px Anton, Impact, sans-serif`, GOLDHI); noShadow(); }
   // Holzband: Tages-Challenge · Spieltag n, darunter das Datum
   const longDate = new Date(dateKey + "T00:00:00").toLocaleDateString("de-DE", { weekday: "long", day: "numeric", month: "long" });
   const shortDate = new Date(dateKey + "T00:00:00").toLocaleDateString("de-DE", { weekday: "short", day: "numeric", month: "short" });
@@ -10034,9 +10034,9 @@ async function shareDailyResult(dateKey) {
   if (pending) {
     try {
       const blob = await pending;
-      const file = new File([blob], "starting-xi-spieltag-" + dayNum + ".png", { type: "image/png" });
+      const file = new File([blob], "startelo-xi-spieltag-" + dayNum + ".png", { type: "image/png" });
       if (navigator.canShare({ files: [file] })) {
-        await navigator.share({ files: [file], text: "Schaffst du mehr? ⚽ Starting XI · Spieltag " + dayNum });
+        await navigator.share({ files: [file], text: "Schaffst du mehr? ⚽ Startelo XI · Spieltag " + dayNum });
         return;
       }
     } catch (e) {
@@ -10048,7 +10048,7 @@ async function shareDailyResult(dateKey) {
 }
 
 async function shareDailyText(dayNum, correct, grid, streak) {
-  const text = "Starting XI · Tag " + dayNum + " · " + correct + "/11 🔥" + streak + "\n" + grid.map(row => row.join("")).join("\n");
+  const text = "Startelo XI · Tag " + dayNum + " · " + correct + "/11 🔥" + streak + "\n" + grid.map(row => row.join("")).join("\n");
   if (navigator.share) {
     try { await navigator.share({ text }); return; } catch (e) { return; } // Nutzer hat abgebrochen - kein zusaetzlicher Fallback noetig
   }
@@ -11808,7 +11808,7 @@ function duelChallengeCode(id) {
   return encodeDuelCode("c", { id, name: sender.name, handle: sender.handle || "", deviceId: sender.deviceId, rank: sender.rank, level: sender.level, ...d.settings, lineups: d.lineups, results: d.role === "challenger" ? d.mine : (d.theirs || []) });
 }
 function duelShareText(d) {
-  return `⚔️ ${profile.duelName || "Ein Freund"} fordert dich bei Starting XI heraus – ${duelFormatLabel(d.settings.rounds)}, ${d.settings.seconds / 60} Min pro Aufstellung. Traust du dich?`;
+  return `⚔️ ${profile.duelName || "Ein Freund"} fordert dich bei Startelo XI heraus – ${duelFormatLabel(d.settings.rounds)}, ${d.settings.seconds / 60} Min pro Aufstellung. Traust du dich?`;
 }
 async function copyText(text, okMsg) {
   try { await navigator.clipboard.writeText(text); showToast(okMsg); } catch (e) { showToast("Konnte nicht kopiert werden"); }
@@ -12555,7 +12555,7 @@ function exportSaveCode() {
 function parseSaveCode(text) {
   const t = (text || "").trim().replace(/\s+/g, "");
   const parts = t.split(".");
-  if (parts[0] !== SAVE_PREFIX) return { error: "Das ist kein Starting-XI-Spielstand. Kopiere den ganzen Code." };
+  if (parts[0] !== SAVE_PREFIX) return { error: "Das ist kein Startelo-XI-Spielstand. Kopiere den ganzen Code." };
   if (parts.length !== 3) return { error: "Der Code ist unvollständig. Kopiere ihn noch einmal komplett." };
   let json;
   try { json = b64uDecode(parts[1]); } catch (e) { return { error: "Der Code ist unvollständig oder beschädigt." }; }
@@ -12597,11 +12597,11 @@ function openExportSave() {
   b.querySelector("#saveCopy").onclick = () => copyText(code, "Spielstand-Code kopiert");
   b.querySelector("#saveClose").onclick = () => b.remove();
   try {
-    const file = new File([code], "starting-xi-spielstand.txt", { type: "text/plain" });
+    const file = new File([code], "startelo-xi-spielstand.txt", { type: "text/plain" });
     if (navigator.canShare && navigator.canShare({ files: [file] })) {
       const sb = b.querySelector("#saveShare");
       sb.hidden = false;
-      sb.onclick = async () => { try { await navigator.share({ files: [file], title: "Starting XI Spielstand" }); } catch (e) { /* Abbruch ist kein Fehler */ } };
+      sb.onclick = async () => { try { await navigator.share({ files: [file], title: "Startelo XI Spielstand" }); } catch (e) { /* Abbruch ist kein Fehler */ } };
     }
   } catch (e) { /* kein Datei-Teilen */ }
 }
@@ -12963,7 +12963,7 @@ function runWalkout(d) {
   const WALLTXT = [
     { side: -1, z: Z0 + 5.2, y0: YS + 0.08, h: 0.36, text: "HEUTE ZÄHLT NUR", col: [242, 239, 230] },
     { side: -1, z: Z0 + 5.2, y0: YS + 0.5, h: 0.24, text: "DIE STARTELF", col: [232, 178, 61] },
-    { side: 1, z: Z0 + 12.6, y0: YS + 0.1, h: 0.62, text: "STARTING XI", col: [232, 178, 61] }
+    { side: 1, z: Z0 + 12.6, y0: YS + 0.1, h: 0.62, text: "STARTELO XI", col: [232, 178, 61] }
   ];
   const DOORS = [{ side: -1, z: Z0 + 1.0, label: "KABINE HEIM" }, { side: 1, z: Z0 + 1.9, label: "KABINE GAST" }];
   const DUST = Array.from({ length: 90 }, (_, i) => ({ x: (hash(i, 1) % 1000 / 1000 - 0.5) * 2.8, y: (hash(i, 2) % 1000 / 1000) * 1.9 - 1.1, z: ZM - 0.6 - (hash(i, 3) % 1000 / 1000) * 9, ph: hash(i, 4) % 1000 / 160 }));
@@ -13195,7 +13195,7 @@ function runWalkout(d) {
       const hpx = (b[1] - a[1]) * 0.66;
       tc.font = `400 ${hpx.toFixed(1)}px Anton, Impact, sans-serif`; tc.textAlign = "center"; tc.textBaseline = "middle";
       tc.fillStyle = rgb([246, 216, 142], Math.min(1.15, fs * 1.2), ws * 0.4);
-      tc.fillText("STARTING XI", (a[0] + b[0]) / 2, (a[1] + b[1]) / 2 + hpx * 0.05);
+      tc.fillText("STARTELO XI", (a[0] + b[0]) / 2, (a[1] + b[1]) / 2 + hpx * 0.05);
       tc.textAlign = "start"; tc.textBaseline = "alphabetic";
     }
 
@@ -13649,7 +13649,7 @@ function shareDuelResult(id) {
   if (!d || !d.opponent) return;
   const me = duelMeInfo();
   const url = duelBaseUrl() + "#duelr=" + encodeDuelCode("r", { id, name: me.name, handle: me.handle, deviceId: me.deviceId, rank: me.rank, level: me.level, results: d.mine });
-  const text = `✅ ${me.name} hat dein Duell bei Starting XI gespielt – hier ist das Ergebnis. Tippe auf den Link, um es zu sehen!`;
+  const text = `✅ ${me.name} hat dein Duell bei Startelo XI gespielt – hier ist das Ergebnis. Tippe auf den Link, um es zu sehen!`;
   return (async () => {
     if (navigator.share) { try { await navigator.share({ text, url }); return; } catch (e) { if (e && e.name === "AbortError") return; } }
     await copyText(text + "\n" + url, "Link kopiert");

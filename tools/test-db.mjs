@@ -64,13 +64,14 @@ const claim = (u, name, crest, legacy) => call(u, "claim_username", [name, crest
 {
   check("Profil vor dem Namen: my_profile leer", (await call(U.anna, "my_profile")) === null);
   const bad = {};
-  for (const [n, code] of [["ab", "length"], ["abcdefghijklmnop", "length"], ["Ab!cd", "format"], ["_anna", "format"], ["anna_", "format"], ["a b c", "format"], ["admin", "reserved"], ["support", "reserved"], ["startingxi", "reserved"], ["n4z1boy", "blocked"], ["fuck_you", "blocked"], ["hitler99", "blocked"]]) {
+  for (const [n, code] of [["ab", "length"], ["abcdefghijklmnop", "length"], ["Ab!cd", "format"], ["_anna", "format"], ["anna_", "format"], ["a b c", "format"], ["admin", "reserved"], ["support", "reserved"], ["startingxi", "reserved"], ["startelo", "reserved"], ["starteloxi", "reserved"], ["startelo_xi", "reserved"], ["startelo.xi", "reserved"], ["n4z1boy", "blocked"], ["fuck_you", "blocked"], ["hitler99", "blocked"]]) {
     bad[n] = await claim(U.anna, n); check(`Name "${n}" -> ${code}`, bad[n].ok === false && bad[n].error === code, JSON.stringify(bad[n]));
   }
   const person = await one("select word from public.name_rules where kind = 'person' and word in ('neuer','messi','mueller','lewandowski') limit 1");
   if (person.length) { const r = await claim(U.anna, person[0].word); check(`Bekannter Spielername "${person[0].word}" gesperrt`, r.ok === false && r.error === "person", JSON.stringify(r)); }
   else check("Personen-Namensregeln im Seed vorhanden", false);
   const ok = await claim(U.anna, "Anna.Kickt", "#F2A0B4", "dev-anna-1");
+  check("Aehnlicher Name startelo99 bleibt erlaubt (nicht reserviert)", (await one("select private.username_error('startelo99') as e"))[0].e === null);
   check("Gueltiger Name (Gross/klein egal) wird klein gespeichert", ok.ok === true && ok.username === "anna.kickt", JSON.stringify(ok));
   const p = await call(U.anna, "my_profile");
   check("Profil: Farbe, Code XI-xxxx, sichtbar fuer alle, ohne Geraete-ID", p.crest_color === "#F2A0B4" && /^XI-[A-Z2-9]{4}$/.test(p.friend_code) && p.discoverable === "all" && p.legacy_device_id === undefined, JSON.stringify(p));

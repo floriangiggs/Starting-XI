@@ -2,6 +2,8 @@
 
 ## Projektbeschreibung
 
+App-Name: **Startelo XI** (früher „Starting XI“; interne Schlüssel wie `anstoss_profile`, `SXI1`, `startingxi-v…` und der Dateiname bleiben bewusst unverändert).
+
 Eigenständige HTML/CSS/JS-App ohne Server (`startelf_check.html`). Spieler
 sehen ein echtes historisches Fußballspiel und müssen die komplette Startelf
 auf einem visuellen Spielfeld an die richtige Position setzen.

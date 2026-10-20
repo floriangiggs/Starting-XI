@@ -1,6 +1,6 @@
 {
-  "name": "Starting XI",
-  "short_name": "Starting XI",
+  "name": "Startelo XI",
+  "short_name": "Startelo XI",
   "description": "Errate die Startelf legendärer Fußballspiele auf dem Spielfeld.",
   "id": "/startelf_check.html",
   "start_url": "./startelf_check.html",

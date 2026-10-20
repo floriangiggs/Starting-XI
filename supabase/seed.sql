@@ -548,6 +548,8 @@ insert into public.name_rules (kind, word) values
   ('reserved', 'startingxi'),
   ('reserved', 'starting'),
   ('reserved', 'xi'),
+  ('reserved', 'startelo'),
+  ('reserved', 'starteloxi'),
   ('reserved', 'system'),
   ('reserved', 'moderator'),
   ('reserved', 'mod'),

@@ -1,4 +1,4 @@
-# Starting XI — Übergabe an Claude Code
+# Startelo XI (früher Starting XI) — Übergabe an Claude Code
 
 Stand: 26.09.2026. Diese Datei beschreibt, wo das Projekt steht und wie es
 weitergeht. Die konkreten Arbeitsaufträge stehen in
