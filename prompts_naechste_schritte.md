@@ -5236,7 +5236,7 @@ Store-App riskant (UEFA ging z. B. 2022 gegen eine Pizza „Champignons League�
 Als **Tatsachenangabe** (Wettbewerb eines echten Spiels) bleiben sie erlaubt.
 Festgelegt (Florian, 20.10.2026): Kreisliga → Regionalliga → **Profiliga** → **Meisterklasse**
 → Weltklasse; Rang „2. Bundesliga“ → **Zweite Liga**.
-Geprüft in TMview: „Meisterklasse“ ist als EU-Wortmarke 018142472 (Kl. 25/35/38/41) belegt →
+Geprüft in TMview: „Königsklasse“ ist als EU-Wortmarke 018142472 (Kl. 25/35/38/41) belegt →
 NICHT verwenden. „Meisterklasse“ in Kl. 9/41 nur in Wortverbindungen eingetragen (DE: „Meister-
 klasse Gründer Motor“, „MK Meisterklasse“, „Symphonische Meisterklasse“, „EMDR Meisterklasse“,
 „Anfängergeist Meisterklasse!“), kein EU-Treffer → als Weltname vertretbar.
