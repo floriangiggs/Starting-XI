@@ -68,7 +68,7 @@ vorige umgesetzt, getestet und committet ist.
 | 54 | Duell im Taktiktafel-Stil: Rundenende an der Tafel mit „Weiter“-Knopf (statt 0,9 s + blauer Zwischenkarte), Duell-Zentrale, Schnell-Duell-Blatt, Einladung, Abpfiff; Emojis → SVG, Niederlage ohne Rot | 42, 50, 52 | ✅ erledigt (Paket A Rundenende an der Tafel mit Review + „Weiter“, sofort gespeichert; B Abpfiff (Sieg/Niederlage/Remis/Gespielt!, Anzeigetafel, Rundenkarten mit Krone, Fair-Play, XP, Bilanz); C Einladung (VS-Magnete, Holz-Fakten, Zettel, Fair-Schalter, Anpfiff); D Duell-Zentrale (Pass, Holzreiter, Kacheln, Tickets, Historie ohne Rot, Freunde/Trophäen als SVG, Schnell-Duell-Blatt Holz+Filz); E Walkout ohne Sperrschrift, Duell-Rückfragen aus Holz, Emojis → SVG, altes .dl-CSS entfernt; Tests: test-duell-flow/abpfiff/einladung/zentrale, check-safearea inkl. Review/Abpfiff; sw.js v70) |
 | 55 | Töne: 11 empfohlene Stellen mit Web-Audio-Klängen aus dem Tonstudio (ohne Rauschen), Ton-Schalter + Lautstärke, Stummschalter respektieren | 49, 53, 54 | ✅ erledigt (Modul „TÖNE“ mit sfx(name, opts) auf der Audio-Uhr, elf Töne Variante A ohne Rauschen/Dateien, Feiern reihen sich ein, Welt-Feier unterbricht, Ton ersetzt gleichen Ton; Stellen: ok mit Kombo-Tonhöhe, Rad-Ratsche + Doppelglocke, Münze einmal je Gutschrift, Anpfiff-Pfiff, Abpfiff, Sterne synchron zur Animation (gestaffelt 0,32 s), Fanfare 11/11, Level-Up-Tafel, Welt-Feier, Walkout (Herzschlag, Klopfer auf 3-2-1, Pfiff), Duell-Sieg; Ton-Schalter + Lautstärke im Scout-Profil, audioSession „ambient“, haptic()-Haken + vibrate; tools/test-sound.mjs 57 Prüfungen; sw.js v71; offen: iPhone-Test Stummschalter/Musik durch Florian) |
 | 56 | Neues App-Icon „Taktiktafel“ (Variante A: Holzrahmen, Filz, Kreide, 11 Magnete) in allen Größen + Maskable + Favicon; Logo auf der Startseite ohne braunen Extra-Rand | 44 | ✅ erledigt (icons/source = neue Taktiktafel-SVGs, alte in icons/source/alt-navy/; alle PNG-Größen neu (1024 ohne Transparenz/Rundung, Maskable-Motiv skaliert auf ≤ 0,8 Kreis, Favicons mit transparenten Ecken); .hm-brand img ohne Doppelrand; sw.js v72; iPhone: Homescreen-Icon erst nach Entfernen + erneutem „Zum Home-Bildschirm“) |
-| 57 | Bugfix: Scout-Profil schließt beim Hochscrollen (Wisch-zum-Schließen prüft das falsche Element); Kampagne-Kachel öffnet den Level-Pfad statt direkt das Level, „Pfad“-Knopf führt wirklich zum Pfad | 43, 44, 51 | offen |
+| 57 | Bugfix: Scout-Profil schließt beim Hochscrollen (Wisch-zum-Schließen prüft das falsche Element); Kampagne-Kachel öffnet den Level-Pfad statt direkt das Level, „Pfad“-Knopf führt wirklich zum Pfad; angefangenes Level mit Holzschild „Weiter aufstellen“ + Knopf „Weiter: Level n“ | 43, 44, 51 | offen |
 | 58 | App-Name „Startelo XI“ statt „Starting XI“ (17 sichtbare Stellen, interne Schlüssel bleiben, gesperrte Nutzernamen ergänzen) | Markenrecherche Startelo (Florian) | freigegeben 20.10.2026 (docs/markenrecherche.md) – offen |
 
 **Empfohlene Reihenfolge ab jetzt:** 49 → 50 (Bugfixes, sofort) → 39 → 41 → 42 → 43 → 44 → 45 → 46 → 47 → 48 → 49 → 50 → 51 → 52 → 53 → 54 → 55 → 56 → 57 → 58 → weitere Offline-Feinschliffe (u. a. Jahres-Lücken im Ideen-Speicher auffüllen) → Planung Online-Duell (inkl. 28/29) → 8 (Capacitor, erst wenn die App final ist; vorher Duell-Pflichtpunkt aus CLAUDE.md ansprechen)
@@ -5137,8 +5137,21 @@ TEIL B – Kampagne von der Startseite: immer erst der Pfad
    und dort zur Startseite führt – wie wenn man über die Weltkarte kommt.
 2. Der Pfad fährt wie bisher (Prompt 51) zum aktuellen Level; ein angefangenes
    Level hat schon das Stift-Abzeichen (lp-badge draft). Ein Tipp darauf
-   öffnet die Vorschau mit „Weiter aufstellen“ – also ein Tipp mehr als heute,
-   dafür sieht man den Pfad.
+   öffnet die Vorschau mit „Weiter aufstellen“.
+   ERGÄNZUNG (Florian, 20.10.2026) – damit der Weg nicht länger wird:
+   a) Angefangenes Level bekommt direkt am Knoten ein kleines Holzschild
+      „Weiter aufstellen“ (Stil der vorhandenen Pfad-Schilder/Holzleiste aus
+      Prompt 51, Oswald 600, Creme auf Holz, kleiner Kreide-Pfeil zum Knoten).
+      Nur ein Schild (das angefangene Level der angezeigten Welt), statisch:
+      KEIN Blinken, KEIN Puls, keine Daueranimation – höchstens einmaliges
+      Einblenden mit der Kamerafahrt. Darf keine Nachbar-Knoten/Labels
+      verdecken (Überlappungs-Skript erweitern), Tipp auf das Schild = Tipp
+      auf den Knoten.
+   b) Der vorhandene Knopf „Zu Level n“ unten am Pfad heißt bei angefangenem
+      Level „Weiter: Level n“ und öffnet direkt dessen Vorschau („Weiter
+      aufstellen“), statt nur dorthin zu scrollen. Ohne angefangenes Level
+      bleibt er wie bisher.
+   Ergebnis: Startseite → Pfad → ein Tipp → Vorschau, und man sieht immer den Pfad.
 3. Kachel-Text bleibt („Welt · Level n von m · angefangen“), Knopf heißt
    „Zum Pfad“ statt „Weiter spielen“ (bei „Los geht's“ für Neue bleibt es).
    Alle Welten geschafft: Weltkarte wie bisher.
@@ -5149,7 +5162,10 @@ TEIL B – Kampagne von der Startseite: immer erst der Pfad
    und so einen Rückweg ins Spiel erzeugt: beheben.
 5. Test: tools/test-kampagne-nav.mjs – Fälle neu / Level offen / Level
    angefangen / alle Welten geschafft; je Kachel-Tipp → richtiger Pfad, Zurück-
-   Kette bis Startseite, Vorschau-„Pfad“ → Pfad, nach Auswerten „Pfad“ → Pfad.
+   Kette bis Startseite, Vorschau-„Pfad“ → Pfad, nach Auswerten „Pfad“ → Pfad;
+   Schild „Weiter aufstellen“ nur bei angefangenem Level, genau einmal, ohne
+   Überlappung (393×852, 375×667, iPad); „Weiter: Level n“ öffnet die richtige
+   Vorschau. Screenshot Pfad mit Schild für Florian.
 
 Abschluss: alle tools/-Skripte grün, CACHE_NAME in sw.js erhöhen, Screenshot
 Startseiten-Kachel vorher/nachher, Status-Tabelle: Prompt 57 erledigt.
