@@ -69,8 +69,9 @@ vorige umgesetzt, getestet und committet ist.
 | 55 | Töne: 11 empfohlene Stellen mit Web-Audio-Klängen aus dem Tonstudio (ohne Rauschen), Ton-Schalter + Lautstärke, Stummschalter respektieren | 49, 53, 54 | ✅ erledigt (Modul „TÖNE“ mit sfx(name, opts) auf der Audio-Uhr, elf Töne Variante A ohne Rauschen/Dateien, Feiern reihen sich ein, Welt-Feier unterbricht, Ton ersetzt gleichen Ton; Stellen: ok mit Kombo-Tonhöhe, Rad-Ratsche + Doppelglocke, Münze einmal je Gutschrift, Anpfiff-Pfiff, Abpfiff, Sterne synchron zur Animation (gestaffelt 0,32 s), Fanfare 11/11, Level-Up-Tafel, Welt-Feier, Walkout (Herzschlag, Klopfer auf 3-2-1, Pfiff), Duell-Sieg; Ton-Schalter + Lautstärke im Scout-Profil, audioSession „ambient“, haptic()-Haken + vibrate; tools/test-sound.mjs 57 Prüfungen; sw.js v71; offen: iPhone-Test Stummschalter/Musik durch Florian) |
 | 56 | Neues App-Icon „Taktiktafel“ (Variante A: Holzrahmen, Filz, Kreide, 11 Magnete) in allen Größen + Maskable + Favicon; Logo auf der Startseite ohne braunen Extra-Rand | 44 | ✅ erledigt (icons/source = neue Taktiktafel-SVGs, alte in icons/source/alt-navy/; alle PNG-Größen neu (1024 ohne Transparenz/Rundung, Maskable-Motiv skaliert auf ≤ 0,8 Kreis, Favicons mit transparenten Ecken); .hm-brand img ohne Doppelrand; sw.js v72; iPhone: Homescreen-Icon erst nach Entfernen + erneutem „Zum Home-Bildschirm“) |
 | 57 | Bugfix: Scout-Profil schließt beim Hochscrollen (Wisch-zum-Schließen prüft das falsche Element); Kampagne-Kachel öffnet den Level-Pfad statt direkt das Level, „Pfad“-Knopf führt wirklich zum Pfad | 43, 44, 51 | offen |
+| 58 | App-Name „Startelo XI“ statt „Starting XI“ (17 sichtbare Stellen, interne Schlüssel bleiben, gesperrte Nutzernamen ergänzen) | Markenrecherche Startelo (Florian) | ⏸ wartet auf Freigabe der Markenrecherche |
 
-**Empfohlene Reihenfolge ab jetzt:** 49 → 50 (Bugfixes, sofort) → 39 → 41 → 42 → 43 → 44 → 45 → 46 → 47 → 48 → 49 → 50 → 51 → 52 → 53 → 54 → 55 → 56 → 57 → weitere Offline-Feinschliffe (u. a. Jahres-Lücken im Ideen-Speicher auffüllen) → Planung Online-Duell (inkl. 28/29) → 8 (Capacitor, erst wenn die App final ist; vorher Duell-Pflichtpunkt aus CLAUDE.md ansprechen)
+**Empfohlene Reihenfolge ab jetzt:** 49 → 50 (Bugfixes, sofort) → 39 → 41 → 42 → 43 → 44 → 45 → 46 → 47 → 48 → 49 → 50 → 51 → 52 → 53 → 54 → 55 → 56 → 57 → 58 (nach Markenfreigabe) → weitere Offline-Feinschliffe (u. a. Jahres-Lücken im Ideen-Speicher auffüllen) → Planung Online-Duell (inkl. 28/29) → 8 (Capacitor, erst wenn die App final ist; vorher Duell-Pflichtpunkt aus CLAUDE.md ansprechen)
 
 Prompt 7 steht bewusst vor der Tages-Challenge: Nur mit der neuen
 Update-Strategie kommen neue Tages-Aufstellungen zuverlässig auf dem iPhone an.
@@ -5152,6 +5153,59 @@ TEIL B – Kampagne von der Startseite: immer erst der Pfad
 
 Abschluss: alle tools/-Skripte grün, CACHE_NAME in sw.js erhöhen, Screenshot
 Startseiten-Kachel vorher/nachher, Status-Tabelle: Prompt 57 erledigt.
+Kein Commit/Push ohne Zeigen der Testausgabe.
+```
+
+---
+
+## Prompt 58 – App heißt „Startelo XI“ (statt „Starting XI“)
+
+**ERST AUSFÜHREN, WENN FLORIAN DIE MARKENRECHERCHE „STARTELO“ FREIGEGEBEN HAT**
+(DPMAregister, TMview Kl. 9/28/41/42, Domains; Protokoll in docs/markenrecherche.md).
+
+**Hintergrund (20.10.2026):** Bei Google Play gibt es „Starting XI • Fußball Manager“
+von „Starting XI Studio“. „Starting XI“ ist außerdem beschreibend und kaum schützbar.
+Neuer Name: **Startelo** (eigenes Kunstwort, Marke + Domain), überall angezeigt als
+**„Startelo XI“** – „Startelo“ cremeweiß, „XI“ in Gold wie bisher. Gleiche Länge
+(11 Zeichen) wie „Starting XI“, Layouts sollten ohne Änderung passen.
+
+```
+Lies CLAUDE.md. Plan Mode, Plan zeigen. Nur Name/Texte, keine Optik- oder Logikänderung.
+
+1. Sichtbare Stellen „Starting XI“ → „Startelo XI“ (vorher per grep vollständig
+   auflisten, Stand main 0dd5b98 sind es diese):
+   - <title>, apple-mobile-web-app-title, manifest.json name + short_name
+   - Startseiten-Logo .hm-brand: „Startelo <em>XI</em>“
+   - Ladebildschirm #splash: h1 „Startelo <em>XI</em>“, aria-label „Startelo XI wird geladen“
+   - Teilen-Bild Tages-Challenge (Canvas, measureText „Starting “/„XI“ → „Startelo “/„XI“)
+   - Teilen-Texte Tages-Challenge (Spieltag-Text + Ergebnis-Raster)
+   - Dateinamen: starting-xi-spieltag-N.png → startelo-xi-spieltag-N.png,
+     starting-xi-spielstand.txt → startelo-xi-spielstand.txt
+   - Duell-Einladung und Duell-Ergebnis-Text
+   - Walkout-Stadion: Bande „STARTING XI“ → „STARTELO XI“ (3D-Text + Textur)
+   - Spielstand sichern: Titel „Startelo XI Spielstand“, Fehlermeldung
+     „Das ist kein Startelo-XI-Spielstand …“
+   - Hinweis bei Speicherproblem („Öffne Startelo XI in Safari …“)
+   - Tagline „Echte Spiele. Deine Startelf.“ BLEIBT.
+2. NICHT ändern (sonst gehen Spielstände/Links kaputt): PROFILE_KEY „anstoss_profile“,
+   SAVE_PREFIX „SXI1“ (alte Codes müssen weiter laden), CACHE_NAME-Präfix in sw.js
+   (nur Nummer erhöhen), package.json name, Dateiname startelf_check.html, APP_URL /
+   GitHub-Pages-Adresse, Duell-Link-Format, alle localStorage-Schlüssel.
+3. Gesperrte Nutzernamen ergänzen (alte bleiben): „startelo“, „startelo_xi“,
+   „starteloxi“ in tools/gen-supabase-seed.mjs, Seed neu erzeugen (supabase/seed.sql),
+   tools/test-db.mjs um diese Fälle erweitern.
+4. CLAUDE.md und Doku: Projektname in Überschriften/Beschreibung auf „Startelo XI“,
+   Hinweis „früher Starting XI“. Prototypen in prototypes/ NICHT anfassen.
+5. Tests: alle tools/-Skripte grün; zusätzlich prüfen
+   - grep: kein sichtbares „Starting XI“ mehr in startelf_check.html/manifest.json
+     (Ausnahmen aus Punkt 2 dokumentieren)
+   - alter Spielstand (Profil aus dem Git-Stand vor der Änderung) lädt unverändert
+   - alter Sicherungs-Code SXI1 lädt, alter Duell-Link (#duel=/#duelr=) öffnet
+   - Logo, Ladebildschirm, Teilen-Bild und Walkout-Bande: Screenshots 393×852 und
+     375×667, kein Umbruch, kein Abschneiden
+6. CACHE_NAME erhöhen. Hinweis an Florian im Abschluss: Auf dem iPhone ändert sich
+   der Name unter dem Homescreen-Icon erst nach Entfernen und erneutem „Zum Home-
+   Bildschirm“. Status-Tabelle: Prompt 58 erledigt.
 Kein Commit/Push ohne Zeigen der Testausgabe.
 ```
 
