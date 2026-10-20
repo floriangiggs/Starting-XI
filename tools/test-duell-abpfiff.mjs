@@ -29,7 +29,7 @@ for (const [w, h] of [[393, 852], [375, 667]]) {
     const info = await page.evaluate(({ role, mine, theirs, rounds }) => {
       profile.duelName = "Anna"; profile.duelHandle = "anna"; saveProfile(profile);
       const id = createDuel({ rounds: rounds || 3, seconds: 120, difficulty: 0 }), d = profile.duels[id];
-      d.opponent = { name: "Lisa", deviceId: "lisa1", handle: "lisa", rank: "Bundesliga", level: 14 };
+      d.opponent = { name: "Lisa", deviceId: "lisa1", handle: "lisa", rank: "Profiliga", level: 14 };
       d.role = role; d.mine = mine; d.theirs = theirs; d.playedRounds = mine.length; d.status = theirs ? "todo" : "waiting";
       if (theirs) evaluateDuel(id);
       activeResultId = id; navStack.length = 0; navigate("start");

@@ -55,9 +55,11 @@ Jeder Eintrag in `LINEUP_CHALLENGES` braucht:
 |---|---|---|
 | 1 | Kreisliga | leicht / aktuell / star-besetzt |
 | 2 | Regionalliga | |
-| 3 | Bundesliga | |
-| 4 | Champions League | |
+| 3 | Profiliga | |
+| 4 | Meisterklasse | |
 | 5 | Weltklasse | exotisch / obskur |
+
+„Bundesliga“/„Champions League“ nur als Wettbewerb echter Spiele, nie als eigene Welt-, Rang- oder Modusnamen (geschützte Marken). Rang 10–14 heißt „Zweite Liga“.
 
 Ziel: möglichst 9+ Aufstellungen pro Stufe, ausgewogen über alle Ligen/
 Wettbewerbe verteilt (keine Kategorie soll stark dominieren).

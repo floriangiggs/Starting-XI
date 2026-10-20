@@ -20,7 +20,7 @@ for (const [w, h] of [[393, 852], [375, 667]]) {
   const open = (played) => page.evaluate((played) => {
     profile.duelName = "Anna"; profile.duelHandle = "anna"; saveProfile(profile);
     const id = createDuel({ rounds: 3, seconds: 120, difficulty: 0 }), d = profile.duels[id];
-    d.role = "opponent"; d.opponent = { name: "Maximilian Kauf", deviceId: "m1", handle: "max.kaufmann", rank: "Bundesliga", level: 14 };
+    d.role = "opponent"; d.opponent = { name: "Maximilian Kauf", deviceId: "m1", handle: "max.kaufmann", rank: "Profiliga", level: 14 };
     if (played) d.theirs = [{ correct: 7, seconds: 80, left: 0 }, { correct: 8, seconds: 90, left: 0 }, { correct: 6, seconds: 100, left: 0 }];
     profile.duelStats.perOpponent.m1 = { name: "Maximilian Kauf", w: 2, l: 1, d: 0 };
     activeInviteId = id; inviteFair = false; invitePath = "browser"; navStack.length = 0; navigate("start"); return id;

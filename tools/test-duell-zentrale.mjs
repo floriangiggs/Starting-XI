@@ -21,7 +21,7 @@ for (const [w, h] of [[393, 852], [375, 667]]) {
   const tag = `${w}x${h}`;
   await page.evaluate(() => {
     profile.duelName = "Florian"; profile.duelHandle = "florian"; profile.level = 12; saveProfile(profile);
-    const R = (c, s) => ({ correct: c, seconds: s, left: 0 }), O = (n, id, hd) => ({ name: n, deviceId: id, handle: hd, rank: "Bundesliga", level: 14 });
+    const R = (c, s) => ({ correct: c, seconds: s, left: 0 }), O = (n, id, hd) => ({ name: n, deviceId: id, handle: hd, rank: "Profiliga", level: 14 });
     const mk = (opp, role, mine, theirs, st, extra = {}) => { const id = createDuel({ rounds: 3, seconds: 120, difficulty: 0 }), d = profile.duels[id]; d.opponent = opp; d.role = role; d.mine = mine; d.theirs = theirs; d.status = st; d.playedRounds = mine.length; Object.assign(d, extra); return id; };
     mk(O("Lisa", "l1", "lisa_kickt"), "challenger", [R(6, 95)], null, "todo");                // Du bist dran (Runde 2)
     mk(O("Tim", "t1", "timbo_10"), "opponent", [], [R(7, 80), R(8, 100), R(5, 90)], "todo");   // Einladung

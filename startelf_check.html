@@ -2259,7 +2259,7 @@ const PITCH_LAYOUTS = {
    Viertelfinale > Gruppenphase), Bekanntheit der gezeigten Mannschaft/Spieler,
    Formations-Seltenheit und wie lange das Spiel zurückliegt. Gleiches Liga-Schema
    wie im Trinkspiel, damit es sich vertraut anfühlt. */
-const DIFF_LABEL = { 1: "Kreisliga", 2: "Regionalliga", 3: "Bundesliga", 4: "Champions League", 5: "Weltklasse" };
+const DIFF_LABEL = { 1: "Kreisliga", 2: "Regionalliga", 3: "Profiliga", 4: "Meisterklasse", 5: "Weltklasse" }; // keine geschuetzten Ligamarken als eigene Namen (Prompt 59)
 const DIFF_COLOR = { 1: "#7fd99a", 2: "#a8d94a", 3: "#e8b23d", 4: "#e8863d", 5: "#c1392b" };
 
 /* ================= AUFSTELLUNGEN =================
@@ -4826,6 +4826,9 @@ function loadProfile() {
     if (!profile.streak || typeof profile.streak !== "object") profile.streak = { current: 0, best: 0, lastDayKey: null };
     if (!profile.daily || typeof profile.daily !== "object") profile.daily = {};
     if (!Array.isArray(profile.freeplayForm)) profile.freeplayForm = [];
+    // Prompt 59: gespeicherte Gegner-Raenge auf die neuen Namen abbilden
+    if (profile.duels && typeof profile.duels === "object") Object.values(profile.duels).forEach((d) => { if (d && d.opponent && typeof d.opponent.rank === "string") d.opponent.rank = rankLabel(d.opponent.rank); });
+    if (profile.duelStats && profile.duelStats.perOpponent) Object.values(profile.duelStats.perOpponent).forEach((f) => { if (f && typeof f.rank === "string") f.rank = rankLabel(f.rank); });
     if (!profile.sound || typeof profile.sound !== "object") profile.sound = { on: true, volume: 0.7 };
     if (typeof profile.sound.on !== "boolean") profile.sound.on = true;
     if (typeof profile.sound.volume !== "number" || !isFinite(profile.sound.volume)) profile.sound.volume = 0.7;
@@ -4982,11 +4985,14 @@ function levelProgress(totalXP) {
 const RANKS = [
   { min: 1,  max: 4,  icon: "⚽", name: "Kreisliga",       c1: "#a37b4a", c2: "#5c4326" },
   { min: 5,  max: 9,  icon: "🥉", name: "Regionalliga",    c1: "#cd8a4a", c2: "#7a4d24" },
-  { min: 10, max: 14, icon: "🥈", name: "2. Bundesliga",   c1: "#c7ccd6", c2: "#6c7280" },
-  { min: 15, max: 19, icon: "🥇", name: "Bundesliga",      c1: "#f4d58d", c2: "#b8862a" },
-  { min: 20, max: 29, icon: "🌟", name: "Champions League", c1: "#9b8bf4", c2: "#4b3a9e" },
+  { min: 10, max: 14, icon: "🥈", name: "Zweite Liga",      c1: "#c7ccd6", c2: "#6c7280" },
+  { min: 15, max: 19, icon: "🥇", name: "Profiliga",        c1: "#f4d58d", c2: "#b8862a" },
+  { min: 20, max: 29, icon: "🌟", name: "Meisterklasse",    c1: "#9b8bf4", c2: "#4b3a9e" },
   { min: 30, max: Infinity, icon: "👑", name: "Weltklasse", c1: "#ffe9ab", c2: "#e8b23d", legendary: true }
 ];
+// Alte Rangnamen (bis Prompt 58) -> neue: Gegner mit aelterer App schicken sie noch in Duell-Links, und sie stehen in gespeicherten Duellen (Prompt 59)
+const RANK_RENAME = { "2. Bundesliga": "Zweite Liga", "Bundesliga": "Profiliga", "Champions League": "Meisterklasse" };
+const rankLabel = (n) => RANK_RENAME[n] || n;
 function rankForLevel(level) {
   return RANKS.find(r => level >= r.min && level <= r.max) || RANKS[0];
 }
@@ -4996,9 +5002,9 @@ function rankForLevel(level) {
 const MASCOT_STAGES = [
   { accessory: "", glow: "rgba(140,140,140,0.3)", sparkle: false },     // Kreisliga - blank
   { accessory: "👟", glow: "rgba(168,217,74,0.4)", sparkle: false },     // Regionalliga - eigene Schuhe
-  { accessory: "🧤", glow: "rgba(74,163,255,0.4)", sparkle: false },     // 2. Bundesliga - Vereinsausrüstung
-  { accessory: "🎽", glow: "rgba(232,178,61,0.45)", sparkle: false },    // Bundesliga - Trikot
-  { accessory: "⭐", glow: "rgba(232,134,61,0.55)", sparkle: true },     // Champions League - Star
+  { accessory: "🧤", glow: "rgba(74,163,255,0.4)", sparkle: false },     // Zweite Liga - Vereinsausrüstung
+  { accessory: "🎽", glow: "rgba(232,178,61,0.45)", sparkle: false },    // Profiliga - Trikot
+  { accessory: "⭐", glow: "rgba(232,134,61,0.55)", sparkle: true },     // Meisterklasse - Star
   { accessory: "👑", glow: "rgba(193,57,43,0.6)", sparkle: true }        // Weltklasse - Legende
 ];
 function mascotStage() {
@@ -5804,7 +5810,7 @@ function wmStadium(w, ring, pct, k) {
   } else if (w === 2) { // Regionalliga: eine Tribuene, Banden
     inner = `<circle cx="50" cy="50" r="41" fill="#2F5E45"/><path d="M14 30 A41 41 0 0 1 86 30 L74 34 A30 30 0 0 0 26 34 Z" fill="#33465A"/>${Array.from({ length: 4 }, (_, i) => `<path d="M${18 + i * 2} ${29.5 - i * 1.6} A${39 - i * 1.6} ${39 - i * 1.6} 0 0 1 ${82 - i * 2} ${29.5 - i * 1.6}" fill="none" stroke="#C9D6E3" stroke-width="0.7" opacity=".45"/>`).join("")}
       ${["#E8B23D", "#C9D6E3", "#E0705F", "#7fd99a", "#F2EFE6"].map((c, i) => `<rect x="${21 + i * 12}" y="72" width="9" height="3" rx="1" fill="${c}"/>`).join("")}${pitch(26, 37, 48, 33)}`;
-  } else if (w === 3) { // Bundesliga: volles Rund
+  } else if (w === 3) { // Profiliga (Welt 3): volles Rund
     inner = `<circle cx="50" cy="50" r="41" fill="#22303C"/>${Array.from({ length: 70 }, (_, i) => { const a = i / 70 * Math.PI * 2, rr = 34 + (i % 3) * 2.4; return `<circle cx="${(50 + rr * Math.cos(a)).toFixed(1)}" cy="${(50 + rr * Math.sin(a)).toFixed(1)}" r="1.25" fill="${["#E8B23D", "#F4F1E8", "#C1392B", "#E8B23D"][i % 4]}" opacity=".85"/>`; }).join("")}
       <circle cx="50" cy="50" r="29" fill="#1D2A35"/>${pitch(28, 31, 44, 38)}`;
   } else if (w === 4) { // CL-Nacht: dunkel, Flutlicht, Sterne
@@ -6161,13 +6167,13 @@ function lpScene(W, n) {
       setPieces.push(P.scoreboard(lpPathX(TOP0 + STEP * 1.5, phase) < CX ? 290 : 100, TOP0 + STEP * 1.5), P.bus(lpPathX(TOP0 + STEP * 5.5, phase) < CX ? 286 : 104, TOP0 + STEP * 5.5), P.dugout(lpPathX(TOP0 + STEP * 3.5, phase) < CX ? 290 : 100, TOP0 + STEP * 3.5, "#2E7D52"), P.dugout(lpPathX(TOP0 + STEP * 8.5, phase) < CX ? 290 : 100, TOP0 + STEP * 8.5, "#13202A"));
       for (let y = 170; y < H - 60; y += 40) { const k = r(); if (k < 0.12) continue; place(y, (x, yy) => k < 0.24 ? P.hay(x, yy) : k < 0.32 ? P.dummies(x, yy, "#E8B23D") : k < 0.52 ? P.ballbag(x, yy) : k < 0.64 ? P.crate(x, yy, "#2E7D52") : k < 0.74 ? P.corner(x, yy, "#A8D94A") : k < 0.86 ? P.cone(x, yy) + P.cone(x + 16, yy + 3) : P.ball(x, yy), "near", k < 0.2 ? 32 : k < 0.38 ? 28 : 16); }
     } else if (W === 3) {
-      // Bundesliga: Sitzplatz-Tribünen, Unterrang rot, Oberrang grau, LED-Bande
+      // Profiliga (Welt 3): Sitzplatz-Tribünen, Unterrang rot, Oberrang grau, LED-Bande
       const o = { key: 3, w: 60, rows: 6, roof: 12, roofC: "#C9CFCC", concrete: "#5E6662", step: ["#6E7672", "#4C5450"], seats: ["#B8332A", "#B8332A", "#8F9893", "#8F9893"], stair: "#9AA29D", rail: "#D7DCD9", shirts: ["#C1392B", "#F4F1E8", "#13202A", "#E8B23D", "#C1392B", "#3A4A44"], dens: 0.88, gap: 5.6, vom: true, front: "#2A302D", led: "#E8B23D", scarf: 0.08, scarfC: ["#C1392B", "#F4F1E8"], aisle: 120 };
       bg += P.edgeStand("L", 130, H - 150, o, r) + P.edgeStand("R", 130, H - 150, o, r);
       setPieces.push(P.screen(lpPathX(TOP0 + STEP * 2.5, phase) < CX ? 288 : 102, TOP0 + STEP * 2.5, "TOR!"), P.camera(lpPathX(TOP0 + STEP * 6, phase) < CX ? 300 : 90, TOP0 + STEP * 6), P.dugout(lpPathX(TOP0 + STEP * 4.5, phase) < CX ? 290 : 100, TOP0 + STEP * 4.5, "#C1392B"));
       for (let y = 170; y < H - 60; y += 40) { const k = r(); if (k < 0.1) continue; place(y, (x, yy) => k < 0.22 ? P.flag(x, yy, "#C1392B", "#F4F1E8", 0.85) : k < 0.38 ? P.photog(x, yy, "#E8B23D") : k < 0.52 ? P.camera(x, yy) : k < 0.64 ? P.dummies(x, yy, "#C1392B") : k < 0.74 ? P.ballbag(x, yy) : k < 0.86 ? P.corner(x, yy, "#E8B23D") : P.crate(x, yy, "#C1392B"), "near", k < 0.22 ? 32 : k < 0.38 ? 20 : k < 0.64 && k >= 0.52 ? 28 : 18); }
     } else if (W === 4) {
-      // Champions League bei Nacht: dunkle Ränge, Handylichter, Dachstrahler
+      // Meisterklasse (Welt 4) bei Nacht: dunkle Ränge, Handylichter, Dachstrahler
       const o = { key: 4, w: 60, rows: 6, roof: 12, roofC: "#3A4448", concrete: "#1E2826", step: ["#2C3634", "#1A2321"], seats: ["#22303A", "#22303A", "#1C262E"], stair: "#3A4644", rail: "#6E7A78", shirts: ["#2A3A44", "#3A4A54", "#E8863D", "#F4F1E8", "#1E2A30", "#4A5A60"], dens: 0.9, gap: 5.6, vom: true, front: "#141C1A", led: "#7FD99A", phones: 0.05, aisle: 130, roofLights: true };
       bg += P.edgeStand("L", 120, H - 150, o, r) + P.edgeStand("R", 120, H - 150, o, r);
       for (let i = 0; i < Math.floor(n / 3) + 1; i++) { const y = TOP0 + STEP * (1 + i * 3); farProps += P.beam(i % 2 ? 360 : 30, y - 130, i % 2 ? -1 : 1); }
@@ -6799,7 +6805,7 @@ function lvFit(root, still) {
   const kick = q("#lvKick"), kt = kick.querySelector(".t");
   kick.style.fontSize = ""; for (let s = 14; kt.scrollWidth > kt.clientWidth + 0.5 && s > 11; s -= 0.5) kick.style.fontSize = s + "px";
   if (kt.scrollWidth > kt.clientWidth + 0.5) { kt.textContent = kt.textContent.replace("Bonus-Level ", "Bonus "); kick.style.fontSize = ""; for (let s = 14; kt.scrollWidth > kt.clientWidth + 0.5 && s > 11; s -= 0.5) kick.style.fontSize = s + "px"; }
-  if (kt.scrollWidth > kt.clientWidth + 0.5) { kt.textContent = kt.textContent.replace("Champions League", "CL").replace("Regionalliga", "RL"); kick.style.fontSize = ""; for (let s = 14; kt.scrollWidth > kt.clientWidth + 0.5 && s > 11; s -= 0.5) kick.style.fontSize = s + "px"; }
+  if (kt.scrollWidth > kt.clientWidth + 0.5) { kt.textContent = kt.textContent.replace("Regionalliga", "RL"); kick.style.fontSize = ""; for (let s = 14; kt.scrollWidth > kt.clientWidth + 0.5 && s > 11; s -= 0.5) kick.style.fontSize = s + "px"; }
   const comp = q("#lvComp"), cn = comp.querySelector(".n"); comp.style.fontSize = "";
   const compFits = () => comp.scrollWidth <= comp.clientWidth + 0.5 && cn.scrollWidth <= cn.clientWidth + 0.5;
   for (let s = 14.5; !compFits() && s > 12.5; s -= 0.5) comp.style.fontSize = s + "px";
@@ -11832,7 +11838,7 @@ function handleDuelInput(text) {
   if (d.error) return d;
   if (d.deviceId === profile.deviceId) return { error: "own" };
   if (profile.duelsDeleted.includes(d.id)) return { error: "deleted" }; // Prompt 39: gelöschtes Duell - Link ignorieren
-  const opp = { name: d.name || "Freund", handle: d.handle || "", deviceId: d.deviceId, rank: d.rank, level: d.level };
+  const opp = { name: d.name || "Freund", handle: d.handle || "", deviceId: d.deviceId, rank: rankLabel(d.rank), level: d.level };
   if (d.kind === "c") {
     if (!d.lineups.every(id => dailyMatchById(id))) return { error: "lineups" };
     if (d.results.length && d.results.length !== d.rounds) return { error: "format" };
@@ -12502,7 +12508,7 @@ function renderDuelInvite() {
   const onApp = browser && invitePath === "app";
   const oname = duelEsc(o.name), nRounds = d.settings.rounds === 1 ? "Aufstellung" : d.settings.rounds + " Aufstellungen";
   const prev = root.querySelector(".du-body"), keepScroll = prev ? prev.scrollTop : null;
-  const sub = (p) => `<small>${p.handle ? "@" + duelEsc(p.handle) : "&nbsp;"}</small><small>${p.rank ? duelEsc(p.rank) + " · Level " + p.level : "&nbsp;"}</small>`;
+  const sub = (p) => `<small>${p.handle ? "@" + duelEsc(p.handle) : "&nbsp;"}</small><small>${p.rank ? duelEsc(rankLabel(p.rank)) + " · Level " + p.level : "&nbsp;"}</small>`;
   const zettel = onApp
     ? `<b>Code kopiert.</b> Öffne die App › Duelle › Code einfügen. Zum Spielen hier im Browser tippe oben auf „Hier im Browser spielen“.`
     : played ? `<b>${oname} hat schon gespielt.</b> Die Ergebnisse siehst du, wenn du alle ${nRounds} gespielt hast.`
@@ -12886,7 +12892,7 @@ function runWalkout(d) {
     fit($("foMeNm"), myName); fit($("foOpNm"), oppName);
     $("duoMe").textContent = myName; $("duoOp").textContent = oppName;
     $("foMeWho").textContent = "Du · " + me.rank + " · Level " + me.level;
-    $("foOpWho").textContent = opp && opp.rank ? opp.rank + " · Level " + opp.level : "";
+    $("foOpWho").textContent = opp && opp.rank ? rankLabel(opp.rank) + " · Level " + opp.level : "";
     $("round").textContent = "Runde " + (r.round + 1) + " von " + d.settings.rounds;
   }
   let cards = [], dots = [];
@@ -13899,7 +13905,7 @@ function playWorldCelebration(tier, opts = {}) {
   function buildWord() {
     const last = world === 5;
     const next = last ? WORLDS[5] : WORLDS[world + 1];
-    const lines = next.name === "Champions League" ? ["CHAMPIONS", "LEAGUE"] : [next.name.toUpperCase()];
+    const lines = [next.name.toUpperCase()]; // alle Weltnamen einzeilig; die Groesse passt sich der Breite an
     const c = document.createElement("canvas").getContext("2d");
     c.font = "400 100px Anton, Impact, sans-serif";
     const size = Math.min(84, ...lines.map(l => 350 / (c.measureText(l).width / 100)));

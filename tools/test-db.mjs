@@ -149,7 +149,7 @@ const ids = (arr) => arr.map((x) => x.id);
   await call(U.anna, "answer_request", [U.emil, false], ["uuid", "boolean"]);
 
   // Sichtbarkeit der Werte
-  await call(U.anna, "put_public_stats", [12, "2. Bundesliga", 64, 9, 5, 9, 71, 140], ["int", "text", "int", "int", "int", "int", "int", "int"]);
+  await call(U.anna, "put_public_stats", [12, "Zweite Liga", 64, 9, 5, 9, 71, 140], ["int", "text", "int", "int", "int", "int", "int", "int"]);
   const fs1 = await call(U.ben, "friend_stats", [U.anna], ["uuid"]);
   check("Freund sieht Werte", fs1.level === 12 && fs1.campaign_stars === 64 && fs1.profile.username === "anna_neu", JSON.stringify(fs1));
   check("Fremder sieht Werte NICHT (Funktion)", err(await call(U.fritz, "friend_stats", [U.anna], ["uuid"]), "not_friends"));

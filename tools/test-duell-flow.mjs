@@ -42,7 +42,7 @@ for (const role of ["challenger", "invited"]) {
   await page.evaluate((role) => {
     window.DUEL_TEST_SECONDS = 120; profile.duelName = "Anna"; profile.duelHandle = "anna"; saveProfile(profile);
     const id = createDuel({ rounds: 3, seconds: 120, difficulty: 0 }), d = profile.duels[id];
-    d.opponent = { name: "Lisa", deviceId: "lisa1", handle: "lisa", rank: "Bundesliga", level: 14 };
+    d.opponent = { name: "Lisa", deviceId: "lisa1", handle: "lisa", rank: "Profiliga", level: 14 };
     if (role === "invited") { d.role = "opponent"; d.status = "todo"; d.theirs = [{ correct: 7, seconds: 80, left: 0 }, { correct: 8, seconds: 111, left: 0 }, { correct: 5, seconds: 120, left: 0 }]; }
     window.__id = id; startDuelRun(id);
   }, role);

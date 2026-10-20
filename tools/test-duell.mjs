@@ -33,7 +33,7 @@ vm.runInContext([
   grabFn("duelHandleFromName"), grabFn("duelKeyStream"), grabFn("duelRoundToken"), grabFn("obfuscateResults"), grabFn("parseDuelRound"), grabFn("deobfuscateResults"),
   grabFn("encodeDuelCode"), grabFn("decodeDuelCode"), grabFn("extractDuelCode"), grabFn("duelOutcome"), grabFn("duelRoundExtras"),
   grabConst("DUEL_EXPIRE_MS"), grabConst("duelActivity"), grabConst("duelExpired"), grabFn("duelRemember"), grabFn("duelDelete"), grabFn("duelUndelete"), grabFn("duelMaintenance"),
-  grabFn("applyDuelStats"), grabFn("handleDuelInput"),
+  grabFn("applyDuelStats"), grabConst("RANK_RENAME"), grabConst("rankLabel"), grabFn("handleDuelInput"),
   "let duelRun = null; const saveProfile = () => {}; const dailyMatchById = () => ({ formation: '4-3-3' }); const evaluateDuel = () => true;",
   "let profile = { deviceId: 'meinegeraet', duels: {}, duelsDeleted: [], duelStats: { wins: 0, losses: 0, draws: 0, streak: 0, bestStreak: 0, sweeps: 0, perOpponent: {}, form: [] } };",
 ].join("\n"), ctx);
