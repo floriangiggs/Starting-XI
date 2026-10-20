@@ -70,7 +70,7 @@ vorige umgesetzt, getestet und committet ist.
 | 56 | Neues App-Icon „Taktiktafel“ (Variante A: Holzrahmen, Filz, Kreide, 11 Magnete) in allen Größen + Maskable + Favicon; Logo auf der Startseite ohne braunen Extra-Rand | 44 | ✅ erledigt (icons/source = neue Taktiktafel-SVGs, alte in icons/source/alt-navy/; alle PNG-Größen neu (1024 ohne Transparenz/Rundung, Maskable-Motiv skaliert auf ≤ 0,8 Kreis, Favicons mit transparenten Ecken); .hm-brand img ohne Doppelrand; sw.js v72; iPhone: Homescreen-Icon erst nach Entfernen + erneutem „Zum Home-Bildschirm“) |
 | 57 | Bugfix: Scout-Profil schließt beim Hochscrollen (Wisch-zum-Schließen prüft das falsche Element); Kampagne-Kachel öffnet den Level-Pfad statt direkt das Level, „Pfad“-Knopf führt wirklich zum Pfad; angefangenes Level mit Holzschild „Weiter aufstellen“ + Knopf „Weiter: Level n“ | 43, 44, 51 | offen |
 | 58 | App-Name „Startelo XI“ statt „Starting XI“ (17 sichtbare Stellen, interne Schlüssel bleiben, gesperrte Nutzernamen ergänzen) | Markenrecherche Startelo (Florian) | freigegeben 20.10.2026 (docs/markenrecherche.md) – offen |
-| 59 | Welt- und Rangnamen ohne geschützte Marken: Bundesliga → Profiliga, Champions League → Königsklasse, 2. Bundesliga → Zweite Liga (Weltkarte, Pfad, Kachel, Feier, Scout-Ränge, CLAUDE.md); Spiel-Beschreibungen bleiben | 58 | offen (vorher TMview-Kurzcheck „Königsklasse“, sonst „Meisterklasse“) |
+| 59 | Welt- und Rangnamen ohne geschützte Marken: Bundesliga → Profiliga, Champions League → Meisterklasse, 2. Bundesliga → Zweite Liga (Weltkarte, Pfad, Kachel, Feier, Scout-Ränge, CLAUDE.md); Spiel-Beschreibungen bleiben | 58 | offen (Namen geprüft 20.10.2026) |
 
 **Empfohlene Reihenfolge ab jetzt:** 49 → 50 (Bugfixes, sofort) → 39 → 41 → 42 → 43 → 44 → 45 → 46 → 47 → 48 → 49 → 50 → 51 → 52 → 53 → 54 → 55 → 56 → 57 → 58 → 59 → weitere Offline-Feinschliffe (u. a. Jahres-Lücken im Ideen-Speicher auffüllen) → Planung Online-Duell (inkl. 28/29) → 8 (Capacitor, erst wenn die App final ist; vorher Duell-Pflichtpunkt aus CLAUDE.md ansprechen)
 
@@ -5234,25 +5234,27 @@ Kein Commit/Push ohne Zeigen der Testausgabe.
 geschützte Marken. Als **eigene Bezeichnung** für Welten und Ränge sind sie in einer
 Store-App riskant (UEFA ging z. B. 2022 gegen eine Pizza „Champignons League“ vor).
 Als **Tatsachenangabe** (Wettbewerb eines echten Spiels) bleiben sie erlaubt.
-Florians Wahl (Variante A): Kreisliga → Regionalliga → **Profiliga** → **Königsklasse**
+Festgelegt (Florian, 20.10.2026): Kreisliga → Regionalliga → **Profiliga** → **Meisterklasse**
 → Weltklasse; Rang „2. Bundesliga“ → **Zweite Liga**.
-Vorher: Florian prüft „Königsklasse“ kurz in TMview (Kl. 9/41). Ist der Begriff für
-Spiele/Apps belegt, statt „Königsklasse“ überall **„Meisterklasse“** verwenden.
+Geprüft in TMview: „Meisterklasse“ ist als EU-Wortmarke 018142472 (Kl. 25/35/38/41) belegt →
+NICHT verwenden. „Meisterklasse“ in Kl. 9/41 nur in Wortverbindungen eingetragen (DE: „Meister-
+klasse Gründer Motor“, „MK Meisterklasse“, „Symphonische Meisterklasse“, „EMDR Meisterklasse“,
+„Anfängergeist Meisterklasse!“), kein EU-Treffer → als Weltname vertretbar.
 
 ```
 Lies CLAUDE.md und docs/markenrecherche.md. Plan Mode, Plan zeigen. Nur Namen/Texte.
 
-1. DIFF_LABEL: 3 „Bundesliga“ → „Profiliga“, 4 „Champions League“ → „Königsklasse“.
+1. DIFF_LABEL: 3 „Bundesliga“ → „Profiliga“, 4 „Champions League“ → „Meisterklasse“.
    Intern bleiben die Stufen-Nummern 1–5 (Spielstände, campaign.*, drafts) unverändert.
 2. RANKS (Scout-Ränge): „2. Bundesliga“ → „Zweite Liga“, „Bundesliga“ → „Profiliga“,
-   „Champions League“ → „Königsklasse“. Farben/Icons/Level-Grenzen unverändert.
+   „Champions League“ → „Meisterklasse“. Farben/Icons/Level-Grenzen unverändert.
    Prüfen, ob irgendwo ein Rangname gespeichert wird (z. B. unlockedTitle, Teilen,
    Duell-Handle); falls ja, beim Laden alte Namen auf neue abbilden.
 3. Sonderfälle, die an den alten Namen hängen, anpassen/entfernen:
    - Welt-Feier: Zeilenumbruch nur für „Champions League“ (["CHAMPIONS","LEAGUE"]) –
-     „KÖNIGSKLASSE“ einzeilig prüfen, bei Platzmangel Schrift anpassen (Anton, Ö!).
+     „MEISTERKLASSE“ einzeilig prüfen, bei Platzmangel Schrift anpassen (Anton, Ö!).
    - Vorschau-Kopfzeile: Kürzung „Champions League“ → „CL“ und „Regionalliga“ → „RL“
-     nur noch für Wettbewerbsnamen echter Spiele; Weltname „Königsklasse“ ggf. kürzen
+     nur noch für Wettbewerbsnamen echter Spiele; Weltname „Meisterklasse“ ggf. kürzen
      nur wenn er nicht passt.
    - alle weiteren Stellen per grep finden, an denen DIFF_LABEL/RANKS-Namen als Text
      verglichen werden (=== "Bundesliga" o. ä.).
@@ -5260,7 +5262,7 @@ Lies CLAUDE.md und docs/markenrecherche.md. Plan Mode, Plan zeigen. Nur Namen/Te
    Aufstellungen, Frei-spielen-Filter „Champions League“/„Deutschland“, Duell-
    Kategorien und DUEL_LEAGUE_SHORT, Kontexttexte („Champions-League-Finale“ usw.).
 5. CLAUDE.md: Tabelle „Schwierigkeitsstufen (Liga-Schema)“ → Kreisliga, Regionalliga,
-   Profiliga, Königsklasse, Weltklasse + Satz: „Bundesliga/Champions League nur als
+   Profiliga, Meisterklasse, Weltklasse + Satz: „Bundesliga/Champions League nur als
    Wettbewerb echter Spiele, nie als eigene Welt-, Rang- oder Modusnamen.“
 6. Tests: alle tools/-Skripte grün; grep zeigt „Bundesliga“/„Champions League“ nur noch
    in Spieldaten/Filtern/Duell-Kategorien (Liste zeigen); alter Spielstand lädt,

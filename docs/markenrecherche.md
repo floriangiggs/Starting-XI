@@ -32,6 +32,17 @@ Belege (27 Screenshots mit Datum) liegen als PDF bei Florian:
 | Domains (IONOS) | startelo.de frei (~15,60 €/Jahr ab Jahr 2), startelo.app frei (~33 €/Jahr), startelo.com nur Premium (2.001,58 € einmalig) | .de kaufen, .app optional, .com nicht |
 | YouTube, TikTok, Instagram | kein Account „Startelo“ | frei |
 
+## Welt- und Rangnamen in der App (20.10.2026)
+
+„Bundesliga“ (DFL) und „Champions League“ (UEFA) werden nicht mehr als eigene Welt-/Rangnamen
+verwendet (Prompt 59), nur noch als Wettbewerb echter Spiele.
+
+| Begriff | TMview Kl. 9/41 | Entscheidung |
+|---|---|---|
+| Königsklasse | EU-Wortmarke 018142472 „KÖNIGSKLASSE“ (Martin Grosse, Kl. 25/35/38/41, eingetragen), dazu UK-Marke und weitere DE-Wortverbindungen | nicht verwenden |
+| Meisterklasse | nur Wortverbindungen in DE (Gründer Motor, MK Meisterklasse, Symphonische, EMDR, Anfängergeist); kein EU-Treffer | **Welt 4 / Rang 20–29: „Meisterklasse“** |
+| Profiliga, Zweite Liga | allgemeine Begriffe | Welt 3 / Rang 15–19: „Profiliga“; Rang 10–14: „Zweite Liga“ |
+
 ## Offene Punkte
 
 - Domain kaufen (spätestens vor K4): startelo.de, optional startelo.app; beim Kauf alle Extras abwählen.
