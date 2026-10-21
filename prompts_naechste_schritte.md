@@ -5324,6 +5324,9 @@ Lies CLAUDE.md. Plan Mode, Plan zeigen. Noch KEINE neuen Aufstellungen hinzufüg
    - Kampagne und Tages-Challenge bleiben bei „ab 2008“.
 5. Balance-Regeln (tools/check-lineup-pools.mjs erweitern, Fehler = rot):
    - Gefragte Mannschaft (side) im DUEL_POOL höchstens 8-mal.
+   - Beteiligung (gefragte Seite ODER Gegner) je Mannschaft höchstens 25 % einer
+     Kategorie (alle Pools zusammen) – gilt besonders für FC Bayern, Real, Barça,
+     ManCity; Ausgabe „Top-5-Beteiligung je Kategorie“.
    - Je Kategorie mindestens 6 verschiedene gefragte Mannschaften; unter den ersten 20
      einer Kategorie (Reihenfolge im Pool) keine Mannschaft mehr als 2-mal.
    - Schwierigkeits-Mix je Kategorie (Hinweis gelb, nicht rot): Ziel ca. 40 % leicht
@@ -5382,7 +5385,7 @@ Datum/Ergebnis in der Liste sind Arbeitsstand – maßgeblich ist die Quelle.
 | 19 | Bundesliga, 10.02.2024: Bayer 04 Leverkusen – FC Bayern 3:0 | Bayer 04 Leverkusen | 2 | – |
 | 20 | 2. Bundesliga, 12.05.2024: FC St. Pauli – VfL Osnabrück 3:1 (Aufstieg) | FC St. Pauli | 4 | – |
 
-Beteiligung (Seite oder Gegner): Bayern 4 · Schalke 5 · BVB 5 · Werder 4 · Leverkusen 2 ·
+Beteiligung (Seite oder Gegner): Bayern 5 · Schalke 5 · BVB 5 · Werder 3 · Leverkusen 2 ·
 Leipzig 2 · Frankfurt 2 · HSV 2 · übrige je 1. Gefragt: BVB 3, Schalke 3, Werder 2, Bayern 2,
 sonst je 1 (13 verschiedene).
 
