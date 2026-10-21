@@ -5449,7 +5449,7 @@ maßgeblich ist die Quelle.
 | 13 | Copa-del-Rey-Finale, 06.04.2024: Athletic Bilbao – RCD Mallorca 1:1 n.V., Athletic i.E. | Athletic Bilbao | 3 | highlight |
 | 14 | Copa-del-Rey-Finale 2025/26: Real Sociedad – Atlético Madrid 2:2, Real Sociedad i.E. | Atlético Madrid | 3 | highlight |
 
-Beteiligung (Seite oder Gegner): Atlético 3 · Valencia 3 (+1 als Gegner) · Deportivo 2 ·
+Beteiligung (Seite oder Gegner): Atlético 3 · Valencia 3 · Deportivo 2 ·
 Sevilla 3 · Real Sociedad 2 · Real 2 · Barça 2 · Betis 2 · Athletic 2 · Getafe 2 · übrige 1.
 Mix L/M/K = 2/10/2 (Spanien-Leichte kommen aus den vorhandenen Real/Barça-Partien).
 anchors: #8 Theo Hernández, Marcos Llorente · #12 Dovbyk, Savinho, Aleix García.
