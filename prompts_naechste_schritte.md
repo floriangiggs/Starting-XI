@@ -72,7 +72,7 @@ vorige umgesetzt, getestet und committet ist.
 | 58 | App-Name „Startelo XI“ statt „Starting XI“ (17 sichtbare Stellen, interne Schlüssel bleiben, gesperrte Nutzernamen ergänzen) | Markenrecherche Startelo (Florian) | ✅ erledigt (19 Stellen in startelf_check.html + manifest.json; interne Schlüssel unverändert; reservierte Namen startelo/starteloxi; tools/test-umbenennung.mjs; sw.js v74) |
 | 59 | Welt- und Rangnamen ohne geschützte Marken: Bundesliga → Profiliga, Champions League → Meisterklasse, 2. Bundesliga → Zweite Liga (Weltkarte, Pfad, Kachel, Feier, Scout-Ränge, CLAUDE.md); Spiel-Beschreibungen bleiben | 58 | ✅ erledigt (DIFF_LABEL + RANKS, RANK_RENAME/rankLabel für Gegner-Ränge aus alten Links und gespeicherte Duelle, Welt-Feier einzeilig; tools/test-weltnamen.mjs; sw.js v75) |
 | 60 | Duell-Pool: eigener Pool DUEL_POOL (nur Duell + Frei spielen), 12 Duell-Kategorien, Hausregel-Ausnahme Nostalgie 2000–2007, Balance-Regeln + Prüfskript – noch KEINE neuen Aufstellungen | 59 | offen |
-| 61 | 200 neue Aufstellungen für den Duell-Pool in Paketen (61a Deutschland, 61b …), Kandidaten mit Florian ausgewählt | 60 | 61a (Deutschland, 20) + 61b (Spanien, 26) + 61c (Italien, 24) bereit; weitere Pakete folgen |
+| 61 | 200 neue Aufstellungen für den Duell-Pool in Paketen (61a Deutschland, 61b …), Kandidaten mit Florian ausgewählt | 60 | 61a (Deutschland, 20) + 61b (Spanien, 26) + 61c (Italien, 24) + 61d (England, 20 + 3 Nostalgie) bereit; weitere Pakete folgen |
 
 **Empfohlene Reihenfolge ab jetzt:** 49 → 50 (Bugfixes, sofort) → 39 → 41 → 42 → 43 → 44 → 45 → 46 → 47 → 48 → 49 → 50 → 51 → 52 → 53 → 54 → 55 → 56 → 57 → 58 → 59 → 60 → 61 (Pakete) → weitere Offline-Feinschliffe (u. a. Jahres-Lücken im Ideen-Speicher auffüllen) → Planung Online-Duell (inkl. 28/29) → 8 (Capacitor, erst wenn die App final ist; vorher Duell-Pflichtpunkt aus CLAUDE.md ansprechen)
 
@@ -5337,6 +5337,7 @@ Lies CLAUDE.md. Plan Mode, Plan zeigen. Noch KEINE neuen Aufstellungen hinzufüg
      Fehler (nur Hinweis); alle anderen Klubs normale Grenze.
      AUSNAHME Italien (Florian, 21.10.2026): die ganz bekannten Klubs sollen deutlich
      überwiegen – Juventus, Inter, Milan je bis 45 % ohne Fehler (nur Hinweis).
+     AUSNAHME England: ManCity, Liverpool, ManUtd, Arsenal, Chelsea je bis 40 %.
    - Je Kategorie mindestens 6 verschiedene gefragte Mannschaften; unter den ersten 20
      einer Kategorie (Reihenfolge im Pool) keine Mannschaft mehr als 2-mal.
    - Schwierigkeits-Mix je Kategorie (Hinweis gelb, nicht rot): Ziel ca. 40 % leicht
@@ -5541,6 +5542,61 @@ Bei #11 das tatsächliche Scudetto-Spiel 2012 per Quelle bestätigen (sonst Juve
 Atalanta 3:1, 13.05.2012). Bericht: Tabelle # / Partie / Quelle(n) / Änderungen; Zählung
 Kategorie Italien vorher/nachher inkl. Top-5-Beteiligung, Mix L/M/K, Jahre. CACHE_NAME
 erhöhen, Status-Tabelle: 61c erledigt.
+Kein Commit/Push ohne Zeigen der Testausgabe.
+```
+
+---
+
+## Prompt 61d – Duell-Pool Paket 4: England (20 + 3 Nostalgie)
+
+**Schwerpunkt nach Florian (21.10.2026):** die großen Klubs überwiegen deutlich, Abwechslung
+über die Jahre. Die vorhandenen 19 England-Aufstellungen sind City- und Liverpool-lastig –
+deshalb neu vor allem **Man United** und **Chelsea**, dazu Arsenal; City und Liverpool nur
+wenig. 5 Spiele anderer bekannter Klubs (Tottenham, Leicester, Newcastle, Palace, Villa).
+Spiele vor 2008 nur in „Nostalgie“. Datum/Ergebnis = Arbeitsstand, maßgeblich ist die Quelle.
+
+| # | Spiel (Wettbewerb, Datum) | gefragte Seite | difficulty | special |
+|---|---|---|---|---|
+| N1 | Premier League, 15.05.2004: Arsenal – Leicester City 2:1 (Saison ohne Niederlage, „Invincibles“) | FC Arsenal | 2 | nostalgie |
+| N2 | Premier League, 30.04.2005: Bolton – Chelsea 0:2 (erster Titel unter Mourinho) | FC Chelsea | 3 | nostalgie |
+| N3 | FA-Cup-Finale, 13.05.2006: Liverpool – West Ham 3:3 n.V., Liverpool i.E. („Gerrard-Finale“) | FC Liverpool | 3 | nostalgie |
+| 1 | Premier League, 11.05.2008: Wigan – Manchester United 0:2 (Meisterschaft) | Manchester United | 2 | – |
+| 2 | Premier League, 20.09.2009: Manchester United – Manchester City 4:3 (Owen in der 96. Minute) | Manchester United | 3 | highlight |
+| 3 | Premier League, 09.05.2010: Chelsea – Wigan 8:0 (Meisterschaft) | FC Chelsea | 1 | highlight |
+| 4 | Premier League, 26.02.2012: Arsenal – Tottenham 5:2 (nach 0:2) | FC Arsenal | 3 | highlight |
+| 5 | FA-Cup-Finale, 05.05.2012: Chelsea – Liverpool 2:1 | FC Chelsea | 3 | highlight |
+| 6 | Premier League, 13.04.2014: Liverpool – Manchester City 3:2 | FC Liverpool | 3 | highlight |
+| 7 | FA-Cup-Finale, 17.05.2014: Arsenal – Hull City 3:2 n.V. (nach 0:2) | FC Arsenal | 3 | highlight |
+| 8 | FA-Cup-Finale, 21.05.2016: Crystal Palace – Manchester United 1:2 n.V. | Manchester United | 3 | highlight |
+| 9 | Premier League, 12.05.2017: West Bromwich – Chelsea 0:1 (Meisterschaft) | FC Chelsea | 3 | – |
+| 10 | Premier League, 14.05.2017: Tottenham – Manchester United 2:1 (Abschied White Hart Lane) | Tottenham Hotspur | 3 | highlight |
+| 11 | Premier League, 07.04.2018: Manchester City – Manchester United 2:3 (United verhindert Meisterfeier) | Manchester United | 3 | highlight |
+| 12 | FA-Cup-Finale, 19.05.2018: Chelsea – Manchester United 1:0 | FC Chelsea | 3 | highlight |
+| 13 | Premier League, 12.05.2019: Brighton – Manchester City 1:4 (Meisterschaft) | Manchester City | 2 | – |
+| 14 | Premier League, 04.10.2020: Aston Villa – Liverpool 7:2 | Aston Villa | 4 | highlight |
+| 15 | FA-Cup-Finale, 15.05.2021: Chelsea – Leicester City 0:1 | Leicester City | 3 | highlight |
+| 16 | FA-Cup-Finale, 14.05.2022: Chelsea – Liverpool 0:0 n.V., Liverpool i.E. | FC Liverpool | 3 | highlight |
+| 17 | Premier League, 23.04.2023: Newcastle – Tottenham 6:1 | Newcastle United | 4 | – |
+| 18 | Premier League, 23.04.2024: Arsenal – Chelsea 5:0 | FC Arsenal | 2 | – |
+| 19 | FA-Cup-Finale, 25.05.2024: Manchester City – Manchester United 1:2 | Manchester United | 3 | highlight |
+| 20 | FA-Cup-Finale, 17.05.2025: Crystal Palace – Manchester City 1:0 (erster großer Titel) | Crystal Palace | 4 | highlight |
+
+Gefragt (ohne Nostalgie): ManUtd 5 · Chelsea 4 · Arsenal 3 · Liverpool 2 · City 1 ·
+Tottenham, Villa, Leicester, Newcastle, Palace je 1. Mix L/M/K = 4/13/3.
+anchors: #14 Grealish, Watkins, Emiliano Martínez · #17 Isak, Trippier, Bruno Guimarães ·
+#20 Eze, Mateta, Henderson. Jahre 2008–2025, kein Jahr > 2× (ohne Nostalgie).
+
+Reserve: Arsenal – Burnley 5:0 (Premier League, 06.05.2018, Wengers letztes Heimspiel,
+Arsenal, 2); Manchester City – West Ham 3:1 (Premier League, 19.05.2024, 4. Titel in Folge,
+City, 1); Manchester United – Tottenham 5:2 (Premier League, 25.04.2009, nach 0:2, United, 3).
+
+```
+Lies CLAUDE.md. Voraussetzung: Prompt 60, 61a–c erledigt. Plan Mode: Plan kurz zeigen.
+Vorgehen exakt wie Prompt 61a (Quellenpflicht, Pflichtfelder, special, anchors bei 4–5,
+Reserve bei unklarer Quelle, Häppchen à 8/8/7, check-lineup-pools nach jedem Häppchen).
+N1–N3 nur Kategorie Nostalgie. Bericht: Tabelle # / Partie / Quelle(n) / Änderungen;
+Zählung England und Nostalgie vorher/nachher inkl. Top-5-Beteiligung, Mix L/M/K, Jahre.
+CACHE_NAME erhöhen, Status-Tabelle: 61d erledigt.
 Kein Commit/Push ohne Zeigen der Testausgabe.
 ```
 
