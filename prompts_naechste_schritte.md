@@ -5673,7 +5673,7 @@ Spiele vor 2008 nur in „Nostalgie“. Datum/Ergebnis = Arbeitsstand, maßgebli
 | E21 | Nations-League-Finale, 08.06.2025: Portugal – Spanien 2:2 n.V., Portugal i.E. | Portugal | 3 | highlight |
 
 Gefragt WM: Brasilien 4 · Niederlande 3 · Portugal 2 · Uruguay 2 · Chile 2 · Frankreich 1 ·
-Belgien 1 · England 1 · Senegal 1 · Marokko 1. Mix L/M/K = 5/11/2.
+Belgien 1 · England 1 · Senegal 1 · Marokko 1. Mix L/M/K = 4/12/2.
 Gefragt EM: Portugal 4 · Frankreich 3 · Kroatien 3 · Niederlande 2 · Italien 2 · England 2 ·
 Russland, Wales, Schweiz, Dänemark, Georgien je 1. Mix L/M/K = 3/13/5.
 anchors (difficulty 4): W14 Mané, Koulibaly, Édouard Mendy · W17 Hakimi, Ziyech, Bounou ·
