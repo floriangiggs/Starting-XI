@@ -72,7 +72,7 @@ vorige umgesetzt, getestet und committet ist.
 | 58 | App-Name „Startelo XI“ statt „Starting XI“ (17 sichtbare Stellen, interne Schlüssel bleiben, gesperrte Nutzernamen ergänzen) | Markenrecherche Startelo (Florian) | ✅ erledigt (19 Stellen in startelf_check.html + manifest.json; interne Schlüssel unverändert; reservierte Namen startelo/starteloxi; tools/test-umbenennung.mjs; sw.js v74) |
 | 59 | Welt- und Rangnamen ohne geschützte Marken: Bundesliga → Profiliga, Champions League → Meisterklasse, 2. Bundesliga → Zweite Liga (Weltkarte, Pfad, Kachel, Feier, Scout-Ränge, CLAUDE.md); Spiel-Beschreibungen bleiben | 58 | ✅ erledigt (DIFF_LABEL + RANKS, RANK_RENAME/rankLabel für Gegner-Ränge aus alten Links und gespeicherte Duelle, Welt-Feier einzeilig; tools/test-weltnamen.mjs; sw.js v75) |
 | 60 | Duell-Pool: eigener Pool DUEL_POOL (nur Duell + Frei spielen), 12 Duell-Kategorien, Hausregel-Ausnahme Nostalgie 2000–2007, Balance-Regeln + Prüfskript – noch KEINE neuen Aufstellungen | 59 | offen |
-| 61 | 200 neue Aufstellungen für den Duell-Pool in Paketen (61a Deutschland, 61b …), Kandidaten mit Florian ausgewählt | 60 | 61a (Deutschland, 20) + 61b (Spanien, 26) + 61c (Italien, 24) + 61d (England, 20 + 3 Nostalgie) + 61e (Turniere, 39 + 5 Nostalgie) bereit; weitere Pakete folgen |
+| 61 | 200 neue Aufstellungen für den Duell-Pool in Paketen (61a Deutschland, 61b …), Kandidaten mit Florian ausgewählt | 60 | 61a (Deutschland, 20) + 61b (Spanien, 26) + 61c (Italien, 24) + 61d (England, 20 + 3 Nostalgie) + 61e (Turniere, 39 + 5 Nostalgie) + 61f (Frankreich, 18) bereit; weitere Pakete folgen |
 
 **Empfohlene Reihenfolge ab jetzt:** 49 → 50 (Bugfixes, sofort) → 39 → 41 → 42 → 43 → 44 → 45 → 46 → 47 → 48 → 49 → 50 → 51 → 52 → 53 → 54 → 55 → 56 → 57 → 58 → 59 → 60 → 61 (Pakete) → weitere Offline-Feinschliffe (u. a. Jahres-Lücken im Ideen-Speicher auffüllen) → Planung Online-Duell (inkl. 28/29) → 8 (Capacitor, erst wenn die App final ist; vorher Duell-Pflichtpunkt aus CLAUDE.md ansprechen)
 
@@ -5338,6 +5338,7 @@ Lies CLAUDE.md. Plan Mode, Plan zeigen. Noch KEINE neuen Aufstellungen hinzufüg
      AUSNAHME Italien (Florian, 21.10.2026): die ganz bekannten Klubs sollen deutlich
      überwiegen – Juventus, Inter, Milan je bis 45 % ohne Fehler (nur Hinweis).
      AUSNAHME England: ManCity, Liverpool, ManUtd, Arsenal, Chelsea je bis 40 %.
+     AUSNAHME Frankreich: Paris Saint-Germain bis 80 % (ausdrücklich gewünscht).
    - Je Kategorie mindestens 6 verschiedene gefragte Mannschaften; unter den ersten 20
      einer Kategorie (Reihenfolge im Pool) keine Mannschaft mehr als 2-mal.
    - Schwierigkeits-Mix je Kategorie (Hinweis gelb, nicht rot): Ziel ca. 40 % leicht
@@ -5692,6 +5693,58 @@ Confed Cup, Afrika-Cup → WM & Welt-Turniere; Europameisterschaft, Nations Leag
 Nations League. Bericht: Tabelle # / Partie / Quelle(n) / Änderungen; Zählung je Kategorie
 vorher/nachher inkl. Top-5-Beteiligung (Deutschland/Spanien sollen sinken), Mix, Ausgaben.
 CACHE_NAME erhöhen, Status-Tabelle: 61e erledigt.
+Kein Commit/Push ohne Zeigen der Testausgabe.
+```
+
+---
+
+## Prompt 61f – Duell-Pool Paket 6: Frankreich (18 Aufstellungen)
+
+**Schwerpunkt nach Florian (21.10.2026):** PSG deutlich am häufigsten – der Reiz sind die
+vielen verschiedenen Stars über die Jahre (Beckham, Ibrahimović, Cavani, Neymar, Mbappé,
+Messi, Dembélé, Kvaratskhelia). Dazu die bekannten Meister-Geschichten anderer Klubs
+(Lyon, Marseille, Lille 2011/2021, Montpellier 2012, Monaco 2017). Jahre 2008–2025, kein
+Jahr > 2×. Neue league-Werte: „Ligue 1“, „Coupe de France“ (Kategorie Frankreich).
+Datum/Ergebnis = Arbeitsstand, maßgeblich ist die Quelle.
+
+| # | Spiel (Wettbewerb, Datum) | gefragte Seite | difficulty | special |
+|---|---|---|---|---|
+| 1 | Coupe-de-France-Finale, 24.05.2008: Olympique Lyon – Paris Saint-Germain 1:0 n.V. | Olympique Lyon | 3 | highlight |
+| 2 | Ligue 1, 05.05.2010: Olympique Marseille – Stade Rennes 3:1 (Meisterschaft) | Olympique Marseille | 3 | – |
+| 3 | Ligue 1, 21.05.2011: Paris Saint-Germain – OSC Lille 2:2 (Lille Meister) | OSC Lille | 3 | highlight |
+| 4 | Ligue 1, 20.05.2012: AJ Auxerre – Montpellier HSC 1:2 (Montpellier Meister) | Montpellier HSC | 4 | highlight |
+| 5 | Ligue 1, 18.05.2013: Paris Saint-Germain – Stade Brest 3:1 (Beckhams Abschied) | Paris Saint-Germain | 3 | – |
+| 6 | Coupe-de-France-Finale, 30.05.2015: Paris Saint-Germain – AJ Auxerre 1:0 | Paris Saint-Germain | 3 | highlight |
+| 7 | Ligue 1, 13.03.2016: ES Troyes – Paris Saint-Germain 0:9 (Meisterschaft, Ibrahimović) | Paris Saint-Germain | 2 | highlight |
+| 8 | Coupe-de-France-Finale, 21.05.2016: Olympique Marseille – Paris Saint-Germain 2:4 (Ibrahimović-Abschied) | Paris Saint-Germain | 3 | highlight |
+| 9 | Ligue 1, 17.05.2017: AS Monaco – AS Saint-Étienne 2:0 (Meisterschaft, Mbappé) | AS Monaco | 3 | highlight |
+| 10 | Ligue 1, 15.04.2018: Paris Saint-Germain – AS Monaco 7:1 (Meisterschaft) | Paris Saint-Germain | 1 | highlight |
+| 11 | Coupe-de-France-Finale, 08.05.2018: Les Herbiers – Paris Saint-Germain 0:2 (Drittligist im Finale) | Paris Saint-Germain | 2 | highlight |
+| 12 | Coupe-de-France-Finale, 27.04.2019: Stade Rennes – Paris Saint-Germain 2:2 n.V., Rennes i.E. | Paris Saint-Germain | 3 | highlight |
+| 13 | Coupe-de-France-Finale, 24.07.2020: Paris Saint-Germain – AS Saint-Étienne 1:0 | Paris Saint-Germain | 2 | highlight |
+| 14 | Ligue 1, 23.05.2021: Angers SCO – OSC Lille 1:2 (Lille Meister) | OSC Lille | 4 | highlight |
+| 15 | Ligue 1, 21.05.2022: Paris Saint-Germain – FC Metz 5:0 (Mbappé-Dreierpack nach Vertragsverlängerung) | Paris Saint-Germain | 1 | highlight |
+| 16 | Ligue 1, 27.05.2023: RC Strasbourg – Paris Saint-Germain 1:1 (Meisterschaft, Messi) | Paris Saint-Germain | 2 | – |
+| 17 | Coupe-de-France-Finale, 25.05.2024: Olympique Lyon – Paris Saint-Germain 1:2 (Mbappés letztes Spiel) | Paris Saint-Germain | 3 | highlight |
+| 18 | Coupe-de-France-Finale, 24.05.2025: Stade Reims – Paris Saint-Germain 0:3 | Paris Saint-Germain | 3 | highlight |
+
+Gefragt: PSG 12 · Lille 2 · Lyon 1 · Marseille 1 · Monaco 1 · Montpellier 1.
+Beteiligung: PSG ≈ 78 % – AUSNAHME Frankreich (Prompt 60 ergänzen): PSG bis 80 % ohne
+Fehler, ausdrücklich so gewünscht. Mix L/M/K = 6/10/2.
+anchors: #4 Giroud, Belhanda, Cabella · #14 Burak Yılmaz, Jonathan David, Maignan.
+Statt 20 nur 18 – die 2 Plätze gehen an Niederlande & Portugal.
+
+Reserve: Ligue 1, 12.05.2013: Olympique Lyon – Paris Saint-Germain 0:1 (Meisterschaft, PSG, 2);
+Ligue 1, 23.04.2022: Paris Saint-Germain – RC Lens 1:1 (Meisterschaft, Messi-Tor, PSG, 2).
+
+```
+Lies CLAUDE.md. Voraussetzung: Prompt 60, 61a–e erledigt. Plan Mode: Plan kurz zeigen.
+Vorgehen exakt wie Prompt 61a (Quellenpflicht, Pflichtfelder, special, anchors bei 4–5,
+Reserve bei unklarer Quelle, Häppchen à 6/6/6, check-lineup-pools nach jedem Häppchen).
+In Prompt-60-Regeln/Prüfskript Ausnahme „Frankreich: PSG bis 80 %“ ergänzen.
+Frei-spielen-Karte „Frankreich“ (aus Prompt 60) mit league-Werten Ligue 1 + Coupe de France
+verbinden. Bericht: Tabelle # / Partie / Quelle(n) / Änderungen; Zählung Frankreich,
+PSG-Stars je Ära, Mix, Jahre. CACHE_NAME erhöhen, Status-Tabelle: 61f erledigt.
 Kein Commit/Push ohne Zeigen der Testausgabe.
 ```
 
