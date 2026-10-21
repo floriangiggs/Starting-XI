@@ -72,7 +72,7 @@ vorige umgesetzt, getestet und committet ist.
 | 58 | App-Name „Startelo XI“ statt „Starting XI“ (17 sichtbare Stellen, interne Schlüssel bleiben, gesperrte Nutzernamen ergänzen) | Markenrecherche Startelo (Florian) | ✅ erledigt (19 Stellen in startelf_check.html + manifest.json; interne Schlüssel unverändert; reservierte Namen startelo/starteloxi; tools/test-umbenennung.mjs; sw.js v74) |
 | 59 | Welt- und Rangnamen ohne geschützte Marken: Bundesliga → Profiliga, Champions League → Meisterklasse, 2. Bundesliga → Zweite Liga (Weltkarte, Pfad, Kachel, Feier, Scout-Ränge, CLAUDE.md); Spiel-Beschreibungen bleiben | 58 | ✅ erledigt (DIFF_LABEL + RANKS, RANK_RENAME/rankLabel für Gegner-Ränge aus alten Links und gespeicherte Duelle, Welt-Feier einzeilig; tools/test-weltnamen.mjs; sw.js v75) |
 | 60 | Duell-Pool: eigener Pool DUEL_POOL (nur Duell + Frei spielen), 12 Duell-Kategorien, Hausregel-Ausnahme Nostalgie 2000–2007, Balance-Regeln + Prüfskript – noch KEINE neuen Aufstellungen | 59 | offen |
-| 61 | 200 neue Aufstellungen für den Duell-Pool in Paketen (61a Deutschland, 61b …), Kandidaten mit Florian ausgewählt | 60 | 61a (Deutschland, 20) + 61b (Spanien, 26) + 61c (Italien, 24) + 61d (England, 20 + 3 Nostalgie) + 61e (Turniere, 39 + 5 Nostalgie) + 61f (Frankreich, 18) + 61g (NL & PT, 22) bereit; weitere Pakete folgen |
+| 61 | 200 neue Aufstellungen für den Duell-Pool in Paketen (61a Deutschland, 61b …), Kandidaten mit Florian ausgewählt | 60 | 61a (Deutschland, 20) + 61b (Spanien, 26) + 61c (Italien, 24) + 61d (England, 20 + 3 Nostalgie) + 61e (Turniere, 39 + 5 Nostalgie) + 61f (Frankreich, 18) + 61g (NL & PT, 22) + 61h (EL 15, CL 5 + 3 Nostalgie) bereit – zusammen 200 |
 
 **Empfohlene Reihenfolge ab jetzt:** 49 → 50 (Bugfixes, sofort) → 39 → 41 → 42 → 43 → 44 → 45 → 46 → 47 → 48 → 49 → 50 → 51 → 52 → 53 → 54 → 55 → 56 → 57 → 58 → 59 → 60 → 61 (Pakete) → weitere Offline-Feinschliffe (u. a. Jahres-Lücken im Ideen-Speicher auffüllen) → Planung Online-Duell (inkl. 28/29) → 8 (Capacitor, erst wenn die App final ist; vorher Duell-Pflichtpunkt aus CLAUDE.md ansprechen)
 
@@ -5802,6 +5802,69 @@ In Prompt-60-Regeln/Prüfskript Ausnahme „Niederlande & Portugal: Ajax, Benfic
 45 %“ ergänzen. Frei-spielen-Karte „Niederlande & Portugal“ mit den vier league-Werten
 verbinden. Bericht: Tabelle # / Partie / Quelle(n) / Änderungen; Zählung, Mix, Jahre.
 CACHE_NAME erhöhen, Status-Tabelle: 61g erledigt.
+Kein Commit/Push ohne Zeigen der Testausgabe.
+```
+
+---
+
+## Prompt 61h – Duell-Pool Paket 8 (letztes): Europa League (15) + Champions League (5 + 3 Nostalgie)
+
+**Vorgabe Florian (21.10.2026):** Europa League nur sehr bekannte Teams und historische
+Spiele (Finals, legendäre K.-o.-Spiele). Champions League: nur Lücken füllen – große Finals
+und Wunder, die im Pool noch fehlen (Barça 2009/2015, Inter 2010, Wembley 2013, Liverpool–Barça
+4:0, dazu als Nostalgie Kahn 2001, Zidane-Volley 2002, Istanbul 2005).
+Spiele vor 2008 nur in „Nostalgie“. Datum/Ergebnis = Arbeitsstand, maßgeblich ist die Quelle.
+
+**Europa League:**
+
+| # | Spiel (Wettbewerb, Datum) | gefragte Seite | difficulty | special |
+|---|---|---|---|---|
+| EL1 | Europa-League-Finale, 12.05.2010: Atlético Madrid – FC Fulham 2:1 n.V. | Atlético Madrid | 3 | highlight |
+| EL2 | Europa-League-Finale, 18.05.2011: FC Porto – Sporting Braga 1:0 (Falcao) | FC Porto | 3 | highlight |
+| EL3 | Europa-League-Finale, 09.05.2012: Atlético Madrid – Athletic Bilbao 3:0 | Atlético Madrid | 2 | highlight |
+| EL4 | Europa-League-Finale, 15.05.2013: FC Chelsea – Benfica 2:1 | FC Chelsea | 3 | highlight |
+| EL5 | Europa-League-Halbfinale Rückspiel, 01.05.2014: Juventus – Benfica 0:0 (Finale im eigenen Stadion verpasst) | Juventus | 3 | – |
+| EL6 | Europa-League-Finale, 14.05.2014: Sevilla – Benfica 0:0 n.V., Sevilla i.E. | Benfica Lissabon | 3 | highlight |
+| EL7 | Europa-League-Viertelfinale Hinspiel, 16.04.2015: VfL Wolfsburg – SSC Neapel 1:4 | SSC Neapel | 3 | – |
+| EL8 | Europa-League-Finale, 24.05.2017: Ajax – Manchester United 0:2 | Manchester United | 2 | highlight |
+| EL9 | Europa-League-Finale, 16.05.2018: Olympique Marseille – Atlético Madrid 0:3 (Griezmann) | Atlético Madrid | 2 | highlight |
+| EL10 | Europa-League-Finale, 29.05.2019: FC Chelsea – FC Arsenal 4:1 (Hazards Abschied) | FC Chelsea | 2 | highlight |
+| EL11 | Europa-League-Finale, 21.08.2020: Sevilla – Inter Mailand 3:2 | Inter Mailand | 3 | highlight |
+| EL12 | Europa-League-Halbfinale Hinspiel, 29.04.2021: Manchester United – AS Rom 6:2 | Manchester United | 3 | – |
+| EL13 | Europa-League-Viertelfinale Hinspiel, 11.04.2024: FC Liverpool – Atalanta 0:3 | Atalanta | 3 | highlight |
+| EL14 | Europa-League-Halbfinale Rückspiel, 09.05.2024: Bayer 04 Leverkusen – AS Rom 2:2 (Serie hält) | Bayer 04 Leverkusen | 3 | highlight |
+| EL15 | Europa-League-Finale, 21.05.2025: Tottenham Hotspur – Manchester United 1:0 | Tottenham Hotspur | 3 | highlight |
+
+**Champions League (CN = nur Nostalgie):**
+
+| # | Spiel (Wettbewerb, Datum) | gefragte Seite | difficulty | special |
+|---|---|---|---|---|
+| CN1 | Champions-League-Finale, 23.05.2001: FC Bayern – FC Valencia 1:1 n.V., Bayern i.E. (Kahn) | FC Bayern | 2 | nostalgie |
+| CN2 | Champions-League-Finale, 15.05.2002: Bayer 04 Leverkusen – Real Madrid 1:2 (Zidane-Volley) | Real Madrid | 2 | nostalgie |
+| CN3 | Champions-League-Finale, 25.05.2005: AC Mailand – FC Liverpool 3:3 n.V., Liverpool i.E. („Wunder von Istanbul“) | FC Liverpool | 2 | nostalgie |
+| CL1 | Champions-League-Finale, 27.05.2009: FC Barcelona – Manchester United 2:0 | FC Barcelona | 1 | highlight |
+| CL2 | Champions-League-Finale, 22.05.2010: FC Bayern – Inter Mailand 0:2 (Triple für Inter) | Inter Mailand | 2 | highlight |
+| CL3 | Champions-League-Finale, 25.05.2013: Borussia Dortmund – FC Bayern 1:2 (Wembley) | FC Bayern | 1 | highlight |
+| CL4 | Champions-League-Finale, 06.06.2015: Juventus – FC Barcelona 1:3 (MSN) | FC Barcelona | 1 | highlight |
+| CL5 | Champions-League-Halbfinale Rückspiel, 07.05.2019: FC Liverpool – FC Barcelona 4:0 („Corner taken quickly“) | FC Liverpool | 2 | highlight |
+
+Gefragt EL: Atlético 3 · Chelsea 2 · ManUtd 2 · je 1 Porto, Benfica, Juventus, Napoli, Inter,
+Atalanta, Leverkusen, Tottenham. Sevilla nur als Gegner (2×). Mix L/M/K = 4/11/0.
+Gefragt CL (neu, ohne Nostalgie): Barça 2 · Inter 1 · Bayern 1 · Liverpool 1. Mix 3/2/0.
+Damit sind es insgesamt 200 neue Aufstellungen (Pakete 61a–h).
+
+Reserve EL: Europa-League-Halbfinale Rückspiel 05.05.2016 FC Liverpool – Villarreal 3:0
+(Liverpool, 2). Reserve CL: Champions-League-Finale 28.05.2016 Real Madrid – Atlético
+1:1 n.V., Real i.E. (Real, 1, highlight).
+
+```
+Lies CLAUDE.md. Voraussetzung: Prompt 60, 61a–g erledigt. Plan Mode: Plan kurz zeigen.
+Vorgehen exakt wie Prompt 61a (Quellenpflicht, Pflichtfelder, special, Reserve bei unklarer
+Quelle, Häppchen à 8/8/7, check-lineup-pools nach jedem Häppchen). CN1–CN3 nur Kategorie
+Nostalgie. Abschlussbericht für ALLE Pakete 61a–h: Gesamtzahl DUEL_POOL, Zählung je
+Duell-Kategorie (Ziel ≥ 20), Top-5-Beteiligung je Kategorie, Mix L/M/K je Kategorie,
+Jahre/Ausgaben, Liste aller ersetzten Partien (Reserve) mit Grund. CACHE_NAME erhöhen,
+Status-Tabelle: 61h und 61 erledigt.
 Kein Commit/Push ohne Zeigen der Testausgabe.
 ```
 
