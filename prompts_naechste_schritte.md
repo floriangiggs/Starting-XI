@@ -72,7 +72,7 @@ vorige umgesetzt, getestet und committet ist.
 | 58 | App-Name „Startelo XI“ statt „Starting XI“ (17 sichtbare Stellen, interne Schlüssel bleiben, gesperrte Nutzernamen ergänzen) | Markenrecherche Startelo (Florian) | ✅ erledigt (19 Stellen in startelf_check.html + manifest.json; interne Schlüssel unverändert; reservierte Namen startelo/starteloxi; tools/test-umbenennung.mjs; sw.js v74) |
 | 59 | Welt- und Rangnamen ohne geschützte Marken: Bundesliga → Profiliga, Champions League → Meisterklasse, 2. Bundesliga → Zweite Liga (Weltkarte, Pfad, Kachel, Feier, Scout-Ränge, CLAUDE.md); Spiel-Beschreibungen bleiben | 58 | ✅ erledigt (DIFF_LABEL + RANKS, RANK_RENAME/rankLabel für Gegner-Ränge aus alten Links und gespeicherte Duelle, Welt-Feier einzeilig; tools/test-weltnamen.mjs; sw.js v75) |
 | 60 | Duell-Pool: eigener Pool DUEL_POOL (nur Duell + Frei spielen), 12 Duell-Kategorien, Hausregel-Ausnahme Nostalgie 2000–2007, Balance-Regeln + Prüfskript – noch KEINE neuen Aufstellungen | 59 | offen |
-| 61 | 200 neue Aufstellungen für den Duell-Pool in Paketen (61a Deutschland, 61b …), Kandidaten mit Florian ausgewählt | 60 | 61a (Deutschland, 20) + 61b (Spanien, 26) bereit; weitere Pakete folgen |
+| 61 | 200 neue Aufstellungen für den Duell-Pool in Paketen (61a Deutschland, 61b …), Kandidaten mit Florian ausgewählt | 60 | 61a (Deutschland, 20) + 61b (Spanien, 26) + 61c (Italien, 24) bereit; weitere Pakete folgen |
 
 **Empfohlene Reihenfolge ab jetzt:** 49 → 50 (Bugfixes, sofort) → 39 → 41 → 42 → 43 → 44 → 45 → 46 → 47 → 48 → 49 → 50 → 51 → 52 → 53 → 54 → 55 → 56 → 57 → 58 → 59 → 60 → 61 (Pakete) → weitere Offline-Feinschliffe (u. a. Jahres-Lücken im Ideen-Speicher auffüllen) → Planung Online-Duell (inkl. 28/29) → 8 (Capacitor, erst wenn die App final ist; vorher Duell-Pflichtpunkt aus CLAUDE.md ansprechen)
 
@@ -5330,6 +5330,8 @@ Lies CLAUDE.md. Plan Mode, Plan zeigen. Noch KEINE neuen Aufstellungen hinzufüg
      Kategorie“. AUSNAHME Spanien (Florian, 21.10.2026): Real, Barça und Atlético
      sind die Klubs, die man kennt – dort gilt für diese drei je bis 60 % ohne
      Fehler (nur Hinweis); alle anderen Klubs normale Grenze.
+     AUSNAHME Italien (Florian, 21.10.2026): die ganz bekannten Klubs sollen deutlich
+     überwiegen – Juventus, Inter, Milan je bis 45 % ohne Fehler (nur Hinweis).
    - Je Kategorie mindestens 6 verschiedene gefragte Mannschaften; unter den ersten 20
      einer Kategorie (Reihenfolge im Pool) keine Mannschaft mehr als 2-mal.
    - Schwierigkeits-Mix je Kategorie (Hinweis gelb, nicht rot): Ziel ca. 40 % leicht
@@ -5476,6 +5478,64 @@ Reserve bei unklarer Quelle, Häppchen à 9/9/8, check-lineup-pools nach jedem H
 Bericht: Tabelle # / Partie / Quelle(n) / Änderungen; Zählung Kategorie
 Spanien vorher/nachher inkl. Top-5-Beteiligung, Mix L/M/K, Jahre. CACHE_NAME erhöhen,
 Status-Tabelle: 61b erledigt.
+Kein Commit/Push ohne Zeigen der Testausgabe.
+```
+
+---
+
+## Prompt 61c – Duell-Pool Paket 3: Italien (24 Aufstellungen)
+
+**Schwerpunkt nach Florian (21.10.2026):** viele bekannte Mannschaften möglich, aber die
+ganz bekannten deutlich überwiegend: Juventus 6, Inter 6, Milan 4, Napoli 4 gefragt,
+dazu 4 Spiele von Roma/Lazio aus bekannten Jahren (Totti, Nedvěd, Batistuta).
+Abwechslung über die Jahre 2000–2025, kein Jahr öfter als 2×. Keine Exoten.
+Coppa-Finals abgeglichen mit Wikipedia „List of Coppa Italia finals“; Datum/Ergebnis =
+Arbeitsstand, maßgeblich ist die Quelle.
+
+| # | Spiel (Wettbewerb, Datum) | gefragte Seite | difficulty | special |
+|---|---|---|---|---|
+| 1 | Serie A, 14.05.2000 (letzter Spieltag): Lazio Rom – Reggina 3:0 (Scudetto) | Lazio Rom | 3 | nostalgie |
+| 2 | Serie A, 11.05.2001: Inter Mailand – AC Mailand 0:6 (Derby) | AC Mailand | 2 | nostalgie |
+| 3 | Serie A, 17.06.2001: AS Rom – AC Parma 3:1 (Scudetto, Totti/Batistuta) | AS Rom | 3 | nostalgie |
+| 4 | Serie A, 05.05.2002: Udinese – Juventus 0:2 („5 maggio“, Scudetto) | Juventus | 2 | nostalgie |
+| 5 | Serie A, 05.05.2002: Lazio Rom – Inter Mailand 4:2 (Inter verspielt den Titel) | Inter Mailand | 3 | nostalgie |
+| 6 | Serie A, 02.05.2004: AC Mailand – AS Rom 1:0 (Scudetto, Schewtschenko) | AC Mailand | 3 | nostalgie |
+| 7 | Serie A, 22.04.2007: AC Siena – Inter Mailand 1:2 (Scudetto, Materazzi) | Inter Mailand | 3 | nostalgie |
+| 8 | Coppa-Italia-Finale, 24.05.2008: AS Rom – Inter Mailand 2:1 | AS Rom | 3 | highlight |
+| 9 | Coppa-Italia-Finale, 05.05.2010: Inter Mailand – AS Rom 1:0 (Triple-Saison) | Inter Mailand | 2 | highlight |
+| 10 | Serie A, 02.04.2011: AC Mailand – Inter Mailand 3:0 (Derby) | AC Mailand | 3 | – |
+| 11 | Serie A, Mai 2012: Scudetto-Spiel der ungeschlagenen Juventus (Cagliari – Juventus 0:2, 06.05.2012) | Juventus | 2 | – |
+| 12 | Coppa-Italia-Finale, 20.05.2012: Juventus – SSC Neapel 0:2 | SSC Neapel | 3 | highlight |
+| 13 | Coppa-Italia-Finale, 26.05.2013: AS Rom – Lazio Rom 0:1 (Derby-Finale) | Lazio Rom | 3 | highlight |
+| 14 | Coppa-Italia-Finale, 03.05.2014: AC Florenz – SSC Neapel 1:3 | SSC Neapel | 3 | highlight |
+| 15 | Serie A, 13.02.2016: Juventus – SSC Neapel 1:0 (Zaza-Tor im Spitzenspiel) | Juventus | 3 | – |
+| 16 | Coppa-Italia-Finale, 17.05.2017: Juventus – Lazio Rom 2:0 | Juventus | 2 | highlight |
+| 17 | Coppa-Italia-Finale, 17.06.2020: SSC Neapel – Juventus 0:0, 4:2 i.E. | SSC Neapel | 3 | highlight |
+| 18 | Serie A, 26.07.2020: Juventus – Sampdoria 2:0 (9. Scudetto in Folge, Ronaldo) | Juventus | 1 | – |
+| 19 | Serie A, 05.02.2022: Inter Mailand – AC Mailand 1:2 (Giroud-Doppelpack, Wende im Titelrennen) | AC Mailand | 3 | – |
+| 20 | Coppa-Italia-Finale, 11.05.2022: Juventus – Inter Mailand 2:4 n.V. | Inter Mailand | 3 | highlight |
+| 21 | Serie A, 16.09.2023: Inter Mailand – AC Mailand 5:1 (Derby) | Inter Mailand | 2 | – |
+| 22 | Serie A, 22.04.2024: AC Mailand – Inter Mailand 1:2 (Scudetto im Derby) | Inter Mailand | 2 | highlight |
+| 23 | Coppa-Italia-Finale, 15.05.2024: Atalanta – Juventus 0:1 | Juventus | 3 | highlight |
+| 24 | Serie A, 23.05.2025: SSC Neapel – Cagliari 2:0 (Scudetto, McTominay/Lukaku) | SSC Neapel | 2 | – |
+
+Gefragt: Juventus 6 · Inter 6 · Milan 4 · Napoli 4 · Roma 2 · Lazio 2.
+Beteiligung inkl. der 9 vorhandenen Italien-Aufstellungen (33 gesamt): Juventus ≈ 39 %,
+Inter ≈ 39 %, Milan ≈ 27 %, Napoli ≈ 21 %, Roma ≈ 21 % (Italien-Ausnahme, siehe Prompt 60).
+Mix L/M/K = 9/15/0. Jahre 2000–2025, kein Jahr > 2×.
+
+Reserve: Inter Mailand – FC Crotone 2:0 (Serie A, 01.05.2021, Scudetto, Inter, 1);
+Juventus – AC Mailand 4:0 (Coppa-Finale 09.05.2018, Juventus, 2, highlight);
+Lazio Rom – Atalanta 2:0 (Coppa-Finale 15.05.2019, Lazio, 3, highlight).
+
+```
+Lies CLAUDE.md. Voraussetzung: Prompt 60, 61a, 61b erledigt. Plan Mode: Plan kurz zeigen.
+Vorgehen exakt wie Prompt 61a (Quellenpflicht, Pflichtfelder, special, anchors bei 4–5,
+Reserve bei unklarer Quelle, Häppchen à 8/8/8, check-lineup-pools nach jedem Häppchen).
+Bei #11 das tatsächliche Scudetto-Spiel 2012 per Quelle bestätigen (sonst Juventus –
+Atalanta 3:1, 13.05.2012). Bericht: Tabelle # / Partie / Quelle(n) / Änderungen; Zählung
+Kategorie Italien vorher/nachher inkl. Top-5-Beteiligung, Mix L/M/K, Jahre. CACHE_NAME
+erhöhen, Status-Tabelle: 61c erledigt.
 Kein Commit/Push ohne Zeigen der Testausgabe.
 ```
 
