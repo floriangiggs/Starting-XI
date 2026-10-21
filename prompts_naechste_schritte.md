@@ -72,7 +72,7 @@ vorige umgesetzt, getestet und committet ist.
 | 58 | App-Name „Startelo XI“ statt „Starting XI“ (17 sichtbare Stellen, interne Schlüssel bleiben, gesperrte Nutzernamen ergänzen) | Markenrecherche Startelo (Florian) | ✅ erledigt (19 Stellen in startelf_check.html + manifest.json; interne Schlüssel unverändert; reservierte Namen startelo/starteloxi; tools/test-umbenennung.mjs; sw.js v74) |
 | 59 | Welt- und Rangnamen ohne geschützte Marken: Bundesliga → Profiliga, Champions League → Meisterklasse, 2. Bundesliga → Zweite Liga (Weltkarte, Pfad, Kachel, Feier, Scout-Ränge, CLAUDE.md); Spiel-Beschreibungen bleiben | 58 | ✅ erledigt (DIFF_LABEL + RANKS, RANK_RENAME/rankLabel für Gegner-Ränge aus alten Links und gespeicherte Duelle, Welt-Feier einzeilig; tools/test-weltnamen.mjs; sw.js v75) |
 | 60 | Duell-Pool: eigener Pool DUEL_POOL (nur Duell + Frei spielen), 12 Duell-Kategorien, Hausregel-Ausnahme Nostalgie 2000–2007, Balance-Regeln + Prüfskript – noch KEINE neuen Aufstellungen | 59 | offen |
-| 61 | 200 neue Aufstellungen für den Duell-Pool in Paketen (61a Deutschland, 61b …), Kandidaten mit Florian ausgewählt | 60 | 61a (Deutschland, 20) + 61b (Spanien, 26) + 61c (Italien, 24) + 61d (England, 20 + 3 Nostalgie) bereit; weitere Pakete folgen |
+| 61 | 200 neue Aufstellungen für den Duell-Pool in Paketen (61a Deutschland, 61b …), Kandidaten mit Florian ausgewählt | 60 | 61a (Deutschland, 20) + 61b (Spanien, 26) + 61c (Italien, 24) + 61d (England, 20 + 3 Nostalgie) + 61e (Turniere, 39 + 5 Nostalgie) bereit; weitere Pakete folgen |
 
 **Empfohlene Reihenfolge ab jetzt:** 49 → 50 (Bugfixes, sofort) → 39 → 41 → 42 → 43 → 44 → 45 → 46 → 47 → 48 → 49 → 50 → 51 → 52 → 53 → 54 → 55 → 56 → 57 → 58 → 59 → 60 → 61 (Pakete) → weitere Offline-Feinschliffe (u. a. Jahres-Lücken im Ideen-Speicher auffüllen) → Planung Online-Duell (inkl. 28/29) → 8 (Capacitor, erst wenn die App final ist; vorher Duell-Pflichtpunkt aus CLAUDE.md ansprechen)
 
@@ -5597,6 +5597,101 @@ Reserve bei unklarer Quelle, Häppchen à 8/8/7, check-lineup-pools nach jedem H
 N1–N3 nur Kategorie Nostalgie. Bericht: Tabelle # / Partie / Quelle(n) / Änderungen;
 Zählung England und Nostalgie vorher/nachher inkl. Top-5-Beteiligung, Mix L/M/K, Jahre.
 CACHE_NAME erhöhen, Status-Tabelle: 61d erledigt.
+Kein Commit/Push ohne Zeigen der Testausgabe.
+```
+
+---
+
+## Prompt 61e – Duell-Pool Paket 5: Turniere (5 Nostalgie + 18 WM & Welt-Turniere + 21 EM & Nations League)
+
+**Ausgewählt von Claude (21.10.2026):** Bei Turnieren sind die Nationen das, was man kennt.
+Die vorhandenen Turnier-Aufstellungen sind sehr Deutschland- und Spanien-lastig – deshalb
+neu vor allem **Brasilien, Frankreich, Portugal, Niederlande, Italien, England**, dazu
+Uruguay, Chile, Kroatien, Belgien und wenige Märchen (Marokko, Georgien, Dänemark, Schweiz,
+Russland 2008, Wales, Senegal) – nur mit Ankerspielern. Deutschland und Spanien hier fast
+nur als Gegner. Turniere ballen sich naturgemäß in Turnierjahren; verteilt wird deshalb
+über alle Ausgaben (WM 2010/14/18/22, EM 2008/12/16/21/24, Copa, Confed Cup, Nations League).
+Spiele vor 2008 nur in „Nostalgie“. Datum/Ergebnis = Arbeitsstand, maßgeblich ist die Quelle.
+
+**Nostalgie (nur Kategorie Nostalgie):**
+
+| # | Spiel (Wettbewerb, Datum) | gefragte Seite | difficulty | special |
+|---|---|---|---|---|
+| N1 | WM-Finale, 30.06.2002: Deutschland – Brasilien 0:2 | Brasilien | 2 | nostalgie |
+| N2 | EM-Finale, 02.07.2000: Frankreich – Italien 2:1 n.V. (Golden Goal) | Italien | 3 | nostalgie |
+| N3 | EM-Finale, 04.07.2004: Portugal – Griechenland 0:1 | Portugal | 3 | nostalgie |
+| N4 | WM-Halbfinale, 04.07.2006: Deutschland – Italien 0:2 n.V. | Italien | 3 | nostalgie |
+| N5 | WM-Finale, 09.07.2006: Italien – Frankreich 1:1 n.V., Italien i.E. (Zidanes letztes Spiel) | Frankreich | 2 | nostalgie |
+
+**WM & Welt-Turniere:**
+
+| # | Spiel (Wettbewerb, Datum) | gefragte Seite | difficulty | special |
+|---|---|---|---|---|
+| W1 | Confed-Cup-Finale, 28.06.2009: Brasilien – USA 3:2 | Brasilien | 2 | highlight |
+| W2 | WM-Viertelfinale, 02.07.2010: Niederlande – Brasilien 2:1 | Niederlande | 3 | – |
+| W3 | WM-Viertelfinale, 02.07.2010: Uruguay – Ghana 1:1 n.V., Uruguay i.E. (Suárez-Handspiel) | Uruguay | 3 | highlight |
+| W4 | Copa-América-Finale, 24.07.2011: Uruguay – Paraguay 3:0 | Uruguay | 3 | highlight |
+| W5 | Confed-Cup-Finale, 30.06.2013: Brasilien – Spanien 3:0 | Brasilien | 2 | highlight |
+| W6 | WM-Halbfinale, 08.07.2014: Brasilien – Deutschland 1:7 | Brasilien | 3 | highlight |
+| W7 | WM-Halbfinale, 09.07.2014: Niederlande – Argentinien 0:0 n.V., Argentinien i.E. | Niederlande | 3 | – |
+| W8 | Copa-América-Finale, 04.07.2015: Chile – Argentinien 0:0 n.V., Chile i.E. | Chile | 3 | highlight |
+| W9 | Confed-Cup-Finale, 02.07.2017: Chile – Deutschland 0:1 | Chile | 3 | highlight |
+| W10 | WM-Gruppenspiel, 15.06.2018: Portugal – Spanien 3:3 (Ronaldo-Dreierpack) | Portugal | 2 | highlight |
+| W11 | WM-Achtelfinale, 02.07.2018: Belgien – Japan 3:2 (nach 0:2) | Belgien | 3 | highlight |
+| W12 | WM-Finale, 15.07.2018: Frankreich – Kroatien 4:2 | Frankreich | 1 | highlight |
+| W13 | Copa-América-Finale, 07.07.2019: Brasilien – Peru 3:1 | Brasilien | 3 | highlight |
+| W14 | Afrika-Cup-Finale (Ausgabe 2021), 06.02.2022: Senegal – Ägypten 0:0 n.V., Senegal i.E. | Senegal | 4 | highlight |
+| W15 | WM-Achtelfinale, 06.12.2022: Portugal – Schweiz 6:1 | Portugal | 3 | – |
+| W16 | WM-Viertelfinale, 09.12.2022: Niederlande – Argentinien 2:2 n.V., Argentinien i.E. | Niederlande | 3 | – |
+| W17 | WM-Viertelfinale, 10.12.2022: Marokko – Portugal 1:0 | Marokko | 4 | highlight |
+| W18 | WM-Viertelfinale, 10.12.2022: England – Frankreich 1:2 | England | 3 | – |
+
+**EM & Nations League:**
+
+| # | Spiel (Wettbewerb, Datum) | gefragte Seite | difficulty | special |
+|---|---|---|---|---|
+| E1 | EM-Gruppenspiel, 09.06.2008: Niederlande – Italien 3:0 | Niederlande | 3 | – |
+| E2 | EM-Gruppenspiel, 12.06.2008: Kroatien – Deutschland 2:1 | Kroatien | 3 | – |
+| E3 | EM-Viertelfinale, 21.06.2008: Niederlande – Russland 1:3 n.V. (Arschawin) | Russland | 4 | highlight |
+| E4 | EM-Viertelfinale, 24.06.2012: England – Italien 0:0 n.V., Italien i.E. (Pirlo-Panenka) | England | 3 | – |
+| E5 | EM-Halbfinale, 27.06.2012: Spanien – Portugal 0:0 n.V., Spanien i.E. | Portugal | 3 | – |
+| E6 | EM-Halbfinale, 28.06.2012: Deutschland – Italien 1:2 (Balotelli) | Italien | 3 | highlight |
+| E7 | EM-Viertelfinale, 02.07.2016: Deutschland – Italien 1:1 n.V., Deutschland i.E. | Italien | 3 | – |
+| E8 | EM-Viertelfinale, 03.07.2016: Frankreich – Island 5:2 | Frankreich | 2 | – |
+| E9 | EM-Halbfinale, 06.07.2016: Portugal – Wales 2:0 | Wales | 4 | – |
+| E10 | Nations-League-Finale, 09.06.2019: Portugal – Niederlande 1:0 | Portugal | 3 | highlight |
+| E11 | EM-Achtelfinale, 28.06.2021: Kroatien – Spanien 3:5 n.V. | Kroatien | 3 | highlight |
+| E12 | EM-Achtelfinale, 28.06.2021: Frankreich – Schweiz 3:3 n.V., Schweiz i.E. | Schweiz | 4 | highlight |
+| E13 | EM-Achtelfinale, 29.06.2021: England – Deutschland 2:0 | England | 2 | – |
+| E14 | EM-Viertelfinale, 03.07.2021: Tschechien – Dänemark 1:2 | Dänemark | 4 | highlight |
+| E15 | Nations-League-Finale, 10.10.2021: Spanien – Frankreich 1:2 | Frankreich | 3 | highlight |
+| E16 | Nations-League-Finale, 18.06.2023: Kroatien – Spanien 0:0 n.V., Spanien i.E. | Kroatien | 3 | highlight |
+| E17 | EM-Gruppenspiel, 26.06.2024: Georgien – Portugal 2:0 | Georgien | 4 | highlight |
+| E18 | EM-Viertelfinale, 05.07.2024: Portugal – Frankreich 0:0 n.V., Frankreich i.E. | Portugal | 3 | – |
+| E19 | EM-Viertelfinale, 06.07.2024: Niederlande – Türkei 2:1 | Niederlande | 3 | – |
+| E20 | EM-Halbfinale, 09.07.2024: Spanien – Frankreich 2:1 (Yamal-Tor) | Frankreich | 2 | highlight |
+| E21 | Nations-League-Finale, 08.06.2025: Portugal – Spanien 2:2 n.V., Portugal i.E. | Portugal | 3 | highlight |
+
+Gefragt WM: Brasilien 4 · Niederlande 3 · Portugal 2 · Uruguay 2 · Chile 2 · Frankreich 1 ·
+Belgien 1 · England 1 · Senegal 1 · Marokko 1. Mix L/M/K = 5/11/2.
+Gefragt EM: Portugal 4 · Frankreich 3 · Kroatien 3 · Niederlande 2 · Italien 2 · England 2 ·
+Russland, Wales, Schweiz, Dänemark, Georgien je 1. Mix L/M/K = 3/13/5.
+anchors (difficulty 4): W14 Mané, Koulibaly, Édouard Mendy · W17 Hakimi, Ziyech, Bounou ·
+E3 Arschawin, Pawljutschenko · E9 Bale, Ramsey · E12 Xhaka, Sommer, Shaqiri ·
+E14 Schmeichel, Kjær, Højbjerg · E17 Kvaratskhelia, Mamardashvili.
+
+Reserve: WM-Viertelfinale 09.12.2022 Kroatien – Brasilien 1:1 n.V., Kroatien i.E.
+(Brasilien, 3); EM-Halbfinale 10.07.2024 Niederlande – England 1:2 (England, 2).
+
+```
+Lies CLAUDE.md. Voraussetzung: Prompt 60, 61a–d erledigt. Plan Mode: Plan kurz zeigen.
+Vorgehen exakt wie Prompt 61a (Quellenpflicht, Pflichtfelder, special, anchors bei 4–5,
+Reserve bei unklarer Quelle, Häppchen à 8 Einträgen, check-lineup-pools nach jedem
+Häppchen). N1–N5 nur Kategorie Nostalgie. league-Werte: Weltmeisterschaft, Copa América,
+Confed Cup, Afrika-Cup → WM & Welt-Turniere; Europameisterschaft, Nations League → EM &
+Nations League. Bericht: Tabelle # / Partie / Quelle(n) / Änderungen; Zählung je Kategorie
+vorher/nachher inkl. Top-5-Beteiligung (Deutschland/Spanien sollen sinken), Mix, Ausgaben.
+CACHE_NAME erhöhen, Status-Tabelle: 61e erledigt.
 Kein Commit/Push ohne Zeigen der Testausgabe.
 ```
 
