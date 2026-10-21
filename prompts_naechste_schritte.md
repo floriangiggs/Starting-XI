@@ -72,7 +72,7 @@ vorige umgesetzt, getestet und committet ist.
 | 58 | App-Name „Startelo XI“ statt „Starting XI“ (17 sichtbare Stellen, interne Schlüssel bleiben, gesperrte Nutzernamen ergänzen) | Markenrecherche Startelo (Florian) | ✅ erledigt (19 Stellen in startelf_check.html + manifest.json; interne Schlüssel unverändert; reservierte Namen startelo/starteloxi; tools/test-umbenennung.mjs; sw.js v74) |
 | 59 | Welt- und Rangnamen ohne geschützte Marken: Bundesliga → Profiliga, Champions League → Meisterklasse, 2. Bundesliga → Zweite Liga (Weltkarte, Pfad, Kachel, Feier, Scout-Ränge, CLAUDE.md); Spiel-Beschreibungen bleiben | 58 | ✅ erledigt (DIFF_LABEL + RANKS, RANK_RENAME/rankLabel für Gegner-Ränge aus alten Links und gespeicherte Duelle, Welt-Feier einzeilig; tools/test-weltnamen.mjs; sw.js v75) |
 | 60 | Duell-Pool: eigener Pool DUEL_POOL (nur Duell + Frei spielen), 12 Duell-Kategorien, Hausregel-Ausnahme Nostalgie 2000–2007, Balance-Regeln + Prüfskript – noch KEINE neuen Aufstellungen | 59 | offen |
-| 61 | 200 neue Aufstellungen für den Duell-Pool in Paketen (61a Deutschland, 61b …), Kandidaten mit Florian ausgewählt | 60 | 61a (Deutschland, 20) + 61b (Spanien, 26) + 61c (Italien, 24) + 61d (England, 20 + 3 Nostalgie) + 61e (Turniere, 39 + 5 Nostalgie) + 61f (Frankreich, 18) bereit; weitere Pakete folgen |
+| 61 | 200 neue Aufstellungen für den Duell-Pool in Paketen (61a Deutschland, 61b …), Kandidaten mit Florian ausgewählt | 60 | 61a (Deutschland, 20) + 61b (Spanien, 26) + 61c (Italien, 24) + 61d (England, 20 + 3 Nostalgie) + 61e (Turniere, 39 + 5 Nostalgie) + 61f (Frankreich, 18) + 61g (NL & PT, 22) bereit; weitere Pakete folgen |
 
 **Empfohlene Reihenfolge ab jetzt:** 49 → 50 (Bugfixes, sofort) → 39 → 41 → 42 → 43 → 44 → 45 → 46 → 47 → 48 → 49 → 50 → 51 → 52 → 53 → 54 → 55 → 56 → 57 → 58 → 59 → 60 → 61 (Pakete) → weitere Offline-Feinschliffe (u. a. Jahres-Lücken im Ideen-Speicher auffüllen) → Planung Online-Duell (inkl. 28/29) → 8 (Capacitor, erst wenn die App final ist; vorher Duell-Pflichtpunkt aus CLAUDE.md ansprechen)
 
@@ -5339,6 +5339,7 @@ Lies CLAUDE.md. Plan Mode, Plan zeigen. Noch KEINE neuen Aufstellungen hinzufüg
      überwiegen – Juventus, Inter, Milan je bis 45 % ohne Fehler (nur Hinweis).
      AUSNAHME England: ManCity, Liverpool, ManUtd, Arsenal, Chelsea je bis 40 %.
      AUSNAHME Frankreich: Paris Saint-Germain bis 80 % (ausdrücklich gewünscht).
+     AUSNAHME Niederlande & Portugal: Ajax, Benfica, Porto je bis 45 %.
    - Je Kategorie mindestens 6 verschiedene gefragte Mannschaften; unter den ersten 20
      einer Kategorie (Reihenfolge im Pool) keine Mannschaft mehr als 2-mal.
    - Schwierigkeits-Mix je Kategorie (Hinweis gelb, nicht rot): Ziel ca. 40 % leicht
@@ -5745,6 +5746,62 @@ In Prompt-60-Regeln/Prüfskript Ausnahme „Frankreich: PSG bis 80 %“ ergänze
 Frei-spielen-Karte „Frankreich“ (aus Prompt 60) mit league-Werten Ligue 1 + Coupe de France
 verbinden. Bericht: Tabelle # / Partie / Quelle(n) / Änderungen; Zählung Frankreich,
 PSG-Stars je Ära, Mix, Jahre. CACHE_NAME erhöhen, Status-Tabelle: 61f erledigt.
+Kein Commit/Push ohne Zeigen der Testausgabe.
+```
+
+---
+
+## Prompt 61g – Duell-Pool Paket 7: Niederlande & Portugal (22 Aufstellungen)
+
+**Ausgewählt von Claude (21.10.2026):** Ajax am häufigsten (viele spätere Weltstars:
+Suárez, Eriksen, de Jong, de Ligt, Ziyech, Antony), dazu PSV und Feyenoord; aus Portugal
+Benfica, Porto und Sporting (Di María, Falcao/Hulk, João Félix, Gyökeres). Bewusst die
+etwas schwerere Kategorie, aber nur Top-Klubs und Meister-/Pokal-Geschichten. Jahre
+2010–2025, kein Jahr > 2×. Neue league-Werte: „Eredivisie“, „KNVB-Pokal“, „Liga Portugal“,
+„Taça de Portugal“ (Kategorie Niederlande & Portugal).
+Datum/Ergebnis = Arbeitsstand, maßgeblich ist die Quelle.
+
+| # | Spiel (Wettbewerb, Datum) | gefragte Seite | difficulty | special |
+|---|---|---|---|---|
+| 1 | KNVB-Pokal-Finale 2010, Rückspiel 06.05.2010: Feyenoord – Ajax 1:4 (Suárez; Finale in zwei Spielen – per Quelle bestätigen) | Ajax Amsterdam | 3 | highlight |
+| 2 | Liga Portugal, 09.05.2010: Benfica – Rio Ave 2:1 (Meisterschaft, Di María) | Benfica Lissabon | 3 | – |
+| 3 | Liga Portugal, 03.04.2011: Benfica – FC Porto 1:2 (Porto Meister im Estádio da Luz) | FC Porto | 3 | highlight |
+| 4 | Eredivisie, 15.05.2011: Ajax – FC Twente 3:1 (Meisterschaft, Eriksen) | Ajax Amsterdam | 3 | – |
+| 5 | Liga Portugal, 11.05.2013: FC Porto – Benfica 2:1 (Kelvin-Tor in der Nachspielzeit) | FC Porto | 3 | highlight |
+| 6 | Eredivisie, 05.05.2013: Ajax – Willem II 5:0 (Meisterschaft) | Ajax Amsterdam | 3 | – |
+| 7 | Taça-de-Portugal-Finale, 18.05.2014: Benfica – Rio Ave 1:0 (Triple) | Benfica Lissabon | 3 | highlight |
+| 8 | Eredivisie, 18.04.2015: PSV – SC Heerenveen 4:1 (Meisterschaft, Depay) | PSV Eindhoven | 3 | – |
+| 9 | Eredivisie, 08.05.2016: PEC Zwolle – PSV 1:3 (Meisterschaft) | PSV Eindhoven | 3 | – |
+| 10 | Eredivisie, 14.05.2017: Feyenoord – Heracles Almelo 3:1 (Meisterschaft, Kuyt-Dreierpack) | Feyenoord Rotterdam | 3 | highlight |
+| 11 | Liga Portugal, 13.05.2017: Benfica – Vitória Guimarães 5:0 (vierter Titel in Folge) | Benfica Lissabon | 3 | – |
+| 12 | KNVB-Pokal-Finale, 22.04.2018: AZ Alkmaar – Feyenoord 0:3 | Feyenoord Rotterdam | 3 | highlight |
+| 13 | Eredivisie, 15.05.2019: De Graafschap – Ajax 1:4 (Meisterschaft, de Jong/de Ligt) | Ajax Amsterdam | 2 | – |
+| 14 | Liga Portugal, 18.05.2019: Benfica – Santa Clara 4:1 (Meisterschaft, João Félix) | Benfica Lissabon | 3 | – |
+| 15 | Taça-de-Portugal-Finale, 01.08.2020: Benfica – FC Porto 1:2 | FC Porto | 3 | highlight |
+| 16 | KNVB-Pokal-Finale, 18.04.2021: Ajax – Vitesse 2:1 | Ajax Amsterdam | 3 | highlight |
+| 17 | Liga Portugal, 11.05.2021: Sporting – Boavista 1:0 (erster Titel nach 19 Jahren) | Sporting Lissabon | 4 | highlight |
+| 18 | Eredivisie, 11.05.2022: Ajax – SC Heerenveen 5:0 (Meisterschaft, Haller/Antony) | Ajax Amsterdam | 2 | – |
+| 19 | Eredivisie, 14.05.2023: Feyenoord – Go Ahead Eagles 3:0 (Meisterschaft) | Feyenoord Rotterdam | 3 | – |
+| 20 | Liga Portugal, 27.05.2023: Benfica – Santa Clara 3:0 (Meisterschaft) | Benfica Lissabon | 3 | – |
+| 21 | Eredivisie, 05.05.2024: PSV – Sparta Rotterdam 4:2 (Meisterschaft) | PSV Eindhoven | 3 | – |
+| 22 | Taça-de-Portugal-Finale, 25.05.2025: Benfica – Sporting 1:3 n.V. (Gyökeres) | Sporting Lissabon | 3 | highlight |
+
+Gefragt: Ajax 6 · Benfica 5 · Porto 3 · PSV 3 · Feyenoord 3 · Sporting 2.
+Beteiligung: Benfica ≈ 41 % – AUSNAHME Niederlande & Portugal (Prompt 60 ergänzen):
+Ajax, Benfica, Porto je bis 45 %. Mix L/M/K = 2/19/1.
+anchors: #17 Pote, Palhinha, Nuno Mendes.
+
+Reserve: KNVB-Pokal-Finale 05.05.2019 Willem II – Ajax 0:4 (Ajax, 2, highlight);
+Liga Portugal 07.05.2022 Benfica – FC Porto 0:1 (Porto, 3).
+
+```
+Lies CLAUDE.md. Voraussetzung: Prompt 60, 61a–f erledigt. Plan Mode: Plan kurz zeigen.
+Vorgehen exakt wie Prompt 61a (Quellenpflicht, Pflichtfelder, special, anchors bei 4–5,
+Reserve bei unklarer Quelle, Häppchen à 8/7/7, check-lineup-pools nach jedem Häppchen).
+In Prompt-60-Regeln/Prüfskript Ausnahme „Niederlande & Portugal: Ajax, Benfica, Porto bis
+45 %“ ergänzen. Frei-spielen-Karte „Niederlande & Portugal“ mit den vier league-Werten
+verbinden. Bericht: Tabelle # / Partie / Quelle(n) / Änderungen; Zählung, Mix, Jahre.
+CACHE_NAME erhöhen, Status-Tabelle: 61g erledigt.
 Kein Commit/Push ohne Zeigen der Testausgabe.
 ```
 
