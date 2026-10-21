@@ -5306,7 +5306,10 @@ Lies CLAUDE.md. Plan Mode, Plan zeigen. Noch KEINE neuen Aufstellungen hinzufüg
 1. Neuer Pool DUEL_POOL (gleiche Felder wie LINEUP_CHALLENGES inkl. teaser, bench,
    source) + optionales Feld special: "nostalgie" | "highlight" (höchstens EINS).
    Jede Aufstellung gehört damit zu höchstens 2 Kategorien: ihr Wettbewerb (aus
-   league) + ggf. ihr special. DUEL_POOL erscheint NUR im Duell und in Frei spielen,
+   league) + ggf. ihr special. AUSNAHME (Florian, 21.10.2026): Spiele vor 2008
+   (special "nostalgie") erscheinen NUR in der Kategorie „Nostalgie 2000–2007“ –
+   nicht in ihrer Wettbewerbs-Kategorie (auch in Frei spielen nur unter der Karte
+   „Nostalgie“). DUEL_POOL erscheint NUR im Duell und in Frei spielen,
    nie in Kampagne oder Tages-Challenge.
 2. Duell-Kategorien als Konstante DUEL_CATEGORIES (Tabelle oben). Die Duell-Auswahl
    zieht aus LINEUP_CHALLENGES + DAILY_CHALLENGES + DUEL_POOL. Bestehende Aufstellungen
@@ -5317,7 +5320,9 @@ Lies CLAUDE.md. Plan Mode, Plan zeigen. Noch KEINE neuen Aufstellungen hinzufüg
    Pokal), „Nostalgie 2000–2007“ und „Highlights“ (neue Gruppe „Spezial“). Optik wie
    die vorhandenen Karten (Prompt 47), Flaggen/Zeichen im selben Stil.
 4. Hausregel-Ausnahme NUR für DUEL_POOL (CLAUDE.md ergänzen):
-   - Spiele ab 01.01.2000 erlaubt; Spiele 2000–2007 MÜSSEN special "nostalgie" haben.
+   - Spiele ab 01.01.2000 erlaubt; Spiele 2000–2007 MÜSSEN special "nostalgie" haben
+     und zählen nur dort (nicht im Wettbewerb). Prüfskript: Spiel < 2008 ohne
+     nostalgie = Fehler; nostalgie mit Datum ≥ 2008 = Fehler.
    - Nostalgie nur Legenden: große Vereine/Nationen, Spiele, die man heute noch kennt,
      mind. 4 Weltstars/Legenden in der gefragten Elf; difficulty höchstens 3.
    - Quellenpflicht unverändert (mind. eine verlässliche Quelle, nie aus dem Gedächtnis).
