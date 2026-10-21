@@ -72,7 +72,7 @@ vorige umgesetzt, getestet und committet ist.
 | 58 | App-Name „Startelo XI“ statt „Starting XI“ (17 sichtbare Stellen, interne Schlüssel bleiben, gesperrte Nutzernamen ergänzen) | Markenrecherche Startelo (Florian) | ✅ erledigt (19 Stellen in startelf_check.html + manifest.json; interne Schlüssel unverändert; reservierte Namen startelo/starteloxi; tools/test-umbenennung.mjs; sw.js v74) |
 | 59 | Welt- und Rangnamen ohne geschützte Marken: Bundesliga → Profiliga, Champions League → Meisterklasse, 2. Bundesliga → Zweite Liga (Weltkarte, Pfad, Kachel, Feier, Scout-Ränge, CLAUDE.md); Spiel-Beschreibungen bleiben | 58 | ✅ erledigt (DIFF_LABEL + RANKS, RANK_RENAME/rankLabel für Gegner-Ränge aus alten Links und gespeicherte Duelle, Welt-Feier einzeilig; tools/test-weltnamen.mjs; sw.js v75) |
 | 60 | Duell-Pool: eigener Pool DUEL_POOL (nur Duell + Frei spielen), 12 Duell-Kategorien, Hausregel-Ausnahme Nostalgie 2000–2007, Balance-Regeln + Prüfskript – noch KEINE neuen Aufstellungen | 59 | offen |
-| 61 | 200 neue Aufstellungen für den Duell-Pool in Paketen (61a Deutschland, 61b …), Kandidaten mit Florian ausgewählt | 60 | 61a (Deutschland, 20) + 61b (Spanien, 26) + 61c (Italien, 24) + 61d (England, 20 + 3 Nostalgie) + 61e (Turniere, 39 + 5 Nostalgie) + 61f (Frankreich, 18) + 61g (NL & PT, 22) + 61h (EL 15, CL 5 + 3 Nostalgie) bereit – zusammen 200 |
+| 61 | 200 neue Aufstellungen für den Duell-Pool in Paketen (61a Deutschland, 61b …), Kandidaten mit Florian ausgewählt | 60 | 61a (Deutschland, 20) + 61b (Spanien, 26) + 61c (Italien, 24) + 61d (England, 20 + 3 Nostalgie) + 61e (Turniere, 39 + 5 Nostalgie) + 61f (Frankreich, 20) + 61g (NL & PT, 22) + 61h (EL 15, CL 5 + 3 Nostalgie) bereit – zusammen 202 |
 
 **Empfohlene Reihenfolge ab jetzt:** 49 → 50 (Bugfixes, sofort) → 39 → 41 → 42 → 43 → 44 → 45 → 46 → 47 → 48 → 49 → 50 → 51 → 52 → 53 → 54 → 55 → 56 → 57 → 58 → 59 → 60 → 61 (Pakete) → weitere Offline-Feinschliffe (u. a. Jahres-Lücken im Ideen-Speicher auffüllen) → Planung Online-Duell (inkl. 28/29) → 8 (Capacitor, erst wenn die App final ist; vorher Duell-Pflichtpunkt aus CLAUDE.md ansprechen)
 
@@ -5338,7 +5338,7 @@ Lies CLAUDE.md. Plan Mode, Plan zeigen. Noch KEINE neuen Aufstellungen hinzufüg
      AUSNAHME Italien (Florian, 21.10.2026): die ganz bekannten Klubs sollen deutlich
      überwiegen – Juventus, Inter, Milan je bis 45 % ohne Fehler (nur Hinweis).
      AUSNAHME England: ManCity, Liverpool, ManUtd, Arsenal, Chelsea je bis 40 %.
-     AUSNAHME Frankreich: Paris Saint-Germain bis 80 % (ausdrücklich gewünscht).
+     AUSNAHME Frankreich: Paris Saint-Germain bis 82 % (ausdrücklich gewünscht).
      AUSNAHME Niederlande & Portugal: Ajax, Benfica, Porto je bis 45 %.
    - Je Kategorie mindestens 6 verschiedene gefragte Mannschaften; unter den ersten 20
      einer Kategorie (Reihenfolge im Pool) keine Mannschaft mehr als 2-mal.
@@ -5699,7 +5699,7 @@ Kein Commit/Push ohne Zeigen der Testausgabe.
 
 ---
 
-## Prompt 61f – Duell-Pool Paket 6: Frankreich (18 Aufstellungen)
+## Prompt 61f – Duell-Pool Paket 6: Frankreich (20 Aufstellungen)
 
 **Schwerpunkt nach Florian (21.10.2026):** PSG deutlich am häufigsten – der Reiz sind die
 vielen verschiedenen Stars über die Jahre (Beckham, Ibrahimović, Cavani, Neymar, Mbappé,
@@ -5728,21 +5728,22 @@ Datum/Ergebnis = Arbeitsstand, maßgeblich ist die Quelle.
 | 16 | Ligue 1, 27.05.2023: RC Strasbourg – Paris Saint-Germain 1:1 (Meisterschaft, Messi) | Paris Saint-Germain | 2 | – |
 | 17 | Coupe-de-France-Finale, 25.05.2024: Olympique Lyon – Paris Saint-Germain 1:2 (Mbappés letztes Spiel) | Paris Saint-Germain | 3 | highlight |
 | 18 | Coupe-de-France-Finale, 24.05.2025: Stade Reims – Paris Saint-Germain 0:3 | Paris Saint-Germain | 3 | highlight |
+| 19 | Ligue 1, 12.05.2013: Olympique Lyon – Paris Saint-Germain 0:1 (Meisterschaft) | Paris Saint-Germain | 2 | – |
+| 20 | Ligue 1, 23.04.2022: Paris Saint-Germain – RC Lens 1:1 (Meisterschaft, Messi-Tor) | Paris Saint-Germain | 2 | – |
 
-Gefragt: PSG 12 · Lille 2 · Lyon 1 · Marseille 1 · Monaco 1 · Montpellier 1.
-Beteiligung: PSG ≈ 78 % – AUSNAHME Frankreich (Prompt 60 ergänzen): PSG bis 80 % ohne
-Fehler, ausdrücklich so gewünscht. Mix L/M/K = 6/10/2.
+Gefragt: PSG 14 · Lille 2 · Lyon 1 · Marseille 1 · Monaco 1 · Montpellier 1.
+Beteiligung: PSG ≈ 80 % – AUSNAHME Frankreich (Prompt 60 ergänzen): PSG bis 82 % ohne
+Fehler, ausdrücklich so gewünscht. Mix L/M/K = 8/10/2.
 anchors: #4 Giroud, Belhanda, Cabella · #14 Burak Yılmaz, Jonathan David, Maignan.
-Statt 20 nur 18 – die 2 Plätze gehen an Niederlande & Portugal.
+Auf 20 aufgestockt, damit die Kategorie die Mindestgröße 20 erreicht (gesamt 202 statt 200).
 
-Reserve: Ligue 1, 12.05.2013: Olympique Lyon – Paris Saint-Germain 0:1 (Meisterschaft, PSG, 2);
-Ligue 1, 23.04.2022: Paris Saint-Germain – RC Lens 1:1 (Meisterschaft, Messi-Tor, PSG, 2).
+Reserve: Ligue 1, 2013/14 oder 2014/15 – ein Meisterspiel von PSG nach Quelle (PSG, 2).
 
 ```
 Lies CLAUDE.md. Voraussetzung: Prompt 60, 61a–e erledigt. Plan Mode: Plan kurz zeigen.
 Vorgehen exakt wie Prompt 61a (Quellenpflicht, Pflichtfelder, special, anchors bei 4–5,
-Reserve bei unklarer Quelle, Häppchen à 6/6/6, check-lineup-pools nach jedem Häppchen).
-In Prompt-60-Regeln/Prüfskript Ausnahme „Frankreich: PSG bis 80 %“ ergänzen.
+Reserve bei unklarer Quelle, Häppchen à 7/7/6, check-lineup-pools nach jedem Häppchen).
+In Prompt-60-Regeln/Prüfskript Ausnahme „Frankreich: PSG bis 82 %“ ergänzen.
 Frei-spielen-Karte „Frankreich“ (aus Prompt 60) mit league-Werten Ligue 1 + Coupe de France
 verbinden. Bericht: Tabelle # / Partie / Quelle(n) / Änderungen; Zählung Frankreich,
 PSG-Stars je Ära, Mix, Jahre. CACHE_NAME erhöhen, Status-Tabelle: 61f erledigt.
@@ -5851,7 +5852,7 @@ Spiele vor 2008 nur in „Nostalgie“. Datum/Ergebnis = Arbeitsstand, maßgebli
 Gefragt EL: Atlético 3 · Chelsea 2 · ManUtd 2 · je 1 Porto, Benfica, Juventus, Napoli, Inter,
 Atalanta, Leverkusen, Tottenham. Sevilla nur als Gegner (2×). Mix L/M/K = 4/11/0.
 Gefragt CL (neu, ohne Nostalgie): Barça 2 · Inter 1 · Bayern 1 · Liverpool 1. Mix 3/2/0.
-Damit sind es insgesamt 200 neue Aufstellungen (Pakete 61a–h).
+Damit sind es insgesamt 202 neue Aufstellungen (Pakete 61a–h).
 
 Reserve EL: Europa-League-Halbfinale Rückspiel 05.05.2016 FC Liverpool – Villarreal 3:0
 (Liverpool, 2). Reserve CL: Champions-League-Finale 28.05.2016 Real Madrid – Atlético
