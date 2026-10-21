@@ -72,7 +72,7 @@ vorige umgesetzt, getestet und committet ist.
 | 58 | App-Name „Startelo XI“ statt „Starting XI“ (17 sichtbare Stellen, interne Schlüssel bleiben, gesperrte Nutzernamen ergänzen) | Markenrecherche Startelo (Florian) | ✅ erledigt (19 Stellen in startelf_check.html + manifest.json; interne Schlüssel unverändert; reservierte Namen startelo/starteloxi; tools/test-umbenennung.mjs; sw.js v74) |
 | 59 | Welt- und Rangnamen ohne geschützte Marken: Bundesliga → Profiliga, Champions League → Meisterklasse, 2. Bundesliga → Zweite Liga (Weltkarte, Pfad, Kachel, Feier, Scout-Ränge, CLAUDE.md); Spiel-Beschreibungen bleiben | 58 | ✅ erledigt (DIFF_LABEL + RANKS, RANK_RENAME/rankLabel für Gegner-Ränge aus alten Links und gespeicherte Duelle, Welt-Feier einzeilig; tools/test-weltnamen.mjs; sw.js v75) |
 | 60 | Duell-Pool: eigener Pool DUEL_POOL (nur Duell + Frei spielen), 12 Duell-Kategorien, Hausregel-Ausnahme Nostalgie 2000–2007, Balance-Regeln + Prüfskript – noch KEINE neuen Aufstellungen | 59 | offen |
-| 61 | 200 neue Aufstellungen für den Duell-Pool in Paketen (61a Deutschland, 61b …), Kandidaten mit Florian ausgewählt | 60 | offen (Pakete folgen) |
+| 61 | 200 neue Aufstellungen für den Duell-Pool in Paketen (61a Deutschland, 61b …), Kandidaten mit Florian ausgewählt | 60 | 61a bereit (Deutschland, 24); weitere Pakete folgen |
 
 **Empfohlene Reihenfolge ab jetzt:** 49 → 50 (Bugfixes, sofort) → 39 → 41 → 42 → 43 → 44 → 45 → 46 → 47 → 48 → 49 → 50 → 51 → 52 → 53 → 54 → 55 → 56 → 57 → 58 → 59 → 60 → 61 (Pakete) → weitere Offline-Feinschliffe (u. a. Jahres-Lücken im Ideen-Speicher auffüllen) → Planung Online-Duell (inkl. 28/29) → 8 (Capacitor, erst wenn die App final ist; vorher Duell-Pflichtpunkt aus CLAUDE.md ansprechen)
 
@@ -5344,6 +5344,71 @@ Lies CLAUDE.md. Plan Mode, Plan zeigen. Noch KEINE neuen Aufstellungen hinzufüg
    neuen Karten (leer = ausgegraut „bald“), Duell-Auswahl-Regeln als Unit-Test mit
    Testdaten (tools/test-duell-auswahl.mjs). CACHE_NAME erhöhen. Status-Tabelle:
    Prompt 60 erledigt.
+Kein Commit/Push ohne Zeigen der Testausgabe.
+```
+
+---
+
+## Prompt 61a – Duell-Pool Paket 1: Deutschland (24 Aufstellungen)
+
+**Ausgewählt von Claude nach Florians Vorgaben (21.10.2026):** keine Mannschaft öfter
+als 3× als gefragte Seite, Jahre 2001–2024 breit gestreut (inkl. dünner Jahre 2013/2019),
+Mix L/M/K = 7/11/6. Alle Spiele sind noch NICHT in LINEUP_CHALLENGES/DAILY_CHALLENGES.
+Datum/Ergebnis in der Liste sind Arbeitsstand – maßgeblich ist die Quelle.
+
+| # | Spiel (Wettbewerb, Datum) | gefragte Seite | difficulty | special |
+|---|---|---|---|---|
+| 1 | Bundesliga 34. ST, 19.05.2001: Hamburger SV – FC Bayern 1:1 (Meister in der Nachspielzeit) | FC Bayern | 2 | nostalgie |
+| 2 | Bundesliga 34. ST, 19.05.2001: FC Schalke 04 – SpVgg Unterhaching 5:3 („Meister der Herzen“) | FC Schalke 04 | 3 | nostalgie |
+| 3 | DFB-Pokal-Finale, 11.05.2002: FC Schalke 04 – Bayer 04 Leverkusen 4:2 | Bayer 04 Leverkusen | 3 | nostalgie |
+| 4 | Bundesliga 32. ST, 08.05.2004: FC Bayern – Werder Bremen 1:3 (Werder Meister in München) | Werder Bremen | 3 | nostalgie |
+| 5 | Bundesliga 34. ST, 19.05.2007: VfB Stuttgart – Energie Cottbus 2:1 (Meisterschaft) | VfB Stuttgart | 3 | nostalgie |
+| 6 | Bundesliga, 25.09.2010: FC Bayern – 1. FSV Mainz 05 1:2 (Mainzer Startrekord) | 1. FSV Mainz 05 | 4 | – |
+| 7 | DFB-Pokal-Finale, 21.05.2011: MSV Duisburg – FC Schalke 04 0:5 | FC Schalke 04 | 2 | highlight |
+| 8 | Bundesliga, 21.04.2012: Borussia Dortmund – Borussia Mönchengladbach 2:0 (Meisterschaft) | Borussia Dortmund | 2 | – |
+| 9 | DFB-Pokal-Finale, 01.06.2013: FC Bayern – VfB Stuttgart 3:2 | VfB Stuttgart | 4 | highlight |
+| 10 | Relegation Rückspiel, 01.06.2015: Karlsruher SC – Hamburger SV 1:2 n.V. | Hamburger SV | 4 | highlight |
+| 11 | DFB-Pokal-Finale, 21.05.2016: FC Bayern – Borussia Dortmund 0:0 n.V., 4:3 i.E. | Borussia Dortmund | 3 | highlight |
+| 12 | Bundesliga 34. ST, 20.05.2017: 1. FC Köln – 1. FSV Mainz 05 2:0 (Europa nach 25 Jahren) | 1. FC Köln | 4 | – |
+| 13 | Bundesliga, 25.11.2017: Borussia Dortmund – FC Schalke 04 4:4 (von 0:4 zum Remis) | FC Schalke 04 | 3 | highlight |
+| 14 | DFB-Pokal-Finale, 19.05.2018: FC Bayern – Eintracht Frankfurt 1:3 | Eintracht Frankfurt | 3 | highlight |
+| 15 | Bundesliga, 06.04.2019: FC Bayern – Borussia Dortmund 5:0 | FC Bayern | 1 | – |
+| 16 | Bundesliga, 02.11.2019: Eintracht Frankfurt – FC Bayern 5:1 | Eintracht Frankfurt | 3 | – |
+| 17 | Bundesliga 1. ST, 18.09.2020: FC Bayern – FC Schalke 04 8:0 | FC Bayern | 1 | – |
+| 18 | DFB-Pokal-Finale, 13.05.2021: RB Leipzig – Borussia Dortmund 1:4 | Borussia Dortmund | 2 | highlight |
+| 19 | DFB-Pokal 2. Runde, 27.10.2021: Borussia Mönchengladbach – FC Bayern 5:0 | Borussia Mönchengladbach | 3 | highlight |
+| 20 | 2. Bundesliga 34. ST, 15.05.2022: Werder Bremen – Jahn Regensburg 2:0 (Aufstieg) | Werder Bremen | 3 | – |
+| 21 | DFB-Pokal-Finale, 03.06.2023: RB Leipzig – Eintracht Frankfurt 2:0 | RB Leipzig | 3 | highlight |
+| 22 | Bundesliga 34. ST, 27.05.2023: 1. FC Union Berlin – Werder Bremen 1:0 (Union in der CL) | 1. FC Union Berlin | 4 | highlight |
+| 23 | Bundesliga, 10.02.2024: Bayer 04 Leverkusen – FC Bayern 3:0 | Bayer 04 Leverkusen | 2 | – |
+| 24 | 2. Bundesliga, 12.05.2024: FC St. Pauli – VfL Osnabrück 3:1 (Aufstieg) | FC St. Pauli | 4 | – |
+
+Reserve, falls eine Partie nicht sauber belegbar ist (in dieser Reihenfolge, Team-
+Obergrenze beachten): Unterhaching – Leverkusen 2:0 (20.05.2000, Leverkusen, 4,
+nostalgie); Borussia Dortmund – Werder Bremen 2:1 (04.05.2002, BVB, 3, nostalgie);
+1. FC Köln – 1. FC Kaiserslautern 4:0 (18.05.2025, Köln, 4); VfB Stuttgart – FC Bayern
+3:1 (04.05.2024, VfB, 3); Werder Bremen – Eintracht Frankfurt 1:0 (14.05.2016, Werder, 4).
+
+```
+Lies CLAUDE.md (inkl. Duell-Pool-Ausnahme aus Prompt 60). Voraussetzung: Prompt 60 ist
+erledigt (DUEL_POOL existiert). Plan Mode: Plan kurz zeigen.
+
+1. Recherchiere die 24 Partien aus der Tabelle oben (prompts_naechste_schritte.md,
+   Prompt 61a) einzeln mit mindestens einer verlässlichen Quelle (kicker.de,
+   weltfussball.de, fussballdaten.de, transfermarkt, ESPN, offizielle Vereins-/
+   Verbandsseiten). Nie aus dem Gedächtnis. Stimmen Datum/Ergebnis/Wettbewerb nicht
+   mit der Quelle, korrigieren und im Bericht nennen. Ist die Startelf nicht sauber
+   belegbar (Formation/Positionen unklar), Partie durch die nächste Reserve ersetzen.
+2. Pro Eintrag in DUEL_POOL: alle Pflichtfelder wie LINEUP_CHALLENGES (id, comp, league,
+   teams, side, context, teaser – spoilerfrei –, formation aus PITCH_LAYOUTS,
+   difficulty laut Tabelle, players, details/nat, source), Bank (bench + benchSource)
+   wenn vollständig belegbar, special laut Tabelle, anchors bei difficulty 4–5
+   (2–3 bekannte Spieler der Elf).
+3. Arbeite in 3 Häppchen à 8 Einträgen; nach jedem Häppchen check-lineup-pools laufen
+   lassen und Ergebnis zeigen.
+4. Bericht am Ende: Tabelle # / Partie / Quelle(n) / Änderungen ggü. Liste; Zählung
+   Kategorie Deutschland vorher/nachher, Gefragte je Mannschaft, Mix L/M/K, Jahre.
+5. CACHE_NAME erhöhen, Status-Tabelle: 61a erledigt.
 Kein Commit/Push ohne Zeigen der Testausgabe.
 ```
 
