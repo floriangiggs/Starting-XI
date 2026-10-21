@@ -12,7 +12,7 @@ const browser = await chromium.launch();
 const page = await (await browser.newContext({ serviceWorkers: "block" })).newPage();
 await page.goto("file://" + html); await page.waitForTimeout(4000);
 const data = await page.evaluate(() => {
-  const all = [...LINEUP_CHALLENGES, ...DAILY_CHALLENGES];
+  const all = [...LINEUP_CHALLENGES, ...DAILY_CHALLENGES, ...DUEL_POOL];
   const year = (m) => { const x = (m.comp.match(/\d{1,2}\.\d{1,2}\.(\d{4})/) || m.comp.match(/(\d{4})/) || [])[1]; return x ? +x : null; };
   const catalog = all.map((m) => ({ id: m.id, difficulty: m.difficulty, league: m.league, year: year(m) }));
   const players = new Set(); all.forEach((m) => Object.values(m.players).forEach((n) => players.add(n)));

@@ -10,7 +10,7 @@ import fs from "node:fs";
 const html = path.join(path.dirname(fileURLToPath(import.meta.url)), "..", "startelf_check.html");
 const shots = process.argv.includes("--shots") ? process.argv[process.argv.indexOf("--shots") + 1] : null;
 const SIZES = [[360, 667], [360, 780], [375, 667], [375, 812], [402, 874], [393, 852], [430, 932]];
-const MODES = [["campaign", "LINEUP_CHALLENGES"], ["free", "LINEUP_CHALLENGES"], ["daily", "DAILY_CHALLENGES"], ["archive", "DAILY_CHALLENGES"]];
+const MODES = [["campaign", "LINEUP_CHALLENGES"], ["free", "LINEUP_CHALLENGES"], ["daily", "DAILY_CHALLENGES"], ["archive", "DAILY_CHALLENGES"], ["free", "DUEL_POOL"]];
 const browser = await chromium.launch();
 let issues = 0, checked = 0, minPitch = Infinity, minNote = 99;
 const ov = (a, b, pad = 0) => a.left < b.right - pad && b.left < a.right - pad && a.top < b.bottom - pad && b.top < a.bottom - pad;

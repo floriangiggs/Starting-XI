@@ -612,6 +612,8 @@
   .fp-ch.on .ic svg [stroke="#F7D98E"] { stroke: #13202A; } .fp-ch.on .ic svg [fill="#F7D98E"] { fill: #13202A; }
   .fp-ch.on .n { background: rgba(19,32,42,0.85); color: var(--gold-hi); }
   .fp-ch.zero { opacity: 0.45; }
+  .fp-ch.soon { cursor: default; opacity: 0.4; } .fp-ch.soon .n { font-family: 'Oswald', sans-serif; font-weight: 500; font-size: 11.5px; padding: 0 7px; }
+  .fp-ch.long .nm { white-space: normal; line-height: 1.18; font-size: 12.5px; overflow: visible; }
   .fp-flag { width: 22px; height: 15px; border-radius: 3px; overflow: hidden; box-shadow: 0 0 0 1px rgba(0,0,0,0.35); display: grid; }
   .fp-sep { height: 2px; margin: 12px 0 11px; flex-shrink: 0; background: repeating-linear-gradient(90deg, rgba(244,241,232,0.35) 0 6px, transparent 6px 11px); border-radius: 1px; }
   .fp-lv { display: grid; grid-template-columns: repeat(5, 1fr); gap: 6px; margin-top: 10px; flex-shrink: 0; }
@@ -2268,6 +2270,7 @@ const DIFF_COLOR = { 1: "#7fd99a", 2: "#a8d94a", 3: "#e8b23d", 4: "#e8863d", 5: 
 const LINEUP_CHALLENGES = [
   {
     id: "fck-pokalfinale-2024",
+    special: "highlight",
     comp: "DFB-Pokal-Finale, 25.05.2024",
     league: "Bundesliga / DFB-Pokal",
     teams: "1. FC Kaiserslautern gegen Bayer Leverkusen 0:1",
@@ -2294,6 +2297,7 @@ const LINEUP_CHALLENGES = [
   },
   {
     id: "em-finale-2008",
+    special: "highlight",
     comp: "EM-Finale, 29.06.2008",
     league: "Europameisterschaft",
     teams: "Deutschland gegen Spanien 0:1",
@@ -2323,6 +2327,7 @@ const LINEUP_CHALLENGES = [
   },
   {
     id: "dfb-pokalfinale-2025",
+    special: "highlight",
     comp: "DFB-Pokal-Finale, 24.05.2025",
     league: "DFB-Pokal",
     teams: "VfB Stuttgart gegen Arminia Bielefeld 4:2",
@@ -2349,6 +2354,7 @@ const LINEUP_CHALLENGES = [
   },
   {
     id: "el-clasico-2009",
+    special: "highlight",
     comp: "LaLiga, 34. Spieltag, 02.05.2009 (\"El Clásico\")",
     league: "LaLiga",
     teams: "Real Madrid gegen FC Barcelona 2:6",
@@ -2373,6 +2379,7 @@ const LINEUP_CHALLENGES = [
   },
   {
     id: "leicester-liverpool-2016",
+    special: "highlight",
     comp: "Premier League, 24. Spieltag, 02.02.2016",
     league: "Premier League",
     teams: "Leicester City gegen FC Liverpool 2:0",
@@ -2397,6 +2404,7 @@ const LINEUP_CHALLENGES = [
   },
   {
     id: "el-finale-frankfurt-2022",
+    special: "highlight",
     comp: "Europa-League-Finale, 18.05.2022",
     league: "Europa League",
     teams: "Eintracht Frankfurt gegen Glasgow Rangers 1:1 n.V., Frankfurt siegt 5:4 i.E.",
@@ -2426,6 +2434,7 @@ const LINEUP_CHALLENGES = [
   },
   {
     id: "wm-finale-2014",
+    special: "highlight",
     comp: "WM-Finale, 13.07.2014",
     league: "Weltmeisterschaft",
     teams: "Deutschland gegen Argentinien 1:0 n.V.",
@@ -2479,6 +2488,7 @@ const LINEUP_CHALLENGES = [
   },
   {
     id: "em-finale-2021",
+    special: "highlight",
     comp: "EM-Finale, 11.07.2021",
     league: "Europameisterschaft",
     teams: "Italien gegen England 1:1 n.V., Italien siegt 3:2 i.E.",
@@ -2534,6 +2544,7 @@ const LINEUP_CHALLENGES = [
   },
   {
     id: "cl-finale-la-decima-2014",
+    special: "highlight",
     comp: "Champions-League-Finale, 24.05.2014 (\"La Décima\")",
     league: "Champions League",
     teams: "Real Madrid gegen Atlético Madrid 4:1 n.V.",
@@ -2614,6 +2625,7 @@ const LINEUP_CHALLENGES = [
   },
   {
     id: "mancity-qpr-2012",
+    special: "highlight",
     comp: "Premier League, 38. Spieltag, 13.05.2012 (\"Aguerooooo\")",
     league: "Premier League",
     teams: "Manchester City gegen Queens Park Rangers 3:2",
@@ -2693,6 +2705,7 @@ const LINEUP_CHALLENGES = [
   },
   {
     id: "atletico-titel-2014",
+    special: "highlight",
     comp: "LaLiga, 38. Spieltag, 17.05.2014",
     league: "LaLiga",
     teams: "FC Barcelona gegen Atlético Madrid 1:1",
@@ -2718,6 +2731,7 @@ const LINEUP_CHALLENGES = [
   },
   {
     id: "youngboys-manutd-2021",
+    special: "highlight",
     comp: "Champions-League-Gruppenphase, 1. Spieltag, 14.09.2021",
     league: "Champions League",
     teams: "Young Boys Bern gegen Manchester United 2:1",
@@ -2747,6 +2761,7 @@ const LINEUP_CHALLENGES = [
   },
   {
     id: "island-england-2016",
+    special: "highlight",
     comp: "EM-Achtelfinale, 27.06.2016",
     league: "Europameisterschaft",
     teams: "England gegen Island 1:2",
@@ -2776,6 +2791,7 @@ const LINEUP_CHALLENGES = [
   },
   {
     id: "ajax-real-madrid-2019",
+    special: "highlight",
     comp: "Champions-League-Achtelfinale Rückspiel, 05.03.2019",
     league: "Champions League",
     teams: "Real Madrid gegen Ajax Amsterdam 1:4",
@@ -2800,6 +2816,7 @@ const LINEUP_CHALLENGES = [
   },
   {
     id: "costarica-uruguay-2014",
+    special: "highlight",
     comp: "WM, Gruppenphase 1. Spieltag, 14.06.2014",
     league: "Weltmeisterschaft",
     teams: "Uruguay gegen Costa Rica 1:3",
@@ -2830,6 +2847,7 @@ const LINEUP_CHALLENGES = [
   },
   {
     id: "wolfsburg-real-2016",
+    special: "highlight",
     comp: "Champions-League-Viertelfinale Hinspiel, 06.04.2016",
     league: "Champions League",
     teams: "VfL Wolfsburg gegen Real Madrid 2:0",
@@ -2854,6 +2872,7 @@ const LINEUP_CHALLENGES = [
   },
   {
     id: "barcelona-frankfurt-2022",
+    special: "highlight",
     comp: "Europa-League-Viertelfinale Rückspiel, 14.04.2022",
     league: "Europa League",
     teams: "FC Barcelona gegen Eintracht Frankfurt 2:3",
@@ -2883,6 +2902,7 @@ const LINEUP_CHALLENGES = [
   },
   {
     id: "wales-belgien-2016",
+    special: "highlight",
     comp: "EM-Viertelfinale, 01.07.2016",
     league: "Europameisterschaft",
     teams: "Wales gegen Belgien 3:1",
@@ -2912,6 +2932,7 @@ const LINEUP_CHALLENGES = [
   },
   {
     id: "deutschland-japan-2022",
+    special: "highlight",
     comp: "WM, Gruppenphase 1. Spieltag, 23.11.2022",
     league: "Weltmeisterschaft",
     teams: "Deutschland gegen Japan 1:2",
@@ -2944,6 +2965,7 @@ const LINEUP_CHALLENGES = [
   },
   {
     id: "spanien-schweiz-2010",
+    special: "highlight",
     comp: "WM, Gruppenphase 1. Spieltag, 16.06.2010",
     league: "Weltmeisterschaft",
     teams: "Spanien gegen Schweiz 0:1",
@@ -2973,6 +2995,7 @@ const LINEUP_CHALLENGES = [
   },
   {
     id: "mexiko-deutschland-2018",
+    special: "highlight",
     comp: "WM, Gruppenphase 1. Spieltag, 17.06.2018",
     league: "Weltmeisterschaft",
     teams: "Deutschland gegen Mexiko 0:1",
@@ -3002,6 +3025,7 @@ const LINEUP_CHALLENGES = [
   },
   {
     id: "roma-barcelona-2018",
+    special: "highlight",
     comp: "Champions-League-Viertelfinale, Rückspiel, 10.04.2018",
     league: "Champions League",
     teams: "AS Rom gegen FC Barcelona 3:0",
@@ -3027,6 +3051,7 @@ const LINEUP_CHALLENGES = [
   },
   {
     id: "villarreal-manutd-2021",
+    special: "highlight",
     comp: "Europa-League-Finale, 26.05.2021",
     league: "Europa League",
     teams: "FC Villarreal gegen Manchester United 1:1 n.V., Villarreal siegt 11:10 i.E.",
@@ -3056,6 +3081,7 @@ const LINEUP_CHALLENGES = [
   },
   {
     id: "freiburg-leipzig-2022",
+    special: "highlight",
     comp: "DFB-Pokal-Finale, 21.05.2022",
     league: "Bundesliga / DFB-Pokal",
     teams: "SC Freiburg gegen RB Leipzig 1:1 n.V., Leipzig siegt 4:2 i.E.",
@@ -3082,6 +3108,7 @@ const LINEUP_CHALLENGES = [
   },
   {
     id: "wm-finale-2026",
+    special: "highlight",
     comp: "WM-Finale, 19.07.2026",
     league: "Weltmeisterschaft",
     teams: "Spanien gegen Argentinien 1:0 n.V.",
@@ -3115,6 +3142,7 @@ const LINEUP_CHALLENGES = [
   },
   {
     id: "psg-arsenal-2026",
+    special: "highlight",
     comp: "Champions-League-Finale, 30.05.2026",
     league: "Champions League",
     teams: "Paris Saint-Germain gegen FC Arsenal 1:1 n.V., PSG siegt 4:3 i.E.",
@@ -3145,6 +3173,7 @@ const LINEUP_CHALLENGES = [
   },
   {
     id: "wm-finale-2022",
+    special: "highlight",
     comp: "WM-Finale, 18.12.2022",
     league: "Weltmeisterschaft",
     teams: "Argentinien gegen Frankreich 3:3 n.V., Argentinien siegt 4:2 i.E.",
@@ -3178,6 +3207,7 @@ const LINEUP_CHALLENGES = [
   },
   {
     id: "em-finale-2024",
+    special: "highlight",
     comp: "EM-Finale, 14.07.2024",
     league: "Europameisterschaft",
     teams: "Spanien gegen England 2:1",
@@ -3235,6 +3265,7 @@ const LINEUP_CHALLENGES = [
   },
   {
     id: "argentinien-kolumbien-2024",
+    special: "highlight",
     comp: "Copa-América-Finale, 15.07.2024",
     league: "Copa América",
     teams: "Argentinien gegen Kolumbien 1:0 n.V.",
@@ -3294,6 +3325,7 @@ const LINEUP_CHALLENGES = [
   },
   {
     id: "mancity-inter-2023",
+    special: "highlight",
     comp: "Champions-League-Finale, 10.06.2023",
     league: "Champions League",
     teams: "Manchester City gegen Inter Mailand 1:0",
@@ -3354,6 +3386,7 @@ const LINEUP_CHALLENGES = [
   },
   {
     id: "argentinien-brasilien-copa-2021",
+    special: "highlight",
     comp: "Copa-América-Finale, 10.07.2021",
     league: "Copa América",
     teams: "Argentinien gegen Brasilien 1:0",
@@ -3384,6 +3417,7 @@ const LINEUP_CHALLENGES = [
   },
   {
     id: "sevilla-rom-el-finale-2023",
+    special: "highlight",
     comp: "Europa-League-Finale, 31.05.2023",
     league: "Europa League",
     teams: "Sevilla FC gegen AS Rom 1:1 n.V., Sevilla siegt 4:1 i.E.",
@@ -3414,6 +3448,7 @@ const LINEUP_CHALLENGES = [
   },
   {
     id: "cl-finale-2024",
+    special: "highlight",
     comp: "Champions-League-Finale, 01.06.2024",
     league: "Champions League",
     teams: "Borussia Dortmund gegen Real Madrid 0:2",
@@ -3443,6 +3478,7 @@ const LINEUP_CHALLENGES = [
   },
   {
     id: "mancity-astonvilla-2022",
+    special: "highlight",
     comp: "Premier League, 38. Spieltag, 22.05.2022",
     league: "Premier League",
     teams: "Manchester City gegen Aston Villa 3:2",
@@ -3524,6 +3560,7 @@ const LINEUP_CHALLENGES = [
   },
   {
     id: "chelsea-bayern-cl-finale-2012",
+    special: "highlight",
     comp: "Champions-League-Finale, 19.05.2012",
     league: "Champions League",
     teams: "Bayern München gegen Chelsea FC 1:1 n.V., Chelsea siegt 4:3 i.E.",
@@ -3548,6 +3585,7 @@ const LINEUP_CHALLENGES = [
   },
   {
     id: "basel-manutd-2011",
+    special: "highlight",
     comp: "Champions-League-Gruppenphase, 6. Spieltag, 07.12.2011",
     league: "Champions League",
     teams: "FC Basel gegen Manchester United 2:1",
@@ -3572,6 +3610,7 @@ const LINEUP_CHALLENGES = [
   },
   {
     id: "monaco-mancity-2017",
+    special: "highlight",
     comp: "Champions-League-Achtelfinale Rückspiel, 15.03.2017",
     league: "Champions League",
     teams: "AS Monaco gegen Manchester City 3:1",
@@ -3596,6 +3635,7 @@ const LINEUP_CHALLENGES = [
   },
   {
     id: "villarreal-bayern-2022",
+    special: "highlight",
     comp: "Champions-League-Viertelfinale Hinspiel, 06.04.2022",
     league: "Champions League",
     teams: "Villarreal CF gegen Bayern München 1:0",
@@ -3625,6 +3665,7 @@ const LINEUP_CHALLENGES = [
   },
   {
     id: "suedkorea-deutschland-2018",
+    special: "highlight",
     comp: "WM, Gruppenphase 3. Spieltag, 27.06.2018",
     league: "Weltmeisterschaft",
     teams: "Südkorea gegen Deutschland 2:0",
@@ -3705,6 +3746,7 @@ const LINEUP_CHALLENGES = [
   },
   {
     id: "porto-bayern-2015",
+    special: "highlight",
     comp: "Champions-League-Viertelfinale, Hinspiel, 15.04.2015",
     league: "Champions League",
     teams: "FC Porto gegen FC Bayern München 3:1",
@@ -3730,6 +3772,7 @@ const LINEUP_CHALLENGES = [
   },
   {
     id: "kroatien-argentinien-2018",
+    special: "highlight",
     comp: "WM, Gruppenphase 2. Spieltag, 21.06.2018",
     league: "Weltmeisterschaft",
     teams: "Argentinien gegen Kroatien 0:3",
@@ -3758,6 +3801,7 @@ const LINEUP_CHALLENGES = [
   },
   {
     id: "el-finale-atalanta-2024",
+    special: "highlight",
     comp: "Europa-League-Finale, 22.05.2024",
     league: "Europa League",
     teams: "Atalanta gegen Bayer 04 Leverkusen 3:0",
@@ -3787,6 +3831,7 @@ const LINEUP_CHALLENGES = [
   },
   {
     id: "barcelona-psg-2017",
+    special: "highlight",
     comp: "Champions-League-Achtelfinale, Rückspiel, 08.03.2017",
     league: "Champions League",
     teams: "FC Barcelona gegen Paris Saint-Germain 6:1",
@@ -3870,6 +3915,7 @@ const LINEUP_CHALLENGES = [
   },
   {
     id: "wolfsburg-werder-meister-2009",
+    special: "highlight",
     comp: "Bundesliga, 34. Spieltag, 23.05.2009",
     league: "Bundesliga",
     teams: "VfL Wolfsburg gegen Werder Bremen 5:1",
@@ -3894,6 +3940,7 @@ const LINEUP_CHALLENGES = [
   },
   {
     id: "liverpool-manutd-2023",
+    special: "highlight",
     comp: "Premier League, 26. Spieltag, 05.03.2023",
     league: "Premier League",
     teams: "FC Liverpool gegen Manchester United 7:0",
@@ -3921,6 +3968,7 @@ const LINEUP_CHALLENGES = [
   },
   {
     id: "bayern-wolfsburg-2015",
+    special: "highlight",
     comp: "Bundesliga, 6. Spieltag, 22.09.2015",
     league: "Bundesliga",
     teams: "FC Bayern München gegen VfL Wolfsburg 5:1",
@@ -3977,6 +4025,7 @@ const LINEUP_CHALLENGES = [
   },
   {
     id: "niederlande-spanien-wm-2010",
+    special: "highlight",
     comp: "WM-Finale, 11.07.2010",
     league: "Weltmeisterschaft",
     teams: "Niederlande gegen Spanien 0:1 n.V.",
@@ -4233,6 +4282,7 @@ const LINEUP_CHALLENGES = [
   },
   {
     id: "westbrom-manutd-2013",
+    special: "highlight",
     comp: "Premier League, 38. Spieltag, 19.05.2013 (Fergusons letztes Spiel)",
     league: "Premier League",
     teams: "West Bromwich Albion gegen Manchester United 5:5",
@@ -4259,6 +4309,7 @@ const LINEUP_CHALLENGES = [
   },
   {
     id: "frankfurt-dortmund-pokalfinale-2017",
+    special: "highlight",
     comp: "DFB-Pokal-Finale, 27.05.2017",
     league: "DFB-Pokal",
     teams: "Eintracht Frankfurt gegen Borussia Dortmund 1:2",
@@ -4284,6 +4335,7 @@ const LINEUP_CHALLENGES = [
   },
   {
     id: "real-atletico-copafinale-2013",
+    special: "highlight",
     comp: "Copa-del-Rey-Finale, 17.05.2013",
     league: "Copa del Rey",
     teams: "Real Madrid gegen Atlético Madrid 1:2 n.V.",
@@ -5540,21 +5592,26 @@ function archivedDailyChallenges() {
    unveraendert funktionieren. Kurzlabels WM/EM nur hier; ic = Zeichen/Flagge der Karte (FP_IC). */
 const FREEPLAY_GROUPS = [
   { label: "Turniere", chips: [
-    { label: "WM", leagues: ["Weltmeisterschaft"], ic: "wm" },
-    { label: "EM", leagues: ["Europameisterschaft"], ic: "em" },
+    { label: "WM", leagues: ["Weltmeisterschaft", "Confed Cup"], ic: "wm" },
+    { label: "EM", leagues: ["Europameisterschaft", "Nations League"], ic: "em" },
     { label: "Copa América", leagues: ["Copa América"], ic: "cup" },
     { label: "Afrika-Cup", leagues: ["Afrika-Cup"], ic: "cup" }
   ] },
   { label: "Europapokal", chips: [
     { label: "Champions League", leagues: ["Champions League"], ic: "cl" },
-    { label: "Europa League", leagues: ["Europa League"], ic: "el" }
+    { label: "Europa League", leagues: ["Europa League", "Conference League"], ic: "el" }
   ] },
   { label: "Ligen & Pokal", chips: [
     { label: "Deutschland", leagues: ["Bundesliga", "2. Bundesliga", "Bundesliga / DFB-Pokal", "DFB-Pokal"], ic: "de" },
     { label: "England", leagues: ["Premier League", "FA Cup"], ic: "en" },
     { label: "Spanien", leagues: ["LaLiga", "Copa del Rey"], ic: "es" },
     { label: "Italien", leagues: ["Serie A", "Coppa Italia"], ic: "it" },
-    { label: "Niederlande", leagues: ["Eredivisie"], ic: "nl" }
+    { label: "Frankreich", leagues: ["Ligue 1", "Coupe de France"], ic: "fr", soon: true },
+    { label: "Niederlande & Portugal", leagues: ["Eredivisie", "Liga Portugal", "KNVB-Pokal", "Taça de Portugal"], ic: "nlpt", soon: true, long: true }
+  ] },
+  { label: "Spezial", chips: [
+    { label: "Nostalgie 2000–2007", leagues: ["@nostalgie"], ic: "nost", soon: true, long: true },
+    { label: "Highlights", leagues: ["@highlight"], ic: "hl", soon: true }
   ] }
 ];
 const fpFlag = (type, cols) => type === "h" ? `<span class="fp-flag" style="grid-template-rows:repeat(${cols.length},1fr)">${cols.map(c => `<i style="background:${c}"></i>`).join("")}</span>`
@@ -5567,6 +5624,10 @@ const FP_IC = {
   cup: '<svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="#F7D98E" stroke-width="1.7" stroke-linejoin="round"><path d="M7 4h10v5a5 5 0 0 1-10 0z"/><path d="M7 6H4.5a2.5 2.5 0 0 0 3 3.6M17 6h2.5a2.5 2.5 0 0 1-3 3.6M12 14v4M8.5 20h7" stroke-linecap="round"/></svg>',
   cl: '<svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9" fill="none" stroke="#F7D98E" stroke-width="1.5"/><path d="M12 6.2l1.7 3.5 3.8.5-2.8 2.6.7 3.8L12 14.8l-3.4 1.8.7-3.8-2.8-2.6 3.8-.5z" fill="#F7D98E"/></svg>',
   el: '<svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="#F7D98E" stroke-width="1.7" stroke-linejoin="round"><path d="M8 3h8l-1 7a3 3 0 0 1-6 0z"/><path d="M8 4.5C5 4.5 4.5 8.5 8.6 9.5M16 4.5c3 0 3.5 4-.6 5M12 13v5M8.5 21h7l-1-3h-5z"/></svg>',
+  fr: fpFlag("v", ["#0055A4", "#fff", "#EF4135"]),
+  nlpt: `<span class="fp-flag" style="grid-template-columns:1fr 1fr"><span style="display:grid;grid-template-rows:repeat(3,1fr)"><i style="background:#AE1C28"></i><i style="background:#fff"></i><i style="background:#21468B"></i></span><span style="display:grid;grid-template-columns:2fr 3fr"><i style="background:#006600"></i><i style="background:#FF0000"></i></span></span>`,
+  nost: '<svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="#F7D98E" stroke-width="1.7" stroke-linecap="round"><circle cx="12" cy="12" r="8.5"/><circle cx="12" cy="12" r="2.4"/><path d="M12 6.2a5.8 5.8 0 0 1 5.4 3.6"/></svg>',
+  hl: '<svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="#F7D98E" stroke-width="1.7" stroke-linejoin="round"><path d="M12 3l2.3 5 5.4.6-4 3.7 1.1 5.4L12 15l-4.8 2.7 1.1-5.4-4-3.7 5.4-.6z"/></svg>',
   de: fpFlag("h", ["#000", "#DD0000", "#FFCE00"]), en: fpFlag("en"), es: fpFlag("es"), it: fpFlag("v", ["#009246", "#fff", "#CE2B37"]), nl: fpFlag("h", ["#AE1C28", "#fff", "#21468B"])
 };
 const FP_SV = {
@@ -5583,18 +5644,23 @@ let fpIntroTimer = null, fpLastCount = null, fpRolling = false;
 
 // Gruppen mit nur den league-Werten, die es in LINEUP_CHALLENGES gibt; Karten ohne Aufstellungen fallen weg. Ein neuer, noch
 // nicht zugeordneter league-Wert bekommt automatisch eine eigene Karte unter "Weitere" (wird nie still weggelassen).
+// Frei-spielen-Pool (Prompt 60): Kampagnen-Aufstellungen + Duell-Pool; Nostalgie-Spiele nur ueber ihre Karte (nie "Alle", nie Wettbewerbs-Karten)
+const fpPool = () => [...LINEUP_CHALLENGES, ...DUEL_POOL];
+const fpChipHas = (c, m) => c.leagues.some(l => l[0] === "@" ? m.special === l.slice(1) : (m.special !== "nostalgie" && l === m.league));
+const fpInSelection = (m, sel = selectedLeagues) => sel.size === 0 ? m.special !== "nostalgie" : [...sel].some(l => l[0] === "@" ? m.special === l.slice(1) : (m.special !== "nostalgie" && l === m.league));
 function freeplayChipGroups() {
-  const present = new Set(LINEUP_CHALLENGES.map(m => m.league));
+  const pool = fpPool(), present = new Set(pool.filter(m => m.special !== "nostalgie").map(m => m.league));
   const mapped = new Set(FREEPLAY_GROUPS.flatMap(g => g.chips.flatMap(c => c.leagues)));
-  const groups = FREEPLAY_GROUPS.map(g => ({ label: g.label, chips: g.chips.map(c => ({ label: c.label, ic: c.ic, leagues: c.leagues.filter(l => present.has(l)) })) }));
+  const groups = FREEPLAY_GROUPS.map(g => ({ label: g.label, chips: g.chips.map(c => ({ label: c.label, ic: c.ic, soon: c.soon, long: c.long, leagues: c.leagues.filter(l => l[0] === "@" || present.has(l)) })) }));
   const extra = [...present].filter(l => !mapped.has(l));
   if (extra.length) groups.push({ label: "Weitere", chips: extra.map(l => ({ label: l, ic: "cup", leagues: [l] })) });
   return groups
-    .map(g => ({ label: g.label, chips: g.chips.map(c => ({ ...c, total: LINEUP_CHALLENGES.filter(m => c.leagues.includes(m.league)).length })).filter(c => c.total > 0) }))
+    .map(g => ({ label: g.label, chips: g.chips.map(c => ({ ...c, total: pool.filter(m => fpChipHas(c, m)).length })).filter(c => c.total > 0 || c.soon) }))
     .filter(g => g.chips.length > 0);
 }
 // Kurzname des Wettbewerbs wie auf den Karten (WM, EM, Deutschland ...) - fuer die Ziehungs-Karte
 function fpCompLabel(m) {
+  if (m.special === "nostalgie") return "Nostalgie";
   for (const g of FREEPLAY_GROUPS) for (const c of g.chips) if (c.leagues.includes(m.league)) return c.label;
   return m.league;
 }
@@ -5642,14 +5708,14 @@ function renderFreeplay(intro = true) {
 function paintFpBoard(anim = true) {
   const bin = document.getElementById("fpBin"); if (!bin) return;
   const groups = freeplayChipGroups(), hard = fpHardOn(), lvl15 = profile.level >= 15;
-  const hardOK = (m) => !hard || m.difficulty >= 4, diffOK = (m) => selectedDifficulties.size === 0 || selectedDifficulties.has(m.difficulty), leagueOK = (m) => selectedLeagues.size === 0 || selectedLeagues.has(m.league);
-  const chipOn = (c) => c.leagues.every(l => selectedLeagues.has(l));
-  const chipN = (c) => LINEUP_CHALLENGES.filter(m => c.leagues.includes(m.league) && diffOK(m) && hardOK(m)).length;
-  const diffN = (d) => LINEUP_CHALLENGES.filter(m => m.difficulty === d && leagueOK(m)).length;
+  const hardOK = (m) => !hard || m.difficulty >= 4, diffOK = (m) => selectedDifficulties.size === 0 || selectedDifficulties.has(m.difficulty), leagueOK = (m) => fpInSelection(m);
+  const chipOn = (c) => c.leagues.length > 0 && c.leagues.every(l => selectedLeagues.has(l));
+  const chipN = (c) => fpPool().filter(m => fpChipHas(c, m) && diffOK(m) && hardOK(m)).length;
+  const diffN = (d) => fpPool().filter(m => m.difficulty === d && leagueOK(m)).length;
   const hint = hard ? "Hardcore an: nur die schwersten Aufstellungen (Stufe 4 und 5)" : (selectedLeagues.size || selectedDifficulties.size) ? "Tippe eine Auswahl erneut an, um sie abzuwählen" : "Nichts gewählt = alle Wettbewerbe und Stufen";
   bin.innerHTML = `
-    <div class="fp-sh"><h2>Wettbewerb<small>mehrere möglich</small></h2><button type="button" class="fp-all ${selectedLeagues.size === 0 ? "on" : ""}" id="fpAll" aria-pressed="${selectedLeagues.size === 0}">Alle<span class="n">${LINEUP_CHALLENGES.length}</span></button></div>
-    ${groups.map((g, gi) => `<div class="fp-grp"><div class="fp-gl">${g.label}</div><div class="fp-chips ${g.chips.length === 3 ? "c3" : "c2"}">${g.chips.map((c, ci) => { const n = chipN(c), on = chipOn(c); return `<button type="button" class="fp-ch ${on ? "on" : ""} ${n === 0 && !on ? "zero" : ""}" data-g="${gi}" data-c="${ci}" aria-pressed="${on}"><span class="ic">${FP_IC[c.ic] || FP_IC.cup}</span><span class="nm">${c.label}</span><span class="n">${n}</span></button>`; }).join("")}</div></div>`).join("")}
+    <div class="fp-sh"><h2>Wettbewerb<small>mehrere möglich</small></h2><button type="button" class="fp-all ${selectedLeagues.size === 0 ? "on" : ""}" id="fpAll" aria-pressed="${selectedLeagues.size === 0}">Alle<span class="n">${fpPool().filter(m => m.special !== "nostalgie").length}</span></button></div>
+    ${groups.map((g, gi) => `<div class="fp-grp"><div class="fp-gl">${g.label}</div><div class="fp-chips ${g.chips.length === 3 ? "c3" : "c2"}">${g.chips.map((c, ci) => { const n = chipN(c), on = chipOn(c), soon = c.soon && c.total === 0; return `<button type="button" class="fp-ch ${on ? "on" : ""} ${n === 0 && !on ? "zero" : ""} ${soon ? "soon" : ""} ${c.long ? "long" : ""}" data-g="${gi}" data-c="${ci}" aria-pressed="${on}"${soon ? " disabled" : ""}><span class="ic">${FP_IC[c.ic] || FP_IC.cup}</span><span class="nm">${c.label}</span><span class="n">${soon ? "bald" : n}</span></button>`; }).join("")}</div></div>`).join("")}
     <div class="fp-sep"></div>
     <div class="fp-sh"><h2>Schwierigkeit${lvl15 ? "" : "<small>mehrere möglich</small>"}</h2>${lvl15 ? `<button type="button" class="fp-hc ${hard ? "on" : ""}" id="fpHard" aria-pressed="${hard}" title="Hardcore: nur Stufe 4 und 5">${FP_SV.flame}<b>Hardcore</b><span class="sw"></span></button>` : ""}</div>
     <div class="fp-lv">${[1, 2, 3, 4, 5].map(d => { const n = diffN(d), dis = hard && d < 4; return `<button type="button" class="fp-lt ${selectedDifficulties.has(d) ? "on" : ""}" data-d="${d}" style="--c:${DIFF_COLOR[d]}" aria-pressed="${selectedDifficulties.has(d)}" title="${DIFF_LABEL[d]}" ${dis ? "disabled" : ""}><span class="bars">${[1, 2, 3, 4, 5].map(j => `<i class="${j <= d ? "on" : ""}"></i>`).join("")}</span><b>Stufe ${d}</b><span>${n} ${n === 1 ? "Spiel" : "Spiele"}</span></button>`; }).join("")}</div>
@@ -6372,7 +6438,7 @@ function dailyStarsTotal() {
 }
 
 function poolForActiveLeague() {
-  let pool = selectedLeagues.size === 0 ? LINEUP_CHALLENGES : LINEUP_CHALLENGES.filter(m => selectedLeagues.has(m.league));
+  let pool = fpPool().filter(m => fpInSelection(m)); // Nostalgie nur ueber ihre Karte (Prompt 60)
   if (selectedDifficulties.size > 0) pool = pool.filter(m => selectedDifficulties.has(m.difficulty));
   if (profile.level >= 15 && profile.hardcoreMode) pool = pool.filter(m => m.difficulty >= 4); // Hardcore: nur Stufe 4-5 (seit Prompt 47 ohne stillen Rueckfall, Karten und Zaehler zeigen dasselbe)
   return pool; // kann leer sein - das wird bewusst NICHT still aufgefuellt, siehe startFreeplayRandom()
@@ -8175,6 +8241,7 @@ const DAILY_CHALLENGES = [
   },
   {
     id: "cl-finale-moskau-2008",
+    special: "highlight",
     comp: "Champions-League-Finale, 21.05.2008",
     league: "Champions League",
     teams: "Manchester United gegen FC Chelsea 1:1 n.V., Manchester United siegt 6:5 i.E.",
@@ -8223,6 +8290,7 @@ const DAILY_CHALLENGES = [
   },
   {
     id: "pokalfinale-2012-dortmund",
+    special: "highlight",
     comp: "DFB-Pokal-Finale, 12.05.2012",
     league: "DFB-Pokal",
     teams: "Borussia Dortmund gegen FC Bayern München 5:2",
@@ -8320,6 +8388,7 @@ const DAILY_CHALLENGES = [
   },
   {
     id: "em-finale-2012-italien",
+    special: "highlight",
     comp: "EM-Finale, 01.07.2012",
     league: "Europameisterschaft",
     teams: "Spanien gegen Italien 4:0",
@@ -8373,6 +8442,7 @@ const DAILY_CHALLENGES = [
   },
   {
     id: "leicester-meisterschaft-2016",
+    special: "highlight",
     comp: "Premier League, 37. Spieltag, 07.05.2016",
     league: "Premier League",
     teams: "Leicester City gegen FC Everton 3:1",
@@ -8421,6 +8491,7 @@ const DAILY_CHALLENGES = [
   },
   {
     id: "em-finale-2016-portugal",
+    special: "highlight",
     comp: "EM-Finale, 10.07.2016",
     league: "Europameisterschaft",
     teams: "Portugal gegen Frankreich 1:0 n.V.",
@@ -8475,6 +8546,7 @@ const DAILY_CHALLENGES = [
   },
   {
     id: "cl-finale-2018-liverpool",
+    special: "highlight",
     comp: "Champions-League-Finale, 26.05.2018",
     league: "Champions League",
     teams: "Real Madrid gegen FC Liverpool 3:1",
@@ -8523,6 +8595,7 @@ const DAILY_CHALLENGES = [
   },
   {
     id: "cl-halbfinale-2019-ajax",
+    special: "highlight",
     comp: "Champions-League-Halbfinale Rückspiel, 08.05.2019",
     league: "Champions League",
     teams: "Ajax Amsterdam gegen Tottenham Hotspur 2:3",
@@ -8571,6 +8644,7 @@ const DAILY_CHALLENGES = [
   },
   {
     id: "cl-finale-2019-liverpool",
+    special: "highlight",
     comp: "Champions-League-Finale, 01.06.2019",
     league: "Champions League",
     teams: "Tottenham Hotspur gegen FC Liverpool 0:2",
@@ -8624,6 +8698,7 @@ const DAILY_CHALLENGES = [
   },
   {
     id: "cl-finale-2020-bayern",
+    special: "highlight",
     comp: "Champions-League-Finale, 23.08.2020",
     league: "Champions League",
     teams: "Paris Saint-Germain gegen FC Bayern München 0:1",
@@ -8677,6 +8752,7 @@ const DAILY_CHALLENGES = [
   },
   {
     id: "cl-finale-2021-chelsea",
+    special: "highlight",
     comp: "Champions-League-Finale, 29.05.2021",
     league: "Champions League",
     teams: "Manchester City gegen FC Chelsea 0:1",
@@ -8730,6 +8806,7 @@ const DAILY_CHALLENGES = [
   },
   {
     id: "afcon-finale-2024-elfenbeinkueste",
+    special: "highlight",
     comp: "Afrika-Cup-Finale, 11.02.2024",
     league: "Afrika-Cup",
     teams: "Nigeria gegen Elfenbeinküste 1:2",
@@ -8783,6 +8860,7 @@ const DAILY_CHALLENGES = [
   },
   {
     id: "cl-finale-2025-psg",
+    special: "highlight",
     comp: "Champions-League-Finale, 31.05.2025",
     league: "Champions League",
     teams: "Paris Saint-Germain gegen Inter Mailand 5:0",
@@ -8894,6 +8972,7 @@ const DAILY_CHALLENGES = [
   },
   {
     id: "bayern-barcelona-2020-barcelona",
+    special: "highlight",
     since: "2026-10-10",
     comp: "Champions-League-Viertelfinale (Final Eight), 14.08.2020",
     league: "Champions League",
@@ -9010,6 +9089,7 @@ const DAILY_CHALLENGES = [
   },
   {
     id: "el-finale-2016-sevilla",
+    special: "highlight",
     since: "2026-10-10",
     comp: "Europa-League-Finale, 18.05.2016",
     league: "Europa League",
@@ -9059,6 +9139,7 @@ const DAILY_CHALLENGES = [
   },
   {
     id: "chile-spanien-2014-chile",
+    special: "highlight",
     since: "2026-10-10",
     comp: "WM, Gruppenphase 2. Spieltag, 18.06.2014",
     league: "Weltmeisterschaft",
@@ -9118,6 +9199,7 @@ const DAILY_CHALLENGES = [
   },
   {
     id: "cl-finale-2017-juventus",
+    special: "highlight",
     since: "2026-10-10",
     comp: "Champions-League-Finale, 03.06.2017",
     league: "Champions League",
@@ -9224,6 +9306,7 @@ const DAILY_CHALLENGES = [
   },
   {
     id: "liverpool-dortmund-2016-liverpool",
+    special: "highlight",
     since: "2026-10-10",
     comp: "Europa-League-Viertelfinale, Rückspiel, 14.04.2016",
     league: "Europa League",
@@ -9273,6 +9356,7 @@ const DAILY_CHALLENGES = [
   },
   {
     id: "brasilien-belgien-2018-belgien",
+    special: "highlight",
     since: "2026-10-10",
     comp: "WM, Viertelfinale, 06.07.2018",
     league: "Weltmeisterschaft",
@@ -9327,6 +9411,7 @@ const DAILY_CHALLENGES = [
   },
   {
     id: "niederlande-spanien-2014-niederlande",
+    special: "highlight",
     since: "2026-10-10",
     comp: "WM, Gruppenphase 1. Spieltag, 13.06.2014",
     league: "Weltmeisterschaft",
@@ -9388,6 +9473,7 @@ const DAILY_CHALLENGES = [
   },
   {
     id: "manutd-mancity-2011",
+    special: "highlight",
     comp: "Premier League, 9. Spieltag, 23.10.2011 (Manchester-Derby)",
     league: "Premier League",
     teams: "Manchester United gegen Manchester City 1:6",
@@ -9439,6 +9525,7 @@ const DAILY_CHALLENGES = [
   },
   {
     id: "arsenal-chelsea-facup-2017",
+    special: "highlight",
     comp: "FA-Cup-Finale, 27.05.2017",
     league: "FA Cup",
     teams: "FC Arsenal gegen FC Chelsea 2:1",
@@ -9489,6 +9576,7 @@ const DAILY_CHALLENGES = [
   },
   {
     id: "manutd-arsenal-2011",
+    special: "highlight",
     comp: "Premier League, 3. Spieltag, 28.08.2011",
     league: "Premier League",
     teams: "Manchester United gegen FC Arsenal 8:2",
@@ -9514,6 +9602,7 @@ const DAILY_CHALLENGES = [
   },
   {
     id: "arsenal-villa-facup-2015",
+    special: "highlight",
     comp: "FA-Cup-Finale, 30.05.2015",
     league: "FA Cup",
     teams: "FC Arsenal gegen Aston Villa 4:0",
@@ -9566,6 +9655,7 @@ const DAILY_CHALLENGES = [
   },
   {
     id: "arsenal-chelsea-facup-2020",
+    special: "highlight",
     comp: "FA-Cup-Finale, 01.08.2020",
     league: "FA Cup",
     teams: "FC Arsenal gegen FC Chelsea 2:1",
@@ -9593,6 +9683,7 @@ const DAILY_CHALLENGES = [
   },
   {
     id: "leverkusen-werder-pokalfinale-2009",
+    special: "highlight",
     comp: "DFB-Pokal-Finale, 30.05.2009",
     league: "DFB-Pokal",
     teams: "Bayer 04 Leverkusen gegen Werder Bremen 0:1",
@@ -9644,6 +9735,7 @@ const DAILY_CHALLENGES = [
   },
   {
     id: "dortmund-wolfsburg-pokalfinale-2015",
+    special: "highlight",
     comp: "DFB-Pokal-Finale, 30.05.2015",
     league: "DFB-Pokal",
     teams: "Borussia Dortmund gegen VfL Wolfsburg 1:3",
@@ -9670,6 +9762,7 @@ const DAILY_CHALLENGES = [
   },
   {
     id: "dortmund-mainz-2023",
+    special: "highlight",
     comp: "Bundesliga, 34. Spieltag, 27.05.2023 (letzter Spieltag)",
     league: "Bundesliga",
     teams: "Borussia Dortmund gegen 1. FSV Mainz 05 2:2",
@@ -9697,6 +9790,7 @@ const DAILY_CHALLENGES = [
   },
   {
     id: "real-barcelona-copafinale-2011",
+    special: "highlight",
     comp: "Copa-del-Rey-Finale, 20.04.2011",
     league: "Copa del Rey",
     teams: "Real Madrid gegen FC Barcelona 1:0 n.V.",
@@ -9754,6 +9848,7 @@ const DAILY_CHALLENGES = [
   },
   {
     id: "juventus-lazio-coppafinale-2015",
+    special: "highlight",
     comp: "Coppa-Italia-Finale, 20.05.2015",
     league: "Coppa Italia",
     teams: "Juventus Turin gegen Lazio Rom 2:1 n.V.",
@@ -9784,6 +9879,84 @@ const DAILY_CHALLENGES = [
     source: "https://en.wikipedia.org/wiki/2015_Coppa_Italia_final (Aufstellung/Nummern, Positionen: Dreierkette, Candreva rechts und Felipe Anderson links hinter Klose, Reihenfolge rechts-links) ; https://www.espn.com/soccer/lineups/_/gameId/409995 (Nationalität, Wechsel; ohne Positionen) ; https://www.fotmob.com/api/data/matchDetails?matchId=1954918 (Dreierkette, 3-4-1-2 = hier als 3-4-2-1 mit zwei Flügelstürmern übernommen)"
   }
 ];
+
+/* ================= DUELL-POOL (Prompt 60) =================
+   Eigener Pool nur fuer Duell und Frei spielen (nie Kampagne/Tages-Challenge). Gleiche Felder wie LINEUP_CHALLENGES (inkl. teaser, bench, source);
+   zusaetzlich optional special: "nostalgie" | "highlight" (hoechstens eins) und anchors: [2-3 bekannte Spieler] bei Stufe 4-5 (nostalgie: mind. 4).
+   Hausregel-Ausnahme (CLAUDE.md): Spiele ab 01.01.2000 erlaubt; 2000-2007 MUESSEN special "nostalgie" tragen und zaehlen nur in dieser Kategorie.
+   Die Aufstellungen folgen paketweise (Prompt 61a ff.). */
+const DUEL_POOL = [];
+
+// 12 Duell-Kategorien (Quizduell-Prinzip). Wettbewerbs-Kategorien ueber league, Spezial-Kategorien ueber special.
+const DUEL_CATEGORIES = [
+  { id: "cl", label: "Champions League", leagues: ["Champions League"] },
+  { id: "el", label: "Europa League", leagues: ["Europa League", "Conference League"] },
+  { id: "wm", label: "WM & Welt-Turniere", leagues: ["Weltmeisterschaft", "Copa América", "Afrika-Cup", "Confed Cup"] },
+  { id: "em", label: "EM & Nations League", leagues: ["Europameisterschaft", "Nations League"] },
+  { id: "de", label: "Deutschland", leagues: ["Bundesliga", "2. Bundesliga", "DFB-Pokal", "Bundesliga / DFB-Pokal"] },
+  { id: "en", label: "England", leagues: ["Premier League", "FA Cup"] },
+  { id: "es", label: "Spanien", leagues: ["LaLiga", "Copa del Rey"] },
+  { id: "it", label: "Italien", leagues: ["Serie A", "Coppa Italia"] },
+  { id: "fr", label: "Frankreich", leagues: ["Ligue 1", "Coupe de France"] },
+  { id: "nlpt", label: "Niederlande & Portugal", leagues: ["Eredivisie", "Liga Portugal", "KNVB-Pokal", "Taça de Portugal"] },
+  { id: "nostalgie", label: "Nostalgie 2000–2007", special: "nostalgie" },
+  { id: "highlight", label: "Highlights", special: "highlight" }
+];
+const DUEL_LEAGUE_CAT = {};
+DUEL_CATEGORIES.forEach(c => (c.leagues || []).forEach(l => { DUEL_LEAGUE_CAT[l] = c.id; }));
+// Kategorien einer Aufstellung: ihr Wettbewerb + ggf. ihr special (hoechstens 2). Nostalgie-Spiele (vor 2008) zaehlen NUR in "nostalgie".
+function duelCategoriesOf(m) {
+  if (m.special === "nostalgie") return ["nostalgie"];
+  const out = [], c = DUEL_LEAGUE_CAT[m.league];
+  if (c) out.push(c);
+  if (m.special === "highlight") out.push("highlight");
+  return out;
+}
+// Alle Aufstellungen, aus denen das Duell zieht (Kampagne + Tag + Duell-Pool), je id einmal
+function duelPool() {
+  const seen = new Set();
+  return [...LINEUP_CHALLENGES, ...DAILY_CHALLENGES, ...DUEL_POOL].filter(m => !seen.has(m.id) && seen.add(m.id));
+}
+// Aufstellungen, die gegen genau diesen Gegner in den letzten 30 Tagen gespielt wurden (zaehlen nicht erneut)
+const DUEL_NO_REPEAT_DAYS = 30;
+function duelOpponentRecentIds(deviceId, now = Date.now(), duels = profile.duels) {
+  if (!deviceId) return [];
+  const lim = now - DUEL_NO_REPEAT_DAYS * 86400000, out = [];
+  Object.values(duels || {}).forEach(d => { if (d && d.opponent && d.opponent.deviceId === deviceId && (d.created || 0) >= lim) (d.lineups || []).forEach(id => out.push(id)); });
+  return out;
+}
+// Runden fuer ein Duell waehlen (reine Funktion, auch fuer die spaetere Server-Logik gedacht).
+// Regeln: keine Mannschaft (beide Seiten) in zwei Runden hintereinander; Runde 1 nie Stufe 4-5; in je 3 Runden hoechstens 1 knifflige (Mix-Modus);
+// je Runde moeglichst eine andere Kategorie; zuletzt gespielte und die der letzten 30 Tage gegen denselben Gegner nur, wenn sonst zu wenige da sind.
+// Zu kleiner Pool: die Regeln werden von hinten nach vorn gelockert (nie ein Fehler).
+function pickDuelRounds({ pool, rounds, difficulty = 0, recentIds = [], opponentIds = [], rng = Math.random }) {
+  const byId = new Map(); pool.forEach(m => { if (!byId.has(m.id)) byId.set(m.id, m); });
+  const base = [...byId.values()].filter(m => !difficulty || m.difficulty === difficulty);
+  const recent = new Set(recentIds), blocked = new Set(opponentIds), mix = !difficulty, hard = (m) => m.difficulty >= 4;
+  const chosen = [], usedCats = new Set(), catsOf = (m) => { const c = duelCategoriesOf(m); return c.length ? c : ["_"]; };
+  for (let r = 0; r < rounds; r++) {
+    const prevTeams = new Set(chosen.length ? matchTeamKeys(chosen[chosen.length - 1]) : []);
+    const left = base.filter(m => !chosen.includes(m));
+    if (!left.length) break;
+    const rule = {
+      opp: (m) => !blocked.has(m.id), fresh: (m) => !recent.has(m.id), team: (m) => !matchTeamKeys(m).some(t => prevTeams.has(t)),
+      first: (m) => !(mix && r === 0 && hard(m)), hard: (m) => !(mix && hard(m) && chosen.slice(-2).some(hard)), cat: (m) => catsOf(m).some(c => !usedCats.has(c))
+    };
+    const layers = [["opp", "fresh", "team", "first", "hard", "cat"], ["opp", "fresh", "team", "first", "hard"], ["opp", "team", "first", "hard"], ["team", "first", "hard"], ["first", "hard"], []];
+    let cands = left;
+    for (const L of layers) { const c = left.filter(m => L.every(k => rule[k](m))); if (c.length) { cands = c; if (L.includes("cat")) { const free = [...new Set(c.flatMap(m => catsOf(m).filter(x => !usedCats.has(x))))]; const pickC = free[Math.floor(rng() * free.length)]; cands = c.filter(m => catsOf(m).includes(pickC)); usedCats.add(pickC); } else { const m0 = c[Math.floor(rng() * c.length)]; catsOf(m0).forEach(x => usedCats.add(x)); cands = [m0]; } break; } }
+    chosen.push(cands[Math.floor(rng() * cands.length)]);
+  }
+  return chosen.map(m => m.id);
+}
+// Liga-Duell (spaeter): 3 verschiedene Kategorien anbieten; eine Kategorie erst wieder, wenn mindestens 2 andere dran waren
+function duelCategoryOffers(history = [], rng = Math.random, available = DUEL_CATEGORIES.map(c => c.id)) {
+  const lastTwo = history.slice(-2), ok = available.filter(c => !lastTwo.includes(c)), out = [];
+  while (out.length < 3 && ok.length) out.push(ok.splice(Math.floor(rng() * ok.length), 1)[0]);
+  const rest = available.filter(c => !out.includes(c));
+  while (out.length < 3 && rest.length) out.push(rest.splice(Math.floor(rng() * rest.length), 1)[0]);
+  return out;
+}
 
 // Tages-Reihenfolge (Prompt 22): keine Bindung an Wochentag oder Stufe. Jeder Tag bekommt die
 // naechste Aufstellung in einer festen, gemischten Reihenfolge - fuer alle Spieler gleich
@@ -9877,7 +10050,7 @@ function shareGridForMatch(m, correctAbbrs, hintedAbbrs) {
 }
 
 function dailyMatchById(id) {
-  return DAILY_CHALLENGES.find(c => c.id === id) || LINEUP_CHALLENGES.find(c => c.id === id) || null;
+  return DAILY_CHALLENGES.find(c => c.id === id) || LINEUP_CHALLENGES.find(c => c.id === id) || DUEL_POOL.find(c => c.id === id) || null;
 }
 
 // Zellen { abbr: "g"|"y"|"x" } eines Tages-Ergebnisses; aeltere Eintraege ohne cells werden aus
@@ -11786,20 +11959,12 @@ function extractDuelCode(text) {
 function duelsSorted() {
   return Object.entries(profile.duels).sort((a, b) => b[1].created - a[1].created);
 }
-function pickDuelLineups(rounds, difficulty) {
-  const all = [...LINEUP_CHALLENGES, ...DAILY_CHALLENGES];
-  let pool = difficulty ? all.filter(m => m.difficulty === difficulty) : all;
-  const ids = [...new Set(pool.map(m => m.id))];
-  const fresh = shuffled(ids.filter(id => !profile.duelRecent.includes(id)));
-  const used = shuffled(ids.filter(id => profile.duelRecent.includes(id)));
-  return [...fresh, ...used].slice(0, rounds); // zuletzt gespielte nur, wenn sonst zu wenige da sind
-}
-function createDuel(draft) {
+function createDuel(draft, opponentDeviceId = null) { // Gegner (falls schon bekannt) fuer die 30-Tage-Regel (Prompt 60)
   const id = randomHex(4);
   profile.duels[id] = {
     role: "challenger", opponent: null,
     settings: { rounds: draft.rounds, seconds: draft.seconds, difficulty: draft.difficulty },
-    lineups: pickDuelLineups(draft.rounds, draft.difficulty),
+    lineups: pickDuelRounds({ pool: duelPool(), rounds: draft.rounds, difficulty: draft.difficulty, recentIds: profile.duelRecent, opponentIds: duelOpponentRecentIds(opponentDeviceId) }),
     mine: [], theirs: null, status: "todo", created: Date.now(), updated: Date.now()
   };
   saveProfile(profile);
@@ -12259,7 +12424,7 @@ function dzOpenNew(pre) {
       if (e.target.closest("#dzSend")) {
         if (!duelDraft.fair) { showToast("Erst „Ich spiele fair“ antippen"); return; }
         ensureDuelName(() => {
-          const id = createDuel(duelDraft);
+          const id = createDuel(duelDraft, friend || null);
           const f2 = friend && profile.duelStats.perOpponent[friend];
           if (f2) { profile.duels[id].opponent = { name: f2.name, handle: f2.handle || "", deviceId: friend, rank: f2.rank || "", level: f2.level || 0 }; saveProfile(profile); }
           dzCloseSheet();
@@ -13665,7 +13830,7 @@ function startRematch(id) {
   const old = profile.duels[id];
   if (!old) return;
   ensureDuelName(() => {
-    const nid = createDuel({ rounds: old.settings.rounds, seconds: old.settings.seconds, difficulty: old.settings.difficulty });
+    const nid = createDuel({ rounds: old.settings.rounds, seconds: old.settings.seconds, difficulty: old.settings.difficulty }, old.opponent ? old.opponent.deviceId : null);
     if (old.opponent) profile.duels[nid].opponent = { ...old.opponent };
     saveProfile(profile);
     renderModeTiles();

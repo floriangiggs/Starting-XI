@@ -1,4 +1,4 @@
-// Prüfskript für LINEUP_CHALLENGES (Kampagne) und DAILY_CHALLENGES (Tages-Pool) - Prompt 35.
+// Prüfskript für LINEUP_CHALLENGES (Kampagne), DAILY_CHALLENGES (Tages-Pool) - Prompt 35 - und DUEL_POOL (Duell/Frei spielen) - Prompt 60.
 // Aufruf: node tools/check-lineup-pools.mjs [startelf_check.html]
 // Prüft: Datum >= 2008, Pflichtfelder, Formation/Positionen, details/nat, doppelte ids/Partien, Namen-Eindeutigkeit,
 // kein Team in zwei aufeinanderfolgenden Kampagnen-Levels (inkl. Weltwechsel) und simuliert 120 Tage Tages-Challenge.
@@ -34,9 +34,12 @@ function grabFn(name) {
 
 const LINEUPS = grabConst("LINEUP_CHALLENGES");
 const DAILY = grabConst("DAILY_CHALLENGES");
+const DUELP = grabConst("DUEL_POOL"); // Duell-Pool (Prompt 60): darf leer sein
+const DCATS = grabConst("DUEL_CATEGORIES");
 const LAYOUTS = grabConst("PITCH_LAYOUTS", "{", "}");
 const NAT = grabConst("NAT_NAMES", "{", "}");
-const errors = [], notes = [];
+const errors = [], notes = [], warns = [];
+const warn = (m) => warns.push(m);
 const err = (m) => errors.push(m);
 const hints = [];
 const hint = (m) => hints.push(m);
@@ -118,6 +121,19 @@ function checkNameHints(w, m) {
 const TEASER_OK = {
   // id: ["wort", ...]   // Begruendung
 };
+// Duell-Pool-Zusatzregeln (Prompt 60): Nostalgie nur Legenden (Stufe <= 3, anchors >= 4), knifflige (4-5) brauchen 2-3 anchors aus der Elf, Wettbewerb in einer Duell-Kategorie
+function checkDuelExtras(w, m) {
+  const startNorm = Object.values(m.players || {}).map((n) => norm(n));
+  const inElf = (a) => { const t = norm(a); return startNorm.some((n) => n === t || n.endsWith(" " + t) || n.split(" ").includes(t)); };
+  if (m.anchors !== undefined && !Array.isArray(m.anchors)) err(`${w}: anchors ist kein Array`);
+  const an = Array.isArray(m.anchors) ? m.anchors : [];
+  for (const a of an) if (!inElf(a)) err(`${w}: anchor "${a}" steht nicht in der Elf`);
+  if (m.special === "nostalgie") {
+    if (m.difficulty > 3) err(`${w}: nostalgie nur bis difficulty 3 (ist ${m.difficulty})`);
+    if (an.length < 4) err(`${w}: nostalgie braucht anchors mit mind. 4 Weltstars/Legenden (hat ${an.length})`);
+  } else if (m.difficulty >= 4 && (an.length < 2 || an.length > 3)) err(`${w}: Stufe ${m.difficulty} braucht anchors mit 2-3 bekannten Spielern (hat ${an.length})`);
+  if (m.special !== "nostalgie" && !DCATS.some((c) => (c.leagues || []).includes(m.league))) err(`${w}: league "${m.league}" gehört zu keiner Duell-Kategorie`);
+}
 const TEASER_MAX = 210; // Zeichen; Vorschau-Zettel zeigt den Text immer komplett (Schrift passt sich an)
 function nameTokens(m) {
   const toks = new Map();
@@ -147,14 +163,24 @@ function checkTeaser(w, m, field) {
   if (h.length) { spoilerRows.push([m.id, h.join(", ")]); err(`${w}: ${field} nennt Spieler der gefragten Seite: ${h.join(", ")}`); }
 }
 
-for (const [label, arr] of [["Kampagne", LINEUPS], ["Tag", DAILY]]) {
+for (const [label, arr] of [["Kampagne", LINEUPS], ["Tag", DAILY], ["Duell", DUELP]]) {
   const ids = new Set(), games = new Set();
   for (const m of arr) {
     const w = `${label}:${m.id}`;
     for (const f of ["id", "comp", "league", "teams", "side", "context", "formation", "difficulty", "players"]) if (m[f] === undefined || m[f] === "") err(`${w}: Pflichtfeld ${f} fehlt`);
     if (ids.has(m.id)) err(`${w}: doppelte id`); ids.add(m.id);
     const gk = m.comp + "|" + m.teams + "|" + m.side; if (games.has(gk)) err(`${w}: doppelte Partie/Seite`); games.add(gk);
-    const d = dateOf(m); if (!d) err(`${w}: kein Datum (dd.mm.yyyy) in comp`); else if (d < "2008-01-01") err(`${w}: Spiel vor 2008 (${d})`);
+    const d = dateOf(m);
+    if (!d) err(`${w}: kein Datum (dd.mm.yyyy) in comp`);
+    else if (label !== "Duell") { if (d < "2008-01-01") err(`${w}: Spiel vor 2008 (${d})`); }
+    else { // Duell-Pool (Prompt 60): ab 2000; 2000-2007 nur als nostalgie; nostalgie nur vor 2008
+      if (d < "2000-01-01") err(`${w}: Spiel vor 2000 (${d})`);
+      else if (d < "2008-01-01" && m.special !== "nostalgie") err(`${w}: Spiel ${d} (vor 2008) ohne special "nostalgie"`);
+      if (m.special === "nostalgie" && d >= "2008-01-01") err(`${w}: special "nostalgie" mit Datum ${d} (ab 2008)`);
+    }
+    if (m.special !== undefined && !["nostalgie", "highlight"].includes(m.special)) err(`${w}: special "${m.special}" unbekannt (nostalgie | highlight)`);
+    if (m.special === "nostalgie" && label !== "Duell") err(`${w}: nostalgie nur im Duell-Pool`);
+    if (label === "Duell") checkDuelExtras(w, m);
     const lay = LAYOUTS[m.formation]; if (!lay) { err(`${w}: Formation ${m.formation} unbekannt`); continue; }
     const abbrs = lay.map((p) => p.abbr);
     for (const a of abbrs) if (!m.players[a]) err(`${w}: Position ${a} ohne Spieler`);
@@ -168,13 +194,13 @@ for (const [label, arr] of [["Kampagne", LINEUPS], ["Tag", DAILY]]) {
     if (m.bench !== undefined) checkBench(w, m, abbrs, names);
     checkNameHints(w, m);
     checkTeaser(w, m, process.argv.includes("--context") ? "context" : "teaser"); // --context: zeigt die Treffer des alten Textes (Vorher-Stand)
-    if (label === "Tag") {
-      if (m.pairedWith && !LINEUPS.some((x) => x.id === m.pairedWith) && !DAILY.some((x) => x.id === m.pairedWith)) err(`${w}: pairedWith ${m.pairedWith} unbekannt`);
+    if (label === "Tag" || label === "Duell") {
+      if (m.pairedWith && !LINEUPS.some((x) => x.id === m.pairedWith) && !DAILY.some((x) => x.id === m.pairedWith) && !DUELP.some((x) => x.id === m.pairedWith)) err(`${w}: pairedWith ${m.pairedWith} unbekannt`);
     }
   }
 }
 // Kampagne + Tag zusammen: Partie+Seite nur einmal
-const all = [...LINEUPS, ...DAILY];
+const all = [...LINEUPS, ...DAILY, ...DUELP];
 const seen = new Map();
 for (const m of all) { const k = m.comp + "|" + m.teams + "|" + m.side; if (seen.has(k)) err(`Partie+Seite doppelt: ${m.id} / ${seen.get(k)}`); seen.set(k, m.id); }
 
@@ -206,7 +232,50 @@ for (const lg of new Set([...LINEUPS, ...DAILY].map((m) => m.league))) {
   if (!inL.has(lg)) err(`league "${lg}" fehlt in LEAGUE_GROUPS (Wissen)`);
   if (!inF.has(lg)) err(`league "${lg}" fehlt in FREEPLAY_GROUPS (Frei spielen)`);
 }
+for (const lg of new Set(DUELP.filter((m) => m.special !== "nostalgie").map((m) => m.league))) if (!inF.has(lg)) err(`Duell: league "${lg}" fehlt in FREEPLAY_GROUPS (Frei spielen)`);
 const catOf = (m) => (Object.entries(LGROUPS).find(([, v]) => v.includes(m.league)) || ["?"])[0];
+
+// Duell-Pool (Prompt 60): Kategorien-Zuordnung und Balance. Zaehlt nur, wenn der Pool Eintraege hat; Spiele aller drei Pools zaehlen, jede Partie einmal.
+{
+  const cc = vm.createContext({});
+  vm.runInContext(`const DUEL_CATEGORIES = ${JSON.stringify(DCATS)}; const DUEL_LEAGUE_CAT = {}; DUEL_CATEGORIES.forEach(c => (c.leagues || []).forEach(l => { DUEL_LEAGUE_CAT[l] = c.id; })); ${grabFn("duelCategoriesOf")}`, cc);
+  const catsOf = (m) => cc.duelCategoriesOf(m);
+  const gameKey = (m) => (dateOf(m) || m.comp) + "|" + m.teams.replace(/\s+\d+:\d+.*$/, "");
+  const sideKey = (m) => keys({ teams: m.side.replace(/^Aufstellung (von|des|der)\s+/i, "") })[0];
+  // keine Partie doppelt (ueber alle drei Pools), ausser sie ist bewusst als zweite Seite verknuepft (pairedWith) - K/T-Spiegel sind schon verknuepft
+  const byGame = new Map();
+  for (const m of all) { const k = gameKey(m); if (!byGame.has(k)) byGame.set(k, []); byGame.get(k).push(m); }
+  for (const [k, arr] of byGame) for (const m of arr) if (DUELP.includes(m) && arr.length > 1 && !m.pairedWith) err(`Duell:${m.id}: Partie doppelt (${arr.filter((x) => x !== m).map((x) => x.id).join(", ")}) - zweite Seite mit pairedWith markieren`);
+  // Kategorien: Spiele (je Partie einmal, Kategorien aller Seiten vereint)
+  const catGames = new Map(DCATS.map((c) => [c.id, []]));
+  for (const [k, arr] of byGame) { const cats = new Set(arr.flatMap(catsOf)); for (const c of cats) catGames.get(c).push(arr[0]); }
+  const poolCats = new Set(DUELP.flatMap(catsOf));
+  notes.push(`Duell-Pool: ${DUELP.length} Aufstellungen (Ziel 200); Zaehlung je Kategorie (alle Pools, je Partie einmal):`);
+  for (const c of DCATS) { const n = catGames.get(c.id).length, np = DUELP.filter((m) => catsOf(m).includes(c.id)).length; notes.push(`  ${c.label.padEnd(24)} ${String(n).padStart(3)} Partien (davon Duell-Pool ${np})${n < 20 && poolCats.has(c.id) ? "  <- unter Ziel 20" : ""}`); if (n < 20 && poolCats.has(c.id)) warn(`Kategorie ${c.label}: nur ${n} Partien (Ziel >= 20)`); }
+  // Ausnahmen der Beteiligungs-Grenze (Prompt 60): Kategorie -> [Mannschaft (Regex auf den normalisierten Schluessel), Obergrenze %]
+  const CAP = { es: [[/real madrid/, 60], [/barcelona/, 60], [/atletico/, 60]], it: [[/juventus/, 45], [/inter/, 45], [/mailand|milan/, 45]],
+    en: [[/manchester city/, 40], [/liverpool/, 40], [/manchester united/, 40], [/arsenal/, 40], [/chelsea/, 40]], fr: [[/paris saint|psg/, 82]], nlpt: [[/ajax/, 45], [/benfica/, 45], [/porto/, 45]] };
+  const capFor = (cid, key) => { const e = (CAP[cid] || []).find(([re]) => re.test(key)); return e ? e[1] : 30; };
+  for (const c of DCATS) {
+    if (!poolCats.has(c.id)) continue;
+    const games = catGames.get(c.id), N = games.length, part = new Map();
+    for (const g of games) for (const t of new Set(keys(g))) part.set(t, (part.get(t) || 0) + 1);
+    const top = [...part.entries()].sort((a, b) => b[1] - a[1]).slice(0, 5);
+    notes.push(`  Top-5-Beteiligung ${c.label}: ${top.map(([t, n]) => `${t} ${n} (${Math.round(n / N * 100)} %)`).join(" · ")}`);
+    for (const [t, n] of part) { const pct = n / N * 100, cap = capFor(c.id, t); if (pct > cap) err(`Beteiligung ${c.label}: ${t} ${n} von ${N} Partien (${pct.toFixed(0)} % > ${cap} %)`); else if (pct > 25) warn(`Beteiligung ${c.label}: ${t} ${n} von ${N} Partien (${pct.toFixed(0)} %, Grenze ${cap} %)`); }
+    const sides = new Set(games.map((g) => sideKey(g)));
+    if (sides.size < 6) err(`Kategorie ${c.label}: nur ${sides.size} verschiedene gefragte Mannschaften (mind. 6)`);
+    const mine = DUELP.filter((m) => catsOf(m).includes(c.id)).slice(0, 20), sc = new Map();
+    for (const m of mine) sc.set(sideKey(m), (sc.get(sideKey(m)) || 0) + 1);
+    for (const [t, n] of sc) if (n > 2) err(`Kategorie ${c.label}: unter den ersten 20 steht ${t} ${n}-mal als gefragte Seite (max. 2)`);
+    const lv = { leicht: games.filter((g) => g.difficulty <= 2).length, mittel: games.filter((g) => g.difficulty === 3).length, knifflig: games.filter((g) => g.difficulty >= 4).length };
+    const pc = (n) => Math.round(n / N * 100);
+    notes.push(`  Mix ${c.label}: leicht ${pc(lv.leicht)} % · mittel ${pc(lv.mittel)} % · knifflig ${pc(lv.knifflig)} %  (Ziel 40/40/20)`);
+    if (Math.abs(pc(lv.leicht) - 40) > 15 || Math.abs(pc(lv.mittel) - 40) > 15 || Math.abs(pc(lv.knifflig) - 20) > 15) warn(`Mix ${c.label}: ${pc(lv.leicht)}/${pc(lv.mittel)}/${pc(lv.knifflig)} % weicht deutlich vom Ziel 40/40/20 ab`);
+  }
+  const sideCnt = new Map(); for (const m of DUELP) sideCnt.set(sideKey(m), (sideCnt.get(sideKey(m)) || 0) + 1);
+  for (const [t, n] of sideCnt) if (n > 8) err(`Duell-Pool: ${t} ${n}-mal als gefragte Mannschaft (max. 8)`);
+}
 
 // Verteilung
 const cnt = (a, f) => Object.fromEntries(Object.entries(a.reduce((o, x) => { const k = f(x); o[k] = (o[k] || 0) + 1; return o; }, {})).sort());
@@ -248,6 +317,7 @@ notes.push(`  Stufen der ersten 45 Tage: ${JSON.stringify(cnt(days.slice(0, 45),
 
 console.log(notes.join("\n"));
 if (spoilerRows.length) console.log("\nSPOILER-TREFFER (" + spoilerRows.length + " Einträge):\n" + spoilerRows.map(([id, h]) => "  " + id.padEnd(38) + h).join("\n"));
+if (warns.length) console.log("\nHINWEISE (gelb, kein Fehler) (" + warns.length + "):\n" + warns.map((e) => " - " + e).join("\n"));
 if (hints.length) console.log("\nNAMENSHINWEISE (" + hints.length + ", nur Meldungen):\n" + hints.map((e) => " - " + e).join("\n"));
 if (errors.length) { console.log("\nFEHLER (" + errors.length + "):\n" + errors.map((e) => " - " + e).join("\n")); process.exit(1); }
 console.log("\nOK - keine Fehler");

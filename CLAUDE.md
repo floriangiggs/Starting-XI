@@ -32,6 +32,19 @@ auf einem visuellen Spielfeld an die richtige Position setzen.
   nur große Clubs/Nationalteams mit Stars). Bei aktuellen Spielen darf es
   minimal unbekannter sein, aber nie zu unbekannt – machbar bleibt Pflicht.
 
+## Duell-Pool (Ausnahme, Prompt 60)
+
+Für Duell und Frei spielen gibt es einen eigenen Pool `DUEL_POOL` (nie Kampagne/Tages-Challenge). Nur dort gilt:
+
+- Spiele ab **01.01.2000** erlaubt. Spiele 2000–2007 **müssen** `special: "nostalgie"` tragen und zählen nur in der
+  Kategorie „Nostalgie 2000–2007“ (nicht in ihrem Wettbewerb); `nostalgie` mit Datum ab 2008 ist ein Fehler.
+- Nostalgie nur Legenden: große Vereine/Nationen, Spiele, die man heute noch kennt, mind. 4 Weltstars/Legenden in der
+  gefragten Elf (`anchors`), `difficulty` höchstens 3.
+- Weiteres Kennzeichen `special: "highlight"` (Endspiele, Wunder/Comebacks, Außenseiter-Märchen); je Aufstellung höchstens ein `special`.
+- Knifflige Einträge (Stufe 4–5) brauchen `anchors: [2–3 bekannte Spieler der Elf]`.
+- Quellenpflicht unverändert (mind. eine verlässliche Quelle, nie aus dem Gedächtnis). Balance-Regeln prüft `tools/check-lineup-pools.mjs`.
+- Kampagne und Tages-Challenge bleiben bei „ab 2008“.
+
 ## Pflichtfelder pro Aufstellung
 
 Jeder Eintrag in `LINEUP_CHALLENGES` braucht:
