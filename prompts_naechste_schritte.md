@@ -72,7 +72,7 @@ vorige umgesetzt, getestet und committet ist.
 | 58 | App-Name „Startelo XI“ statt „Starting XI“ (17 sichtbare Stellen, interne Schlüssel bleiben, gesperrte Nutzernamen ergänzen) | Markenrecherche Startelo (Florian) | ✅ erledigt (19 Stellen in startelf_check.html + manifest.json; interne Schlüssel unverändert; reservierte Namen startelo/starteloxi; tools/test-umbenennung.mjs; sw.js v74) |
 | 59 | Welt- und Rangnamen ohne geschützte Marken: Bundesliga → Profiliga, Champions League → Meisterklasse, 2. Bundesliga → Zweite Liga (Weltkarte, Pfad, Kachel, Feier, Scout-Ränge, CLAUDE.md); Spiel-Beschreibungen bleiben | 58 | ✅ erledigt (DIFF_LABEL + RANKS, RANK_RENAME/rankLabel für Gegner-Ränge aus alten Links und gespeicherte Duelle, Welt-Feier einzeilig; tools/test-weltnamen.mjs; sw.js v75) |
 | 60 | Duell-Pool: eigener Pool DUEL_POOL (nur Duell + Frei spielen), 12 Duell-Kategorien, Hausregel-Ausnahme Nostalgie 2000–2007, Balance-Regeln + Prüfskript – noch KEINE neuen Aufstellungen | 59 | offen |
-| 61 | 200 neue Aufstellungen für den Duell-Pool in Paketen (61a Deutschland, 61b …), Kandidaten mit Florian ausgewählt | 60 | 61a bereit (Deutschland, 20); weitere Pakete folgen |
+| 61 | 200 neue Aufstellungen für den Duell-Pool in Paketen (61a Deutschland, 61b …), Kandidaten mit Florian ausgewählt | 60 | 61a (Deutschland, 20) + 61b (Spanien, 14) bereit; weitere Pakete folgen |
 
 **Empfohlene Reihenfolge ab jetzt:** 49 → 50 (Bugfixes, sofort) → 39 → 41 → 42 → 43 → 44 → 45 → 46 → 47 → 48 → 49 → 50 → 51 → 52 → 53 → 54 → 55 → 56 → 57 → 58 → 59 → 60 → 61 (Pakete) → weitere Offline-Feinschliffe (u. a. Jahres-Lücken im Ideen-Speicher auffüllen) → Planung Online-Duell (inkl. 28/29) → 8 (Capacitor, erst wenn die App final ist; vorher Duell-Pflichtpunkt aus CLAUDE.md ansprechen)
 
@@ -5324,9 +5324,11 @@ Lies CLAUDE.md. Plan Mode, Plan zeigen. Noch KEINE neuen Aufstellungen hinzufüg
    - Kampagne und Tages-Challenge bleiben bei „ab 2008“.
 5. Balance-Regeln (tools/check-lineup-pools.mjs erweitern, Fehler = rot):
    - Gefragte Mannschaft (side) im DUEL_POOL höchstens 8-mal.
-   - Beteiligung (gefragte Seite ODER Gegner) je Mannschaft höchstens 25 % einer
-     Kategorie (alle Pools zusammen) – gilt besonders für FC Bayern, Real, Barça,
-     ManCity; Ausgabe „Top-5-Beteiligung je Kategorie“.
+   - Beteiligung (gefragte Seite ODER Gegner) je Mannschaft in einer Kategorie (alle
+     Pools zusammen): über 25 % = gelber Hinweis, über 30 % = Fehler (rot). Gilt
+     besonders für FC Bayern, Real, Barça, ManCity; Ausgabe „Top-5-Beteiligung je
+     Kategorie“. Hinweis: Spanien ist aus den alten Pools Real/Barça-lastig – neue
+     Spanien-Einträge daher fast ohne Real/Barça.
    - Je Kategorie mindestens 6 verschiedene gefragte Mannschaften; unter den ersten 20
      einer Kategorie (Reihenfolge im Pool) keine Mannschaft mehr als 2-mal.
    - Schwierigkeits-Mix je Kategorie (Hinweis gelb, nicht rot): Ziel ca. 40 % leicht
@@ -5414,6 +5416,57 @@ erledigt (DUEL_POOL existiert). Plan Mode: Plan kurz zeigen.
 4. Bericht am Ende: Tabelle # / Partie / Quelle(n) / Änderungen ggü. Liste; Zählung
    Kategorie Deutschland vorher/nachher, Beteiligung + Gefragte je Mannschaft, Mix L/M/K, Jahre.
 5. CACHE_NAME erhöhen, Status-Tabelle: 61a erledigt.
+Kein Commit/Push ohne Zeigen der Testausgabe.
+```
+
+---
+
+## Prompt 61b – Duell-Pool Paket 2: Spanien (14 Aufstellungen)
+
+**Ausgewählt von Claude (21.10.2026):** Die vorhandenen 10 Spanien-Aufstellungen sind
+stark Real/Barça-lastig (Real in 7, Barça in 6). Deshalb hier fast nur andere Klubs:
+Atlético, Sevilla, Valencia, Betis, Athletic, Real Sociedad, Deportivo, Girona, Alavés.
+Real und Barça je höchstens 2× beteiligt (nur in Legenden-Spielen bzw. als Gegner).
+Statt 24 nur 14, weil es ohne Real/Barça nicht mehr wirklich bekannte, lösbare Partien
+gibt – die 10 freien Plätze gehen an andere Kategorien (Pakete 61c ff.).
+Copa-Finals laut Wikipedia „List of Copa del Rey finals“; Datum/Ergebnis = Arbeitsstand,
+maßgeblich ist die Quelle.
+
+| # | Spiel (Wettbewerb, Datum) | gefragte Seite | difficulty | special |
+|---|---|---|---|---|
+| 1 | LaLiga, 20.05.2000 (letzter Spieltag): Deportivo La Coruña – Espanyol 2:0 (erste Meisterschaft „Superdepor“) | Deportivo La Coruña | 3 | nostalgie |
+| 2 | Copa-del-Rey-Finale, 06.03.2002: Real Madrid – Deportivo La Coruña 1:2 („Centenariazo“) | Deportivo La Coruña | 3 | nostalgie |
+| 3 | LaLiga 2001/02: Spiel, mit dem Valencia die Meisterschaft sicherte (Partie per Quelle bestimmen; Aimar, Ayala, Baraja, Cañizares) | Valencia CF | 3 | nostalgie |
+| 4 | LaLiga, 19.11.2005: Real Madrid – FC Barcelona 0:3 (Applaus für Ronaldinho im Bernabéu) | FC Barcelona | 2 | nostalgie |
+| 5 | Copa-del-Rey-Finale, 23.06.2007: Sevilla FC – Getafe CF 1:0 | Sevilla FC | 3 | nostalgie |
+| 6 | Copa-del-Rey-Finale, 16.04.2008: Getafe CF – Valencia CF 1:3 | Valencia CF | 3 | highlight |
+| 7 | Copa-del-Rey-Finale, 19.05.2010: Sevilla FC – Atlético Madrid 2:0 | Atlético Madrid | 2 | highlight |
+| 8 | Copa-del-Rey-Finale, 27.05.2017: FC Barcelona – Deportivo Alavés 3:1 | Deportivo Alavés | 4 | highlight |
+| 9 | LaLiga, Januar 2018: Sevilla FC – Real Betis 3:5 (Sevilla-Derby) | Real Betis | 3 | highlight |
+| 10 | Copa-del-Rey-Finale 2019/20, 03.04.2021: Real Sociedad – Athletic Bilbao 1:0 (baskisches Finale) | Real Sociedad | 3 | highlight |
+| 11 | Copa-del-Rey-Finale, 23.04.2022: Real Betis – Valencia CF 1:1 n.V., Betis i.E. | Valencia CF | 3 | highlight |
+| 12 | LaLiga, 03.01.2024: Girona FC – Atlético Madrid 4:3 | Girona FC | 4 | – |
+| 13 | Copa-del-Rey-Finale, 06.04.2024: Athletic Bilbao – RCD Mallorca 1:1 n.V., Athletic i.E. | Athletic Bilbao | 3 | highlight |
+| 14 | Copa-del-Rey-Finale 2025/26: Real Sociedad – Atlético Madrid 2:2, Real Sociedad i.E. | Atlético Madrid | 3 | highlight |
+
+Beteiligung (Seite oder Gegner): Atlético 3 · Valencia 3 (+1 als Gegner) · Deportivo 2 ·
+Sevilla 3 · Real Sociedad 2 · Real 2 · Barça 2 · Betis 2 · Athletic 2 · Getafe 2 · übrige 1.
+Mix L/M/K = 2/10/2 (Spanien-Leichte kommen aus den vorhandenen Real/Barça-Partien).
+anchors: #8 Theo Hernández, Marcos Llorente · #12 Dovbyk, Savinho, Aleix García.
+
+Reserve: Villarreal CF – RC Celta 4:3 (LaLiga 2024/25, 3. ST, Villarreal, 4);
+Atlético Madrid – Sevilla FC 4:3 (LaLiga 2024/25, 16. ST, Atlético, 2);
+Real Zaragoza – Real Madrid 3:2 n.V. (Copa-Finale 2004, Real Madrid, 2, nostalgie –
+nur wenn Real-Beteiligung es zulässt).
+
+```
+Lies CLAUDE.md. Voraussetzung: Prompt 60 und 61a erledigt. Plan Mode: Plan kurz zeigen.
+Vorgehen exakt wie Prompt 61a (Quellenpflicht, Pflichtfelder, special, anchors bei 4–5,
+Reserve bei unklarer Quelle, Häppchen à 7/7, check-lineup-pools nach jedem Häppchen).
+Bei #3 die Partie per Quelle bestimmen (Spiel, mit dem Valencia 2002 Meister wurde) und
+im Bericht nennen. Bericht: Tabelle # / Partie / Quelle(n) / Änderungen; Zählung Kategorie
+Spanien vorher/nachher inkl. Top-5-Beteiligung, Mix L/M/K, Jahre. CACHE_NAME erhöhen,
+Status-Tabelle: 61b erledigt.
 Kein Commit/Push ohne Zeigen der Testausgabe.
 ```
 
