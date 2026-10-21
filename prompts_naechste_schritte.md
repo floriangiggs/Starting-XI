@@ -72,7 +72,7 @@ vorige umgesetzt, getestet und committet ist.
 | 58 | App-Name „Startelo XI“ statt „Starting XI“ (17 sichtbare Stellen, interne Schlüssel bleiben, gesperrte Nutzernamen ergänzen) | Markenrecherche Startelo (Florian) | ✅ erledigt (19 Stellen in startelf_check.html + manifest.json; interne Schlüssel unverändert; reservierte Namen startelo/starteloxi; tools/test-umbenennung.mjs; sw.js v74) |
 | 59 | Welt- und Rangnamen ohne geschützte Marken: Bundesliga → Profiliga, Champions League → Meisterklasse, 2. Bundesliga → Zweite Liga (Weltkarte, Pfad, Kachel, Feier, Scout-Ränge, CLAUDE.md); Spiel-Beschreibungen bleiben | 58 | ✅ erledigt (DIFF_LABEL + RANKS, RANK_RENAME/rankLabel für Gegner-Ränge aus alten Links und gespeicherte Duelle, Welt-Feier einzeilig; tools/test-weltnamen.mjs; sw.js v75) |
 | 60 | Duell-Pool: eigener Pool DUEL_POOL (nur Duell + Frei spielen), 12 Duell-Kategorien, Hausregel-Ausnahme Nostalgie 2000–2007, Balance-Regeln + Prüfskript – noch KEINE neuen Aufstellungen | 59 | offen |
-| 61 | 200 neue Aufstellungen für den Duell-Pool in Paketen (61a Deutschland, 61b …), Kandidaten mit Florian ausgewählt | 60 | 61a (Deutschland, 20) + 61b (Spanien, 14) bereit; weitere Pakete folgen |
+| 61 | 200 neue Aufstellungen für den Duell-Pool in Paketen (61a Deutschland, 61b …), Kandidaten mit Florian ausgewählt | 60 | 61a (Deutschland, 20) + 61b (Spanien, 23) bereit; weitere Pakete folgen |
 
 **Empfohlene Reihenfolge ab jetzt:** 49 → 50 (Bugfixes, sofort) → 39 → 41 → 42 → 43 → 44 → 45 → 46 → 47 → 48 → 49 → 50 → 51 → 52 → 53 → 54 → 55 → 56 → 57 → 58 → 59 → 60 → 61 (Pakete) → weitere Offline-Feinschliffe (u. a. Jahres-Lücken im Ideen-Speicher auffüllen) → Planung Online-Duell (inkl. 28/29) → 8 (Capacitor, erst wenn die App final ist; vorher Duell-Pflichtpunkt aus CLAUDE.md ansprechen)
 
@@ -5328,7 +5328,7 @@ Lies CLAUDE.md. Plan Mode, Plan zeigen. Noch KEINE neuen Aufstellungen hinzufüg
      Pools zusammen): über 25 % = gelber Hinweis, über 30 % = Fehler (rot). Gilt
      besonders für FC Bayern, Real, Barça, ManCity; Ausgabe „Top-5-Beteiligung je
      Kategorie“. AUSNAHME Spanien (Florian, 21.10.2026): Real, Barça und Atlético
-     sind die Klubs, die man kennt – dort gilt für diese drei je bis 50 % ohne
+     sind die Klubs, die man kennt – dort gilt für diese drei je bis 55 % ohne
      Fehler (nur Hinweis); alle anderen Klubs normale Grenze.
    - Je Kategorie mindestens 6 verschiedene gefragte Mannschaften; unter den ersten 20
      einer Kategorie (Reihenfolge im Pool) keine Mannschaft mehr als 2-mal.
@@ -5422,45 +5422,54 @@ Kein Commit/Push ohne Zeigen der Testausgabe.
 
 ---
 
-## Prompt 61b – Duell-Pool Paket 2: Spanien (14 Aufstellungen)
+## Prompt 61b – Duell-Pool Paket 2: Spanien (23 Aufstellungen)
 
-**Ausgewählt von Claude, Schwerpunkt nach Florian (21.10.2026):** In Spanien kennt man
-vor allem Real, Barça und Atlético. Da Real und Barça in den vorhandenen 10 Spanien-
-Aufstellungen schon dominieren, liegt der Schwerpunkt der neuen auf **Atlético** (6× gefragt),
-ergänzt um Legenden-Spiele von Real/Barça und wenige bekannte andere (Sevilla, Valencia,
-Athletic). Keine Exoten. Die übrigen 10 Plätze gehen an andere Kategorien (61c ff.).
+**Schwerpunkt nach Florian (21.10.2026):** Real und Barça am häufigsten, dazu Atlético,
+und 2–4 andere Teams aus bekannten Jahren (Superdepor, Sevilla, Valencia). Abwechslung
+über die Jahre (2000–2026, kein Jahr öfter als 2×). Keine Exoten.
 Copa-Finals laut Wikipedia „List of Copa del Rey finals“; Datum/Ergebnis = Arbeitsstand,
 maßgeblich ist die Quelle.
 
 | # | Spiel (Wettbewerb, Datum) | gefragte Seite | difficulty | special |
 |---|---|---|---|---|
-| 1 | Copa-del-Rey-Finale 2004 (März 2004): Real Zaragoza – Real Madrid 3:2 n.V. (Galácticos verlieren) | Real Madrid | 2 | nostalgie |
-| 2 | LaLiga, 19.11.2005: Real Madrid – FC Barcelona 0:3 (Applaus für Ronaldinho im Bernabéu) | FC Barcelona | 2 | nostalgie |
-| 3 | Copa-del-Rey-Finale, 23.06.2007: Sevilla FC – Getafe CF 1:0 | Sevilla FC | 3 | nostalgie |
-| 4 | Copa-del-Rey-Finale, 16.04.2008: Getafe CF – Valencia CF 1:3 | Valencia CF | 3 | highlight |
-| 5 | Copa-del-Rey-Finale, 13.05.2009: Athletic Bilbao – FC Barcelona 1:4 (Triple-Saison) | FC Barcelona | 1 | highlight |
-| 6 | Copa-del-Rey-Finale, 19.05.2010: Sevilla FC – Atlético Madrid 2:0 | Atlético Madrid | 2 | highlight |
-| 7 | Copa-del-Rey-Finale, 16.04.2014: Real Madrid – FC Barcelona 2:1 (Bale-Sprint) | Real Madrid | 2 | highlight |
-| 8 | LaLiga, 07.02.2015: Atlético Madrid – Real Madrid 4:0 | Atlético Madrid | 3 | highlight |
-| 9 | LaLiga, 21.05.2017: Atlético Madrid – Athletic Bilbao 3:1 (letztes Spiel im Vicente Calderón) | Atlético Madrid | 3 | highlight |
-| 10 | Copa-del-Rey-Finale, 23.04.2022: Real Betis – Valencia CF 1:1 n.V., Betis i.E. | Valencia CF | 3 | highlight |
-| 11 | Copa del Rey Achtelfinale, 18.01.2024: Atlético Madrid – Real Madrid 4:2 n.V. | Atlético Madrid | 3 | highlight |
-| 12 | Copa-del-Rey-Finale, 06.04.2024: Athletic Bilbao – RCD Mallorca 1:1 n.V., Athletic i.E. | Athletic Bilbao | 3 | highlight |
-| 13 | LaLiga, 21.12.2024: FC Barcelona – Atlético Madrid 1:2 (Siegtor in der Nachspielzeit) | Atlético Madrid | 3 | – |
-| 14 | Copa-del-Rey-Finale 2025/26: Real Sociedad – Atlético Madrid 2:2, Real Sociedad i.E. | Atlético Madrid | 3 | highlight |
+| 1 | LaLiga, 20.05.2000 (letzter Spieltag): Deportivo La Coruña – Espanyol 2:0 (Meisterschaft „Superdepor“) | Deportivo La Coruña | 3 | nostalgie |
+| 2 | Copa-del-Rey-Finale 2004 (März 2004): Real Zaragoza – Real Madrid 3:2 n.V. (Galácticos) | Real Madrid | 2 | nostalgie |
+| 3 | LaLiga, 19.11.2005: Real Madrid – FC Barcelona 0:3 (Applaus für Ronaldinho) | FC Barcelona | 2 | nostalgie |
+| 4 | Copa-del-Rey-Finale, 23.06.2007: Sevilla FC – Getafe CF 1:0 | Sevilla FC | 3 | nostalgie |
+| 5 | LaLiga, 04.05.2008: CA Osasuna – Real Madrid 1:2 (Meisterschaft) | Real Madrid | 3 | – |
+| 6 | Copa-del-Rey-Finale, 16.04.2008: Getafe CF – Valencia CF 1:3 | Valencia CF | 3 | highlight |
+| 7 | Copa-del-Rey-Finale, 13.05.2009: Athletic Bilbao – FC Barcelona 1:4 (Triple-Saison) | FC Barcelona | 1 | highlight |
+| 8 | LaLiga, 29.11.2010: FC Barcelona – Real Madrid 5:0 („Manita“) | FC Barcelona | 1 | highlight |
+| 9 | Copa-del-Rey-Finale, 19.05.2010: Sevilla FC – Atlético Madrid 2:0 | Atlético Madrid | 2 | highlight |
+| 10 | LaLiga, 02.05.2012: Athletic Bilbao – Real Madrid 0:3 (Rekord-Meisterschaft) | Real Madrid | 1 | – |
+| 11 | Copa-del-Rey-Finale, 16.04.2014: Real Madrid – FC Barcelona 2:1 (Bale-Sprint) | Real Madrid | 2 | highlight |
+| 12 | LaLiga, 07.02.2015: Atlético Madrid – Real Madrid 4:0 | Atlético Madrid | 3 | highlight |
+| 13 | Copa-del-Rey-Finale, 30.05.2015: FC Barcelona – Athletic Bilbao 3:1 (Messi-Solo) | FC Barcelona | 1 | highlight |
+| 14 | LaLiga, 21.05.2017: Atlético Madrid – Athletic Bilbao 3:1 (Abschied vom Vicente Calderón) | Atlético Madrid | 3 | highlight |
+| 15 | Copa-del-Rey-Finale, 21.04.2018: Sevilla FC – FC Barcelona 0:5 | FC Barcelona | 2 | highlight |
+| 16 | LaLiga, 02.04.2019: Villarreal CF – FC Barcelona 4:4 | FC Barcelona | 3 | highlight |
+| 17 | Copa-del-Rey-Finale, 23.04.2022: Real Betis – Valencia CF 1:1 n.V., Betis i.E. | Valencia CF | 3 | highlight |
+| 18 | Copa-del-Rey-Finale, 06.05.2023: Real Madrid – CA Osasuna 2:1 | Real Madrid | 2 | highlight |
+| 19 | LaLiga, 14.05.2023: Espanyol – FC Barcelona 2:4 (Meisterschaft) | FC Barcelona | 1 | – |
+| 20 | Copa del Rey Achtelfinale, 18.01.2024: Atlético Madrid – Real Madrid 4:2 n.V. | Atlético Madrid | 3 | highlight |
+| 21 | LaLiga, 21.12.2024: FC Barcelona – Atlético Madrid 1:2 (Siegtor in der Nachspielzeit) | Atlético Madrid | 3 | – |
+| 22 | Copa-del-Rey-Finale, 26.04.2025: FC Barcelona – Real Madrid 3:2 n.V. | FC Barcelona | 2 | highlight |
+| 23 | Copa-del-Rey-Finale 2025/26: Real Sociedad – Atlético Madrid 2:2, Real Sociedad i.E. | Atlético Madrid | 3 | highlight |
 
-Beteiligung (Seite oder Gegner): Atlético 6 · Real 5 · Barça 4 · Valencia 2 · Sevilla 2 ·
-Athletic 3 · Getafe 2 · übrige 1. Gefragt: Atlético 6, Real 2, Barça 2, Valencia 2,
-Sevilla 1, Athletic 1. Mix L/M/K = 5/9/0 (bewusst lösbar). Jahre 2004–2026.
+Gefragt: Barça 8 · Real 5 · Atlético 6 · Valencia 2 · Deportivo 1 · Sevilla 1.
+Beteiligung inkl. der 10 vorhandenen Spanien-Aufstellungen (33 gesamt): Real ≈ 52 %,
+Barça ≈ 48 %, Atlético ≈ 30 % (Spanien-Ausnahme, siehe Prompt 60), übrige < 15 %.
+Mix L/M/K = 12/11/0 (Spanien bewusst gut lösbar). Jahre 2000–2026, kein Jahr > 2×.
+Die frei gewordenen Plätze (1 aus Spanien, 4 aus Deutschland) gehen an andere Kategorien.
 
-Reserve: Atlético Madrid – Real Madrid 3:1 (LaLiga, 24.09.2023, Atlético, 2);
+Reserve: Málaga CF – Real Madrid 0:2 (LaLiga, 21.05.2017, Meisterschaft, Real, 1);
 Atlético Madrid – Sevilla FC 4:3 (LaLiga 2024/25, 16. ST, Atlético, 2);
-Girona FC – Atlético Madrid 4:3 (LaLiga, 03.01.2024, Atlético, 3).
+Athletic Bilbao – RCD Mallorca 1:1 n.V., Athletic i.E. (Copa-Finale 06.04.2024, Athletic, 3).
 
 ```
 Lies CLAUDE.md. Voraussetzung: Prompt 60 und 61a erledigt. Plan Mode: Plan kurz zeigen.
 Vorgehen exakt wie Prompt 61a (Quellenpflicht, Pflichtfelder, special, anchors bei 4–5,
-Reserve bei unklarer Quelle, Häppchen à 7/7, check-lineup-pools nach jedem Häppchen).
+Reserve bei unklarer Quelle, Häppchen à 8/8/7, check-lineup-pools nach jedem Häppchen).
 Bericht: Tabelle # / Partie / Quelle(n) / Änderungen; Zählung Kategorie
 Spanien vorher/nachher inkl. Top-5-Beteiligung, Mix L/M/K, Jahre. CACHE_NAME erhöhen,
 Status-Tabelle: 61b erledigt.
