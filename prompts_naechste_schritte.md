@@ -71,8 +71,10 @@ vorige umgesetzt, getestet und committet ist.
 | 57 | Bugfix: Scout-Profil schließt beim Hochscrollen (Wisch-zum-Schließen prüft das falsche Element); Kampagne-Kachel öffnet den Level-Pfad statt direkt das Level, „Pfad“-Knopf führt wirklich zum Pfad; angefangenes Level mit Holzschild „Weiter aufstellen“ + Knopf „Weiter: Level n“ | 43, 44, 51 | ✅ erledigt (sheetEnhance: scrollerOf() + „nie aus dem Scrollen ins Schließen“; openCampaignPath: start>worldmap>levelpath; Schild weicht Requisiten aus (lpPlaceSign); goBackTo ersetzt statt Vorwärtseintrag; tools/test-sheet-scroll.mjs + test-kampagne-nav.mjs; sw.js v73) |
 | 58 | App-Name „Startelo XI“ statt „Starting XI“ (17 sichtbare Stellen, interne Schlüssel bleiben, gesperrte Nutzernamen ergänzen) | Markenrecherche Startelo (Florian) | ✅ erledigt (19 Stellen in startelf_check.html + manifest.json; interne Schlüssel unverändert; reservierte Namen startelo/starteloxi; tools/test-umbenennung.mjs; sw.js v74) |
 | 59 | Welt- und Rangnamen ohne geschützte Marken: Bundesliga → Profiliga, Champions League → Meisterklasse, 2. Bundesliga → Zweite Liga (Weltkarte, Pfad, Kachel, Feier, Scout-Ränge, CLAUDE.md); Spiel-Beschreibungen bleiben | 58 | ✅ erledigt (DIFF_LABEL + RANKS, RANK_RENAME/rankLabel für Gegner-Ränge aus alten Links und gespeicherte Duelle, Welt-Feier einzeilig; tools/test-weltnamen.mjs; sw.js v75) |
+| 60 | Duell-Pool: eigener Pool DUEL_POOL (nur Duell + Frei spielen), 12 Duell-Kategorien, Hausregel-Ausnahme Nostalgie 2000–2007, Balance-Regeln + Prüfskript – noch KEINE neuen Aufstellungen | 59 | offen |
+| 61 | 200 neue Aufstellungen für den Duell-Pool in Paketen (61a Deutschland, 61b …), Kandidaten mit Florian ausgewählt | 60 | offen (Pakete folgen) |
 
-**Empfohlene Reihenfolge ab jetzt:** 49 → 50 (Bugfixes, sofort) → 39 → 41 → 42 → 43 → 44 → 45 → 46 → 47 → 48 → 49 → 50 → 51 → 52 → 53 → 54 → 55 → 56 → 57 → 58 → 59 → weitere Offline-Feinschliffe (u. a. Jahres-Lücken im Ideen-Speicher auffüllen) → Planung Online-Duell (inkl. 28/29) → 8 (Capacitor, erst wenn die App final ist; vorher Duell-Pflichtpunkt aus CLAUDE.md ansprechen)
+**Empfohlene Reihenfolge ab jetzt:** 49 → 50 (Bugfixes, sofort) → 39 → 41 → 42 → 43 → 44 → 45 → 46 → 47 → 48 → 49 → 50 → 51 → 52 → 53 → 54 → 55 → 56 → 57 → 58 → 59 → 60 → 61 (Pakete) → weitere Offline-Feinschliffe (u. a. Jahres-Lücken im Ideen-Speicher auffüllen) → Planung Online-Duell (inkl. 28/29) → 8 (Capacitor, erst wenn die App final ist; vorher Duell-Pflichtpunkt aus CLAUDE.md ansprechen)
 
 Prompt 7 steht bewusst vor der Tages-Challenge: Nur mit der neuen
 Update-Strategie kommen neue Tages-Aufstellungen zuverlässig auf dem iPhone an.
@@ -5269,6 +5271,79 @@ Lies CLAUDE.md und docs/markenrecherche.md. Plan Mode, Plan zeigen. Nur Namen/Te
    Kampagnen-Fortschritt je Welt unverändert; Screenshots Weltkarte, Pfad Welt 3+4,
    Startseiten-Kachel, Welt-Feier Welt 4, Scout-Pass Rang 15 und 20 (393×852, 375×667),
    kein Umbruch/Abschneiden. CACHE_NAME erhöhen. Status-Tabelle: Prompt 59 erledigt.
+Kein Commit/Push ohne Zeigen der Testausgabe.
+```
+
+---
+
+## Prompt 60 – Duell-Pool mit 12 Kategorien (Struktur, Regeln, Prüfskript)
+
+**Besprochen mit Florian (21.10.2026):** Für Online-Duell und Frei spielen kommen
+**200 neue Aufstellungen** in einen **eigenen Pool**, nicht in Kampagne/Tages-Challenge.
+Ziel: viel Abwechslung, nie zu schwer. Dieser Prompt baut nur Struktur, Regeln und
+Prüfungen – die Aufstellungen folgen paketweise in Prompt 61a, 61b, …
+
+**Die 12 Duell-Kategorien** (Quizduell-Prinzip, höchstens 12):
+
+| # | Kategorie | league-Werte |
+|---|---|---|
+| 1 | Champions League | Champions League |
+| 2 | Europa League | Europa League, Conference League |
+| 3 | WM & Welt-Turniere | Weltmeisterschaft, Copa América, Afrika-Cup, Confed Cup |
+| 4 | EM & Nations League | Europameisterschaft, Nations League |
+| 5 | Deutschland | Bundesliga, 2. Bundesliga, DFB-Pokal, Bundesliga / DFB-Pokal |
+| 6 | England | Premier League, FA Cup |
+| 7 | Spanien | LaLiga, Copa del Rey |
+| 8 | Italien | Serie A, Coppa Italia |
+| 9 | Frankreich | Ligue 1, Coupe de France |
+| 10 | Niederlande & Portugal | Eredivisie, Liga Portugal, KNVB-Pokal, Taça de Portugal |
+| 11 | Nostalgie 2000–2007 | Spezial-Kennzeichen `nostalgie` (Datum 2000–2007) |
+| 12 | Highlights | Spezial-Kennzeichen `highlight` (Endspiele, Wunder/Comebacks, Außenseiter-Märchen) |
+
+```
+Lies CLAUDE.md. Plan Mode, Plan zeigen. Noch KEINE neuen Aufstellungen hinzufügen.
+
+1. Neuer Pool DUEL_POOL (gleiche Felder wie LINEUP_CHALLENGES inkl. teaser, bench,
+   source) + optionales Feld special: "nostalgie" | "highlight" (höchstens EINS).
+   Jede Aufstellung gehört damit zu höchstens 2 Kategorien: ihr Wettbewerb (aus
+   league) + ggf. ihr special. DUEL_POOL erscheint NUR im Duell und in Frei spielen,
+   nie in Kampagne oder Tages-Challenge.
+2. Duell-Kategorien als Konstante DUEL_CATEGORIES (Tabelle oben). Die Duell-Auswahl
+   zieht aus LINEUP_CHALLENGES + DAILY_CHALLENGES + DUEL_POOL. Bestehende Aufstellungen
+   bekommen special: "highlight", wo es passt (alle Endspiele + klare Wunder/Märchen,
+   z. B. Barça–PSG 6:1, Brasilien–Deutschland 1:7, Leicester) – Liste im Plan zeigen,
+   Florian bestätigt.
+3. Frei spielen: neue Karten „Frankreich“, „Niederlande & Portugal“ (Gruppe Ligen &
+   Pokal), „Nostalgie 2000–2007“ und „Highlights“ (neue Gruppe „Spezial“). Optik wie
+   die vorhandenen Karten (Prompt 47), Flaggen/Zeichen im selben Stil.
+4. Hausregel-Ausnahme NUR für DUEL_POOL (CLAUDE.md ergänzen):
+   - Spiele ab 01.01.2000 erlaubt; Spiele 2000–2007 MÜSSEN special "nostalgie" haben.
+   - Nostalgie nur Legenden: große Vereine/Nationen, Spiele, die man heute noch kennt,
+     mind. 4 Weltstars/Legenden in der gefragten Elf; difficulty höchstens 3.
+   - Quellenpflicht unverändert (mind. eine verlässliche Quelle, nie aus dem Gedächtnis).
+   - Kampagne und Tages-Challenge bleiben bei „ab 2008“.
+5. Balance-Regeln (tools/check-lineup-pools.mjs erweitern, Fehler = rot):
+   - Gefragte Mannschaft (side) im DUEL_POOL höchstens 8-mal.
+   - Je Kategorie mindestens 6 verschiedene gefragte Mannschaften; unter den ersten 20
+     einer Kategorie (Reihenfolge im Pool) keine Mannschaft mehr als 2-mal.
+   - Schwierigkeits-Mix je Kategorie (Hinweis gelb, nicht rot): Ziel ca. 40 % leicht
+     (1–2), 40 % mittel (3), 20 % knifflig (4–5); Ausgabe als Tabelle.
+   - Knifflige Einträge (4–5) brauchen ein Feld anchors: [2–3 bekannte Spielernamen
+     aus der Elf] (Exoten nur mit Anker).
+   - Keine Partie doppelt über alle drei Pools (gleiches Datum + gleiche Teams), auch
+     nicht mit vertauschter side, außer bewusst als zweite Seite markiert.
+   - Zählung je Kategorie (alle Pools zusammen) ausgeben: Ziel ≥ 20 je Kategorie.
+6. Duell-Auswahl (offline-Schnell-Duell jetzt, Server-Logik übernimmt das in K6):
+   - Keine Mannschaft (beide Seiten) in zwei Runden hintereinander.
+   - Erste Runde nie difficulty 4–5; in je 3 Runden höchstens 1 knifflige.
+   - Liga-Duell (später): die 3 angebotenen Kategorien sind verschieden; eine
+     Kategorie erst wieder anbieten, wenn mind. 2 andere dran waren.
+   - Gegen denselben Gegner keine Aufstellung erneut innerhalb von 30 Tagen
+     (vorhandene Duell-Historie nutzen).
+7. Tests: check-lineup-pools grün (leerer DUEL_POOL erlaubt), Frei spielen zeigt die
+   neuen Karten (leer = ausgegraut „bald“), Duell-Auswahl-Regeln als Unit-Test mit
+   Testdaten (tools/test-duell-auswahl.mjs). CACHE_NAME erhöhen. Status-Tabelle:
+   Prompt 60 erledigt.
 Kein Commit/Push ohne Zeigen der Testausgabe.
 ```
 
