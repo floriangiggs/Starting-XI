@@ -72,7 +72,7 @@ vorige umgesetzt, getestet und committet ist.
 | 58 | App-Name „Startelo XI“ statt „Starting XI“ (17 sichtbare Stellen, interne Schlüssel bleiben, gesperrte Nutzernamen ergänzen) | Markenrecherche Startelo (Florian) | ✅ erledigt (19 Stellen in startelf_check.html + manifest.json; interne Schlüssel unverändert; reservierte Namen startelo/starteloxi; tools/test-umbenennung.mjs; sw.js v74) |
 | 59 | Welt- und Rangnamen ohne geschützte Marken: Bundesliga → Profiliga, Champions League → Meisterklasse, 2. Bundesliga → Zweite Liga (Weltkarte, Pfad, Kachel, Feier, Scout-Ränge, CLAUDE.md); Spiel-Beschreibungen bleiben | 58 | ✅ erledigt (DIFF_LABEL + RANKS, RANK_RENAME/rankLabel für Gegner-Ränge aus alten Links und gespeicherte Duelle, Welt-Feier einzeilig; tools/test-weltnamen.mjs; sw.js v75) |
 | 60 | Duell-Pool: eigener Pool DUEL_POOL (nur Duell + Frei spielen), 12 Duell-Kategorien, Hausregel-Ausnahme Nostalgie 2000–2007, Balance-Regeln + Prüfskript – noch KEINE neuen Aufstellungen | 59 | offen |
-| 61 | 200 neue Aufstellungen für den Duell-Pool in Paketen (61a Deutschland, 61b …), Kandidaten mit Florian ausgewählt | 60 | 61a (Deutschland, 20) + 61b (Spanien, 23) bereit; weitere Pakete folgen |
+| 61 | 200 neue Aufstellungen für den Duell-Pool in Paketen (61a Deutschland, 61b …), Kandidaten mit Florian ausgewählt | 60 | 61a (Deutschland, 20) + 61b (Spanien, 26) bereit; weitere Pakete folgen |
 
 **Empfohlene Reihenfolge ab jetzt:** 49 → 50 (Bugfixes, sofort) → 39 → 41 → 42 → 43 → 44 → 45 → 46 → 47 → 48 → 49 → 50 → 51 → 52 → 53 → 54 → 55 → 56 → 57 → 58 → 59 → 60 → 61 (Pakete) → weitere Offline-Feinschliffe (u. a. Jahres-Lücken im Ideen-Speicher auffüllen) → Planung Online-Duell (inkl. 28/29) → 8 (Capacitor, erst wenn die App final ist; vorher Duell-Pflichtpunkt aus CLAUDE.md ansprechen)
 
@@ -5328,7 +5328,7 @@ Lies CLAUDE.md. Plan Mode, Plan zeigen. Noch KEINE neuen Aufstellungen hinzufüg
      Pools zusammen): über 25 % = gelber Hinweis, über 30 % = Fehler (rot). Gilt
      besonders für FC Bayern, Real, Barça, ManCity; Ausgabe „Top-5-Beteiligung je
      Kategorie“. AUSNAHME Spanien (Florian, 21.10.2026): Real, Barça und Atlético
-     sind die Klubs, die man kennt – dort gilt für diese drei je bis 55 % ohne
+     sind die Klubs, die man kennt – dort gilt für diese drei je bis 60 % ohne
      Fehler (nur Hinweis); alle anderen Klubs normale Grenze.
    - Je Kategorie mindestens 6 verschiedene gefragte Mannschaften; unter den ersten 20
      einer Kategorie (Reihenfolge im Pool) keine Mannschaft mehr als 2-mal.
@@ -5422,7 +5422,7 @@ Kein Commit/Push ohne Zeigen der Testausgabe.
 
 ---
 
-## Prompt 61b – Duell-Pool Paket 2: Spanien (23 Aufstellungen)
+## Prompt 61b – Duell-Pool Paket 2: Spanien (26 Aufstellungen)
 
 **Schwerpunkt nach Florian (21.10.2026):** Real und Barça am häufigsten, dazu Atlético,
 und 2–4 andere Teams aus bekannten Jahren (Superdepor, Sevilla, Valencia). Abwechslung
@@ -5455,21 +5455,24 @@ maßgeblich ist die Quelle.
 | 21 | LaLiga, 21.12.2024: FC Barcelona – Atlético Madrid 1:2 (Siegtor in der Nachspielzeit) | Atlético Madrid | 3 | – |
 | 22 | Copa-del-Rey-Finale, 26.04.2025: FC Barcelona – Real Madrid 3:2 n.V. | FC Barcelona | 2 | highlight |
 | 23 | Copa-del-Rey-Finale 2025/26: Real Sociedad – Atlético Madrid 2:2, Real Sociedad i.E. | Atlético Madrid | 3 | highlight |
+| 24 | LaLiga, 17.06.2007 (letzter Spieltag): Real Madrid – RCD Mallorca 3:1 (Meisterschaft, Beckhams Abschied) | Real Madrid | 2 | nostalgie |
+| 25 | LaLiga, 21.05.2017: Málaga CF – Real Madrid 0:2 (Meisterschaft) | Real Madrid | 1 | – |
+| 26 | LaLiga, 30.04.2022: Real Madrid – Espanyol 4:0 (Meisterschaft) | Real Madrid | 1 | – |
 
-Gefragt: Barça 8 · Real 5 · Atlético 6 · Valencia 2 · Deportivo 1 · Sevilla 1.
-Beteiligung inkl. der 10 vorhandenen Spanien-Aufstellungen (33 gesamt): Real ≈ 52 %,
-Barça ≈ 48 %, Atlético ≈ 30 % (Spanien-Ausnahme, siehe Prompt 60), übrige < 15 %.
-Mix L/M/K = 12/11/0 (Spanien bewusst gut lösbar). Jahre 2000–2026, kein Jahr > 2×.
-Die frei gewordenen Plätze (1 aus Spanien, 4 aus Deutschland) gehen an andere Kategorien.
+Gefragt: Real 8 · Barça 8 · Atlético 6 · Valencia 2 · Deportivo 1 · Sevilla 1 (Florian: „noch 2–3× Real dazu“).
+Beteiligung inkl. der 10 vorhandenen Spanien-Aufstellungen (36 gesamt): Real ≈ 56 %,
+Barça ≈ 44 %, Atlético ≈ 28 % (Spanien-Ausnahme bis 60 %, siehe Prompt 60), übrige < 15 %.
+Mix L/M/K = 15/11/0 (Spanien bewusst gut lösbar). Jahre 2000–2026, kein Jahr > 2×.
+Spanien nimmt 2 Plätze mehr als geplant (24 → 26); frei bleiben 2 Plätze aus Deutschland.
 
-Reserve: Málaga CF – Real Madrid 0:2 (LaLiga, 21.05.2017, Meisterschaft, Real, 1);
+Reserve: Real Madrid – Cádiz CF 3:0 (LaLiga, 04.05.2024, Meisterschaft, Real, 1);
 Atlético Madrid – Sevilla FC 4:3 (LaLiga 2024/25, 16. ST, Atlético, 2);
 Athletic Bilbao – RCD Mallorca 1:1 n.V., Athletic i.E. (Copa-Finale 06.04.2024, Athletic, 3).
 
 ```
 Lies CLAUDE.md. Voraussetzung: Prompt 60 und 61a erledigt. Plan Mode: Plan kurz zeigen.
 Vorgehen exakt wie Prompt 61a (Quellenpflicht, Pflichtfelder, special, anchors bei 4–5,
-Reserve bei unklarer Quelle, Häppchen à 8/8/7, check-lineup-pools nach jedem Häppchen).
+Reserve bei unklarer Quelle, Häppchen à 9/9/8, check-lineup-pools nach jedem Häppchen).
 Bericht: Tabelle # / Partie / Quelle(n) / Änderungen; Zählung Kategorie
 Spanien vorher/nachher inkl. Top-5-Beteiligung, Mix L/M/K, Jahre. CACHE_NAME erhöhen,
 Status-Tabelle: 61b erledigt.
