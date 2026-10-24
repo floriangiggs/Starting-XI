@@ -267,14 +267,16 @@ const catOf = (m) => (Object.entries(LGROUPS).find(([, v]) => v.includes(m.leagu
     if (sides.size < 6) err(`Kategorie ${c.label}: nur ${sides.size} verschiedene gefragte Mannschaften (mind. 6)`);
     const mine = DUELP.filter((m) => catsOf(m).includes(c.id)).slice(0, 20), sc = new Map();
     for (const m of mine) sc.set(sideKey(m), (sc.get(sideKey(m)) || 0) + 1);
-    for (const [t, n] of sc) if (n > 2) err(`Kategorie ${c.label}: unter den ersten 20 steht ${t} ${n}-mal als gefragte Seite (max. 2)`);
+    // Mannschaften mit Beteiligungs-Ausnahme (CAP, z. B. Real/Barça/Atlético in Spanien) sind von dieser Reihenfolge-Regel ausgenommen: sie stellen dort bewusst den Großteil der Partien
+    for (const [t, n] of sc) if (n > 2 && capFor(c.id, t) <= 30) err(`Kategorie ${c.label}: unter den ersten 20 steht ${t} ${n}-mal als gefragte Seite (max. 2)`);
     const lv = { leicht: games.filter((g) => g.difficulty <= 2).length, mittel: games.filter((g) => g.difficulty === 3).length, knifflig: games.filter((g) => g.difficulty >= 4).length };
     const pc = (n) => Math.round(n / N * 100);
     notes.push(`  Mix ${c.label}: leicht ${pc(lv.leicht)} % · mittel ${pc(lv.mittel)} % · knifflig ${pc(lv.knifflig)} %  (Ziel 40/40/20)`);
     if (Math.abs(pc(lv.leicht) - 40) > 15 || Math.abs(pc(lv.mittel) - 40) > 15 || Math.abs(pc(lv.knifflig) - 20) > 15) warn(`Mix ${c.label}: ${pc(lv.leicht)}/${pc(lv.mittel)}/${pc(lv.knifflig)} % weicht deutlich vom Ziel 40/40/20 ab`);
   }
   const sideCnt = new Map(); for (const m of DUELP) sideCnt.set(sideKey(m), (sideCnt.get(sideKey(m)) || 0) + 1);
-  for (const [t, n] of sideCnt) if (n > 8) err(`Duell-Pool: ${t} ${n}-mal als gefragte Mannschaft (max. 8)`);
+  // Ausnahme Frankreich (Prompt 61f): PSG darf bis zu 14-mal gefragt werden, alle anderen max. 8
+  for (const [t, n] of sideCnt) { const mx = /paris saint|psg/.test(t) ? 14 : 8; if (n > mx) err(`Duell-Pool: ${t} ${n}-mal als gefragte Mannschaft (max. ${mx})`); }
 }
 
 // Verteilung

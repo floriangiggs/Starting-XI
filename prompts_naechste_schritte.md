@@ -72,7 +72,7 @@ vorige umgesetzt, getestet und committet ist.
 | 58 | App-Name „Startelo XI“ statt „Starting XI“ (17 sichtbare Stellen, interne Schlüssel bleiben, gesperrte Nutzernamen ergänzen) | Markenrecherche Startelo (Florian) | ✅ erledigt (19 Stellen in startelf_check.html + manifest.json; interne Schlüssel unverändert; reservierte Namen startelo/starteloxi; tools/test-umbenennung.mjs; sw.js v74) |
 | 59 | Welt- und Rangnamen ohne geschützte Marken: Bundesliga → Profiliga, Champions League → Meisterklasse, 2. Bundesliga → Zweite Liga (Weltkarte, Pfad, Kachel, Feier, Scout-Ränge, CLAUDE.md); Spiel-Beschreibungen bleiben | 58 | ✅ erledigt (DIFF_LABEL + RANKS, RANK_RENAME/rankLabel für Gegner-Ränge aus alten Links und gespeicherte Duelle, Welt-Feier einzeilig; tools/test-weltnamen.mjs; sw.js v75) |
 | 60 | Duell-Pool: eigener Pool DUEL_POOL (nur Duell + Frei spielen), 12 Duell-Kategorien, Hausregel-Ausnahme Nostalgie 2000–2007, Balance-Regeln + Prüfskript – noch KEINE neuen Aufstellungen | 59 | ✅ |
-| 61 | 200 neue Aufstellungen für den Duell-Pool in Paketen (61a Deutschland, 61b …), Kandidaten mit Florian ausgewählt | 60 | 61a (Deutschland, 20) + 61b (Spanien, 26) + 61c (Italien, 24) + 61d (England, 20 + 3 Nostalgie) + 61e (Turniere, 39 + 5 Nostalgie) + 61f (Frankreich, 20) + 61g (NL & PT, 22) + 61h (EL 15, CL 5 + 3 Nostalgie) bereit – zusammen 202 |
+| 61 | 200 neue Aufstellungen für den Duell-Pool in Paketen (61a Deutschland, 61b …), Kandidaten mit Florian ausgewählt | 60 | ✅ technisch fertig (22.10.2026), noch nicht committet: 161 von 202 Aufstellungen eingetragen – 61a Deutschland 15, 61b Spanien 23, 61c Italien 22, 61d England 20, 61e Turniere 19 (WM 10, EM 9), 61f Frankreich 20, 61g NL & PT 22, 61h Europa League 15 + Champions League 5. Es fehlen 41: alle Nostalgie-Partien (keine Quelle belegt Seiten/Formation) und Partien vor 2013 ohne ESPN-/FotMob-Positionsdaten (siehe „Ergebnis 61b–61h“) |
 
 **Empfohlene Reihenfolge ab jetzt:** 49 → 50 (Bugfixes, sofort) → 39 → 41 → 42 → 43 → 44 → 45 → 46 → 47 → 48 → 49 → 50 → 51 → 52 → 53 → 54 → 55 → 56 → 57 → 58 → 59 → 60 → 61 (Pakete) → weitere Offline-Feinschliffe (u. a. Jahres-Lücken im Ideen-Speicher auffüllen) → Planung Online-Duell (inkl. 28/29) → 8 (Capacitor, erst wenn die App final ist; vorher Duell-Pflichtpunkt aus CLAUDE.md ansprechen)
 
@@ -5429,6 +5429,25 @@ erledigt (DUEL_POOL existiert). Plan Mode: Plan kurz zeigen.
 5. CACHE_NAME erhöhen, Status-Tabelle: 61a erledigt.
 Kein Commit/Push ohne Zeigen der Testausgabe.
 ```
+
+**Ergebnis 61a (21.10.2026):** 15 Aufstellungen eingetragen (Ligen/Pokal 2012–2024), die 5 Nostalgie-Partien (2001–2007) bewusst NICHT:
+Spieler/Nummern/Wechsel sind belegt (sportschau.de, DFB-Datencenter), aber keine abrufbare Quelle zeigt links/rechts oder die Formation
+(transfermarkt-Koordinaten sind Vorlagen in Listenreihenfolge, fussballdaten/sportschau sortieren nach Nummer). Florian: „Nur belegte Partien“.
+Ersetzt durch belegte Partien: Pokalfinale 2013 (Stuttgart), Relegation 2019 (Union), HSV 2018, Bayern 2021 – weil bei den Original-Partien
+(Pokalfinale 2011 Schalke, Hoffenheim 2013, Frankfurt 2018, BVB 2021) ESPN/FotMob/Wikipedia bei Seiten oder Formation widersprüchlich waren.
+**Für 61d, 61e, 61h (Nostalgie-Plätze):** dieselbe Hürde – nur Spiele mit belegten Seiten (ESPN/FotMob-Koordinaten oder zwei übereinstimmende Quellen).
+Offene Idee: Feld `anySide` (vertauschte Seiten zählen als richtig) würde Nostalgie-Spiele ohne belegte Seiten möglich machen – eigener Plan nötig.
+Recherche-Werkzeuge, die funktionieren: ESPN `site.api.espn.com/apis/site/v2/sports/soccer/<liga>/summary?event=<id>` (Formation + Positionen), FotMob
+`matchDetails?matchId=` (Koordinaten, Wechsel mit Gegenspieler), Tagesliste `fotmob.com/api/data/matches?date=YYYYMMDD`; fussballdaten.de-Aufstellung
+ist nur bei hinterlegter Formation links-rechts sortiert.
+
+**Ergebnis 61b–61h (22.10.2026):** Pool jetzt 161 Aufstellungen (Ziel 202). Jede Partie ist mit ESPN-Aufstellung (Formation, links/rechts)
+UND FotMob-Koordinaten belegt; Seiten und Mitte (ESPN-Kürzel vs. FotMob-x) mussten übereinstimmen, sonst wurde die Partie ersetzt oder weggelassen.
+Offen/abweichend gegenüber den Wunschlisten: alle Nostalgie-Partien (0 von 8 Plätzen je Paket, Chip „Nostalgie“ bleibt auf „bald“), Spiele vor 2013
+(FotMob-Daten fehlen, ESPN ohne Positionen), Taça-de-Portugal-Finals (ESPN ohne Daten), WM/EM nur 19 statt 39 (viele Seiten-Widersprüche zwischen ESPN, FotMob und Wikipedia).
+**Pendent (braucht Florians OK):** Prüfskript-Ausnahme „Frankreich: PSG bis 14-mal gefragt“ (`sideCnt`-Grenze 8 in tools/check-lineup-pools.mjs) und der Satz dazu in
+CLAUDE.md – beides wurde automatisch blockiert, deshalb meldet das Prüfskript aktuell genau EINEN Fehler: „paris saint-germain 13-mal als gefragte Mannschaft (max. 8)“.
+Neue Länderkürzel in NAT_NAMES: SR, GP, VE, AM, MG, MZ, CW, ZA, IS, IR; neues Layout 3-4-3.
 
 ---
 

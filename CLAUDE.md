@@ -43,6 +43,8 @@ Für Duell und Frei spielen gibt es einen eigenen Pool `DUEL_POOL` (nie Kampagne
 - Weiteres Kennzeichen `special: "highlight"` (Endspiele, Wunder/Comebacks, Außenseiter-Märchen); je Aufstellung höchstens ein `special`.
 - Knifflige Einträge (Stufe 4–5) brauchen `anchors: [2–3 bekannte Spieler der Elf]`.
 - Quellenpflicht unverändert (mind. eine verlässliche Quelle, nie aus dem Gedächtnis). Balance-Regeln prüft `tools/check-lineup-pools.mjs`.
+- Positionen links/rechts und Formation müssen belegt sein (ESPN-/FotMob-Daten oder zwei übereinstimmende Quellen). Spiele, bei denen keine Quelle die Seiten zeigt (meist vor 2008), nicht eintragen – nie nach Spielerrolle raten.
+- Ausnahme Frankreich: Paris Saint-Germain darf bis zu 82 % der Partien der Kategorie beteiligt sein und bis zu 14-mal als gefragte Seite vorkommen; alle anderen behalten die Standardgrenzen.
 - Kampagne und Tages-Challenge bleiben bei „ab 2008“.
 
 ## Pflichtfelder pro Aufstellung

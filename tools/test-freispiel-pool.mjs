@@ -34,19 +34,23 @@ for (const [w, h] of SIZES) {
     return [...new Set(bad)];
   });
 
-  // 1) leerer Duell-Pool
+  // 1) Ausgangslage: Karten ohne Duell-Pool-Eintraege (Frankreich, Niederlande & Portugal, Nostalgie) stehen auf "bald"
   await open(); await page.waitForTimeout(400);
-  check(`${tag} Duell-Pool im Test leer`, await page.evaluate(() => DUEL_POOL.length) === 0);
-  const hlCount = await page.evaluate(() => LINEUP_CHALLENGES.filter((m) => m.special === "highlight").length);
-  for (const nm of ["Frankreich", "Niederlande & Portugal", "Nostalgie 2000–2007"]) {
+  // Die Karten-Zaehler haengen vom Pool-Stand ab: alle Erwartungen werden aus dem Frei-spielen-Pool (fpPool) abgeleitet.
+  // Testet man mit einem gefuellten Duell-Pool, werden nur Karten mit "bald" geprueft, die dort noch leer sind.
+  const poolStat = await page.evaluate(() => ({ n: fpPool().filter((m) => m.special !== "nostalgie").length, fr: fpPool().filter((m) => ["Ligue 1", "Coupe de France"].includes(m.league)).length,
+    nlpt: fpPool().filter((m) => ["Eredivisie", "Liga Portugal", "KNVB-Pokal", "Taça de Portugal"].includes(m.league)).length, nost: fpPool().filter((m) => m.special === "nostalgie").length }));
+  const hlCount = await page.evaluate(() => fpPool().filter((m) => m.special === "highlight").length);
+  for (const [nm, cnt] of [["Frankreich", poolStat.fr], ["Niederlande & Portugal", poolStat.nlpt], ["Nostalgie 2000–2007", poolStat.nost]]) {
     const c = await chip(nm);
-    check(`${tag} Karte ${nm} sichtbar, ausgegraut mit "bald", nicht antippbar`, c && c.soon && c.dis && c.n === "bald", JSON.stringify(c));
+    if (cnt === 0) check(`${tag} Karte ${nm} sichtbar, ausgegraut mit "bald", nicht antippbar`, c && c.soon && c.dis && c.n === "bald", JSON.stringify(c));
+    else check(`${tag} Karte ${nm} gefuellt (${cnt}) und antippbar`, c && !c.soon && !c.dis && +c.n === cnt, JSON.stringify(c));
   }
   const hl = await chip("Highlights");
-  check(`${tag} Highlights zaehlt die Kampagnen-Kennzeichen (${hlCount})`, hl && !hl.soon && +hl.n === hlCount && hlCount > 0, JSON.stringify(hl));
+  check(`${tag} Highlights zaehlt die Kennzeichen im Frei-spielen-Pool (${hlCount})`, hl && !hl.soon && +hl.n === hlCount && hlCount > 0, JSON.stringify(hl));
   check(`${tag} Wettbewerbs-Karten ohne Nostalgie`, (await chip("WM")).n > 0);
   const alle = await page.evaluate(() => +document.querySelector("#fpAll .n").textContent);
-  check(`${tag} "Alle" = ${await page.evaluate(() => LINEUP_CHALLENGES.length)} (Kampagne)`, alle === await page.evaluate(() => LINEUP_CHALLENGES.length), alle);
+  check(`${tag} "Alle" = ${poolStat.n} (Pool ohne Nostalgie)`, alle === poolStat.n, alle);
   const b0 = await layout();
   check(`${tag} Layout leer`, b0.length === 0, b0.join("; "));
   if (shotDir) await page.screenshot({ path: path.join(shotDir, `freispiel_leer_${tag}.png`) });
@@ -63,13 +67,13 @@ for (const [w, h] of SIZES) {
   });
   await page.waitForTimeout(300);
   const fr = await chip("Frankreich"), nlpt = await chip("Niederlande & Portugal"), nost = await chip("Nostalgie 2000–2007"), hl2 = await chip("Highlights"), cl = await chip("Champions League");
-  check(`${tag} Frankreich zaehlt 3 (Ligue 1 x2 inkl. Highlight, Coupe de France)`, fr && !fr.soon && +fr.n === 3, JSON.stringify(fr));
-  check(`${tag} Niederlande & Portugal zaehlt 2`, nlpt && !nlpt.soon && +nlpt.n === 2, JSON.stringify(nlpt));
-  check(`${tag} Nostalgie zaehlt 2`, nost && !nost.soon && +nost.n === 2, JSON.stringify(nost));
+  check(`${tag} Frankreich zaehlt +3 (Ligue 1 x2 inkl. Highlight, Coupe de France)`, fr && !fr.soon && +fr.n === poolStat.fr + 3, JSON.stringify(fr));
+  check(`${tag} Niederlande & Portugal zaehlt +2`, nlpt && !nlpt.soon && +nlpt.n === poolStat.nlpt + 2, JSON.stringify(nlpt));
+  check(`${tag} Nostalgie zaehlt +2`, nost && !nost.soon && +nost.n === poolStat.nost + 2, JSON.stringify(nost));
   check(`${tag} Highlights zaehlt +1`, hl2 && +hl2.n === hlCount + 1, JSON.stringify(hl2));
-  const clBase = await page.evaluate(() => LINEUP_CHALLENGES.filter((m) => m.league === "Champions League").length);
+  const clBase = await page.evaluate(() => fpPool().filter((m) => m.league === "Champions League" && m.special !== "nostalgie" && !m.id.startsWith("tst-")).length);
   check(`${tag} Champions League enthaelt keine Nostalgie (nur +1)`, +cl.n === clBase + 1, cl.n + " statt " + (clBase + 1));
-  const wmBase = await page.evaluate(() => LINEUP_CHALLENGES.filter((m) => ["Weltmeisterschaft", "Confed Cup"].includes(m.league)).length);
+  const wmBase = await page.evaluate(() => fpPool().filter((m) => ["Weltmeisterschaft", "Confed Cup"].includes(m.league) && m.special !== "nostalgie" && !m.id.startsWith("tst-")).length);
   check(`${tag} WM enthaelt keine Nostalgie`, +(await chip("WM")).n === wmBase, (await chip("WM")).n + " statt " + wmBase);
   const allN = await page.evaluate(() => +document.querySelector("#fpAll .n").textContent);
   check(`${tag} "Alle" ohne Nostalgie (+6)`, allN === alle + 6, allN + " statt " + (alle + 6));
@@ -77,11 +81,11 @@ for (const [w, h] of SIZES) {
   check(`${tag} Auslosung ohne Auswahl zieht nie Nostalgie`, !poolAll.some((id) => id.startsWith("tst-nost")) && poolAll.includes("tst-fr1") && poolAll.includes("tst-hl1"));
   // Karten antippen
   await page.evaluate(() => [...document.querySelectorAll("#fpBin .fp-ch")].find((b) => b.querySelector(".nm").textContent.startsWith("Nostalgie")).click());
-  const poolNost = await page.evaluate(() => poolForActiveLeague().map((m) => m.id).sort().join());
+  const poolNost = await page.evaluate(() => { const p = poolForActiveLeague(); return p.every((m) => m.special === "nostalgie") ? p.map((m) => m.id).filter((id) => id.startsWith("tst-")).sort().join() : "NICHT NUR NOSTALGIE"; });
   check(`${tag} Karte Nostalgie: Pool nur Nostalgie`, poolNost === "tst-nost1,tst-nost2", poolNost);
-  check(`${tag} Nostalgie-Karte an, Zaehler`, (await chip("Nostalgie 2000–2007")).on && +(await page.evaluate(() => document.getElementById("fpCnt").textContent)) === 2);
+  check(`${tag} Nostalgie-Karte an, Zaehler`, (await chip("Nostalgie 2000–2007")).on && +(await page.evaluate(() => document.getElementById("fpCnt").textContent)) === poolStat.nost + 2);
   await page.evaluate(() => [...document.querySelectorAll("#fpBin .fp-ch")].find((b) => b.querySelector(".nm").textContent === "Frankreich").click());
-  const poolBoth = await page.evaluate(() => poolForActiveLeague().map((m) => m.id).sort().join());
+  const poolBoth = await page.evaluate(() => poolForActiveLeague().map((m) => m.id).filter((id) => id.startsWith("tst-")).sort().join());
   check(`${tag} Nostalgie + Frankreich kombinierbar`, poolBoth === "tst-fr1,tst-fr2,tst-hl1,tst-nost1,tst-nost2", poolBoth);
   await page.evaluate(() => { selectedLeagues.clear(); [...document.querySelectorAll("#fpBin .fp-ch")].find((b) => b.querySelector(".nm").textContent === "Highlights").click(); });
   const poolHl = await page.evaluate(() => poolForActiveLeague().every((m) => m.special === "highlight") && poolForActiveLeague().length);
