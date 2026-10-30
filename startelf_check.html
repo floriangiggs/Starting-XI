@@ -5091,7 +5091,7 @@ function updateGameTokChip() {
   document.querySelectorAll("[data-tokchip]").forEach(chip => { chip.innerHTML = tokenChipInner(profile.hintTokens, chip.hasAttribute("data-big")); chip.setAttribute("aria-label", profile.hintTokens + " " + TOKEN_LABEL); });
 }
 function saveProfile(p) {
-  try { localStorage.setItem(PROFILE_KEY, JSON.stringify(p)); return true; }
+  try { localStorage.setItem(PROFILE_KEY, JSON.stringify(p)); try { syncMarkDirty(); } catch (e) {} /* Cloud-Abgleich vormerken (K3); beim fruehen Laden gibt es ihn noch nicht */ return true; }
   catch (e) { /* Speicher evtl. voll/deaktiviert - Spiel läuft trotzdem weiter, der Spieler bekommt einmal pro Sitzung einen Hinweis */
     showStorageWarning();
     return false;
@@ -19151,6 +19151,7 @@ const KB_SV = {
   people: '<svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="#3E2A16" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="8.5" r="3"/><path d="M3.5 19c.5-3.2 2.7-5 5.5-5s5 1.8 5.5 5M16 6.2a3 3 0 0 1 0 5.6M17.5 14.3c1.7.6 2.7 2 3 4.7"/></svg>',
   gear: '<svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="#3E2A16" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M12 3v2.5M12 18.5V21M3 12h2.5M18.5 12H21M5.6 5.6l1.8 1.8M16.6 16.6l1.8 1.8M18.4 5.6l-1.8 1.8M7.4 16.6l-1.8 1.8"/></svg>',
   book: '<svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="#3E2A16" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round"><path d="M5 4.5h10a3 3 0 0 1 3 3V20H8a3 3 0 0 1-3-3zM5 17a3 3 0 0 1 3-3h10"/></svg>',
+  cloud: '<svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="#3E2A16" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round"><path d="M7 18a4.5 4.5 0 0 1-.6-8.96A6 6 0 0 1 18 8.5a4.8 4.8 0 0 1-.5 9.5z"/></svg>',
   user: '<svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="#3E2A16" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8.5" r="3.4"/><path d="M5 20c.6-3.6 3.3-5.5 7-5.5s6.4 1.9 7 5.5"/></svg>'
 };
 const kb = { open: null, screen: null, nameDraft: { name: "", crest: 0, age: false, step: 1 }, signing: false, msg: "" };
@@ -19319,6 +19320,7 @@ function kabineOpenSettings() {
     <div class="kb-board"><div class="kb-sec" style="margin-top:0">Konto</div><div class="kb-menu" style="margin:0;overflow:visible;-webkit-mask-image:none;mask-image:none">
       ${member ? `${kbMi("kbSName", KB_SV.user, "Name ändern", nextChange ? "Erst wieder ab " + nextChange : "@" + duelEsc(online.account.username) + " · alle 30 Tage möglich")}${kbMi("kbSOut", KB_SV.door, "Abmelden", "Dein Spielstand bleibt auf dem Gerät")}` : `<div class="sub" style="margin:0 2px 4px;font-weight:300;font-size:14px;color:rgba(244,241,232,0.8)">Du spielst als Gast. Ein Konto legst du in der Kabine an (Logo oben links).</div>`}
       </div>
+      ${member ? `<div class="kb-sec">Spielstand in der Cloud</div><div class="kb-menu" style="margin:0;overflow:visible;-webkit-mask-image:none;mask-image:none"><div class="sub" id="kbSyncTxt" role="status" style="margin:0 2px 4px;font-weight:300;font-size:14px;color:rgba(244,241,232,0.8)"></div>${kbMi("kbSSync", KB_SV.cloud, "Jetzt sichern", "Gleicht deinen Spielstand mit dem Konto ab")}</div>` : ""}
       <div class="kb-sec">Ton und Spielstand</div><div class="kb-menu" style="margin:0;overflow:visible;-webkit-mask-image:none;mask-image:none">${kbMi("kbSProf", KB_SV.gear, "Ton, Spielstand sichern und laden", "Im Scout-Profil, Reiter Übersicht")}</div>
       ${member ? `<div class="kb-sec">Konto entfernen</div><button class="kb-mi kb-danger" type="button" id="kbSDel" style="width:100%"><span class="t">${KB_SV.lock}</span><span><b>Konto löschen</b><small style="color:rgba(255,200,190,0.8)">Entfernt dein Konto und deine Online-Daten</small></span><span class="end">${KB_SV.chev}</span></button>` : ""}</div>`;
   const $ = (id) => sc.querySelector("#" + id);
@@ -19327,6 +19329,8 @@ function kabineOpenSettings() {
   if ($("kbSName")) $("kbSName").onclick = () => { if (nextChange) { showToast(`<span class="tt-tx">Du kannst deinen Namen erst wieder ab ${nextChange} ändern.</span>`); return; } entry.close(); setTimeout(() => kabineOpenNameScreen("change"), 150); };
   if ($("kbSOut")) $("kbSOut").onclick = async () => { entry.close(); await kabineSignOut(); };
   if ($("kbSDel")) $("kbSDel").onclick = () => kabineConfirmDelete(entry);
+  const paintSync = () => { const t = $("kbSyncTxt"); if (!t) return; t.textContent = sync.state === "syncing" ? "Wird gesichert …" : sync.state === "offline" ? "Offline – wird gesichert, sobald du wieder Netz hast." : sync.state === "error" ? "Das hat gerade nicht geklappt – wir versuchen es später noch einmal." : sync.state === "paused" ? "Noch nicht zusammengeführt – tippe auf „Jetzt sichern“." : "Zuletzt gesichert: " + syncAgo(); };
+  if ($("kbSSync")) { $("kbSSync").onclick = async () => { await syncRun("manuell"); paintSync(); }; paintSync(); const h = () => { if (!sc.isConnected) document.removeEventListener("syncchange", h); else paintSync(); }; document.addEventListener("syncchange", h); }
 }
 function kabineConfirmDelete(settingsEntry) {
   const backdrop = document.createElement("div"); backdrop.className = "modal-backdrop sp-sbd kb-over";
@@ -19349,6 +19353,177 @@ function kabineConfirmDelete(settingsEntry) {
 }
 document.addEventListener("onlinechange", () => { kbUpdateBadge(); if (kb.open) kabineRender(); });
 { const lg = document.getElementById("kbLogo"); if (lg) lg.onclick = kabineOpen; kbUpdateBadge(); }
+
+
+/* ================= CLOUD-SPIELSTAND (Prompt K3) =================
+   Der Spielstand (profile) wird fuer angemeldete Spieler auf dem Server gesichert und beim Abgleich NIE ueberschrieben, sondern zusammengefuehrt:
+   Vereinigung bei Listen/Erfolgen, das Hoehere bei Zaehlern, Token nie addieren (Regeln: docs/technik-konzept-konten.md Abschnitt 8).
+   Bleibt lokal: angefangene Aufstellungen, Geraete-ID, Ton, Duelle (kommen mit dem Server-Duell, K6). */
+const SYNC_META_KEY = "startelo_sync", SYNC_BACKUP_KEY = "startelo_backup_vor_abgleich", SYNC_DEBOUNCE_MS = 15000;
+const SYNC_LOCAL_ONLY = ["drafts", "deviceId", "duelName", "duelHandle", "duels", "duelsDeleted", "duelStats", "duelRecent", "sound", "hasSeenInstallTip", "freeplayForm"];
+const num0 = (x) => (typeof x === "number" && isFinite(x) ? x : 0);
+const syncCanon = (o) => JSON.stringify(o, (k, v) => (v && typeof v === "object" && !Array.isArray(v) ? Object.keys(v).sort().reduce((r, key) => (r[key] = v[key], r), {}) : v));
+const sync = { meta: { uid: null, version: 0, lastAt: 0, dirty: false }, timer: null, busy: false, state: "idle", again: false, declined: false };
+(function syncLoadMeta() { try { const m = JSON.parse(localStorage.getItem(SYNC_META_KEY) || "null"); if (m && typeof m === "object") sync.meta = { uid: m.uid || null, version: +m.version || 0, lastAt: +m.lastAt || 0, dirty: !!m.dirty }; } catch (e) {} })();
+function syncSaveMeta() { try { localStorage.setItem(SYNC_META_KEY, JSON.stringify(sync.meta)); } catch (e) {} }
+function syncSnapshot(p) { const o = structuredClone(p); SYNC_LOCAL_ONLY.forEach((k) => delete o[k]); return o; }
+// ---- Zusammenfuehren: reine Funktion, veraendert nichts. a = dieses Geraet, b = Server. ----
+function mergeProfiles(a, b) {
+  const isObj = (x) => x && typeof x === "object" && !Array.isArray(x);
+  const num = (x) => (typeof x === "number" && isFinite(x) ? x : 0);
+  const uni = (x, y) => { const seen = new Set(), out = []; [...(Array.isArray(x) ? x : []), ...(Array.isArray(y) ? y : [])].forEach((v) => { const k = typeof v === "object" ? JSON.stringify(v) : v; if (!seen.has(k)) { seen.add(k); out.push(v); } }); return out; };
+  const orMap = (x, y) => { const o = {}; [isObj(y) ? y : {}, isObj(x) ? x : {}].forEach((m) => Object.keys(m).forEach((k) => { o[k] = m[k] || o[k] || false; })); return o; };
+  const maxMap = (x, y) => { const o = {}; [isObj(x) ? x : {}, isObj(y) ? y : {}].forEach((m) => Object.keys(m).forEach((k) => { o[k] = Math.max(num(o[k]), num(m[k])); })); return o; };
+  a = structuredClone(a); b = structuredClone(b || {});
+  const r = { ...b, ...a }; // unbekannte Felder (z. B. aus neueren App-Versionen) bleiben erhalten
+  SYNC_LOCAL_ONLY.forEach((k) => { if (k in a) r[k] = a[k]; else delete r[k]; });
+  r.createdAt = Math.min(num(a.createdAt) || Infinity, num(b.createdAt) || Infinity); if (!isFinite(r.createdAt)) r.createdAt = a.createdAt;
+  r.totalXP = Math.max(num(a.totalXP), num(b.totalXP));
+  r.level = typeof levelFromXP === "function" ? levelFromXP(r.totalXP) : Math.max(num(a.level), num(b.level));
+  r.hintTokens = Math.max(num(a.hintTokens), num(b.hintTokens)); // nie addieren
+  r.economyVersion = Math.max(num(a.economyVersion), num(b.economyVersion)); r.starsVersion = Math.max(num(a.starsVersion), num(b.starsVersion)) || r.starsVersion;
+  r.prefillSeed = typeof b.prefillSeed === "number" ? b.prefillSeed : a.prefillSeed; // der Server-Wert gilt, damit geschenkte Positionen auf allen Geraeten gleich sind
+  r.perfectRewarded = orMap(a.perfectRewarded, b.perfectRewarded);
+  ["hasSeenGuide", "hasSeenPitchRules", "seenRulesBench"].forEach((k) => { r[k] = !!(a[k] || b[k]); });
+  r.trophiesWon = uni(a.trophiesWon, b.trophiesWon); r.achievements = uni(a.achievements, b.achievements); r.unlockedFeatures = uni(a.unlockedFeatures, b.unlockedFeatures);
+  r.unlockedTitle = a.unlockedTitle || b.unlockedTitle || null;
+  r.worldCelebrated = orMap(a.worldCelebrated, b.worldCelebrated);
+  // Wissensstand je Aufstellung
+  r.best = {};
+  const ba = isObj(a.best) ? a.best : {}, bb = isObj(b.best) ? b.best : {};
+  new Set([...Object.keys(ba), ...Object.keys(bb)]).forEach((id) => {
+    const x = ba[id] || {}, y = bb[id] || {}, e = { ...y, ...x };
+    e.correct = Math.max(num(x.correct), num(y.correct)); e.solvedAbbrs = uni(x.solvedAbbrs, y.solvedAbbrs);
+    if (x.seenAbbrs || y.seenAbbrs) e.seenAbbrs = uni(x.seenAbbrs, y.seenAbbrs);
+    r.best[id] = e;
+  });
+  // Kampagne
+  const ca = isObj(a.campaign) ? a.campaign : {}, cb = isObj(b.campaign) ? b.campaign : {};
+  r.campaign = { ...cb, ...ca, levelPassed: orMap(ca.levelPassed, cb.levelPassed), stars: maxMap(ca.stars, cb.stars), solutionSeen: orMap(ca.solutionSeen, cb.solutionSeen) };
+  // Statistik: Zaehler = das Hoehere, Listen = Vereinigung
+  const sa = isObj(a.stats) ? a.stats : {}, sb = isObj(b.stats) ? b.stats : {}; r.stats = { ...sb, ...sa };
+  new Set([...Object.keys(sa), ...Object.keys(sb)]).forEach((k) => {
+    const x = sa[k], y = sb[k];
+    if (Array.isArray(x) || Array.isArray(y)) r.stats[k] = uni(x, y);
+    else if (typeof x === "number" || typeof y === "number") r.stats[k] = Math.max(num(x), num(y));
+    else if (typeof x === "string" || typeof y === "string") r.stats[k] = [x, y].filter((v) => typeof v === "string").sort().pop();
+  });
+  // Tages-Challenge: je Tag das bessere Ergebnis, Serie aus den Tagen neu berechnet
+  r.daily = {};
+  const da = isObj(a.daily) ? a.daily : {}, db = isObj(b.daily) ? b.daily : {};
+  new Set([...Object.keys(da), ...Object.keys(db)]).forEach((k) => {
+    const x = da[k], y = db[k]; if (!x || !y) { r.daily[k] = x || y; return; }
+    r.daily[k] = num(y.correct) > num(x.correct) || (num(y.correct) === num(x.correct) && num(y.stars) > num(x.stars)) ? y : x;
+  });
+  const keys = Object.keys(r.daily).sort(), sA = isObj(a.streak) ? a.streak : {}, sB = isObj(b.streak) ? b.streak : {};
+  const last = keys.length ? keys[keys.length - 1] : (sA.lastDayKey || sB.lastDayKey || null);
+  const dayBefore = (k) => { const d = new Date(k + "T12:00:00"); d.setDate(d.getDate() - 1); return d.getFullYear() + "-" + String(d.getMonth() + 1).padStart(2, "0") + "-" + String(d.getDate()).padStart(2, "0"); };
+  let run = 0; if (last && r.daily[last]) { let k = last; while (r.daily[k]) { run++; k = dayBefore(k); } }
+  const known = (s) => (s.lastDayKey && s.lastDayKey === last ? num(s.current) : 0);
+  const cur = Math.max(run, known(sA), known(sB));
+  r.streak = { current: cur, best: Math.max(num(sA.best), num(sB.best), cur), lastDayKey: last };
+  return r;
+}
+function syncHasProgress(p) {
+  if (!p) return false;
+  return num0(p.totalXP) > 0 || Object.keys((p.campaign && p.campaign.levelPassed) || {}).some((k) => p.campaign.levelPassed[k]) || Object.keys(p.daily || {}).length > 0 || (p.trophiesWon || []).length > 0 || num0(p.stats && p.stats.lineupsPlayed) > 0;
+}
+function syncSummary(p) {
+  const stars = Object.values((p.campaign && p.campaign.stars) || {}).reduce((s, v) => s + num0(v), 0);
+  let trophies = 0; try { trophies = TROPHIES.filter((t) => t.check(p)).length; } catch (e) {}
+  return { level: typeof levelFromXP === "function" ? levelFromXP(num0(p.totalXP)) : num0(p.level), stars, trophies, tokens: num0(p.hintTokens), streak: p.streak ? num0(p.streak.current) : 0, played: num0(p.stats && p.stats.lineupsPlayed) };
+}
+function syncPublicStats(p) {
+  const s = syncSummary(p), ids = (p.stats && p.stats.playedMatchIds) || [];
+  const sum = ids.reduce((t, id) => t + num0(p.best && p.best[id] && p.best[id].correct), 0);
+  const quote = ids.length ? Math.max(0, Math.min(100, Math.round(sum / (ids.length * 11) * 100))) : null;
+  return { p_level: Math.max(1, Math.min(100, s.level)), p_rank: (typeof rankForLevel === "function" ? rankForLevel(s.level).name : "Kreisliga").slice(0, 30), p_campaign_stars: Math.min(1000, s.stars), p_trophies: Math.min(500, s.trophies),
+    p_streak_current: Math.min(10000, s.streak), p_streak_best: Math.min(10000, num0(p.streak && p.streak.best)), p_quote: quote, p_lineups_played: Math.min(100000, s.played) };
+}
+function syncDeviceLabel() { const u = navigator.userAgent || ""; return (/iPhone/.test(u) ? "iPhone" : /iPad/.test(u) ? "iPad" : /Android/.test(u) ? "Android" : /Mac/.test(u) ? "Mac" : /Windows/.test(u) ? "Windows" : "Gerät") + (isStandalone && isStandalone() ? " (App)" : " (Browser)"); }
+function syncApply(merged) { // schreibt den zusammengefuehrten Stand in das laufende Profil (gleiches Objekt, damit alle Verweise stimmen)
+  Object.keys(merged).forEach((k) => { profile[k] = structuredClone(merged[k]); });
+  saveProfile(profile);
+  try { renderProfileBar(); renderModeTiles(); if (typeof renderDailyCard === "function") renderDailyCard(); if (typeof updateGameTokChip === "function") updateGameTokChip(); } catch (e) {}
+}
+function syncMarkDirty() {
+  if (online.state !== "member") return;
+  sync.meta.dirty = true; syncSaveMeta();
+  clearTimeout(sync.timer); sync.timer = setTimeout(() => syncRun("ruhe").catch(() => {}), SYNC_DEBOUNCE_MS);
+}
+const syncInGame = () => { const top = navStack[navStack.length - 1]; return top === "game" || top === "duelplay"; };
+function syncAskMerge(local, merged) { // Fall 3: beide Seiten haben Fortschritt - vorher zeigen, was dabei herauskommt
+  return new Promise((resolve) => {
+    const a = syncSummary(local), m = syncSummary(merged);
+    const backdrop = document.createElement("div"); backdrop.className = "modal-backdrop sp-sbd kb-over";
+    backdrop.innerHTML = `<div class="sp-sheet" role="dialog" aria-modal="true" aria-label="Spielstände zusammenführen"><div class="in"><div class="duel-name-box">
+      <div class="guide-name-title" style="font-family:'Anton',Impact,sans-serif;font-size:24px">Spielstände zusammenführen</div>
+      <div style="font-family:'Oswald',sans-serif;font-weight:300;font-size:14.5px;color:var(--muted);line-height:1.45">In deinem Konto liegt schon ein Spielstand. Wir führen beide zusammen – nichts geht verloren, jeweils der bessere Wert zählt.</div>
+      <div class="kb-link"><div class="kb-lk">${KB_SV.check}<span>Level</span><b>${a.level} → ${m.level}</b></div><div class="kb-lk">${KB_SV.check}<span>Kampagnen-Sterne</span><b>${a.stars} → ${m.stars}</b></div><div class="kb-lk">${KB_SV.check}<span>Trophäen</span><b>${a.trophies} → ${m.trophies}</b></div></div>
+      <button type="button" class="save-btn main" id="syncMergeYes">Zusammenführen</button><button type="button" class="save-btn quiet" id="syncMergeNo">Später</button></div></div></div>`;
+    document.body.appendChild(backdrop);
+    const done = (v) => { backdrop.remove(); resolve(v); };
+    backdrop.querySelector("#syncMergeYes").onclick = () => done(true); backdrop.querySelector("#syncMergeNo").onclick = () => done(false);
+    backdrop.onclick = (e) => { if (e.target === backdrop) done(false); };
+  });
+}
+// Ein Abgleich: holen, zusammenfuehren, schreiben (bei Versionskonflikt erneut). reason nur zur Information.
+async function syncRun(reason) {
+  if (sync.declined && reason !== "manuell") return sync.state; // heute schon 'Später' gewählt
+  if (reason === "manuell") sync.declined = false;
+  if (sync.busy) { sync.again = true; return sync.state; }
+  if (online.state !== "member" || !online.userId) return sync.state;
+  if (!onlineHasNet()) { sync.state = "offline"; sync.meta.dirty = true; syncSaveMeta(); syncEmit(); return sync.state; }
+  if (syncInGame()) { sync.again = true; return sync.state; } // nie mitten im Spiel den Stand anfassen
+  if (sync.meta.uid !== online.userId) { sync.meta = { uid: online.userId, version: 0, lastAt: 0, dirty: true }; }
+  sync.busy = true; sync.state = "syncing"; syncEmit();
+  try {
+    const sb = await onlineClient();
+    for (let attempt = 0; attempt < 4; attempt++) {
+      const { data: srv, error: gerr } = await sb.rpc("get_save");
+      if (gerr) throw new Error("get");
+      let version = srv ? srv.version : 0, base = syncSnapshot(profile);
+      if (!srv) { // Fall 1: Server leer -> lokalen Stand hochladen
+        const { data: v, error } = await sb.rpc("put_save", { p_data: base, p_expected_version: 0, p_device: syncDeviceLabel() });
+        if (error) { if (/save_conflict/.test(error.message || "")) continue; throw new Error("put"); }
+        version = v;
+      } else {
+        const first = sync.meta.version === 0; // dieses Geraet war mit diesem Konto noch nie abgeglichen
+        const localHas = syncHasProgress(profile), serverHas = syncHasProgress(srv.data);
+        const merged = mergeProfiles(profile, srv.data);
+        const changed = syncCanon(syncSnapshot(merged)) !== syncCanon(base);
+        if (first && localHas && serverHas && changed) { // Fall 3: vorher zeigen, Sicherung anlegen
+          if (!(await syncAskMerge(profile, merged))) { sync.state = "paused"; sync.declined = true; return sync.state; }
+          try { localStorage.setItem(SYNC_BACKUP_KEY, JSON.stringify(profile)); } catch (e) {}
+        }
+        if (changed) syncApply(merged);
+        if (first && !localHas && serverHas) showToast(`<span class="tt-tx">Willkommen zurück, <b>@${duelEsc(online.account ? online.account.username : "")}</b> – dein Spielstand ist da.</span>`);
+        const out = syncSnapshot(merged);
+        if (srv.version === sync.meta.version && !sync.meta.dirty && !changed) { version = srv.version; } // nichts zu tun
+        else {
+          const { data: v, error } = await sb.rpc("put_save", { p_data: out, p_expected_version: srv.version, p_device: syncDeviceLabel() });
+          if (error) { if (/save_conflict/.test(error.message || "")) continue; throw new Error("put"); }
+          version = v;
+        }
+      }
+      try { await sb.rpc("put_public_stats", syncPublicStats(profile)); } catch (e) {}
+      sync.meta.version = version; sync.meta.lastAt = Date.now(); sync.meta.dirty = false; syncSaveMeta(); sync.state = "ok"; clearTimeout(sync.timer);
+      return sync.state;
+    }
+    sync.state = "error";
+  } catch (e) { sync.state = onlineHasNet() ? "error" : "offline"; sync.meta.dirty = true; syncSaveMeta(); }
+  finally { sync.busy = false; syncEmit(); if (sync.again) { sync.again = false; setTimeout(() => syncRun("nochmal").catch(() => {}), 1500); } }
+  return sync.state;
+}
+function syncEmit() { try { document.dispatchEvent(new CustomEvent("syncchange", { detail: { state: sync.state } })); } catch (e) {} }
+function syncAgo() {
+  if (!sync.meta.lastAt) return "noch nie";
+  const s = Math.max(0, Math.round((Date.now() - sync.meta.lastAt) / 1000));
+  return s < 45 ? "gerade eben" : s < 3600 ? "vor " + Math.max(1, Math.round(s / 60)) + " Min." : s < 86400 ? "vor " + Math.round(s / 3600) + " Std." : "vor " + Math.round(s / 86400) + " Tagen";
+}
+document.addEventListener("onlinechange", () => { if (online.state === "member" && !online.stale) syncRun("anmeldung").catch(() => {}); });
+document.addEventListener("visibilitychange", () => { if (document.visibilityState === "hidden") { if (online.state === "member" && sync.meta.dirty) { clearTimeout(sync.timer); syncRun("hintergrund").catch(() => {}); } } else if (online.state === "member") { syncRun("zurueck").catch(() => {}); } });
+window.addEventListener("online", () => { if (online.state === "member") syncRun("netz").catch(() => {}); });
 
 if ("serviceWorker" in navigator) {
   window.addEventListener("load", () => navigator.serviceWorker.register("./sw.js"));

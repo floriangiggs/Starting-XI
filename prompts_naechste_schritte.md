@@ -5455,6 +5455,8 @@ mit `node tools/apple-client-secret.mjs <AuthKey.p8> VKCJ4XFY29`). K2b in der Ap
 Abmelden, Konto löschen (`tools/test-konto.mjs`, 54 Prüfungen). Offen: echter Anmelde-Test im Safari, Apple-Token beim Löschen widerrufen (Edge Function, vor dem Store),
 Google später (Supabase „Allow manual linking“ dann einschalten), Freunde (K4).
 
+**Stand K3 (Cloud-Spielstand, 31.10.2026):** Der Spielstand wird für angemeldete Spieler gesichert und zusammengeführt (`mergeProfiles`: Vereinigung, das Höhere, Token nie addieren; lokal bleiben Entwürfe, Geräte-ID, Ton, Duelle). Abgleich beim Öffnen/Anmelden, nach 15 s Ruhe, im Hintergrund und bei Netz; Fall 1 Server leer = hochladen, Fall 2 frisches Gerät = laden („Willkommen zurück“), Fall 3 beide haben Fortschritt = Übersicht + Rückfrage + Sicherung (`startelo_backup_vor_abgleich`). Einstellungen: „Zuletzt gesichert“ + „Jetzt sichern“. `tools/test-sync.mjs` (50 Prüfungen). Duelle gehen mit K6 vom Server.
+
 ---
 
 ## Prompt 61b – Duell-Pool Paket 2: Spanien (26 Aufstellungen)
