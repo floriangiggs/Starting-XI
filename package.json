@@ -5,6 +5,7 @@
   "description": "Dev-Tooling fuer startelf_check.html (Overlap-Check etc.)",
   "devDependencies": {
     "@electric-sql/pglite": "^0.5.10",
+    "@supabase/supabase-js": "^2.118.0",
     "playwright": "^1.48.0"
   },
   "scripts": {

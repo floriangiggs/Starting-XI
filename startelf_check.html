@@ -2104,6 +2104,116 @@
     .dz-sheet .du-fair { margin-top: 10px; padding: 8px 12px; }
     .dz-sheet .du-cta { height: 50px; }
   }
+
+  /* ===== Kabine (Prompt K2b): Konto-Menue am Logo, Namen waehlen, Einstellungen. Optik: prototypes/kabine-freunde.html ===== */
+  .kb-logo { position: relative; flex-shrink: 0; width: 42px; height: 42px; padding: 0; border: 0; background: none; border-radius: 22.5%; cursor: pointer; -webkit-tap-highlight-color: transparent; }
+  .kb-logo img { display: block; }
+  #screen-start .hm-brand .kb-logo img { width: 100%; height: 100%; }
+  .kb-tab { position: absolute; right: -5px; bottom: -5px; width: 20px; height: 20px; border-radius: 7px; display: grid; place-items: center; background: linear-gradient(180deg, rgba(255,255,255,0.10), transparent 40%), repeating-linear-gradient(92deg, rgba(0,0,0,0.06) 0 2px, transparent 2px 7px), linear-gradient(180deg, #9A6C40, #6B4828); box-shadow: inset 0 0 0 1.5px #3E2A16, inset 0 2px 0 rgba(255,236,200,0.22), 0 2px 5px rgba(0,0,0,0.45); }
+  .kb-tab svg { width: 12px; height: 12px; }
+  .kb-dot { position: absolute; right: -4px; top: -4px; width: 12px; height: 12px; border-radius: 50%; background: radial-gradient(circle at 35% 30%, #FFF4CF, var(--gold) 65%, #A8771A); box-shadow: 0 0 0 2px #24503A, 0 2px 5px rgba(0,0,0,0.4); }
+  .kb-dot[hidden] { display: none; }
+  .kb-dim { position: fixed; inset: 0; z-index: 60; background: rgba(5,12,8,0.6); opacity: 0; transition: opacity 0.28s; }
+  .kb-dim.on { opacity: 1; }
+  .kb-drawer { position: fixed; z-index: 61; top: 0; bottom: 0; left: max(0px, calc(50% - 280px)); width: min(322px, 92vw); padding: calc(env(safe-area-inset-top, 0px) + 44px) 9px calc(env(safe-area-inset-bottom, 0px) + 9px); transform: translateX(-104%); transition: transform 0.42s cubic-bezier(.25,1.1,.35,1);
+    background: linear-gradient(180deg, rgba(255,255,255,0.10), transparent 40%), repeating-linear-gradient(92deg, rgba(0,0,0,0.06) 0 2px, transparent 2px 7px), linear-gradient(180deg, #9A6C40, #6B4828);
+    box-shadow: inset -1.5px 0 0 #3E2A16, 14px 0 40px rgba(0,0,0,0.5); border-radius: 0 22px 22px 0; display: flex; flex-direction: column; color: var(--chalk); font-family: 'Oswald', sans-serif; }
+  .kb-drawer.on { transform: none; }
+  .kb-in { flex: 1; min-height: 0; border-radius: 0 14px 14px 0; background: radial-gradient(110% 70% at 50% 12%, #33704D, #1D4530 78%); box-shadow: inset 0 2px 10px rgba(0,0,0,0.45); padding: 14px 12px 12px; display: flex; flex-direction: column; overflow: hidden; }
+  .kb-top { display: flex; align-items: center; justify-content: space-between; margin-bottom: 10px; }
+  .kb-top b { font-family: 'Anton', Impact, sans-serif; font-weight: 400; font-size: 26px; line-height: 1; }
+  .kb-x { width: 40px; height: 40px; border-radius: 50%; display: grid; place-items: center; border: 0; color: var(--chalk); background: rgba(10,17,24,0.3); box-shadow: inset 0 0 0 1px rgba(244,241,232,0.3); cursor: pointer; }
+  .kb-x svg { width: 15px; height: 15px; }
+  .kb-id { position: relative; flex-shrink: 0; border-radius: 14px; padding: 12px 12px 10px 18px; color: #13202A; background: radial-gradient(120% 120% at 0% 0%, #FFFDF6, #F6EED9 55%, #EADFC2); box-shadow: 0 2px 0 #C9BB98, 0 10px 22px rgba(0,0,0,0.35); overflow: hidden; }
+  .kb-id::before { content: ""; position: absolute; left: 0; top: 0; bottom: 0; width: 7px; background: linear-gradient(180deg, var(--c1, #2E7D52), var(--c2, #1F5A3A)); }
+  .kb-id .row { display: flex; gap: 11px; align-items: center; }
+  .kb-id .who { min-width: 0; flex: 1; }
+  .kb-id .who small { display: block; font-weight: 400; font-size: 12.5px; color: #6A5A3C; }
+  .kb-id .who b { display: block; font-family: 'Anton', Impact, sans-serif; font-weight: 400; font-size: 23px; line-height: 1.05; color: #1C2B36; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .kb-id .who span { display: block; font-weight: 400; font-size: 13px; color: #5B4D33; margin-top: 1px; }
+  .kb-id .code { display: flex; align-items: center; gap: 8px; margin-top: 10px; padding-top: 8px; border-top: 1.5px dashed rgba(120,90,40,0.3); font-weight: 400; font-size: 13px; color: #5B4D33; }
+  .kb-id .code b { font-family: 'Anton', Impact, sans-serif; font-weight: 400; font-size: 16px; color: #1C2B36; letter-spacing: 0.04em; }
+  .kb-id .code button { margin-left: auto; height: 30px; padding: 0 11px; border: 0; border-radius: 15px; display: inline-flex; align-items: center; gap: 5px; font: 500 13px 'Oswald', sans-serif; color: #FFF1C8; background: linear-gradient(180deg, #2F7A50, #1F5A3A); box-shadow: 0 2px 0 #143A26; cursor: pointer; }
+  .kb-id .code button svg { width: 13px; height: 13px; }
+  .kb-id .note { margin-top: 6px; font-weight: 300; font-size: 12px; color: #6A5A3C; }
+  .kb-guest h3 { margin: 0; font-family: 'Anton', Impact, sans-serif; font-weight: 400; font-size: 22px; line-height: 1.05; color: #1C2B36; }
+  .kb-guest p { margin: 4px 0 8px; font-weight: 400; font-size: 13.5px; line-height: 1.4; color: #4A3E28; }
+  .kb-apple { width: 100%; min-height: 46px; border: 0; border-radius: 12px; display: flex; align-items: center; justify-content: center; gap: 8px; font: 500 16px 'Oswald', sans-serif; background: #0B0B0B; color: #fff; cursor: pointer; margin-top: 4px; }
+  .kb-apple svg { width: 17px; height: 17px; }
+  .kb-apple:disabled { opacity: 0.6; cursor: default; }
+  .kb-guest .keep { margin-top: 8px; font-weight: 300; font-size: 12.5px; color: #5B4D33; text-align: center; }
+  .kb-err { margin-top: 8px; font-weight: 400; font-size: 13px; color: #9A2A1D; }
+  .kb-menu { margin-top: 12px; flex: 1; min-height: 0; display: flex; flex-direction: column; gap: 6px; overflow-y: auto; scrollbar-width: none; padding-bottom: 6px; -webkit-mask-image: linear-gradient(180deg, #000 calc(100% - 18px), transparent); mask-image: linear-gradient(180deg, #000 calc(100% - 18px), transparent); }
+  .kb-menu::-webkit-scrollbar { display: none; }
+  .kb-menu > * { flex-shrink: 0; }
+  .kb-mi { display: grid; grid-template-columns: 34px minmax(0,1fr) auto; align-items: center; gap: 11px; min-height: 48px; padding: 0 10px 0 8px; border: 0; border-radius: 12px; color: inherit; text-align: left; font-family: inherit; background: rgba(8,22,14,0.28); box-shadow: inset 0 0 0 1.2px rgba(244,241,232,0.16); cursor: pointer; }
+  .kb-mi:active { background: rgba(8,22,14,0.45); }
+  .kb-mi .t { width: 34px; height: 34px; border-radius: 10px; display: grid; place-items: center; background: linear-gradient(180deg, #FBF3DF, #E9DCBC); box-shadow: inset 0 0 0 1px rgba(62,42,22,0.3), 0 2px 0 rgba(0,0,0,0.3); }
+  .kb-mi .t { color: #3E2A16; }
+  .kb-mi .t svg { width: 20px; height: 20px; }
+  .kb-mi b { font-weight: 500; font-size: 16.5px; display: block; }
+  .kb-mi small { display: block; font-weight: 300; font-size: 12.5px; color: rgba(244,241,232,0.68); margin-top: -1px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .kb-mi .end svg { width: 15px; height: 15px; opacity: 0.7; }
+  .kb-mi.lock { opacity: 0.55; }
+  .kb-mg { margin: 8px 2px 0; font-weight: 500; font-size: 13px; color: rgba(244,241,232,0.7); display: flex; align-items: center; gap: 8px; }
+  .kb-mg::after { content: ""; flex: 1; height: 1.2px; background: linear-gradient(90deg, rgba(244,241,232,0.28), rgba(244,241,232,0)); }
+  .kb-mg:first-child { margin-top: 0; }
+  .kb-foot { padding-top: 10px; display: flex; align-items: center; justify-content: space-between; gap: 8px; font-weight: 300; font-size: 12.5px; color: rgba(244,241,232,0.62); }
+  .kb-foot button { font: 500 13.5px 'Oswald', sans-serif; color: var(--chalk); display: inline-flex; align-items: center; gap: 6px; min-height: 36px; padding: 0 12px; border: 0; border-radius: 18px; background: none; box-shadow: inset 0 0 0 1px rgba(244,241,232,0.28); cursor: pointer; }
+  .kb-foot button.plain { box-shadow: none; padding: 0; font-weight: 300; font-size: 12.5px; color: rgba(244,241,232,0.7); }
+  .kb-foot button svg { width: 15px; height: 15px; }
+  .kb-drawer.on .kb-id, .kb-drawer.on .kb-mi, .kb-drawer.on .kb-foot { animation: kbRise 0.4s cubic-bezier(.2,.9,.3,1) both; }
+  @keyframes kbRise { from { opacity: 0; transform: translateY(14px); } }
+  @media (prefers-reduced-motion: reduce) { .kb-drawer, .kb-dim { transition: none; } .kb-drawer.on .kb-id, .kb-drawer.on .kb-mi, .kb-drawer.on .kb-foot { animation: none; } }
+  /* Namen waehlen / Einstellungen: Vollbild-Tafel */
+  .kb-screen { position: fixed; z-index: 62; top: 0; bottom: 0; left: 50%; width: min(100%, 560px); transform: translateX(-50%); overflow-y: auto; overscroll-behavior: contain; color: var(--chalk); font-family: 'Oswald', sans-serif;
+    background: radial-gradient(130% 60% at 50% 0%, #3B7F59 0%, #235A3E 45%, #173A29 100%); padding: calc(env(safe-area-inset-top, 0px) + 12px) 14px calc(env(safe-area-inset-bottom, 0px) + 24px); }
+  .kb-bar { display: flex; align-items: center; gap: 10px; min-height: 44px; margin-bottom: 8px; }
+  .kb-bar h1 { flex: 1; min-width: 0; margin: 0; font-family: 'Anton', Impact, sans-serif; font-weight: 400; font-size: 26px; line-height: 1; text-align: center; }
+  .kb-back { min-height: 40px; padding: 0 13px 0 9px; border: 0; border-radius: 20px; display: inline-flex; align-items: center; gap: 4px; font: 500 15px 'Oswald', sans-serif; color: var(--chalk); background: rgba(10,22,16,0.38); box-shadow: inset 0 0 0 1px rgba(244,241,232,0.25); cursor: pointer; flex-shrink: 0; }
+  .kb-back svg { width: 17px; height: 17px; }
+  .kb-ghost { visibility: hidden; flex-shrink: 0; min-height: 40px; padding: 0 13px 0 9px; font: 500 15px 'Oswald', sans-serif; }
+  .kb-board { position: relative; border-radius: 16px 16px 8px 8px; background: radial-gradient(110% 70% at 50% 12%, #33704D, #1D4530 78%); padding: 16px 16px 16px; box-shadow: inset 0 0 0 6px #7A5532, inset 0 0 0 8px #3E2A16, inset 0 0 36px rgba(0,0,0,0.35), 0 14px 30px rgba(0,0,0,0.36); }
+  .kb-board h2 { margin: 0; font-family: 'Anton', Impact, sans-serif; font-weight: 400; font-size: 24px; line-height: 1; }
+  .kb-board .sub { margin: 4px 0 12px; font-weight: 300; font-size: 14px; color: rgba(244,241,232,0.8); line-height: 1.4; }
+  .kb-steps { display: flex; justify-content: center; gap: 6px; margin-bottom: 10px; }
+  .kb-steps i { width: 26px; height: 5px; border-radius: 3px; background: rgba(244,241,232,0.22); }
+  .kb-steps i.on { background: var(--gold-2); }
+  .kb-crestbig { display: grid; justify-items: center; margin: 4px 0 12px; }
+  .kb-crestbig .kb-crest { width: 92px; height: 104px; }
+  .kb-crestbig small { margin-top: 6px; font-weight: 300; font-size: 13px; color: rgba(244,241,232,0.75); }
+  .kb-crest { display: inline-block; flex-shrink: 0; }
+  .kb-crest svg { display: block; width: 100%; height: 100%; overflow: visible; }
+  .kb-colors { display: flex; justify-content: center; gap: 8px; margin-bottom: 14px; }
+  .kb-colors button { width: 40px; height: 40px; border: 0; border-radius: 50%; box-shadow: inset 0 0 0 2px rgba(0,0,0,0.25); cursor: pointer; transition: transform 0.15s; }
+  .kb-colors button[aria-pressed="true"] { box-shadow: 0 0 0 2.5px #1D4530, 0 0 0 5px var(--gold-2); transform: scale(1.06); }
+  .kb-field { display: flex; align-items: center; gap: 4px; height: 52px; padding: 0 14px; border-radius: 13px; background: linear-gradient(180deg, #FBF8EF, #EFE8D6); color: #13202A; box-shadow: inset 0 2px 4px rgba(60,40,10,0.18), 0 0 0 2px transparent; transition: box-shadow 0.2s; }
+  .kb-field:focus-within { box-shadow: inset 0 2px 4px rgba(60,40,10,0.18), 0 0 0 2.5px var(--gold-2); }
+  .kb-field .at { font-family: 'Anton', Impact, sans-serif; font-size: 20px; color: rgba(19,32,42,0.55); }
+  .kb-field input { flex: 1; min-width: 0; height: 100%; border: 0; outline: 0; background: none; font: 500 18px 'Oswald', sans-serif; color: #13202A; }
+  .kb-field input::placeholder { color: rgba(19,32,42,0.42); font-weight: 400; }
+  .kb-chk { display: flex; align-items: flex-start; gap: 7px; min-height: 22px; margin: 8px 2px 0; font-weight: 400; font-size: 14px; line-height: 1.35; }
+  .kb-chk.ok { color: #7FE0A8; } .kb-chk.bad { color: #FFC9A8; } .kb-chk.info { color: rgba(244,241,232,0.75); font-weight: 300; }
+  .kb-sugg { display: flex; flex-wrap: wrap; gap: 6px; margin: 8px 0 0; }
+  .kb-sugg button { min-height: 36px; padding: 0 12px; border: 0; border-radius: 18px; font: 500 14px 'Oswald', sans-serif; color: #FFF1C8; background: linear-gradient(180deg, rgba(255,255,255,0.10), transparent 40%), linear-gradient(180deg, #9A6C40, #6B4828); box-shadow: inset 0 0 0 1.5px #3E2A16, 0 2px 0 rgba(0,0,0,0.3); cursor: pointer; }
+  .kb-rules { margin: 14px 2px 14px; display: grid; gap: 4px; font-weight: 300; font-size: 13px; color: rgba(244,241,232,0.75); }
+  .kb-rules div { display: flex; gap: 7px; align-items: center; }
+  .kb-rules i { width: 5px; height: 5px; border-radius: 50%; background: var(--gold-2); flex-shrink: 0; }
+  .kb-age { display: flex; align-items: flex-start; gap: 10px; margin: 0 2px 14px; font-weight: 400; font-size: 14px; line-height: 1.35; cursor: pointer; }
+  .kb-age input { width: 22px; height: 22px; margin: 0; accent-color: #E8B23D; flex-shrink: 0; }
+  .kb-cta { width: 100%; min-height: 56px; border: 0; border-radius: 17px; font: 400 21px 'Anton', Impact, sans-serif; color: #13202A; background: linear-gradient(160deg, var(--gold-2), var(--gold)); box-shadow: 0 5px 0 #9C7422, 0 14px 30px rgba(0,0,0,0.3); cursor: pointer; }
+  .kb-cta:disabled { background: rgba(244,241,232,0.14); color: rgba(244,241,232,0.5); box-shadow: inset 0 0 0 1px rgba(244,241,232,0.2); cursor: default; }
+  .kb-cta:not(:disabled):active { transform: translateY(3px); box-shadow: 0 2px 0 #9C7422; }
+  .kb-link { display: grid; gap: 8px; margin: 6px 0 18px; }
+  .kb-lk { display: grid; grid-template-columns: 24px minmax(0,1fr) auto; align-items: center; gap: 10px; min-height: 48px; padding: 0 12px 0 10px; border-radius: 12px; background: rgba(8,22,14,0.28); }
+  .kb-lk svg { width: 20px; height: 20px; }
+  .kb-lk span { font-weight: 400; font-size: 15px; }
+  .kb-lk b { font-family: 'Anton', Impact, sans-serif; font-weight: 400; font-size: 19px; }
+  .kb-sec { margin: 18px 2px 8px; font-weight: 500; font-size: 15px; display: flex; align-items: center; gap: 8px; }
+  .kb-sec::after { content: ""; flex: 1; height: 1.5px; background: linear-gradient(90deg, rgba(244,241,232,0.35), rgba(244,241,232,0)); }
+  .modal-backdrop.kb-over { z-index: 70; }
+  .kb-danger { background: rgba(120,25,15,0.25); box-shadow: inset 0 0 0 1.2px rgba(255,160,140,0.35); }
+  .kb-danger b { color: #FFB4A6; }
 </style>
 </head>
 <body>
@@ -2117,7 +2227,7 @@
   <section class="screen hm-home hm-intro hm-wait" id="screen-start" aria-label="Start">
     <div class="install-tip" id="installTip" role="note" hidden><p><b>Tipp:</b> Zum Home-Bildschirm hinzufügen, dann bleibt dein Spielstand sicher und die App startet im Vollbild.</p><button type="button" id="installTipClose" aria-label="Tipp schließen">✕</button></div>
     <div class="hm-head">
-      <div class="hm-brand"><img src="icons/icon-192.png" alt="" width="42" height="42"><div><b>Startelo <em>XI</em></b><small>Echte Spiele. Deine Startelf.</small></div></div>
+      <div class="hm-brand"><button type="button" class="kb-logo" id="kbLogo" aria-label="Kabine öffnen"><img src="icons/icon-192.png" alt="" width="42" height="42"><span class="kb-tab"><svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="#FFF1C8" stroke-width="2.6" stroke-linecap="round"><path d="M5 8h14M5 12h14M5 16h14"/></svg></span><span class="kb-dot" id="kbDot" hidden></span></button><div><b>Startelo <em>XI</em></b><small>Echte Spiele. Deine Startelf.</small></div></div>
       <span class="hm-chip hm-tok" data-tokchip data-big role="img" aria-label="Scout-Token"></span>
       <button class="hm-chip hm-wood" type="button" id="helpBtn"><svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="#FFF1C8" stroke-width="2.2" stroke-linecap="round"><circle cx="12" cy="12" r="9.2"/><path d="M9.3 9.4a2.8 2.8 0 1 1 3.9 2.6c-.8.4-1.2 1-1.2 1.9v.4"/><circle cx="12" cy="17.2" r="0.6" fill="#FFF1C8"/></svg>So geht's<span class="help-dot" id="helpDot"></span></button>
     </div>
@@ -18902,6 +19012,344 @@ if (window.visualViewport) {
   });
 }
 
+/* ================= ONLINE (Prompt K2b): Konto mit Apple, Name + Wappen =================
+   Gastmodus bleibt: ohne Konto laeuft alles wie bisher. Die Supabase-Bibliothek (lokal in vendor/) wird nur geladen, wenn eine gespeicherte
+   Sitzung da ist, ein Anmelde-Rueckkehr-Link (?code=) ankommt oder jemand "Anmelden" waehlt. Alle Schreibzugriffe laufen ueber die Funktionen
+   aus supabase/migrations (claim_username, my_profile, delete_account) - die App schreibt nie direkt in Tabellen.
+   Der "publishable key" ist oeffentlich (dafuer gemacht, in der App zu stehen); geheime Schluessel gehoeren nie in diese Datei. */
+const ONLINE_CFG = { url: "https://dcbmqctnpaqgijainkwt.supabase.co", key: "sb_publishable_HXFO6SmHyG2lSG46z1ItUA_9Lsfr-nu", ref: "dcbmqctnpaqgijainkwt", lib: "vendor/supabase-js-2.118.0.umd.js" };
+const ONLINE_ACC_KEY = "startelo_account"; // zuletzt bekannter Kabinen-Ausweis (fuer Offline-Anzeige); bewusst NICHT im Spielstand/Export
+const ONLINE_CRESTS = [["#2E7D52", "#1F5A3A"], ["#C1392B", "#8E2419"], ["#2A5F8F", "#1C4266"], ["#E8B23D", "#A8771A"], ["#5B3D7A", "#3E2856"], ["#13202A", "#0A1218"]];
+const online = { client: null, libP: null, state: "guest", account: null, userId: null, stale: false, busy: false };
+// state: "guest" (keine Sitzung) | "needsName" (angemeldet, noch kein Name) | "member" (Konto mit Name + Wappen)
+(function onlineLoadAccount() { try { const a = JSON.parse(localStorage.getItem(ONLINE_ACC_KEY) || "null"); if (a && typeof a.username === "string") { online.account = a; online.state = "member"; online.stale = true; } } catch (e) {} })();
+function onlineSaveAccount(a) { try { if (a) localStorage.setItem(ONLINE_ACC_KEY, JSON.stringify(a)); else localStorage.removeItem(ONLINE_ACC_KEY); } catch (e) {} }
+function onlineEmit() { try { document.dispatchEvent(new CustomEvent("onlinechange", { detail: { state: online.state } })); } catch (e) {} }
+function onlineStoredSession() { try { return !!localStorage.getItem("sb-" + ONLINE_CFG.ref + "-auth-token"); } catch (e) { return false; } }
+const onlineReturning = () => /[?&](code|error|error_description)=/.test(location.search) || /[#&](access_token|error|error_description)=/.test(location.hash);
+function onlineCleanUrl() {
+  try {
+    const u = new URL(location.href);
+    ["code", "error", "error_code", "error_description"].forEach((k) => u.searchParams.delete(k));
+    if (/[#&](access_token|error|error_description)=/.test(u.hash)) u.hash = "";
+    history.replaceState(history.state, "", u.pathname + (u.search || "") + u.hash);
+  } catch (e) {}
+}
+function onlineLoadLib() {
+  if (window.supabase && typeof window.supabase.createClient === "function") return Promise.resolve();
+  if (online.libP) return online.libP;
+  online.libP = new Promise((res, rej) => {
+    const s = document.createElement("script"); s.src = ONLINE_CFG.lib;
+    s.onload = () => res(); s.onerror = () => { online.libP = null; rej(new Error("lib")); };
+    document.head.appendChild(s);
+  });
+  return online.libP;
+}
+async function onlineClient() {
+  if (online.client) return online.client;
+  await onlineLoadLib();
+  online.client = window.supabase.createClient(ONLINE_CFG.url, ONLINE_CFG.key, { auth: { flowType: "pkce", persistSession: true, autoRefreshToken: true, detectSessionInUrl: true } });
+  // Nicht direkt in der Rueckruf-Funktion auf Supabase warten (Sperre), daher mit Verzoegerung
+  online.client.auth.onAuthStateChange((ev) => { if (ev === "SIGNED_IN" || ev === "SIGNED_OUT" || ev === "USER_UPDATED") setTimeout(() => onlineRefresh().catch(() => {}), 0); });
+  return online.client;
+}
+const onlineHasNet = () => navigator.onLine !== false;
+// Prueft Sitzung + Profil und setzt online.state. Ohne Netz bleibt der zuletzt bekannte Ausweis stehen (stale).
+async function onlineRefresh() {
+  if (online.busy) return online.state;
+  online.busy = true;
+  try {
+    const sb = await onlineClient();
+    const { data: sess } = await sb.auth.getSession();
+    if (!sess || !sess.session) { online.userId = null; online.account = null; online.state = "guest"; online.stale = false; onlineSaveAccount(null); return online.state; }
+    online.userId = sess.session.user.id;
+    const { data, error } = await sb.rpc("my_profile");
+    if (error) { online.stale = true; if (!online.account) online.state = "needsName"; return online.state; }
+    online.stale = false;
+    if (!data) { online.account = null; online.state = "needsName"; onlineSaveAccount(null); }
+    else { online.account = { username: data.username, crest: data.crest_color, code: data.friend_code, changedAt: data.username_changed_at || null }; online.state = "member"; onlineSaveAccount(online.account); }
+    return online.state;
+  } catch (e) {
+    online.stale = true; // Bibliothek/Netz nicht erreichbar: bei bekanntem Konto weiter anzeigen
+    return online.state;
+  } finally { online.busy = false; onlineEmit(); }
+}
+async function onlineSignInApple() {
+  if (!/^https?:$/.test(location.protocol)) return { ok: false, error: "origin" }; // file:// kann nicht zurueckkehren
+  if (!onlineHasNet()) return { ok: false, error: "offline" };
+  try {
+    const sb = await onlineClient();
+    const { error } = await sb.auth.signInWithOAuth({ provider: "apple", options: { redirectTo: location.origin + location.pathname } });
+    return error ? { ok: false, error: "auth" } : { ok: true };
+  } catch (e) { return { ok: false, error: onlineHasNet() ? "lib" : "offline" }; }
+}
+async function onlineSignOut() {
+  try { const sb = await onlineClient(); await sb.auth.signOut(); } catch (e) { try { Object.keys(localStorage).filter((k) => k.indexOf("sb-" + ONLINE_CFG.ref) === 0).forEach((k) => localStorage.removeItem(k)); } catch (e2) {} }
+  online.userId = null; online.account = null; online.state = "guest"; online.stale = false; onlineSaveAccount(null); onlineEmit();
+}
+// Regeln wie auf dem Server (private.username_error): 3-15 Zeichen, a-z 0-9 . _, nicht mit . oder _ beginnen/enden; Sperrlisten pruefen nur der Server
+const ONLINE_NAME_RE = /^[a-z0-9][a-z0-9._]{1,13}[a-z0-9]$/;
+function onlineNameCheck(raw) {
+  const n = String(raw || "").trim().toLowerCase();
+  if (!n) return { st: "info", t: "3 bis 15 Zeichen: Buchstaben, Zahlen, _ und Punkt" };
+  if (/[^a-z0-9._]/.test(n)) return { st: "bad", t: "Nur Buchstaben, Zahlen, _ und Punkt (keine Leerzeichen, keine Umlaute)" };
+  if (n.length < 3) return { st: "bad", t: "Noch zu kurz – mindestens 3 Zeichen" };
+  if (n.length > 15) return { st: "bad", t: "Zu lang – höchstens 15 Zeichen" };
+  if (!ONLINE_NAME_RE.test(n)) return { st: "bad", t: "Anfang und Ende müssen ein Buchstabe oder eine Zahl sein" };
+  return { st: "ok", t: "Sieht gut aus – ob @" + n + " frei ist, prüfen wir beim Weiter" };
+}
+const ONLINE_NAME_ERR = { length: "Der Name braucht 3 bis 15 Zeichen.", format: "Erlaubt sind Buchstaben, Zahlen, _ und Punkt – nicht am Anfang oder Ende.", reserved: "Dieser Name ist reserviert.", blocked: "Dieser Name ist nicht erlaubt.", person: "Namen bekannter Spieler und Trainer sind gesperrt.",
+  taken: "Dieser Name ist schon vergeben.", too_soon: "Du kannst deinen Namen nur alle 30 Tage ändern.", crest: "Diese Wappenfarbe geht nicht." };
+// Name + Wappen setzen (anlegen oder aendern). Ergebnis: { ok, username } oder { ok:false, error, message, suggestions? }
+async function onlineClaimName(name, crestHex) {
+  if (!onlineHasNet()) return { ok: false, error: "offline", message: "Du bist offline – mit Netz geht es weiter." };
+  try {
+    const sb = await onlineClient();
+    const { data, error } = await sb.rpc("claim_username", { p_name: String(name || "").trim().toLowerCase(), p_crest: crestHex || null, p_legacy: profile.deviceId || null });
+    if (error) return { ok: false, error: "server", message: /rate_limited/.test(error.message || "") ? "Zu viele Versuche – bitte kurz warten." : "Das hat gerade nicht geklappt. Versuch es gleich noch einmal." };
+    if (!data || !data.ok) return { ok: false, error: data && data.error || "server", message: ONLINE_NAME_ERR[data && data.error] || "Das hat gerade nicht geklappt.", suggestions: (data && data.suggestions) || [], nextChangeAt: data && data.next_change_at || null };
+    await onlineRefresh();
+    return { ok: true, username: data.username };
+  } catch (e) { return { ok: false, error: "lib", message: "Verbindung nicht möglich – bitte später noch einmal." }; }
+}
+async function onlineDeleteAccount() {
+  if (!onlineHasNet()) return { ok: false, error: "offline" };
+  try {
+    const sb = await onlineClient();
+    const { error } = await sb.rpc("delete_account");
+    if (error) return { ok: false, error: "server" };
+    await onlineSignOut();
+    return { ok: true };
+  } catch (e) { return { ok: false, error: "lib" }; }
+}
+// Start: Bibliothek nur laden, wenn es etwas zu tun gibt (Sitzung gespeichert oder Rueckkehr von der Anmeldung)
+async function onlineBoot() {
+  const returning = onlineReturning();
+  if (!onlineStoredSession() && !returning) { if (online.state === "member" && !online.userId) { /* Ausweis ohne Sitzung (z. B. Sitzung abgelaufen): beim naechsten Netz pruefen */ } return; }
+  const st = await onlineRefresh();
+  if (returning) onlineCleanUrl();
+  if (returning && st === "needsName" && typeof kabineOpenNameScreen === "function") whenSplashGone(() => kabineOpenNameScreen());
+}
+
+
+/* ================= KABINE (Prompt K2b): Konto-Menue am Logo, Namen waehlen, Einstellungen ================= */
+const KB_SV = {
+  x: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18" stroke="currentColor" stroke-width="2.6" stroke-linecap="round"/></svg>',
+  chev: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M9 5l7 7-7 7" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/></svg>',
+  back: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M15 5l-7 7 7 7" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/></svg>',
+  menu: '<svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="#FFF1C8" stroke-width="2.6" stroke-linecap="round"><path d="M5 8h14M5 12h14M5 16h14"/></svg>',
+  apple: '<svg viewBox="0 0 24 24" aria-hidden="true" fill="currentColor"><path d="M12.152 6.896c-.948 0-2.415-1.078-3.96-1.04-2.04.027-3.91 1.183-4.961 3.014-2.117 3.675-.546 9.103 1.519 12.09 1.013 1.454 2.208 3.09 3.792 3.039 1.52-.065 2.09-.987 3.935-.987 1.831 0 2.35.987 3.96.948 1.637-.026 2.676-1.48 3.676-2.948 1.156-1.688 1.636-3.325 1.662-3.415-.039-.013-3.182-1.221-3.22-4.857-.026-3.04 2.48-4.494 2.597-4.559-1.429-2.09-3.623-2.324-4.39-2.376-2-.156-3.675 1.09-4.61 1.09zM15.53 3.83c.843-1.012 1.4-2.427 1.245-3.83-1.207.052-2.662.805-3.532 1.818-.78.896-1.454 2.338-1.273 3.714 1.338.104 2.715-.688 3.559-1.701"/></svg>',
+  copy: '<svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linejoin="round"><rect x="8" y="8" width="12" height="12" rx="2.5"/><path d="M16 8V6.5A2.5 2.5 0 0 0 13.5 4h-7A2.5 2.5 0 0 0 4 6.5v7A2.5 2.5 0 0 0 6.5 16H8"/></svg>',
+  lock: '<svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><rect x="5" y="11" width="14" height="9" rx="2.5"/><path d="M8 11V8a4 4 0 0 1 8 0v3"/></svg>',
+  door: '<svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 4H6.5A1.5 1.5 0 0 0 5 5.5v13A1.5 1.5 0 0 0 6.5 20H10M14 8l4 4-4 4M18 12H9"/></svg>',
+  check: '<svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="#7FE0A8" stroke-width="2.8" stroke-linecap="round" stroke-linejoin="round" width="17" height="17"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg>',
+  warn: '<svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="#FFC9A8" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" width="17" height="17"><path d="M12 4l9 16H3z"/><path d="M12 10v4.5M12 17.4v.1"/></svg>',
+  info: '<svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="rgba(244,241,232,0.75)" stroke-width="2.2" stroke-linecap="round" width="17" height="17"><circle cx="12" cy="12" r="8.5"/><path d="M12 11v5M12 8v.1"/></svg>',
+  // Symbole fuer die Menue-Kacheln (dunkle Linien auf hellem Grund)
+  vs: '<svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="#3E2A16" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round"><path d="M4 7h12l-3-3M20 17H8l3 3"/></svg>',
+  pass: '<svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="#3E2A16" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round"><rect x="5" y="3.5" width="14" height="17" rx="2.5"/><circle cx="12" cy="10" r="2.6"/><path d="M8.5 16.5h7"/></svg>',
+  people: '<svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="#3E2A16" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="8.5" r="3"/><path d="M3.5 19c.5-3.2 2.7-5 5.5-5s5 1.8 5.5 5M16 6.2a3 3 0 0 1 0 5.6M17.5 14.3c1.7.6 2.7 2 3 4.7"/></svg>',
+  gear: '<svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="#3E2A16" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M12 3v2.5M12 18.5V21M3 12h2.5M18.5 12H21M5.6 5.6l1.8 1.8M16.6 16.6l1.8 1.8M18.4 5.6l-1.8 1.8M7.4 16.6l-1.8 1.8"/></svg>',
+  book: '<svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="#3E2A16" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round"><path d="M5 4.5h10a3 3 0 0 1 3 3V20H8a3 3 0 0 1-3-3zM5 17a3 3 0 0 1 3-3h10"/></svg>',
+  user: '<svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="#3E2A16" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8.5" r="3.4"/><path d="M5 20c.6-3.6 3.3-5.5 7-5.5s6.4 1.9 7 5.5"/></svg>'
+};
+const kb = { open: null, screen: null, nameDraft: { name: "", crest: 0, age: false, step: 1 }, signing: false, msg: "" };
+const kbCrestIdx = (hex) => { const i = ONLINE_CRESTS.findIndex((c) => c[0].toLowerCase() === String(hex || "").toLowerCase()); return i < 0 ? 0 : i; };
+function kbCrest(ci, letter, w, h) {
+  const [a, b] = ONLINE_CRESTS[ci % ONLINE_CRESTS.length]; h = h || Math.round(w * 1.12); const id = "kcg" + Math.random().toString(36).slice(2, 7); const light = ci === 3;
+  return `<span class="kb-crest" style="width:${w}px;height:${h}px"><svg viewBox="0 0 40 45" aria-hidden="true"><defs><linearGradient id="${id}" x1="0" x2="1" y1="0" y2="1"><stop offset="0" stop-color="${a}"/><stop offset="1" stop-color="${b}"/></linearGradient></defs>`
+    + `<path d="M20 2 L37 7 V20 C37 31 29 39 20 43 C11 39 3 31 3 20 V7 Z" fill="#FFF1C8"/><path d="M20 5 L34 9.2 V20 C34 29.3 27.5 36 20 39.6 C12.5 36 6 29.3 6 20 V9.2 Z" fill="url(#${id})"/><path d="M20 5 L34 9.2 V14 H6 V9.2 Z" fill="rgba(255,255,255,0.14)"/>`
+    + `<text x="20" y="31" text-anchor="middle" font-family="Anton, Impact, sans-serif" font-size="18" fill="${light ? "#13202A" : "#FFF1C8"}">${duelEsc((letter || "?").toUpperCase())}</text></svg></span>`;
+}
+function kbUpdateBadge() { const d = document.getElementById("kbDot"); if (d) d.hidden = online.state !== "needsName"; }
+function kabineClose() {
+  const o = kb.open; if (!o) return;
+  kb.open = null;
+  o.drawer.classList.remove("on"); o.dim.classList.remove("on");
+  setTimeout(() => { o.drawer.remove(); o.dim.remove(); }, 380);
+  const i = sheetStack.indexOf(o.entry); if (i >= 0) sheetStack.splice(i, 1);
+}
+function kabineOpen() {
+  if (kb.open) return;
+  const dim = document.createElement("div"); dim.className = "kb-dim";
+  const drawer = document.createElement("aside"); drawer.className = "kb-drawer"; drawer.setAttribute("role", "dialog"); drawer.setAttribute("aria-modal", "true"); drawer.setAttribute("aria-label", "Kabine");
+  document.body.append(dim, drawer);
+  const entry = { el: drawer, sheet: drawer, close: kabineClose, opener: document.getElementById("kbLogo") };
+  kb.open = { dim, drawer, entry }; sheetStack.push(entry);
+  dim.onclick = kabineClose;
+  kabineRender();
+  requestAnimationFrame(() => { dim.classList.add("on"); drawer.classList.add("on"); });
+}
+function kbMi(id, icon, title, sub, opts = {}) {
+  return `<button class="kb-mi${opts.lock ? " lock" : ""}" type="button" id="${id}"><span class="t">${icon}</span><span><b>${title}</b><small>${sub}</small></span><span class="end">${opts.lock ? KB_SV.lock : KB_SV.chev}</span></button>`;
+}
+function kabineRender() {
+  const o = kb.open; if (!o) return;
+  const st = online.state, acc = online.account, rank = rankForLevel(profile.level).name;
+  let card;
+  if (st === "member" && acc) {
+    const ci = kbCrestIdx(acc.crest), [c1, c2] = ONLINE_CRESTS[ci];
+    card = `<div class="kb-id" style="--c1:${c1};--c2:${c2}"><div class="row">${kbCrest(ci, acc.username[0], 50)}<div class="who"><small>Kabine von</small><b>@${duelEsc(acc.username)}</b><span>${duelEsc(rank)} · Level ${profile.level}</span></div></div>
+      <div class="code">Freundescode <b>${duelEsc(acc.code || "")}</b><button type="button" id="kbCopy">${KB_SV.copy}Kopieren</button></div>${online.stale && !onlineHasNet() ? '<div class="note">Offline – Stand vom letzten Mal</div>' : ""}</div>`;
+  } else if (st === "needsName") {
+    card = `<div class="kb-id kb-guest"><h3>Fast geschafft</h3><p>Du bist angemeldet. Wähle noch deinen Namen und dein Wappen.</p><button class="kb-apple" type="button" id="kbPickName" style="background:linear-gradient(160deg,#F7D98E,#E8B23D);color:#13202A">Name wählen</button><button class="kb-apple" type="button" id="kbOut1" style="background:none;color:#4A3E28;box-shadow:inset 0 0 0 1.5px rgba(80,60,30,0.35)">Abmelden</button></div>`;
+  } else {
+    card = `<div class="kb-id kb-guest"><h3>Du spielst als Gast</h3><p>Dein Fortschritt liegt nur auf diesem Gerät. Mit einem Konto sicherst du dir deinen Namen – und bist bereit für Freunde und Online-Duelle, sobald sie starten.</p>
+      <button class="kb-apple" type="button" id="kbApple">${KB_SV.apple}<span>Mit Apple anmelden</span></button>${kb.msg ? `<div class="kb-err" role="alert">${duelEsc(kb.msg)}</div>` : ""}
+      <div class="keep">Level, Sterne und Trophäen bleiben erhalten.</div></div>`;
+  }
+  const member = st === "member";
+  o.drawer.innerHTML = `<div class="kb-in"><div class="kb-top"><b>Kabine</b><button class="kb-x" type="button" id="kbX" data-sheet-x aria-label="Schließen">${KB_SV.x}</button></div>${card}
+    <div class="kb-menu">
+      <div class="kb-mg">Spielen</div>
+      ${kbMi("kbFr", KB_SV.people, "Freunde", member ? "Kommt bald" : "Mit Konto – kommt bald", { lock: true })}
+      ${kbMi("kbDu", KB_SV.vs, "Duelle", "Herausforderungen und Bilanz")}
+      ${kbMi("kbSp", KB_SV.pass, "Scout-Profil", "Statistik, Trophäen, Liga-Rang")}
+      <div class="kb-mg">Einstellungen</div>
+      ${kbMi("kbSe", KB_SV.gear, "Einstellungen", member ? "Name ändern, Konto, Ton und Spielstand" : "Ton und Spielstand sichern")}
+      <div class="kb-mg">Hilfe</div>
+      ${kbMi("kbHe", KB_SV.book, "So geht's", "Regeln und Hilfen")}
+    </div>
+    <div class="kb-foot"><button type="button" class="plain" id="kbAbout">Über Startelo XI · Version ${APP_VERSION}</button>${member ? `<button type="button" id="kbOut">${KB_SV.door}Abmelden</button>` : ""}</div></div>`;
+  const $ = (id) => o.drawer.querySelector("#" + id);
+  $("kbX").onclick = kabineClose;
+  const go = (fn) => () => { kabineClose(); setTimeout(fn, 200); };
+  if ($("kbApple")) $("kbApple").onclick = kabineSignIn;
+  if ($("kbPickName")) $("kbPickName").onclick = go(() => kabineOpenNameScreen());
+  if ($("kbOut1")) $("kbOut1").onclick = kabineSignOut;
+  if ($("kbOut")) $("kbOut").onclick = kabineSignOut;
+  if ($("kbCopy")) $("kbCopy").onclick = () => { const t = online.account && online.account.code || ""; try { navigator.clipboard.writeText(t).then(() => showToast(`<span class="tt-tx">Freundescode <b>${duelEsc(t)}</b> kopiert</span>`)); } catch (e) { showToast('<span class="tt-tx">Kopieren geht hier nicht</span>'); } };
+  $("kbFr").onclick = () => showToast('<span class="tt-tx">Freunde kommen bald – mit deinem Konto bist du dann gleich dabei.</span>');
+  $("kbDu").onclick = go(() => navigate("duels"));
+  $("kbSp").onclick = go(() => openProfileSheet());
+  $("kbSe").onclick = go(() => kabineOpenSettings());
+  $("kbHe").onclick = go(() => openGuideModal());
+  $("kbAbout").onclick = () => showToast(`<span class="tt-tx">Startelo XI · Version ${APP_VERSION}. Aufstellungen aus echten Spielen, belegt durch ESPN, FotMob und Wikipedia.</span>`);
+  const first = o.drawer.querySelector(".kb-x"); if (first && document.activeElement === document.body) { try { first.focus({ preventScroll: true }); } catch (e) {} }
+}
+async function kabineSignIn() {
+  if (kb.signing) return;
+  kb.signing = true; kb.msg = "";
+  const btn = kb.open && kb.open.drawer.querySelector("#kbApple"); if (btn) { btn.disabled = true; btn.querySelector("span").textContent = "Einen Moment …"; }
+  const r = await onlineSignInApple();
+  kb.signing = false;
+  if (r.ok) return; // Weiterleitung zu Apple laeuft
+  kb.msg = r.error === "offline" ? "Du bist offline – zum Anmelden brauchst du Netz." : r.error === "origin" ? "Anmelden geht nur in der Web-App, nicht aus einer lokalen Datei." : "Anmeldung gerade nicht möglich – bitte später noch einmal.";
+  kabineRender();
+}
+async function kabineSignOut() {
+  await onlineSignOut(); kb.msg = "";
+  if (kb.open) kabineRender();
+  showToast('<span class="tt-tx">Abgemeldet – dein Spielstand bleibt auf dem Gerät.</span>');
+}
+// ---- Namen waehlen (nach der ersten Anmeldung) bzw. aendern ----
+function kbNameSeed() {
+  const h = String(profile.duelHandle || "").toLowerCase();
+  const ok = (n) => ONLINE_NAME_RE.test(n) && n.length <= 15;
+  if (ok(h)) return h;
+  const base = profile.duelName ? duelHandleFromName(profile.duelName).replace(/[^a-z0-9._]/g, "").slice(0, 15) : "";
+  return ok(base) ? base : "";
+}
+function kabineCloseScreen() { if (kb.screen) { kb.screen.remove(); kb.screen = null; } }
+function kabineOpenNameScreen(mode) {
+  kabineCloseScreen();
+  const change = mode === "change" && online.account;
+  kb.nameDraft = { name: change ? online.account.username : kbNameSeed(), crest: change ? kbCrestIdx(online.account.crest) : 0, age: !!change, step: 1 };
+  const sc = document.createElement("section"); sc.className = "kb-screen"; sc.setAttribute("role", "dialog"); sc.setAttribute("aria-modal", "true"); sc.setAttribute("aria-label", change ? "Name ändern" : "Dein Name");
+  document.body.appendChild(sc); kb.screen = sc;
+  const entry = { el: sc, sheet: sc, close: () => { kabineCloseScreen(); const i = sheetStack.indexOf(entry); if (i >= 0) sheetStack.splice(i, 1); }, opener: null };
+  sheetStack.push(entry);
+  const render = () => kbRenderName(sc, change, entry);
+  render();
+}
+function kbRenderName(sc, change, entry) {
+  const d = kb.nameDraft;
+  if (d.step === 2) {
+    const trophies = (typeof TROPHIES !== "undefined" ? TROPHIES.filter((t) => t.check(profile)).length : 0), duels = (profile.duelStats ? profile.duelStats.wins + profile.duelStats.losses + profile.duelStats.draws : 0);
+    sc.innerHTML = `<div class="kb-bar"><span class="kb-ghost">Zurück</span><h1>Fast fertig</h1><span class="kb-ghost">Zurück</span></div>
+      <div class="kb-board"><div class="kb-steps"><i class="on"></i><i class="on"></i></div><div class="kb-crestbig">${kbCrest(d.crest, d.name[0], 92, 104)}<small>Willkommen in der Kabine</small></div>
+      <h2 style="text-align:center">@${duelEsc(d.name)}</h2><p class="sub" style="text-align:center">${change ? "Dein neuer Name ist gespeichert." : "Dein bisheriger Spielstand bleibt erhalten:"}</p>
+      ${change ? "" : `<div class="kb-link"><div class="kb-lk">${KB_SV.check}<span>Scout-Pass</span><b>Level ${profile.level}</b></div><div class="kb-lk">${KB_SV.check}<span>Trophäen</span><b>${trophies}</b></div><div class="kb-lk">${KB_SV.check}<span>Duelle</span><b>${duels}</b></div></div>`}
+      <button class="kb-cta" type="button" id="kbDone">Los geht's</button></div>`;
+    sc.querySelector("#kbDone").onclick = () => { entry.close(); showToast(`<span class="tt-tx">${change ? "Name geändert" : "Willkommen"}, <b>@${duelEsc(d.name)}</b>!</span>`); kbUpdateBadge(); };
+    return;
+  }
+  sc.innerHTML = `<div class="kb-bar"><button class="kb-back" type="button" id="kbNBack">${KB_SV.back}${change ? "Zurück" : "Später"}</button><h1>${change ? "Name ändern" : "Dein Name"}</h1><span class="kb-ghost">Später</span></div>
+    <div class="kb-board"><div class="kb-steps"><i class="on"></i><i></i></div><div class="kb-crestbig" id="kbCBig">${kbCrest(d.crest, d.name[0] || "?", 92, 104)}<small>Dein Wappen – Farbe frei wählbar</small></div>
+      <div class="kb-colors" id="kbCols">${ONLINE_CRESTS.map((c, i) => `<button type="button" aria-label="Farbe ${i + 1}" aria-pressed="${i === d.crest}" style="background:linear-gradient(135deg,${c[0]},${c[1]})" data-i="${i}"></button>`).join("")}</div>
+      <label class="kb-field"><span class="at">@</span><input id="kbNIn" placeholder="deinname" maxlength="15" autocomplete="off" autocapitalize="none" autocorrect="off" spellcheck="false" value="${duelEsc(d.name)}" aria-label="Benutzername"></label>
+      <div id="kbNChk" role="status"></div>
+      <div class="kb-rules"><div><i></i>So sehen dich Freunde und Gegner – einzigartig</div><div><i></i>Ändern geht später alle 30 Tage</div><div><i></i>Beleidigungen und Namen echter Spieler sind gesperrt</div></div>
+      ${change ? "" : `<label class="kb-age"><input type="checkbox" id="kbAge"${d.age ? " checked" : ""}><span>Ich bin mindestens 16 Jahre alt oder meine Eltern sind einverstanden.</span></label>`}
+      <button class="kb-cta" type="button" id="kbNNext" disabled>Weiter</button></div>`;
+  const inp = sc.querySelector("#kbNIn"), chk = sc.querySelector("#kbNChk"), next = sc.querySelector("#kbNNext"), age = sc.querySelector("#kbAge");
+  let serverMsg = null, busy = false;
+  const upd = () => {
+    d.name = inp.value.trim().toLowerCase(); const r = serverMsg ? { st: "bad", t: serverMsg.message, sugg: serverMsg.suggestions } : onlineNameCheck(d.name);
+    chk.innerHTML = `<div class="kb-chk ${r.st}">${r.st === "ok" ? KB_SV.check : r.st === "bad" ? KB_SV.warn : KB_SV.info}<span>${duelEsc(r.t)}</span></div>${r.sugg && r.sugg.length ? `<div class="kb-sugg">${r.sugg.map((s) => `<button type="button" data-s="${duelEsc(s)}">@${duelEsc(s)}</button>`).join("")}</div>` : ""}`;
+    chk.querySelectorAll(".kb-sugg button").forEach((b) => b.onclick = () => { inp.value = b.dataset.s; serverMsg = null; upd(); });
+    next.disabled = busy || onlineNameCheck(d.name).st !== "ok" || (!change && !d.age);
+    const big = sc.querySelector("#kbCBig .kb-crest text"); if (big) big.textContent = (d.name[0] || "?").toUpperCase();
+  };
+  inp.oninput = () => { inp.value = inp.value.toLowerCase().replace(/[^a-z0-9._]/g, ""); serverMsg = null; upd(); };
+  if (age) age.onchange = () => { d.age = age.checked; upd(); };
+  sc.querySelector("#kbCols").onclick = (e) => { const b = e.target.closest("button"); if (!b) return; d.crest = +b.dataset.i; [...sc.querySelector("#kbCols").children].forEach((x) => x.setAttribute("aria-pressed", String(x === b))); sc.querySelector("#kbCBig").firstElementChild.outerHTML = kbCrest(d.crest, d.name[0] || "?", 92, 104); };
+  sc.querySelector("#kbNBack").onclick = () => entry.close();
+  next.onclick = async () => {
+    if (next.disabled) return; busy = true; next.disabled = true; next.textContent = "Prüfe …";
+    const r = await onlineClaimName(d.name, ONLINE_CRESTS[d.crest][0]);
+    busy = false; next.textContent = "Weiter";
+    if (r.ok) { d.step = 2; kbRenderName(sc, change, entry); return; }
+    serverMsg = r; upd();
+  };
+  inp.addEventListener("keydown", (e) => { if (e.key === "Enter" && !next.disabled) next.click(); });
+  upd(); if (!d.name) { try { inp.focus({ preventScroll: true }); } catch (e) {} }
+}
+// ---- Einstellungen (Konto) ----
+function kabineOpenSettings() {
+  kabineCloseScreen();
+  const sc = document.createElement("section"); sc.className = "kb-screen"; sc.setAttribute("role", "dialog"); sc.setAttribute("aria-modal", "true"); sc.setAttribute("aria-label", "Einstellungen");
+  document.body.appendChild(sc); kb.screen = sc;
+  const entry = { el: sc, sheet: sc, close: () => { kabineCloseScreen(); const i = sheetStack.indexOf(entry); if (i >= 0) sheetStack.splice(i, 1); }, opener: null };
+  sheetStack.push(entry);
+  const member = online.state === "member" && online.account;
+  let nextChange = "";
+  if (member && online.account.changedAt) { const t = new Date(online.account.changedAt).getTime() + 30 * 86400000; if (t > Date.now()) nextChange = new Date(t).toLocaleDateString("de-DE", { day: "numeric", month: "long" }); }
+  sc.innerHTML = `<div class="kb-bar"><button class="kb-back" type="button" id="kbSBack">${KB_SV.back}Zurück</button><h1>Einstellungen</h1><span class="kb-ghost">Zurück</span></div>
+    <div class="kb-board"><div class="kb-sec" style="margin-top:0">Konto</div><div class="kb-menu" style="margin:0;overflow:visible;-webkit-mask-image:none;mask-image:none">
+      ${member ? `${kbMi("kbSName", KB_SV.user, "Name ändern", nextChange ? "Erst wieder ab " + nextChange : "@" + duelEsc(online.account.username) + " · alle 30 Tage möglich")}${kbMi("kbSOut", KB_SV.door, "Abmelden", "Dein Spielstand bleibt auf dem Gerät")}` : `<div class="sub" style="margin:0 2px 4px;font-weight:300;font-size:14px;color:rgba(244,241,232,0.8)">Du spielst als Gast. Ein Konto legst du in der Kabine an (Logo oben links).</div>`}
+      </div>
+      <div class="kb-sec">Ton und Spielstand</div><div class="kb-menu" style="margin:0;overflow:visible;-webkit-mask-image:none;mask-image:none">${kbMi("kbSProf", KB_SV.gear, "Ton, Spielstand sichern und laden", "Im Scout-Profil, Reiter Übersicht")}</div>
+      ${member ? `<div class="kb-sec">Konto entfernen</div><button class="kb-mi kb-danger" type="button" id="kbSDel" style="width:100%"><span class="t">${KB_SV.lock}</span><span><b>Konto löschen</b><small style="color:rgba(255,200,190,0.8)">Entfernt dein Konto und deine Online-Daten</small></span><span class="end">${KB_SV.chev}</span></button>` : ""}</div>`;
+  const $ = (id) => sc.querySelector("#" + id);
+  $("kbSBack").onclick = () => entry.close();
+  $("kbSProf").onclick = () => { entry.close(); setTimeout(() => openProfileSheet(), 150); };
+  if ($("kbSName")) $("kbSName").onclick = () => { if (nextChange) { showToast(`<span class="tt-tx">Du kannst deinen Namen erst wieder ab ${nextChange} ändern.</span>`); return; } entry.close(); setTimeout(() => kabineOpenNameScreen("change"), 150); };
+  if ($("kbSOut")) $("kbSOut").onclick = async () => { entry.close(); await kabineSignOut(); };
+  if ($("kbSDel")) $("kbSDel").onclick = () => kabineConfirmDelete(entry);
+}
+function kabineConfirmDelete(settingsEntry) {
+  const backdrop = document.createElement("div"); backdrop.className = "modal-backdrop sp-sbd kb-over";
+  backdrop.innerHTML = `<div class="sp-sheet" role="alertdialog" aria-modal="true" aria-label="Konto löschen"><div class="in"><div class="duel-name-box">
+    <div class="guide-name-title" style="font-family:'Anton',Impact,sans-serif;font-size:24px">Konto wirklich löschen?</div>
+    <div style="font-family:'Oswald',sans-serif;font-weight:300;font-size:14.5px;color:var(--muted);line-height:1.45">Dein Konto, dein Name @${duelEsc(online.account ? online.account.username : "")} und alle Online-Daten werden endgültig gelöscht. Dein Spielstand auf diesem Gerät bleibt erhalten. Das lässt sich nicht rückgängig machen.</div>
+    <div id="kbDelMsg" role="alert" style="font-family:'Oswald',sans-serif;font-size:14px;color:#FFC9A8;min-height:18px"></div>
+    <button type="button" class="save-btn main" id="kbDelYes" style="background:linear-gradient(180deg,#C1392B,#8E2419);color:#fff">Konto endgültig löschen</button><button type="button" class="save-btn quiet" id="kbDelNo">Abbrechen</button></div></div></div>`;
+  document.body.appendChild(backdrop);
+  const msg = backdrop.querySelector("#kbDelMsg"), yes = backdrop.querySelector("#kbDelYes");
+  backdrop.querySelector("#kbDelNo").onclick = () => backdrop.remove();
+  backdrop.onclick = (e) => { if (e.target === backdrop) backdrop.remove(); };
+  yes.onclick = async () => {
+    yes.disabled = true; yes.textContent = "Lösche …";
+    const r = await onlineDeleteAccount();
+    if (r.ok) { backdrop.remove(); if (settingsEntry) settingsEntry.close(); showToast('<span class="tt-tx">Dein Konto wurde gelöscht.</span>'); return; }
+    yes.disabled = false; yes.textContent = "Konto endgültig löschen";
+    msg.textContent = r.error === "offline" ? "Du bist offline – zum Löschen brauchst du Netz." : "Das hat gerade nicht geklappt. Bitte später noch einmal versuchen.";
+  };
+}
+document.addEventListener("onlinechange", () => { kbUpdateBadge(); if (kb.open) kabineRender(); });
+{ const lg = document.getElementById("kbLogo"); if (lg) lg.onclick = kabineOpen; kbUpdateBadge(); }
+
 if ("serviceWorker" in navigator) {
   window.addEventListener("load", () => navigator.serviceWorker.register("./sw.js"));
 }
@@ -18927,6 +19375,7 @@ if (/[?&]debug=1\b/.test(location.search)) {
 
 maybeShowInstallTip();
 runSplash();
+onlineBoot().catch(() => {});
 </script>
 </body>
 </html>

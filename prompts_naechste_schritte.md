@@ -5449,6 +5449,12 @@ Offen/abweichend gegenüber den Wunschlisten: alle Nostalgie-Partien (0 von 8 Pl
 CLAUDE.md – beides wurde automatisch blockiert, deshalb meldet das Prüfskript aktuell genau EINEN Fehler: „paris saint-germain 13-mal als gefragte Mannschaft (max. 8)“.
 Neue Länderkürzel in NAT_NAMES: SR, GP, VE, AM, MG, MZ, CW, ZA, IS, IR; neues Layout 3-4-3.
 
+**Stand K2 (Konto mit Apple, 30.10.2026):** Supabase-Projekt „Startelo XI“ (EU-Irland) läuft, K1-SQL eingespielt, Apple-Anmeldung eingerichtet
+(App ID `de.startelo.login`, Services ID `de.startelo.login.web`, Schlüssel im Passwortmanager, Client-Secret läuft am **28.04.2027** ab – Erneuerung spätestens **14.04.2027**
+mit `node tools/apple-client-secret.mjs <AuthKey.p8> VKCJ4XFY29`). K2b in der App: Kabine am Logo, „Mit Apple anmelden“, Namen + Wappen wählen, Einstellungen,
+Abmelden, Konto löschen (`tools/test-konto.mjs`, 54 Prüfungen). Offen: echter Anmelde-Test im Safari, Apple-Token beim Löschen widerrufen (Edge Function, vor dem Store),
+Google später (Supabase „Allow manual linking“ dann einschalten), Freunde (K4).
+
 ---
 
 ## Prompt 61b – Duell-Pool Paket 2: Spanien (26 Aufstellungen)

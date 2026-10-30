@@ -1,4 +1,4 @@
-const CACHE_NAME = "startingxi-v78";
+const CACHE_NAME = "startingxi-v79";
 const APP_SHELL = [
   "./startelf_check.html",
   "./manifest.json",
@@ -11,6 +11,7 @@ const APP_SHELL = [
   "./icons/favicon-16.png",
   "./fonts/anton-400.woff2",
   "./fonts/oswald-variable.woff2",
+  "./vendor/supabase-js-2.118.0.umd.js",
 ];
 
 self.addEventListener("install", (event) => {
@@ -34,6 +35,11 @@ self.addEventListener("activate", (event) => {
 self.addEventListener("fetch", (event) => {
   const { request } = event;
   if (request.method !== "GET") return;
+  // Fremde Adressen (Supabase-API, Anmeldung) nie cachen und nie anfassen - sonst bekaeme man veraltete Konto-Antworten (Prompt K2b)
+  const url = new URL(request.url);
+  if (url.origin !== self.location.origin) return;
+  // Rueckkehr von der Anmeldung (?code=...): normal laden, aber nicht in den Cache schreiben
+  const authReturn = /[?&](code|error|error_description)=/.test(url.search);
 
   // HTML-/Navigations-Anfragen: network-first, damit eine neue Version sofort
   // ankommt, sobald online - ohne dass CACHE_NAME manuell hochgezaehlt werden
@@ -42,8 +48,7 @@ self.addEventListener("fetch", (event) => {
     event.respondWith(
       fetch(request)
         .then((response) => {
-          const clone = response.clone();
-          caches.open(CACHE_NAME).then((cache) => cache.put(request, clone));
+          if (!authReturn) { const clone = response.clone(); caches.open(CACHE_NAME).then((cache) => cache.put(request, clone)); }
           return response;
         })
         .catch(() => caches.match(request).then((cached) => cached || caches.match("./startelf_check.html")))
