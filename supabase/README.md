@@ -61,3 +61,12 @@ Nur der Server (Rolle `service_role`): `process_deadlines()`, `enqueue_deadline_
 * **Konto löschen** entfernt alles per Kaskade, auch die Duelle mit anderen (deren lokale Bilanz bleibt auf deren Gerät).
 * **Plausibilität (Stufe A):** Wertebereiche, Mindestzeit (`min_seconds_per_correct`), Fristen, eine Abgabe je Runde/Tag. Die Lösungen liegen weiter in der App (siehe Technik-Konzept Abschnitt 11 für Ranked).
 * **Push:** Hier nur das Einreihen (`notification_queue`); der Versand kommt in K6/8b.
+
+## Stand des echten Projekts
+
+- Angelegt am 30.10.2026: Organisation „Startelo“ (Free), Projekt „Startelo XI“, Region **EU, Irland (eu-west-1)** (Frankfurt war in der Oberfläche nicht wählbar; EU/DSGVO ist erfüllt).
+- Eingespielt über den SQL Editor mit den Dateien in `einspielen/` (1 Schema + Regeln = Migrationen 0001–0008, 2 Seed, 3 Zeitplaner, 4 Prüfung).
+  Prüfung: 18 Tabellen, 0 ohne RLS, 297 Aufstellungen, 400 Tage Tages-Plan, 1466 Namensregeln, 2 Zeitplaner-Jobs.
+- `einspielen/` ist erzeugt (Kopie von `migrations/` + `seed.sql`) – bei Änderungen neu bündeln, nicht von Hand ändern.
+- Keine Schlüssel im Repo. In die App gehört später nur der öffentliche `anon key`.
+
