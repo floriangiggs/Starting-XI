@@ -14,7 +14,8 @@ await page.goto("file://" + html); await page.waitForTimeout(4000);
 const data = await page.evaluate(() => {
   const all = [...LINEUP_CHALLENGES, ...DAILY_CHALLENGES, ...DUEL_POOL];
   const year = (m) => { const x = (m.comp.match(/\d{1,2}\.\d{1,2}\.(\d{4})/) || m.comp.match(/(\d{4})/) || [])[1]; return x ? +x : null; };
-  const catalog = all.map((m) => ({ id: m.id, difficulty: m.difficulty, league: m.league, year: year(m) }));
+  const poolOf = (id) => (LINEUP_CHALLENGES.some((x) => x.id === id) ? "campaign" : DAILY_CHALLENGES.some((x) => x.id === id) ? "daily" : "duel");
+  const catalog = all.map((m) => ({ id: m.id, difficulty: m.difficulty, league: m.league, year: year(m), pool: poolOf(m.id), special: m.special || null, cats: duelCategoriesOf(m), teams: matchTeamKeys(m) }));
   const players = new Set(); all.forEach((m) => Object.values(m.players).forEach((n) => players.add(n)));
   const days = []; const start = new Date(DAILY_EPOCH + "T12:00:00");
   for (let i = 0; i < 400; i++) { const d = new Date(start.getTime() + i * 86400000), key = localDateKey(d); days.push([key, getDailyChallenge(key).id]); }
@@ -30,8 +31,12 @@ for (const n of data.players) { const f = flat(n); if (f.length >= 4) persons.ad
 const reserved = ["admin", "administrator", "support", "startingxi", "starting", "xi", "startelo", "starteloxi", "system", "moderator", "mod", "team", "official", "offiziell", "kabine", "gast", "spieler", "anonym", "null", "undefined", "root", "info", "hilfe", "help", "service", "starting11", "startelf", "fifa", "uefa", "dfb", "bundesliga"];
 const blocked = ["nazi", "hitler", "heilhitler", "fick", "fuck", "nigg", "hure", "nutte", "schlampe", "wichs", "porn", "vergewalt", "kanake", "spast", "adolf", "sieg heil".replace(" ", ""), "arschloch", "bitch", "cunt"];
 let sql = `-- ERZEUGT von tools/gen-supabase-seed.mjs - nicht von Hand aendern (App-Stand: ${data.catalog.length} Aufstellungen, ${data.days.length} Tage ab ${data.epoch})\n`;
-sql += "insert into public.lineup_catalog (id, difficulty, league, year) values\n" + data.catalog.map((c) => `  (${q(c.id)}, ${c.difficulty}, ${q(c.league)}, ${c.year === null ? "null" : c.year})`).join(",\n") + "\non conflict (id) do update set difficulty = excluded.difficulty, league = excluded.league, year = excluded.year;\n\n";
+const arr = (a) => (a.length ? "array[" + a.map(q).join(", ") + "]::text[]" : "'{}'::text[]");
+const catalogSql = "insert into public.lineup_catalog (id, difficulty, league, year, pool, special, cats, team_keys) values\n" + data.catalog.map((c) => `  (${q(c.id)}, ${c.difficulty}, ${q(c.league)}, ${c.year === null ? "null" : c.year}, ${q(c.pool)}, ${c.special ? q(c.special) : "null"}, ${arr(c.cats)}, ${arr(c.teams)})`).join(",\n") + "\non conflict (id) do update set difficulty = excluded.difficulty, league = excluded.league, year = excluded.year, pool = excluded.pool, special = excluded.special, cats = excluded.cats, team_keys = excluded.team_keys;\n";
+sql += catalogSql + "\n";
 sql += "insert into public.daily_lineups (day, lineup_id) values\n" + data.days.map(([d, id]) => `  (${q(d)}, ${q(id)})`).join(",\n") + "\non conflict (day) do update set lineup_id = excluded.lineup_id;\n\n";
 sql += "insert into public.name_rules (kind, word) values\n" + [...reserved.map((w) => ["reserved", w]), ...blocked.map((w) => ["blocked", w]), ...[...persons].sort().map((w) => ["person", w])].map(([k, w]) => `  (${q(k)}, ${q(w)})`).join(",\n") + "\non conflict do nothing;\n";
 fs.writeFileSync(path.join(root, "supabase", "seed.sql"), sql);
+// Nur der Katalog (mit den Spalten aus Migration 0010) zum Nachspielen auf einer bestehenden Datenbank
+fs.writeFileSync(path.join(root, "supabase", "einspielen", "7-katalog-spalten.sql"), `-- ERZEUGT von tools/gen-supabase-seed.mjs. Erst 6-duell-v2.sql ausfuehren, dann diese Datei (Katalog mit Kategorien/Mannschaften fuer die Duell-Auswahl).\n` + catalogSql);
 console.log(`supabase/seed.sql: ${data.catalog.length} Aufstellungen, ${data.days.length} Tage, ${persons.size} Personennamen`);

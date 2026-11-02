@@ -238,8 +238,16 @@ const ids = (arr) => arr.map((x) => x.id);
 
 /* ---------- Duell ---------- */
 const crd = (u, opp, rounds = 3, sec = 120, diff = 0) => call(u, "create_duel", [opp, rounds, sec, diff], ["uuid", "int", "int", "int"]);
-const sr = (u, duel, round, c, s, solved = null, mask = null, left = 0) => call(u, "submit_round", [duel, round, c, s, solved, mask, left], ["uuid", "int", "int", "int", "jsonb", "int", "int"]);
+// Runde abgeben wie die App: erst start_round, Startzeit passend zurueckdatieren (Test kann nicht warten), dann submit_round
+const sr = async (u, duel, round, c, s, solved = null, mask = null, left = 0) => {
+  const st = await call(u, "start_round", [duel, round], ["uuid", "int"]);
+  if (st && st.error) return st;
+  await db.query("update public.duel_starts set started_at = now() - make_interval(secs => $4) where duel_id = $1 and round = $2 and user_id = $3", [duel, round, u, Math.max(1, s) + 1]);
+  return call(u, "submit_round", [duel, round, c, s, solved, mask, left], ["uuid", "int", "int", "int", "jsonb", "int", "int"]);
+};
+const srRaw = (u, duel, round, c, s, solved = null, mask = null, left = 0) => call(u, "submit_round", [duel, round, c, s, solved, mask, left], ["uuid", "int", "int", "int", "jsonb", "int", "int"]);
 {
+  await db.exec("update public.app_config set value = 99 where key = 'max_open_duels_pair'");
   // Anna + Ben sind Freunde (oben wiederhergestellt), Cora + Dave sind Freunde
   check("Duell nur gegen Freunde", err(await crd(U.anna, U.fritz), "not_friends"));
   check("Duell gegen mich selbst nicht", err(await crd(U.anna, U.anna), "not_friends"));
@@ -362,6 +370,94 @@ const sr = (u, duel, round, c, s, solved = null, mask = null, left = 0) => call(
   const dn = await crd(U.anna, U.ben, 5, 120, 0);
   const now5 = (await one("select lineup_id from public.duel_rounds where duel_id = $1", [dn])).map((x) => x.lineup_id);
   check("Neue Aufstellungen gegen denselben Gegner (soweit moeglich)", now5.filter((x) => !prev.has(x)).length >= 3, String(now5.filter((x) => !prev.has(x)).length));
+}
+
+/* ---------- Duell v2 (K6a): Auswahl, Rundenstart, haengende Runden, Ausblenden ---------- */
+{
+  await db.exec("update public.app_config set value = 1000 where key = 'create_duel_per_minute'; update public.app_config set value = 99 where key = 'max_open_duels'; delete from public.rate_events;");
+  const cat = new Map((await one("select id, difficulty, team_keys, cats from public.lineup_catalog")).map((x) => [x.id, x]));
+  check("Katalog hat Kategorien und Mannschaften", [...cat.values()].every((x) => x.team_keys.length >= 1) && [...cat.values()].filter((x) => x.cats.length).length > 250);
+  let bad1 = 0, badTeam = 0, badHard = 0, dup = 0, total5 = 0;
+  for (let i = 0; i < 20; i++) {
+    const d = await crd(i % 2 ? U.anna : U.ben, i % 2 ? U.ben : U.anna, 5, 120, 0);
+    if (typeof d !== "string") { check("Auswahl-Duell angelegt", false, JSON.stringify(d)); break; }
+    const ids = (await one("select lineup_id from public.duel_rounds where duel_id = $1 order by round", [d])).map((x) => x.lineup_id);
+    total5++;
+    if (cat.get(ids[0]).difficulty >= 4) bad1++;
+    if (new Set(ids).size !== 5) dup++;
+    for (let k = 1; k < 5; k++) if (cat.get(ids[k]).team_keys.some((t) => cat.get(ids[k - 1]).team_keys.includes(t))) badTeam++;
+    for (let k = 0; k + 2 < 5; k++) if (ids.slice(k, k + 3).filter((x) => cat.get(x).difficulty >= 4).length > 1) badHard++;
+    await call(i % 2 ? U.anna : U.ben, "cancel_duel", [d], ["uuid"]);
+  }
+  check("Auswahl (20 Duelle a 5 Runden): Runde 1 nie Stufe 4-5", total5 === 20 && bad1 === 0, String(bad1));
+  check("Auswahl: nie dieselbe Aufstellung doppelt im Duell", dup === 0);
+  check("Auswahl: keine Mannschaft in zwei Runden hintereinander", badTeam === 0, String(badTeam));
+  check("Auswahl: in je 3 Runden hoechstens eine knifflige (Mix)", badHard === 0, String(badHard));
+  const dn = await crd(U.anna, U.ben, 5, 60, 5);
+  check("Feste Stufe 5 wird eingehalten", (await one("select bool_and(c.difficulty = 5) ok from public.duel_rounds r join public.lineup_catalog c on c.id = r.lineup_id where r.duel_id = $1", [dn]))[0].ok === true);
+  await call(U.anna, "cancel_duel", [dn], ["uuid"]);
+
+  // Rundenstart
+  const d = await crd(U.anna, U.ben, 3, 120, 0);
+  const g0 = await call(U.ben, "get_duel", [d], ["uuid"]);
+  check("Vor dem Start: keine Aufstellung sichtbar (Funktion)", g0.rounds_list.every((r) => r.lineup_id === null));
+  check("Vor dem Start: keine Aufstellung sichtbar (Tabelle)", (await sqlAs(U.ben, "select * from public.duel_rounds where duel_id = $1", [d])).rows.length === 0);
+  check("Fremder: start_round -> no_duel", err(await call(U.fritz, "start_round", [d, 1], ["uuid", "int"]), "no_duel"));
+  check("Runde ausserhalb / Reihenfolge", err(await call(U.ben, "start_round", [d, 4], ["uuid", "int"]), "bad_round") && err(await call(U.ben, "start_round", [d, 2], ["uuid", "int"]), "round_order"));
+  const s1 = await call(U.ben, "start_round", [d, 1], ["uuid", "int"]);
+  const real = (await one("select lineup_id from public.duel_rounds where duel_id = $1 and round = 1", [d]))[0].lineup_id;
+  check("Start liefert die Aufstellung der Runde", s1.lineup_id === real && s1.done === false && s1.seconds === 120, JSON.stringify(s1));
+  check("Zweiter Start ist wirkungslos (gleiche Antwort, gleiche Startzeit)", (await call(U.ben, "start_round", [d, 1], ["uuid", "int"])).lineup_id === real && (await one("select count(*)::int n from public.duel_starts where duel_id = $1", [d]))[0].n === 1);
+  const g1 = await call(U.ben, "get_duel", [d], ["uuid"]);
+  check("Nach Start: nur Runde 1 sichtbar, Tabelle ebenso", g1.rounds_list[0].lineup_id === real && g1.rounds_list[1].lineup_id === null && (await sqlAs(U.ben, "select * from public.duel_rounds where duel_id = $1", [d])).rows.length === 1);
+  check("Eigene laufende Runde wird gemeldet", g1.my_active?.round === 1 && g1.their_active === false, JSON.stringify(g1.my_active));
+  check("Anna sieht, dass Ben gerade spielt (kein Ergebnis)", (await call(U.anna, "get_duel", [d], ["uuid"])).their_active === true && (await call(U.anna, "list_duels")).find((x) => x.id === d).their_active === true);
+  check("Liste: eigene laufende Runde", (await call(U.ben, "list_duels")).find((x) => x.id === d).my_active === 1);
+  check("Ohne Start keine Abgabe", err(await srRaw(U.anna, d, 1, 5, 100), "not_started"));
+  // Zeit muss zum Start passen
+  check("Abgabe sofort nach Start mit 60 s Spielzeit -> bad_seconds", err(await srRaw(U.ben, d, 1, 5, 60), "bad_seconds"));
+  const r0 = await srRaw(U.ben, d, 1, 0, 5);
+  check("0 Richtige: Zeit wird auf das Limit gesetzt (kein Zeitvorteil)", r0.recorded === true && (await one("select seconds from public.duel_results where duel_id = $1 and round = 1 and user_id = $2", [d, U.ben]))[0].seconds === 120, JSON.stringify(r0));
+  check("Nach Abgabe: start_round meldet done", (await call(U.ben, "start_round", [d, 1], ["uuid", "int"])).done === true);
+  // zu spaet: Limit + Gnadenfrist ueberschritten
+  await call(U.ben, "start_round", [d, 2], ["uuid", "int"]);
+  await db.query("update public.duel_starts set started_at = now() - interval '10 minutes' where duel_id = $1 and round = 2 and user_id = $2", [d, U.ben]);
+  const late = await srRaw(U.ben, d, 2, 11, 100, null, null, 0);
+  const lateRow = (await one("select correct, seconds, left_app from public.duel_results where duel_id = $1 and round = 2 and user_id = $2", [d, U.ben]))[0];
+  check("Zu spaet abgegeben = Runde mit 0 Richtigen und Hinweis 'App verlassen'", late.forfeited === true && lateRow.correct === 0 && lateRow.seconds === 120 && lateRow.left_app === 1, JSON.stringify([late, lateRow]));
+  // haengende Runde: der Zeitplaner schliesst sie
+  await call(U.anna, "start_round", [d, 1], ["uuid", "int"]);
+  await db.query("update public.duel_starts set started_at = now() - interval '10 minutes' where duel_id = $1 and round = 1 and user_id = $2", [d, U.anna]);
+  check("Zeitplaner schliesst haengende Runde (0 Richtige)", (await callService("process_deadlines")) >= 0 && (await one("select correct, left_app from public.duel_results where duel_id = $1 and round = 1 and user_id = $2", [d, U.anna]))[0].left_app === 1);
+  check("Haengende Runde: spaetere Abgabe aendert nichts", (await srRaw(U.anna, d, 1, 9, 100)).recorded === false);
+  // Hinweis 'Du bist dran': Ben beendet alle Runden, Anna noch nicht
+  await sr(U.ben, d, 3, 6, 100);
+  check("Push 'duel_your_turn' an Anna, wenn Ben fertig ist", (await one("select count(*)::int n from public.notification_queue where to_user = $1 and kind = 'duel_your_turn' and payload->>'duel' = $2", [U.anna, d]))[0].n === 1);
+  await sr(U.anna, d, 2, 5, 100); await sr(U.anna, d, 3, 5, 100);
+  check("Duell endet, wenn beide fertig sind", (await call(U.anna, "get_duel", [d], ["uuid"])).status === "finished");
+  check("Nach Ende sind alle Aufstellungen sichtbar", (await call(U.anna, "get_duel", [d], ["uuid"])).rounds_list.every((r) => typeof r.lineup_id === "string"));
+
+  // Ausblenden
+  const dh = await crd(U.cora, U.dave, 1, 60);
+  check("Offenes Duell nicht ausblendbar", err(await call(U.cora, "hide_duel", [dh], ["uuid"]), "not_allowed"));
+  await call(U.cora, "cancel_duel", [dh], ["uuid"]);
+  check("Zurueckziehen meldet es dem Gegner (duel_cancelled)", (await one("select count(*)::int n from public.notification_queue where to_user = $1 and kind = 'duel_cancelled' and payload->>'duel' = $2", [U.dave, dh]))[0].n === 1);
+  check("Fremder kann nicht ausblenden", err(await call(U.fritz, "hide_duel", [dh], ["uuid"]), "no_duel"));
+  check("Ausblenden", isVoid(await call(U.cora, "hide_duel", [dh], ["uuid"])) && !(await call(U.cora, "list_duels")).some((x) => x.id === dh));
+  check("Fuer den anderen bleibt es in der Liste", (await call(U.dave, "list_duels")).some((x) => x.id === dh));
+  check("Ausgeblendetes Duell bleibt per get_duel lesbar", (await call(U.cora, "get_duel", [dh], ["uuid"])).status === "cancelled");
+  check("Zweimal ausblenden schadet nicht", isVoid(await call(U.cora, "hide_duel", [dh], ["uuid"])) && (await one("select cardinality(hidden_by)::int n from public.duels where id = $1", [dh]))[0].n === 1);
+
+  // Grenze offener Duelle je Freundespaar
+  await db.exec("update public.app_config set value = 2 where key = 'max_open_duels_pair'; update public.duels set status = 'cancelled' where status = 'open';");
+  await crd(U.cora, U.dave, 1, 60); await crd(U.dave, U.cora, 1, 60);
+  check("Offene Duelle je Freundespaar begrenzt (beide Richtungen)", err(await crd(U.cora, U.dave, 1, 60), "too_many_with_friend") && err(await crd(U.dave, U.cora, 1, 60), "too_many_with_friend"));
+  check("Anderes Paar bleibt frei", typeof (await crd(U.anna, U.ben, 1, 60)) === "string");
+  await db.exec("update public.app_config set value = 99 where key = 'max_open_duels_pair'; update public.app_config set value = 10 where key = 'create_duel_per_minute'; update public.app_config set value = 30 where key = 'max_open_duels'; update public.duels set status = 'cancelled' where status = 'open'; delete from public.rate_events;");
+  // Rechte
+  check("Gast darf start_round/hide_duel nicht", /permission denied/.test(await asRole("anon", "", () => db.query("select public.start_round(gen_random_uuid(), 1)")).then(() => "ok", (e) => e.message)) && /permission denied/.test(await asRole("anon", "", () => db.query("select public.hide_duel(gen_random_uuid())")).then(() => "ok", (e) => e.message)));
+  check("duel_starts nicht direkt lesbar", /permission denied/.test(await sqlAs(U.anna, "select * from public.duel_starts").then(() => "ok", (e) => e.message)));
+  check("round_visible/close_stale_rounds nicht aufrufbar", /permission denied/.test(await sqlAs(U.anna, "select private.close_stale_rounds()").then(() => "ok", (e) => e.message)));
 }
 
 /* ---------- Geraete / Push ---------- */
