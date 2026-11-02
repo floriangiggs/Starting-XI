@@ -1,4 +1,4 @@
-const CACHE_NAME = "startingxi-v82";
+const CACHE_NAME = "startingxi-v83";
 const APP_SHELL = [
   "./startelf_check.html",
   "./manifest.json",
@@ -12,6 +12,7 @@ const APP_SHELL = [
   "./fonts/anton-400.woff2",
   "./fonts/oswald-variable.woff2",
   "./vendor/supabase-js-2.118.0.umd.js",
+  "./vendor/qrcode-generator-2.0.4.js",
 ];
 
 self.addEventListener("install", (event) => {

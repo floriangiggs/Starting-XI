@@ -5,5 +5,6 @@ Fremdbibliotheken, die lokal mitgeliefert werden (kein CDN, damit die App offlin
 | Datei | Quelle | Version |
 |---|---|---|
 | `supabase-js-2.118.0.umd.js` | npm `@supabase/supabase-js`, `dist/umd/supabase.js` (MIT-Lizenz) | 2.118.0 |
+| `qrcode-generator-2.0.4.js` | npm `qrcode-generator`, `dist/qrcode.js` (MIT-Lizenz, Kazuhiko Arase) – QR-Code fuer den Freundescode, wird erst im Bildschirm „Freund hinzufuegen“ geladen | 2.0.4 |
 
 Aktualisieren: `npm install --save-dev @supabase/supabase-js@<neu>`, Datei kopieren, Versionsnummer im Dateinamen, in `sw.js` (APP_SHELL) und in `startelf_check.html` (`ONLINE_CFG.lib`) anpassen, `CACHE_NAME` erhoehen.

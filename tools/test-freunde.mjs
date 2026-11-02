@@ -148,6 +148,12 @@ const txt = async (page, sel) => (await page.locator(sel).first().innerText()).r
   const sh = await page.evaluate(() => window.__shared);
   ok(sh && sh.url === "https://startelo.de/f/XI-TEST" && /XI-TEST/.test(sh.text), "Teilen: Link https://startelo.de/f/XI-TEST (" + JSON.stringify(sh) + ")");
   ok(/startelo\.de\/f\/XI-TEST/.test(await txt(page, ".kb-screen.kb-top2")), "Dein Code und Link stehen auf dem Blatt");
+  // QR-Code: Bild des Codes mit einem unabhaengigen Decoder (jsQR) lesen und mit dem Einladungslink vergleichen
+  await page.waitForSelector("#faQr.on svg", { timeout: 5000 });
+  const png = await page.locator("#faQr").screenshot();
+  await page.addScriptTag({ path: path.join(root, "node_modules/jsqr/dist/jsQR.js") });
+  const decoded = await page.evaluate(async (b64) => { const img = new Image(); img.src = "data:image/png;base64," + b64; await img.decode(); const c = document.createElement("canvas"); c.width = img.width; c.height = img.height; const x = c.getContext("2d"); x.drawImage(img, 0, 0); const d = x.getImageData(0, 0, c.width, c.height); const r = jsQR(d.data, d.width, d.height); return r ? r.data : null; }, png.toString("base64"));
+  ok(decoded === "https://startelo.de/f/XI-TEST", "QR-Code lässt sich lesen und enthält den Einladungslink (" + decoded + ")");
   ok(page.errs.length === 0, "Hinzufügen: keine Fehler " + page.errs.join("|"));
   await ctx.close();
 }

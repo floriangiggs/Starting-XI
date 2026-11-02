@@ -171,7 +171,8 @@
   .hm-xp { margin-top: 6px; height: 9px; border-radius: 5px; background: rgba(60,40,10,0.13); box-shadow: inset 0 1px 2px rgba(0,0,0,0.15); overflow: hidden; }
   .hm-xp i { display: block; height: 100%; border-radius: 5px; background: linear-gradient(90deg, #2E7D52, #49D98A); transform-origin: 0 50%; }
   .hm-intro .hm-xp i { animation: hmGrow 1s 0.7s cubic-bezier(.2,.9,.25,1) both; }
-  .hm-xpt { margin-top: 3px; font-weight: 400; font-size: 12.5px; color: #5B4D33; white-space: nowrap; }
+  .hm-xpt { margin-top: 3px; font-weight: 400; font-size: 12.5px; line-height: 1.2; color: #5B4D33; white-space: nowrap; }
+  .hm-pass .hm-who small { line-height: 1.15; }
   .hm-pass .hm-who .hm-xpt b, .hm-p-hero .hm-who .hm-xpt b, .hm-xpt b { display: inline; margin: 0; font-family: var(--f-text); font-weight: 600; font-size: inherit; line-height: inherit; color: #1C2B36; white-space: nowrap; }
   .hm-pass .hm-go { width: 30px; height: 30px; border-radius: 50%; flex-shrink: 0; display: grid; place-items: center; margin-top: 16px; background: rgba(60,40,10,0.08); }
   .hm-pass .hm-go svg { width: 16px; height: 16px; }
@@ -423,15 +424,15 @@
   @media (max-height: 830px) {
     #screen-start.hm-home { --hd: 222px; --hm: 184px; --pass-h: 120px; gap: 8px; }
     #screen-start .hm-pass { height: 120px; }
-    #screen-start .hm-pass .hm-top { top: 8px; } #screen-start .hm-pass .hm-medal { width: 60px; height: 60px; } #screen-start .hm-pass .hm-medal svg { width: 32px; height: 32px; }
+    #screen-start .hm-pass .hm-top { top: 6px; } #screen-start .hm-pass .hm-xp { margin-top: 4px; } #screen-start .hm-pass .hm-medal { width: 60px; height: 60px; } #screen-start .hm-pass .hm-medal svg { width: 32px; height: 32px; }
     #screen-start .hm-d-h { top: 14px; } #screen-start .hm-d-mid { top: 72px; height: 80px; } #screen-start .hm-mini { width: 68px !important; } #screen-start .hm-d-cta { bottom: 13px; } #screen-start .hm-cta, #screen-start .hm-done .hm-res, #screen-start .hm-done .hm-share { height: 46px; }
     #screen-start .hm-m-art { top: 58px; height: 66px; } #screen-start .hm-tray { margin-top: 8px; height: 62px; }
   }
   @media (max-height: 720px) {
     #screen-start.hm-home { --hd: 198px; --hm: 164px; --pass-h: 108px; gap: 6px; }
     #screen-start .hm-head { height: 42px; } #screen-start .hm-brand img { width: 36px; height: 36px; } #screen-start .hm-brand b { font-size: 24px; } #screen-start .hm-chip { height: 34px; }
-    #screen-start .hm-pass { height: 108px; } #screen-start .hm-pass .hm-top { top: 7px; gap: 11px; } #screen-start .hm-pass .hm-medal { width: 54px; height: 54px; } #screen-start .hm-pass .hm-medal svg { width: 29px; height: 29px; }
-    #screen-start .hm-pass .hm-who > b { font-size: 22px; } #screen-start .hm-pass .hm-stamps { height: 32px; }
+    #screen-start .hm-pass { height: 108px; } #screen-start .hm-pass .hm-top { top: 4px; gap: 11px; } #screen-start .hm-pass .hm-xpt { margin-top: 1px; } #screen-start .hm-pass .hm-medal { width: 54px; height: 54px; } #screen-start .hm-pass .hm-medal svg { width: 29px; height: 29px; }
+    #screen-start .hm-pass .hm-who > b { font-size: 22px; line-height: 1; } #screen-start .hm-pass .hm-stamps { height: 32px; }
     #screen-start .hm-d-h { top: 11px; left: 18px; } #screen-start .hm-d-h b { font-size: 25px; } #screen-start .hm-d-mid { top: 60px; left: 18px; height: 68px; gap: 10px; } #screen-start .hm-mini { width: 56px !important; } #screen-start .hm-d-cta { left: 14px; right: 14px; bottom: 11px; }
     #screen-start .hm-cta, #screen-start .hm-done .hm-res, #screen-start .hm-done .hm-share { height: 40px; font-size: 20px; } #screen-start .hm-plate { height: 32px; } #screen-start .hm-plate b { font-size: 19px; }
     #screen-start .hm-m-h { top: 9px; } #screen-start .hm-m-h b { font-size: 20px; } #screen-start .hm-m-h small { margin-top: 2px; font-size: 12px; line-height: 14px; } #screen-start .hm-m-art { top: 48px; height: 56px; } #screen-start .hm-m-btn { height: 34px; bottom: 10px; }
@@ -1111,6 +1112,7 @@
   .sp-side { display: flex; align-items: center; gap: 8px; margin-top: 2px; }
   .sp-side b { font-family: 'Anton', Impact, 'Arial Narrow', sans-serif; font-weight: 400; line-height: 1.05; color: var(--gold-hi); white-space: nowrap; }
   .sp-pill { flex-shrink: 0; padding: 2px 9px; border: 1.5px solid rgba(244,241,232,0.55); border-radius: 12px; font-weight: 500; font-size: 13px; line-height: 1.3; }
+  .sp-vs.sp-when { margin-top: 0; }
   .sp-vs { margin-top: 3px; font-weight: 300; font-size: 13.5px; color: rgba(244,241,232,0.82); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
   .sp-vs em { font-style: normal; font-weight: 400; color: var(--chalk); }
   .sp-score { position: relative; flex-shrink: 0; width: 68px; padding: 7px 4px 6px; border-radius: 10px; text-align: center; margin-top: 2px;
@@ -2234,6 +2236,13 @@
   .kb-or { display: flex; align-items: center; gap: 10px; margin: 14px 0 12px; font-weight: 300; font-size: 13.5px; color: rgba(244,241,232,0.7); }
   .kb-or::before, .kb-or::after { content: ""; flex: 1; height: 1.5px; background: rgba(244,241,232,0.22); }
   .kb-codein { display: grid; grid-template-columns: minmax(0,1fr) auto; gap: 8px; align-items: center; }
+  .kb-qrrow { display: grid; grid-template-columns: auto minmax(0,1fr); gap: 12px; align-items: center; margin-top: 10px; }
+  .kb-qr { display: none; width: 116px; height: 116px; padding: 7px; border-radius: 10px; background: #fff; box-shadow: inset 0 0 0 1px #DDD4BE; }
+  .kb-qr.on { display: block; }
+  .kb-qr svg { width: 100%; height: 100%; display: block; }
+  .kb-qrrow .kb-share { margin-top: 0; }
+  .kb-qr:not(.on) + .kb-share { grid-column: 1 / -1; }
+  .kb-qr.on + .kb-share { grid-template-columns: 1fr; }
   .kb-share { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-top: 10px; }
   .kb-share button { min-height: 40px; border: 0; border-radius: 11px; display: inline-flex; align-items: center; justify-content: center; gap: 6px; font: 500 14px 'Oswald', sans-serif; color: #FFF1C8; background: linear-gradient(180deg, #2F7A50, #1F5A3A); box-shadow: 0 2px 0 #143A26; cursor: pointer; }
   .kb-share button svg { width: 14px; height: 14px; }
@@ -6945,6 +6954,11 @@ function exitMatch() {
 
 /* ---- Level-Vorschau "Taktiktafel" (Prompt 41): ersetzt in der Kampagne das schlichte Panel von startMatch() ---- */
 const STAR2_THRESHOLD = 9; // von 11 Positionen richtig fuer den 2. Stern (3. Stern = 11/11 ohne Hilfe)
+// Volles Datum der Partie als 25.05.2024 (Fallback: nur das Jahr) - damit man abschaetzen kann, wann das Spiel war
+function matchDateNum(m) {
+  const dm = m.comp.match(/(\d{1,2})\.(\d{1,2})\.(\d{4})/);
+  return dm ? `${dm[1].padStart(2, "0")}.${dm[2].padStart(2, "0")}.${dm[3]}` : ((m.comp.match(/(\d{4})\s*$/) || m.comp.match(/(\d{4})/) || [])[1] || "");
+}
 function lvInfo(m) {
   const dm = m.comp.match(/(\d{1,2})\.(\d{1,2})\.(\d{4})/);
   const date = dm ? new Date(+dm[3], +dm[2] - 1, +dm[1]).toLocaleDateString("de-DE", { weekday: "short", day: "numeric", month: "long", year: "numeric" }) : "";
@@ -14943,11 +14957,11 @@ function spKickHTML(m) {
 }
 // Tafel: Kopf (Mannschaft, Gegner, Ergebnis-Tafel) + Kreide-Spielfeld mit Positionen. cfg: { kick, combo, bench }
 function spBoardHTML(m, cfg) {
-  const info = lvInfo(m), lay = PITCH_LAYOUTS[m.formation], year = (m.comp.match(/(\d{4})\s*$/) || m.comp.match(/(\d{4})/) || [])[1] || "";
+  const info = lvInfo(m), lay = PITCH_LAYOUTS[m.formation];
   return `<div class="sp-frame" id="spFrame">
     <div class="sp-head"><div class="sp-kick" id="spKick">${cfg.kick}</div>
       <div class="sp-row2"><div class="sp-who"><small>Aufstellen:</small><div class="sp-side"><b id="spSide">${duelEsc(info.side)}</b><span class="sp-pill">${duelEsc(m.formation)}</span></div>
-          <div class="sp-vs" id="spVs">gegen <em>${duelEsc(spOpponent(info))}</em> · ${duelEsc(info.comp)} ${year}</div></div>
+          <div class="sp-vs" id="spVs">gegen <em>${duelEsc(spOpponent(info))}</em></div><div class="sp-vs sp-when">${duelEsc(info.comp)} · ${duelEsc(matchDateNum(m))}</div></div>
         <div class="sp-score"><b>${duelEsc(info.score)}</b><small>${info.note.length ? info.note.map(duelEsc).join("<br>") : "Endstand"}</small></div></div></div>
     <div class="sp-pitch" id="spPitch" data-formation="${duelEsc(m.formation)}"><svg class="sp-chalk" id="spChalk" aria-hidden="true"></svg>
       ${cfg.combo ? `<div class="sp-combo" id="comboChip">${SP_ICON.flame}<span id="comboN"></span><small>er-Kombo</small></div>` : ""}
@@ -16661,7 +16675,7 @@ const DUEL_LEAGUE_SHORT = { "Champions League": "CL", "Europa League": "EL", "We
 function duelRoundTag(lineupId) {
   const m = dailyMatchById(lineupId);
   if (!m) return null;
-  const y = (m.comp.match(/\d{1,2}\.\d{1,2}\.(\d{4})/) || m.comp.match(/(\d{4})/) || [])[1] || "";
+  const y = matchDateNum(m);
   return `${duelEsc(m.side.replace(/^Aufstellung (?:von|des|der)\s+/i, ""))} · ${duelEsc(DUEL_LEAGUE_SHORT[m.league] || m.league)} ${y}`.trim();
 }
 function duelWhen(ts, withTime = true) {
@@ -18427,7 +18441,7 @@ function renderDuelResult() {
   const conf = won && !REDUCED_MOTION ? `<div class="du-conf" aria-hidden="true">${Array.from({ length: 26 }, (_, i) => { const a = (i / 26) * Math.PI * 2, r = 120 + (i % 5) * 26; return `<i style="background:${["#F7D98E", "#E8B23D", "#FFF1C8", "#7FE0A8"][i % 4]};--dx:${(Math.cos(a) * r).toFixed(0)}px;--dy:${(Math.sin(a) * r * 0.7 + 60).toFixed(0)}px;--rot:${(i * 47) % 360}deg;animation-delay:${(0.5 + (i % 6) * 0.03).toFixed(2)}s"></i>`; }).join("")}</div>` : "";
   const score = wait ? `<b>?</b><span>:</span><b>?</b>` : `<b>${res.mw}</b><span>:</span><b>${res.ow}</b>`;
   const rows = d.mine.map((a, i) => {
-    const m = dailyMatchById(d.lineups[i]), inf = m ? lvInfo(m) : { side: "" }, yr = m ? ((m.comp.match(/(\d{4})\s*$/) || m.comp.match(/(\d{4})/) || [])[1] || "") : "";
+    const m = dailyMatchById(d.lineups[i]), inf = m ? lvInfo(m) : { side: "" }, yr = m ? matchDateNum(m) : "";
     const b = !wait && d.theirs[i], rd = !wait && res.rounds[i], wa = rd && rd.w === "me", wb = rd && rd.w === "op";
     return `<div class="du-rr du-rise" style="animation-delay:${(0.55 + i * 0.08).toFixed(2)}s"><span class="v${wa ? " win" : ""}">${wa ? DU_SV.crown : ""}<b>${a.correct}</b><small>${fmtMS(a.seconds)}</small></span>
       <span class="c"><b>Runde ${i + 1}</b><small>${duelEsc(inf.side)} ${yr}</small></span>
@@ -18517,7 +18531,7 @@ function benchBodyHTML(m, reveal, W) {
   return `${used.length ? `<div class="bn-g" style="${dl()}">Eingewechselt <em>${used.length}</em></div>${timeline()}${subs}` : ""}${unused.length ? `<div class="bn-g" style="${dl()}">Nicht eingesetzt <em>${unused.length}</em></div><div class="bn-rest">${rest}</div>` : ""}`;
 }
 function benchCompLabel(m) {
-  const yr = (m.comp.match(/(\d{4})\s*$/) || [])[1] || "";
+  const yr = matchDateNum(m);
   return m.comp.replace(/\s*\([^)]*\)/g, "").split(",")[0].replace("Champions-League-", "CL-").replace("Champions League", "CL") + (yr ? " " + yr : "");
 }
 function openBenchSheet(m) {
@@ -19702,6 +19716,21 @@ function dailyBoardHtml() {
   }).join("");
   return `<div class="kb-sec" style="margin-top:0">Heute unter Freunden</div><div class="kb-tt" id="frTT">${html}</div><div class="kb-note">Gleiche Aufstellung für alle. Bei gleich vielen Richtigen gewinnt die schnellere Zeit.</div>`;
 }
+// ---------- QR-Code (lokale Bibliothek vendor/qrcode-generator, wird erst beim Oeffnen geladen) ----------
+const QR_LIB = "vendor/qrcode-generator-2.0.4.js";
+function kbQrLib() {
+  if (typeof window.qrcode === "function") return Promise.resolve();
+  if (kbQrLib.p) return kbQrLib.p;
+  kbQrLib.p = new Promise((res, rej) => { const el = document.createElement("script"); el.src = QR_LIB; el.onload = () => res(); el.onerror = () => { kbQrLib.p = null; rej(new Error("qr")); }; document.head.appendChild(el); });
+  return kbQrLib.p;
+}
+// SVG mit dunklen Modulen auf transparentem Grund (der Rahmen .kb-qr liefert Weiss + Ruhezone)
+function kbQrSvg(text) {
+  const q = window.qrcode(0, "M"); q.addData(text); q.make();
+  const n = q.getModuleCount(); let d = "";
+  for (let r = 0; r < n; r++) for (let c = 0; c < n; c++) if (q.isDark(r, c)) d += `M${c} ${r}h1v1h-1z`;
+  return `<svg viewBox="0 0 ${n} ${n}" shape-rendering="crispEdges" role="img" aria-label="QR-Code für deinen Freundescode"><path d="${d}" fill="#13202A"/></svg>`;
+}
 const frRankLevel = (p) => duelEsc(p.rank || "Kreisliga");
 function frRow(p, actions) {
   const ci = kbCrestIdx(p.crest_color), [c1, c2] = ONLINE_CRESTS[ci];
@@ -19805,12 +19834,14 @@ function kabineOpenAddFriend() {
       <div id="faCRes" class="kb-res" role="status"></div>
       <div class="kb-sec">Dein Code</div>
       <div class="kb-id" style="color:#13202A"><div class="code" style="margin:0;padding:0;border:0">Freundescode <b>${duelEsc(code)}</b></div>
-        <div class="kb-share"><button type="button" id="faCopy">${KB_SV.copy}Code kopieren</button><button type="button" id="faShare">Einladungslink teilen</button></div>
-        <div class="note" style="margin-top:8px">${duelEsc(FR_LINK(code))}</div></div>
+        <div class="kb-qrrow"><div class="kb-qr" id="faQr" aria-hidden="true"></div>
+          <div class="kb-share"><button type="button" id="faCopy">${KB_SV.copy}Code kopieren</button><button type="button" id="faShare">Einladungslink teilen</button></div></div>
+        <div class="note" style="margin-top:8px">Mit der Kamera scannen: Die App öffnet sich bei deiner Anfrage.<br>${duelEsc(FR_LINK(code))}</div></div>
       <div id="faOpp"></div>
     </div>`;
   const $ = (id) => sc.querySelector("#" + id);
   $("faBack").onclick = () => entry.close();
+  kbQrLib().then(() => { const box = $("faQr"); if (box && code) { box.innerHTML = kbQrSvg(FR_LINK(code)); box.classList.add("on"); } }).catch(() => {});
   const resRow = (p) => { const f = FR.friends.some((x) => x.id === p.id), o = FR.outgoing.some((x) => x.id === p.id);
     return frRow(p, f ? '<span class="kb-ok">Befreundet</span>' : o ? '<span class="kb-mute">Angefragt</span>' : frBtn("add", "Hinzufügen", "gold")); };
   const wire = (box) => box.querySelectorAll(".kb-frow").forEach((row) => row.addEventListener("click", async (e) => {
