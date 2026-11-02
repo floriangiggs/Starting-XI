@@ -4941,6 +4941,7 @@ const defaultProfile = {
   duelsDeleted: [], // IDs geloeschter Duelle (max. 200): ein spaeter eintreffender Link dazu wird ignoriert (Prompt 39)
   duelStats: { wins: 0, losses: 0, draws: 0, streak: 0, bestStreak: 0, sweeps: 0, perOpponent: {}, form: [] }, // form: letzte 5 Ergebnisse "w"/"d"/"l", unabhaengig von geloeschten Duellen
   duelRecent: [], // zuletzt in Duellen gespielte Aufstellungs-IDs (max. 40)
+  duelsPaid: [], // Server-Duelle (K6b): bereits vergebene Belohnungen "r:<id>" (Rundenbonus), "w:<id>" (Siegbonus), "s:<id>" (Bilanz) - wird synchronisiert, damit nichts doppelt zaehlt
   stats: {
     lineupsPlayed: 0,
     lineupsPerfect: 0,
@@ -5085,6 +5086,7 @@ function loadProfile() {
     if (!profile.duelStats || typeof profile.duelStats !== "object") profile.duelStats = {};
     { const ds = profile.duelStats; ["wins", "losses", "draws", "streak", "bestStreak", "sweeps"].forEach(k => { if (typeof ds[k] !== "number") ds[k] = 0; }); if (!ds.perOpponent || typeof ds.perOpponent !== "object") ds.perOpponent = {}; if (!Array.isArray(ds.form)) ds.form = []; }
     if (!Array.isArray(profile.duelRecent)) profile.duelRecent = [];
+    if (!Array.isArray(profile.duelsPaid)) profile.duelsPaid = [];
     // Prompt 39: Benutzername (Vorschlag aus dem Duell-Namen), Liste geloeschter Duelle
     if (!Array.isArray(profile.duelsDeleted)) profile.duelsDeleted = [];
     if (typeof profile.duelHandle !== "string" || !/^[a-z0-9._]{3,20}$/.test(profile.duelHandle)) profile.duelHandle = profile.duelName ? duelHandleFromName(profile.duelName) : null;
@@ -16395,7 +16397,7 @@ function duelHandleFromName(name) {
 /* ---- Duelle aufräumen (Prompt 39): abgelaufen, löschen, Rückgängig, Historie begrenzen. Die Bilanz (profile.duelStats) wird dabei NIE angefasst ---- */
 const DUEL_EXPIRE_MS = 14 * 86400000, DUEL_PURGE_MS = 30 * 86400000, DUEL_DELETED_MAX = 200, DUEL_HISTORY_KEEP = 30;
 const duelActivity = (d) => d.updated || d.finished || d.created || 0;
-const duelExpired = (d, now = Date.now()) => d.status !== "done" && now - duelActivity(d) > DUEL_EXPIRE_MS;
+const duelExpired = (d, now = Date.now()) => d.status !== "done" && (d.server ? !!d.deadline && now > d.deadline : now - duelActivity(d) > DUEL_EXPIRE_MS);
 function duelRemember(id) {
   profile.duelsDeleted = profile.duelsDeleted.filter(x => x !== id);
   profile.duelsDeleted.push(id);
@@ -16408,6 +16410,7 @@ function duelDelete(id) {
   delete profile.duels[id];
   duelRemember(id);
   saveProfile(profile);
+  if (d.server) sdRemoteDelete(id, d);
   return { id, d };
 }
 function duelUndelete(entry) {
@@ -16552,7 +16555,8 @@ function createDuel(draft, opponentDeviceId = null) { // Gegner (falls schon bek
   return id;
 }
 function duelMeInfo() {
-  return { name: profile.duelName || "Spieler", handle: profile.duelHandle || "", deviceId: profile.deviceId, rank: rankForLevel(profile.level).name, level: profile.level };
+  const acc = online.state === "member" && online.account && online.account.username;
+  return { name: profile.duelName || acc || "Spieler", handle: profile.duelHandle || acc || "", deviceId: profile.deviceId, rank: rankForLevel(profile.level).name, level: profile.level };
 }
 function duelChallengeCode(id) {
   const d = profile.duels[id];
@@ -16661,7 +16665,10 @@ function askDuelName(onDone) {
   hInput.addEventListener("keydown", (e) => { if (e.key === "Enter") save(); });
   backdrop.onclick = (e) => { if (e.target === backdrop) close(); };
 }
-function ensureDuelName(cb) { if (profile.duelName) cb(); else askDuelName(cb); }
+function ensureDuelName(cb) {
+  if (!profile.duelName && online.state === "member" && online.account && online.account.username) { profile.duelName = online.account.username.slice(0, 16); profile.duelHandle = online.account.username; saveProfile(profile); } // Mitglieder: Konto-Name statt Nachfrage
+  if (profile.duelName) cb(); else askDuelName(cb);
+}
 
 /* ---- Statistik / Trophaeen (Daten pflegt Prompt 26) ---- */
 function duelOpenTodo() { return Object.values(profile.duels).filter(d => d.status === "todo").length; }
@@ -16736,9 +16743,11 @@ function dzPerson(d) {
 function dzKind(d) { return duelExpired(d) ? "exp" : d.status === "todo" ? "hot" : "wait"; }
 function dzTicket(id, d) {
   const kind = dzKind(d), p = dzPerson(d);
-  const meta = kind === "hot" ? (d.role === "opponent" ? "fordert dich heraus · " : "noch nicht gespielt · ") + dzMeta(d)
-    : kind === "exp" ? dzMeta(d) + " · keine Reaktion seit " + dzDays(duelActivity(d)) + " Tagen"
+  const meta0 = kind === "hot" ? (d.role === "opponent" ? "fordert dich heraus · " : "noch nicht gespielt · ") + dzMeta(d)
+    : kind === "exp" ? dzMeta(d) + (d.server ? " · Frist abgelaufen" : " · keine Reaktion seit " + dzDays(duelActivity(d)) + " Tagen")
     : dzMeta(d) + " · du hast gespielt · " + dzSince(duelActivity(d));
+  const left = d.server && d.deadline && kind !== "exp" ? Math.max(1, Math.round((d.deadline - Date.now()) / 3600000)) : null;
+  const meta = meta0 + (left !== null ? " · noch " + (left >= 48 ? Math.round(left / 24) + " Tage" : left + " Std") : "");
   const right = kind === "hot" ? `<span class="dz-go">${d.role === "opponent" && !(d.mine && d.mine.length) ? "Ansehen" : "Spielen"}</span>`
     : kind === "exp" ? `<span class="dz-wt">abgelaufen</span>` : `<span class="dz-waittag">${DU_SV.glass}Wartet</span>`;
   const mag = duelMagHTML({ name: p.known ? p.name : "?", deviceId: d.opponent ? d.opponent.deviceId : "" }, 38);
@@ -16780,8 +16789,8 @@ function dzPageHTML() {
   const rise = (i) => `class="du-rise" style="animation-delay:${(i * 0.05).toFixed(2)}s"`;
   return `<div class="lv-top"><button type="button" class="tb back" id="dzBack">${chev}Start</button><span class="lv-sp"></span><button type="button" class="tb gold" data-new>${DU_SV.plus}Neues Duell</button></div>
     <div class="du-body" id="dzBodyEl">
-      <div class="dz-pass du-rise"><div class="row">${duelMagHTML(me, 56)}<div class="who"><small>Duell-Pass</small>${profile.duelName
-          ? `<b>${duelEsc(profile.duelName)}</b><span>${me.handle ? "@" + duelEsc(me.handle) + " · " : ""}${duelEsc(me.rank)} · Level ${me.level}</span>`
+      <div class="dz-pass du-rise"><div class="row">${duelMagHTML(me, 56)}<div class="who"><small>Duell-Pass</small>${profile.duelName || me.name !== "Spieler"
+          ? `<b>${duelEsc(profile.duelName || me.name)}</b><span>${me.handle ? "@" + duelEsc(me.handle) + " · " : ""}${duelEsc(me.rank)} · Level ${me.level}</span>`
           : `<b>Dein Name</b><span><button type="button" class="dz-link" id="dzNameBtn">Name und Benutzername festlegen</button></span>`}</div></div>
         <div class="dz-stamps"><span class="dz-stp w"><b data-count="${st.wins}">${st.wins}</b>Siege</span><span class="dz-stp"><b data-count="${st.draws}">${st.draws}</b>Remis</span><span class="dz-stp"><b data-count="${st.losses}">${st.losses}</b>Niederlagen</span>${formI ? `<span class="dz-pform" role="img" aria-label="Form: ${formLbl}">${formI}</span>` : ""}</div></div>
       <nav class="dz-snav du-rise" style="animation-delay:.05s" id="dzSnav"><button type="button" data-s="open" class="dz-on">Am Zug${hot.length ? `<span class="dz-n">${hot.length}</span>` : ""}</button><button type="button" data-s="hist">Historie</button><button type="button" data-s="more">Freunde</button></nav>
@@ -16978,32 +16987,43 @@ function dzOpenNew(pre) {
   if (pre) Object.assign(duelDraft, pre.settings || {});
   duelDraft.fair = false;
   let friend = pre && pre.friend !== undefined ? pre.friend : "";
-  let friends = Object.entries(profile.duelStats.perOpponent).filter(([, f]) => f.w + f.l + f.d > 0).sort((a, b) => (b[1].w + b[1].l + b[1].d) - (a[1].w + a[1].l + a[1].d)).slice(0, 6);
+  const onl = sdActive(), ofr = onl ? FR.friends : [];
+  if (onl && !(pre && pre.friend !== undefined) && friend === "" && (pre && pre.friendId || ofr.length)) friend = "s:" + ((pre && pre.friendId) || ofr[0].id);
+  let friends = Object.entries(profile.duelStats.perOpponent).filter(([dev, f]) => !dev.startsWith("u:") && f.w + f.l + f.d > 0).sort((a, b) => (b[1].w + b[1].l + b[1].d) - (a[1].w + a[1].l + a[1].d)).slice(0, 6);
   if (friend && !friends.some(([dev]) => dev === friend) && profile.duelStats.perOpponent[friend]) friends = [[friend, profile.duelStats.perOpponent[friend]], ...friends.slice(0, 5)]; // Revanche gegen jemanden ausserhalb der Top 6
   const build = () => `<h3>Schnell-Duell</h3><p class="dz-lead2">Ihr spielt dieselben Aufstellungen mit derselben Uhr. Mehr Richtige gewinnen die Runde.</p>
-    <div class="dz-fld"><small>Gegen wen?</small><div class="dz-friends">${friends.map(([dev, f]) => `<button class="dz-friend" type="button" data-fr="${dev}" aria-pressed="${friend === dev}">${duelMagHTML({ name: f.name, deviceId: dev }, 28)}${duelEsc(f.name)}</button>`).join("")}<button class="dz-friend dz-add" type="button" data-fr="" aria-pressed="${friend === ""}">+ Neuer Freund</button></div></div>
+    <div class="dz-fld"><small>Gegen wen?</small><div class="dz-friends">${ofr.map(f => `<button class="dz-friend" type="button" data-fr="s:${f.id}" aria-pressed="${friend === "s:" + f.id}">${duelMagHTML({ name: f.username, deviceId: "u:" + f.id }, 28)}${duelEsc(f.username)}</button>`).join("")}${friends.map(([dev, f]) => `<button class="dz-friend" type="button" data-fr="${dev}" aria-pressed="${friend === dev}">${duelMagHTML({ name: f.name, deviceId: dev }, 28)}${duelEsc(f.name)}</button>`).join("")}<button class="dz-friend dz-add" type="button" data-fr="" aria-pressed="${friend === ""}">${onl ? "Per Link" : "+ Neuer Freund"}</button></div>${onl && !ofr.length ? `<div class="dz-sumline" style="text-align:left">Freunde findest du in der Kabine › Freunde. Per Link spielst du auch ohne Konto.</div>` : ""}</div>
     <div class="dz-fld"><small>Format</small><div class="dz-seg" data-g="rounds">${DUEL_FORMATS.map(f => `<button type="button" data-v="${f.rounds}" aria-pressed="${duelDraft.rounds === f.rounds}">${f.label}<small>${f.sub}</small></button>`).join("")}</div></div>
     <div class="dz-fld"><small>Zeit pro Aufstellung</small><div class="dz-seg dz-time" data-g="seconds">${DUEL_TIMES.map(t => `<button type="button" data-v="${t.seconds}" aria-pressed="${duelDraft.seconds === t.seconds}">${t.seconds / 60}:00</button>`).join("")}</div></div>
     <div class="dz-fld"><small>Schwierigkeit</small><div class="dz-seg" data-g="difficulty">${[0, 1, 2, 3, 4, 5].map(n => `<button type="button" data-v="${n}" aria-pressed="${duelDraft.difficulty === n}">${n ? `<i style="background:${DIFF_COLOR[n]}"></i>${n}` : "Mix"}</button>`).join("")}</div></div>
     <button type="button" class="du-fair" id="dzFair" aria-pressed="${duelDraft.fair}"><span class="du-sw${duelDraft.fair ? " on" : ""}"></span><span><b>Ich spiele fair</b><small>Ohne Google, KI oder Hilfe von außen</small></span></button>
-    <div style="height:12px"></div><button class="du-cta" type="button" id="dzSend" aria-disabled="${!duelDraft.fair}">${duelDraft.fair ? `${DU_SV.share}Anpfiff &amp; Link teilen` : "Erst „Ich spiele fair“ antippen"}</button><div class="dz-sumline" id="dzSum"></div>`;
+    <div style="height:12px"></div><button class="du-cta" type="button" id="dzSend" aria-disabled="${!duelDraft.fair}">${duelDraft.fair ? (friend.startsWith("s:") ? "Anpfiff" : `${DU_SV.share}Anpfiff &amp; Link teilen`) : "Erst „Ich spiele fair“ antippen"}</button><div class="dz-sumline" id="dzSum"></div>`;
   const sum = () => {
     const el = document.getElementById("dzSum"); if (!el) return;
-    const f = friend && profile.duelStats.perOpponent[friend];
+    const f = friend && profile.duelStats.perOpponent[friend], of = friend.startsWith("s:") && ofr.find(x => x.id === friend.slice(2));
     const n = duelDraft.rounds;
-    el.innerHTML = `${f ? duelEsc(f.name) + " · " : ""}<b>${n} ${n === 1 ? "Aufstellung" : "Aufstellungen"}</b> · je <b>${duelDraft.seconds / 60}:00 Min</b> · ${duelDraft.difficulty ? "Stufe " + duelDraft.difficulty : "Schwierigkeit gemischt"}`;
+    el.innerHTML = `${f ? duelEsc(f.name) + " · " : of ? "@" + duelEsc(of.username) + " · " : ""}<b>${n} ${n === 1 ? "Aufstellung" : "Aufstellungen"}</b> · je <b>${duelDraft.seconds / 60}:00 Min</b> · ${duelDraft.difficulty ? "Stufe " + duelDraft.difficulty : "Schwierigkeit gemischt"}`;
   };
   dzOpenSheet(build(), (sheet) => {
     const rebuild = () => { sheet.querySelector(".in").innerHTML = `<div class="dz-grab"></div>` + build(); sum(); };
     sum();
     sheet.onclick = (e) => {
       const f = e.target.closest("[data-fr]");
-      if (f) { friend = f.dataset.fr; sheet.querySelectorAll("[data-fr]").forEach(x => x.setAttribute("aria-pressed", String(x === f))); sum(); return; }
+      if (f) { friend = f.dataset.fr; sheet.querySelectorAll("[data-fr]").forEach(x => x.setAttribute("aria-pressed", String(x === f))); const cta = sheet.querySelector("#dzSend"); if (cta && duelDraft.fair) cta.innerHTML = friend.startsWith("s:") ? "Anpfiff" : `${DU_SV.share}Anpfiff &amp; Link teilen`; sum(); return; }
       const s = e.target.closest(".dz-seg button");
       if (s) { const g = s.parentElement.dataset.g; duelDraft[g] = +s.dataset.v; [...s.parentElement.children].forEach(x => x.setAttribute("aria-pressed", String(x === s))); sum(); return; }
       if (e.target.closest("#dzFair")) { duelDraft.fair = !duelDraft.fair; rebuild(); return; }
       if (e.target.closest("#dzSend")) {
         if (!duelDraft.fair) { showToast("Erst „Ich spiele fair“ antippen"); return; }
+        if (friend.startsWith("s:")) { // Freund online: der Server legt das Duell an und waehlt die Aufstellungen
+          if (SD.creating) return; SD.creating = true;
+          sdCreate(friend.slice(2), duelDraft).then((res) => {
+            SD.creating = false;
+            if (!res.ok) { showToast(`<span class="tt-tx">${duelEsc(res.message || FR_ERR.server)}</span>`); return; }
+            dzCloseSheet(); duelDraft.fair = false; renderModeTiles(); startDuelRun(res.id);
+          }, () => { SD.creating = false; });
+          return;
+        }
         ensureDuelName(() => {
           const id = createDuel(duelDraft, friend || null);
           const f2 = friend && profile.duelStats.perOpponent[friend];
@@ -17250,13 +17270,14 @@ function renderDuelInvite() {
   const o = d.opponent, me = duelMeInfo();
   const rec = profile.duelStats.perOpponent[o.deviceId];
   const played = d.theirs && d.theirs.length;
-  const browser = !isStandalone();
+  const browser = !d.server && !isStandalone();
   const onApp = browser && invitePath === "app";
   const oname = duelEsc(o.name), nRounds = d.settings.rounds === 1 ? "Aufstellung" : d.settings.rounds + " Aufstellungen";
   const prev = root.querySelector(".du-body"), keepScroll = prev ? prev.scrollTop : null;
-  const sub = (p) => `<small>${p.handle ? "@" + duelEsc(p.handle) : "&nbsp;"}</small><small>${p.rank ? duelEsc(rankLabel(p.rank)) + " · Level " + p.level : "&nbsp;"}</small>`;
+  const sub = (p) => `<small>${p.handle ? "@" + duelEsc(p.handle) : "&nbsp;"}</small><small>${p.rank ? duelEsc(rankLabel(p.rank)) + (p.level ? " · Level " + p.level : "") : "&nbsp;"}</small>`;
   const zettel = onApp
     ? `<b>Code kopiert.</b> Öffne die App › Duelle › Code einfügen. Zum Spielen hier im Browser tippe oben auf „Hier im Browser spielen“.`
+    : d.server ? `<b>Ihr spielt dieselben ${nRounds}</b> – jeder für sich, das Ergebnis siehst du nach deinem Spiel. Die Aufstellung erfährst du erst beim Anpfiff.`
     : played ? `<b>${oname} hat schon gespielt.</b> Die Ergebnisse siehst du, wenn du alle ${nRounds} gespielt hast.`
     : `<b>Ihr spielt dieselben ${nRounds}</b> – jeder für sich, die Ergebnisse siehst du nach deinem Spiel.`;
   root.innerHTML = top + `
@@ -17289,11 +17310,20 @@ function renderDuelInvite() {
   if (copy) copy.onclick = () => { invitePath = "app"; copyText(duelChallengeCode(activeInviteId), "Code kopiert - in der App unter Duelle › Code einfügen"); renderDuelInvite(); };
   const accept = document.getElementById("duelAccept");
   if (accept) accept.onclick = () => {
-    if (inviteFair) { ensureDuelName(() => startDuelRun(activeInviteId)); return; }
+    if (inviteFair) { if (d.server) startDuelRun(activeInviteId); else ensureDuelName(() => startDuelRun(activeInviteId)); return; }
     showToast("Erst „Ich spiele fair“ antippen");
     if (fairBtn) { fairBtn.classList.remove("nudge"); void fairBtn.offsetWidth; fairBtn.classList.add("nudge"); }
   };
-  document.getElementById("duelDecline").onclick = () => { delete profile.duels[activeInviteId]; saveProfile(profile); activeInviteId = null; renderModeTiles(); goBack(); };
+  document.getElementById("duelDecline").onclick = () => {
+    if (d.server) {
+      const sid = activeInviteId;
+      frCall("decline_duel", { p_duel: sid }).then((r) => {
+        if (!r.ok && r.error !== "no_duel" && r.error !== "not_allowed") { showToast(`<span class="tt-tx">${duelEsc(r.message)}</span>`); return; }
+        delete profile.duels[sid]; duelRemember(sid); saveProfile(profile); activeInviteId = null; renderModeTiles(); goBack();
+      });
+      return;
+    }
+    delete profile.duels[activeInviteId]; saveProfile(profile); activeInviteId = null; renderModeTiles(); goBack(); };
 }
 
 
@@ -17490,17 +17520,28 @@ function duelAward(amount, reason) {
   return amount;
 }
 
+// Rundenbonus (15 XP je gespielter Aufstellung) genau einmal; bei Server-Duellen zusaetzlich ueber profile.duelsPaid geschuetzt
+function duelRoundsXP(id, d, played) {
+  if (!d.xp) d.xp = { rounds: 0, win: 0 };
+  if (d.xp.rounds) return;
+  const key = "r:" + id, amt = XP_RULES.duelRoundXP * played;
+  if (d.server && profile.duelsPaid.includes(key)) { d.xp.rounds = amt; return; }
+  d.xp.rounds = duelAward(amt, "Duell gespielt");
+  if (d.server) sdPaid(key);
+}
 // Ergebnis berechnen, wenn BEIDE Seiten komplett sind; idempotent (duel.result).
 function evaluateDuel(id) {
   const d = profile.duels[id];
   if (!d || d.result) return d && d.result ? true : false;
   const n = d.settings.rounds;
-  if (d.mine.length < n || !d.theirs || d.theirs.length < n) return false;
-  const o = duelOutcome(d.mine, d.theirs);
+  if (d.server) { if (!d.srvResult || d.mine.length < n) return false; }
+  else if (d.mine.length < n || !d.theirs || d.theirs.length < n) return false;
+  const o = d.server ? d.srvResult : duelOutcome(d.mine, d.theirs);
   d.result = { outcome: o.outcome, mw: o.mw, ow: o.ow, by: o.by, rounds: o.rounds };
-  applyDuelStats(d, o);
+  if (!(d.server && profile.duelsPaid.includes("s:" + id))) { applyDuelStats(d, o); if (d.server) sdPaid("s:" + id); } // Server-Duell: Bilanz nur einmal je Duell, auch ueber Geraete/Neuinstallation
   if (!d.xp) d.xp = { rounds: 0, win: 0 };
-  if (o.outcome === "win") d.xp.win = duelAward(XP_RULES.duelWinXP, "Duellsieg");
+  if (d.server) duelRoundsXP(id, d, d.playedRounds || 0);
+  if (o.outcome === "win") { if (d.server && profile.duelsPaid.includes("w:" + id)) d.xp.win = XP_RULES.duelWinXP; else { d.xp.win = duelAward(XP_RULES.duelWinXP, "Duellsieg"); if (d.server) sdPaid("w:" + id); } }
   d.status = "done";
   d.finished = Date.now(); d.updated = d.finished;
   const won = checkTrophies(profile);
@@ -17519,10 +17560,22 @@ function startDuelRun(id) {
     d.playedRounds = (d.playedRounds || 0) + 1;
     d.active = null;
     saveProfile(profile);
+    if (d.server) sdFlush();
   }
   if (d.mine.length >= d.settings.rounds) { duelRun = { id }; endDuelRun(); return; }
-  duelRun = { id, round: d.mine.length, phase: "walkout", left: 0, timers: [], active: true };
-  if (navStack[navStack.length - 1] === "duelplay") renderDuelPlay(); else navigate("duelplay");
+  const go = () => {
+    duelRun = { id, round: d.mine.length, phase: "walkout", left: 0, timers: [], active: true };
+    if (navStack[navStack.length - 1] === "duelplay") renderDuelPlay(); else navigate("duelplay");
+  };
+  if (!d.server) { go(); return; }
+  // Server-Duell: erst vorige Runden senden, dann die Runde beim Server starten (liefert die Aufstellung)
+  if (SD.opening) return;
+  SD.opening = true;
+  sdFlush().then(() => sdStartRound(id, d.mine.length)).then((res) => {
+    SD.opening = false;
+    if (!res.ok) { showToast(`<span class="tt-tx">${duelEsc(res.message || FR_ERR.server)}</span>`); return; }
+    go();
+  }, () => { SD.opening = false; });
 }
 
 function endDuelRun() {
@@ -17533,15 +17586,15 @@ function endDuelRun() {
   duelRun = null; // vor dem Navigieren: der popstate-Guard darf nicht mehr greifen
   const d = profile.duels[id];
   const played = d.playedRounds || d.mine.length;
-  if (!d.xp) d.xp = { rounds: 0, win: 0 };
-  if (!d.xp.rounds) d.xp.rounds = duelAward(XP_RULES.duelRoundXP * played, "Duell gespielt"); // nur einmal (Prompt 54: erneutes Oeffnen/Reload im Rundenende)
-  d.lineups.forEach(l => { profile.duelRecent = profile.duelRecent.filter(x => x !== l); profile.duelRecent.push(l); });
+  duelRoundsXP(id, d, played); // nur einmal (Prompt 54: erneutes Oeffnen/Reload im Rundenende)
+  d.lineups.filter(Boolean).forEach(l => { profile.duelRecent = profile.duelRecent.filter(x => x !== l); profile.duelRecent.push(l); });
   profile.duelRecent = profile.duelRecent.slice(-40);
-  d.status = "waiting";
+  d.status = d.result ? "done" : "waiting";
   d.updated = Date.now();
   saveProfile(profile);
   evaluateDuel(id); // Eingeladener: Ergebnis des Herausforderers steckt im Link -> sofort fertig
   saveProfile(profile);
+  if (d.server) sdSync();
   renderProfileBar(); renderModeTiles();
   activeResultId = id;
   navigate("duelresult");
@@ -17638,7 +17691,7 @@ function runWalkout(d) {
     fit($("foMeNm"), myName); fit($("foOpNm"), oppName);
     $("duoMe").textContent = myName; $("duoOp").textContent = oppName;
     $("foMeWho").textContent = "Du · " + me.rank + " · Level " + me.level;
-    $("foOpWho").textContent = opp && opp.rank ? rankLabel(opp.rank) + " · Level " + opp.level : "";
+    $("foOpWho").textContent = opp && opp.rank ? rankLabel(opp.rank) + (opp.level ? " · Level " + opp.level : "") : "";
     $("round").textContent = "Runde " + (r.round + 1) + " von " + d.settings.rounds;
   }
   let cards = [], dots = [];
@@ -18220,24 +18273,34 @@ function duelEnterReview(root, m, d, r, correct, seconds) {
   const pitch = root.querySelector("#spPitch"); if (pitch) pitch.insertAdjacentHTML("beforeend", '<span class="du-stamp">Auflösung</span>');
   const clock = root.querySelector(".tb.clock");
   if (clock) { clock.setAttribute("aria-label", "Zeit gestoppt"); clock.innerHTML = `${DU_SV.lock}<span id="duelClock">${duelClockHTML(seconds)}</span><small>gestoppt</small>`; }
-  const o = d.opponent, me = duelMeInfo(), mine = d.mine[r.round], theirs = d.theirs && d.theirs[r.round];
-  const known = !!theirs, last = d.mine.length >= d.settings.rounds;
-  const w = known ? duelRoundWinner(mine, theirs) : null;
-  let a = 0, b = 0; if (known) for (let i = 0; i <= r.round; i++) { const x = duelRoundWinner(d.mine[i], d.theirs[i]); if (x === "me") a++; else if (x === "op") b++; }
-  const opName = o ? duelEsc(o.name) : "Gegner";
-  const felt = root.querySelector("#spTray .sp-felt");
-  felt.className = "sp-felt du-review";
-  felt.innerHTML = `<div class="du-rres">
+  const paint = () => {
+    const felt = root.querySelector("#spTray .sp-felt");
+    if (!felt || r.view !== "review:" + r.round) return;
+    const o = d.opponent, me = duelMeInfo(), mine = d.mine[r.round], theirs = d.theirs && d.theirs[r.round];
+    const known = !!theirs, last = d.mine.length >= d.settings.rounds;
+    const w = known ? duelRoundWinner(mine, theirs) : null;
+    let a = 0, b = 0; if (known) for (let i = 0; i <= r.round; i++) { const x = duelRoundWinner(d.mine[i], d.theirs[i]); if (x === "me") a++; else if (x === "op") b++; }
+    const opName = o ? duelEsc(o.name) : "Gegner";
+    felt.className = "sp-felt du-review";
+    felt.innerHTML = `<div class="du-rres">
       <div class="du-rp${w === "me" ? " win" : ""}">${w === "me" ? DU_SV.crown : ""}${duelMagHTML(me, 28)}<div><b>${correct}<small>/11</small></b><span>Du · ${fmtMS(seconds)} · ${11 - correct} verpasst</span></div></div>
       <div class="du-mid">${known ? `Stand<b>${a}:${b}</b>` : `Runde<b>${r.round + 1}</b>`}</div>
       ${known ? `<div class="du-rp${w === "op" ? " win" : ""}">${w === "op" ? DU_SV.crown : ""}${duelMagHTML(o, 28)}<div><b>${theirs.correct}<small>/11</small></b><span>${opName} · ${fmtMS(theirs.seconds)}</span></div></div>`
         : `<div class="du-rp du-hid">${o ? duelMagHTML(o, 28) : '<span class="du-mag" style="--c:#9AA6A1;width:28px;height:28px;font-size:13px">?</span>'}<div><b>${DU_SV.lock}verdeckt</b><span>${o ? opName + " spielt nach dir" : "Gegner noch offen"}</span></div></div>`}
     </div>
     <button type="button" class="du-next" id="duelNext">${last ? "Zum Abpfiff" : "Weiter zu Runde " + (r.round + 2)}${DU_SV.next}</button>`;
-  document.getElementById("duelNext").onclick = () => {
-    if (last) endDuelRun();
-    else { r.round++; r.phase = "walkout"; r.view = null; renderDuelPlay(); }
+    const nx = document.getElementById("duelNext");
+    nx.onclick = () => {
+      if (last) { endDuelRun(); return; }
+      if (!d.server) { r.round++; r.phase = "walkout"; r.view = null; renderDuelPlay(); return; }
+      nx.disabled = true; // Server-Duell: Runde beim Server starten (liefert die Aufstellung)
+      sdFlush().then(() => sdStartRound(r.id, r.round + 1)).then((res) => {
+        if (!res.ok) { nx.disabled = false; showToast(`<span class="tt-tx">${duelEsc(res.message || FR_ERR.server)}</span>`); return; }
+        r.round++; r.phase = "walkout"; r.view = null; r.redrawReview = null; renderDuelPlay();
+      }, () => { nx.disabled = false; });
+    };
   };
+  r.redrawReview = paint; paint();
 }
 
 function startDuelRound() {
@@ -18290,6 +18353,7 @@ function finishDuelRound(reason) {
   saveProfile(profile);
   r.phase = "review"; r.view = "review:" + r.round;
   duelEnterReview(document.getElementById("duelPlayView"), m, d, r, correct, seconds);
+  if (d.server) sdAfterRound(r.id);
 }
 
 function duelTick() {
@@ -18318,7 +18382,7 @@ function confirmDuelAbort() {
   backdrop.id = "duelAbortBox";
   backdrop.innerHTML = `<div class="sp-sheet" role="dialog" aria-modal="true"><div class="in"><div class="duel-name-box">
       <div style="font-family:'Anton',Impact,sans-serif;font-size:24px">Duell abbrechen?</div>
-      <div style="font-family:'Oswald',sans-serif;font-weight:300;font-size:14px;color:var(--muted)">${d.mine.length || duelRun.phase === "play" ? "Die laufende Runde zählt mit dem aktuellen Stand, die übrigen Runden zählen 0 von 11." : "Du hast noch nichts gespielt – das Duell bleibt offen und du kannst später starten."}</div>
+      <div style="font-family:'Oswald',sans-serif;font-weight:300;font-size:14px;color:var(--muted)">${d.server && duelRun.phase === "walkout" ? "Die Runde ist schon gestartet und zählt 0 von 11, die übrigen Runden ebenfalls." : d.mine.length || duelRun.phase === "play" ? "Die laufende Runde zählt mit dem aktuellen Stand, die übrigen Runden zählen 0 von 11." : "Du hast noch nichts gespielt – das Duell bleibt offen und du kannst später starten."}</div>
       <button type="button" class="save-btn main" id="duelAbortNo">Weiterspielen</button><button type="button" class="save-btn quiet" id="duelAbortYes">Abbrechen</button>
     </div></div></div>`;
   document.body.appendChild(backdrop);
@@ -18334,6 +18398,9 @@ function abortDuelRun() {
   if (r.phase === "play" && !r.finishing) {
     const inputs = [...document.querySelectorAll("#duelPlayView .pos-input")];
     d.mine.push({ correct: inputs.filter(i => i.classList.contains("ok")).length, seconds: Math.min(r.limit, Math.max(1, Math.round((Date.now() - r.start) / 1000))), left: r.left, ...duelRoundExtras(dailyMatchById(d.lineups[r.round]), r.solved) });
+    d.playedRounds = (d.playedRounds || 0) + 1;
+  } else if (d.server && r.phase === "walkout") { // beim Server ist die Runde mit dem Anpfiff gestartet und zaehlt 0
+    d.mine.push({ correct: 0, seconds: duelSecondsFor(d), left: 0, ...duelRoundExtras(dailyMatchById(d.lineups[r.round]) || { formation: "" }, {}) });
     d.playedRounds = (d.playedRounds || 0) + 1;
   }
   d.active = null;
@@ -18410,6 +18477,13 @@ function shareDuelResult(id) {
 function startRematch(id) {
   const old = profile.duels[id];
   if (!old) return;
+  if (old.server && old.opponent && old.opponent.userId) {
+    sdCreate(old.opponent.userId, old.settings).then((res) => {
+      if (!res.ok) { showToast(`<span class="tt-tx">${duelEsc(res.message || FR_ERR.server)}</span>`); return; }
+      renderModeTiles(); startDuelRun(res.id);
+    });
+    return;
+  }
   ensureDuelName(() => {
     const nid = createDuel({ rounds: old.settings.rounds, seconds: old.settings.seconds, difficulty: old.settings.difficulty }, old.opponent ? old.opponent.deviceId : null);
     if (old.opponent) profile.duels[nid].opponent = { ...old.opponent };
@@ -18439,6 +18513,7 @@ function renderDuelResult() {
       ? (won ? "Du hast mehr Aufstellungen gewonnen." : `${name} hat mehr Aufstellungen gewonnen.`)
       : res.by === "correct" ? `Gleich viele Runden – ${won ? "du hast" : name + " hat"} insgesamt mehr Spieler gewusst.`
       : res.by === "time" ? `Gleich viele Runden und Treffer – ${won ? "du warst" : name + " war"} insgesamt schneller.`
+      : res.by === "forfeit" ? "Die Frist ist abgelaufen – gewertet wurde, wer mehr Runden gespielt hat."
       : "Auch bei Runden, Treffern und Zeit gleichauf.";
   const conf = won && !REDUCED_MOTION ? `<div class="du-conf" aria-hidden="true">${Array.from({ length: 26 }, (_, i) => { const a = (i / 26) * Math.PI * 2, r = 120 + (i % 5) * 26; return `<i style="background:${["#F7D98E", "#E8B23D", "#FFF1C8", "#7FE0A8"][i % 4]};--dx:${(Math.cos(a) * r).toFixed(0)}px;--dy:${(Math.sin(a) * r * 0.7 + 60).toFixed(0)}px;--rot:${(i * 47) % 360}deg;animation-delay:${(0.5 + (i % 6) * 0.03).toFixed(2)}s"></i>`; }).join("")}</div>` : "";
   const score = wait ? `<b>?</b><span>:</span><b>?</b>` : `<b>${res.mw}</b><span>:</span><b>${res.ow}</b>`;
@@ -18453,7 +18528,7 @@ function renderDuelResult() {
   const xpTotal = d.xp ? d.xp.rounds + (d.xp.win || 0) : 0;
   const xpDetail = `${played} ${played === 1 ? "Spiel" : "Spiele"} · ${XP_RULES.duelRoundXP} XP${d.xp && d.xp.win ? ` + Siegbonus ${XP_RULES.duelWinXP} XP` : ""}`;
   const sendLabel = wait ? (d.role === "challenger" ? "Link teilen" : "Ergebnis senden") : `Ergebnis an ${name} senden`;
-  const showSend = wait || d.role === "opponent";
+  const showSend = !d.server && (wait || d.role === "opponent");
   root.innerHTML = duTopHTML({ id: "duelResBack", label: "Duelle" }, "Abpfiff") + `
     <div class="du-body">
       <div class="du-board du-hero du-rise">${conf}<div class="du-k">${duelFormatLabel(d.settings.rounds)}${o ? " gegen " + name : ""}</div>
@@ -18462,9 +18537,9 @@ function renderDuelResult() {
           <div class="s">${duelMagHTML(oppP, 40)}<b>${o ? duelEsc(o.name) : "Freund"}</b><small>${o && o.handle ? "@" + duelEsc(o.handle) : ""}</small></div></div>
         <div class="du-why">${why}</div></div>
       <div class="du-rounds">${rows}</div>
-      ${wait ? `<div class="du-zettel"><b>${d.role === "challenger" ? `Schick ${nameDat} den Link.` : `Schick ${nameDat} dein Ergebnis zurück.`}</b> ${d.role === "challenger" ? "Er enthält deine Ergebnisse – verdeckt, bis dein Freund selbst gespielt hat." : ""}</div>`
+      ${wait && d.server ? `<div class="du-zettel"><b>${name} ist dran.</b> Sobald ${name} gespielt hat, siehst du das Ergebnis hier.</div>` : wait ? `<div class="du-zettel"><b>${d.role === "challenger" ? `Schick ${nameDat} den Link.` : `Schick ${nameDat} dein Ergebnis zurück.`}</b> ${d.role === "challenger" ? "Er enthält deine Ergebnisse – verdeckt, bis dein Freund selbst gespielt hat." : ""}</div>`
         : `<div class="du-chips du-rise" style="animation-delay:.85s"><span class="du-chip${fairMe ? "" : " warn"}">${DU_SV.hand}${fairMe ? "Du hast fair gespielt" : "Du hast die App verlassen"}</span><span class="du-chip${fairOp ? "" : " warn"}">${DU_SV.hand}${fairOp ? name + " hat fair gespielt" : name + " hat die App verlassen"}</span></div>`}
-      <div class="du-xp du-rise" style="animation-delay:.9s"><span class="coin">XP</span><span>Deine Belohnung<small>${xpDetail}</small></span><b>+${xpTotal} XP</b></div>
+      ${d.xp || !d.server ? `<div class="du-xp du-rise" style="animation-delay:.9s"><span class="coin">XP</span><span>Deine Belohnung<small>${xpDetail}</small></span><b>+${xpTotal} XP</b></div>` : ""}
       ${rec ? `<div class="du-xp du-rise" style="animation-delay:.95s"><span>Bilanz gegen ${name}<small>alle Duelle</small></span><span class="bl">${rec.w} : ${rec.l}</span></div>` : ""}
       <div class="du-btns">${showSend ? `<button class="du-cta" type="button" id="duelResSend">${DU_SV.share}${sendLabel}</button>` : ""}
         ${wait ? `<button class="du-wbtn" type="button" id="duelResOver">Zur Übersicht</button>` : `<button class="du-wbtn" type="button" id="duelResRematch">${DU_SV.again}Revanche</button>`}</div>
@@ -19473,7 +19548,7 @@ document.addEventListener("onlinechange", () => { kbUpdateBadge(); if (kb.open) 
    Vereinigung bei Listen/Erfolgen, das Hoehere bei Zaehlern, Token nie addieren (Regeln: docs/technik-konzept-konten.md Abschnitt 8).
    Bleibt lokal: angefangene Aufstellungen, Geraete-ID, Ton, Duelle (kommen mit dem Server-Duell, K6). */
 const SYNC_META_KEY = "startelo_sync", SYNC_BACKUP_KEY = "startelo_backup_vor_abgleich", SYNC_DEBOUNCE_MS = 15000;
-const SYNC_LOCAL_ONLY = ["drafts", "deviceId", "duelName", "duelHandle", "duels", "duelsDeleted", "duelStats", "duelRecent", "sound", "hasSeenInstallTip", "freeplayForm"];
+const SYNC_LOCAL_ONLY = ["drafts", "deviceId", "duelName", "duelHandle", "duels", "duelsDeleted", "duelRecent", "sound", "hasSeenInstallTip", "freeplayForm"];
 const num0 = (x) => (typeof x === "number" && isFinite(x) ? x : 0);
 const syncCanon = (o) => JSON.stringify(o, (k, v) => (v && typeof v === "object" && !Array.isArray(v) ? Object.keys(v).sort().reduce((r, key) => (r[key] = v[key], r), {}) : v));
 const sync = { meta: { uid: null, version: 0, lastAt: 0, dirty: false }, timer: null, busy: false, state: "idle", again: false, declined: false };
@@ -19481,6 +19556,19 @@ const sync = { meta: { uid: null, version: 0, lastAt: 0, dirty: false }, timer: 
 function syncSaveMeta() { try { localStorage.setItem(SYNC_META_KEY, JSON.stringify(sync.meta)); } catch (e) {} }
 function syncSnapshot(p) { const o = structuredClone(p); SYNC_LOCAL_ONLY.forEach((k) => delete o[k]); return o; }
 // ---- Zusammenfuehren: reine Funktion, veraendert nichts. a = dieses Geraet, b = Server. ----
+// Duell-Bilanz zweier Staende: Zaehler = das Hoehere, Formkurve/Serie vom Stand mit mehr Spielen; je Gegner das Hoehere
+function mergeDuelStats(x, y) {
+  const num = (v) => (typeof v === "number" && isFinite(v) ? v : 0), isObj = (v) => v && typeof v === "object" && !Array.isArray(v);
+  x = isObj(x) ? x : {}; y = isObj(y) ? y : {};
+  const tot = (s) => num(s.wins) + num(s.losses) + num(s.draws), lead = tot(y) > tot(x) ? y : x;
+  const o = { wins: 0, losses: 0, draws: 0, streak: num(lead.streak), bestStreak: 0, sweeps: 0, perOpponent: {}, form: Array.isArray(lead.form) ? lead.form.slice(-5) : [] };
+  ["wins", "losses", "draws", "bestStreak", "sweeps"].forEach((k) => { o[k] = Math.max(num(x[k]), num(y[k])); });
+  [isObj(y.perOpponent) ? y.perOpponent : {}, isObj(x.perOpponent) ? x.perOpponent : {}].forEach((m) => Object.keys(m).forEach((k) => {
+    const c = m[k] || {}, p = o.perOpponent[k];
+    o.perOpponent[k] = p ? { ...p, ...c, w: Math.max(num(p.w), num(c.w)), l: Math.max(num(p.l), num(c.l)), d: Math.max(num(p.d), num(c.d)) } : { ...c, w: num(c.w), l: num(c.l), d: num(c.d) };
+  }));
+  return o;
+}
 function mergeProfiles(a, b) {
   const isObj = (x) => x && typeof x === "object" && !Array.isArray(x);
   const num = (x) => (typeof x === "number" && isFinite(x) ? x : 0);
@@ -19490,6 +19578,8 @@ function mergeProfiles(a, b) {
   a = structuredClone(a); b = structuredClone(b || {});
   const r = { ...b, ...a }; // unbekannte Felder (z. B. aus neueren App-Versionen) bleiben erhalten
   SYNC_LOCAL_ONLY.forEach((k) => { if (k in a) r[k] = a[k]; else delete r[k]; });
+  r.duelsPaid = uni(a.duelsPaid, b.duelsPaid).slice(-600);
+  r.duelStats = mergeDuelStats(a.duelStats, b.duelStats);
   r.createdAt = Math.min(num(a.createdAt) || Infinity, num(b.createdAt) || Infinity); if (!isFinite(r.createdAt)) r.createdAt = a.createdAt;
   r.totalXP = Math.max(num(a.totalXP), num(b.totalXP));
   r.level = typeof levelFromXP === "function" ? levelFromXP(r.totalXP) : Math.max(num(a.level), num(b.level));
@@ -19646,7 +19736,7 @@ window.addEventListener("online", () => { if (online.state === "member") syncRun
 const FR = { friends: [], incoming: [], outgoing: [], blocked: [], loadedAt: 0, loading: false };
 const FR_LINK = (code) => "https://startelo.de/f/" + code;
 const FR_PENDING_KEY = "startelo_pending_friend";
-const FR_ERR = { rate_limited: "Zu viele Versuche – bitte kurz warten.", too_short: "Mindestens 3 Zeichen.", self: "Das bist du selbst.", friend_limit: "Die Freundesliste ist voll.", bad_day: "Dieser Tag zählt nicht mehr.", wrong_lineup: "Das war nicht die Aufstellung des Tages.", bad_correct: "Das Ergebnis ist ungültig.", bad_seconds: "Die Zeit ist ungültig.", too_many_requests: "Du hast schon viele offene Anfragen – warte, bis welche beantwortet sind.",
+const FR_ERR = { rate_limited: "Zu viele Versuche – bitte kurz warten.", too_short: "Mindestens 3 Zeichen.", self: "Das bist du selbst.", friend_limit: "Die Freundesliste ist voll.", bad_day: "Dieser Tag zählt nicht mehr.", wrong_lineup: "Das war nicht die Aufstellung des Tages.", bad_correct: "Das Ergebnis ist ungültig.", bad_seconds: "Die Zeit ist ungültig.", duel_closed: "Dieses Duell ist schon zu Ende.", deadline_passed: "Die Frist für dieses Duell ist abgelaufen.", too_many_duels: "Du hast schon viele offene Duelle – spiele oder beende zuerst welche.", too_many_with_friend: "Mit diesem Freund laufen schon drei Duelle – spielt erst eines zu Ende.", no_duel: "Dieses Duell gibt es nicht mehr.", not_allowed: "Das geht bei diesem Duell nicht mehr.", already_played: "Dafür ist es zu spät – es wurde schon gespielt.", not_started: "Die Runde wurde nicht gestartet.", round_order: "Deine vorige Runde ist noch nicht übertragen – bitte kurz das Netz prüfen.", too_fast: "Das Ergebnis ist ungültig.", not_enough_lineups: "Für diese Auswahl gibt es zu wenige Aufstellungen.", unavailable: "Online-Duelle sind gerade nicht verfügbar.", too_many_requests: "Du hast schon viele offene Anfragen – warte, bis welche beantwortet sind.",
   you_blocked_user: "Du hast diesen Spieler blockiert. Hebe die Sperre erst auf.", no_request: "Diese Anfrage gibt es nicht mehr.", not_friends: "Ihr seid nicht befreundet.", bad_target: "Das geht hier nicht.", no_profile: "Lege zuerst deinen Namen an.", offline: "Du bist offline – mit Netz geht es weiter.", server: "Das hat gerade nicht geklappt. Bitte später noch einmal." };
 // Ruft eine Server-Funktion auf. Ergebnis: { ok, data } oder { ok:false, error:<Code>, message }
 async function frCall(name, args) {
@@ -19655,7 +19745,7 @@ async function frCall(name, args) {
   try {
     const sb = await onlineClient();
     const { data, error } = await sb.rpc(name, args || {});
-    if (error) { const m = (error.message || "").match(/(rate_limited|too_short|self|friend_limit|too_many_requests|you_blocked_user|no_request|not_friends|bad_target|no_profile|too_many|bad_day|wrong_lineup|bad_correct|bad_seconds)/); const code = m ? m[1] : "server"; return { ok: false, error: code, message: FR_ERR[code] || FR_ERR.server }; }
+    if (error) { const msg = error.message || "", m = msg.match(/(too_many_requests|too_many_duels|too_many_with_friend|too_many|rate_limited|too_short|self|friend_limit|you_blocked_user|no_request|not_friends|bad_target|no_profile|bad_day|wrong_lineup|bad_correct|bad_seconds|duel_closed|deadline_passed|no_duel|not_allowed|already_played|not_started|round_order|too_fast|not_enough_lineups|bad_round|bad_mask|bad_left|bad_solved)/); const code = m ? m[1] : /Could not find the function|does not exist|schema cache/i.test(msg) ? "unavailable" : "server"; return { ok: false, error: code, message: FR_ERR[code] || FR_ERR.server }; }
     return { ok: true, data };
   } catch (e) { return { ok: false, error: "server", message: FR_ERR.server }; }
 }
@@ -19920,9 +20010,16 @@ function kabineOpenCompare(p) {
         <div class="kb-vs"><div class="side">${crest(acc.username, acc.crest, 56, 64)}<b>Du</b><small>@${duelEsc(acc.username || "")}</small></div><span class="mid">VS</span><div class="side">${crest(p.username, p.crest_color, 56, 64)}<b>@${duelEsc(p.username)}</b><small>${duelEsc(f.rank || p.rank || "Kreisliga")}</small></div></div>
         <div class="kb-cmp">${today()}${st ? row("Level", me.level, f.level) + row("Kampagne-Sterne", me.campaign_stars, f.campaign_stars) + row("Trophäen", me.trophies, f.trophies) + row("Tages-Serie", me.streak_current, f.streak_current) + row("Trefferquote", me.quote, f.quote, (v) => v + " %")
           + `<div class="kb-cr"><div class="l tx"><b>${duelEsc(me.rank)}</b><span>Liga-Rang</span><b>${duelEsc(f.rank || "–")}</b></div></div>` : `<div class="kb-empty">${duelEsc(stMsg)}</div>`}</div>
+      <button class="kb-cta" type="button" id="cmChallenge" style="margin-top:16px">Herausfordern</button>
       </div>`;
     sc.querySelector("#cmBack").onclick = () => entry.close();
     sc.querySelector("#cmMore").onclick = () => frOpenFriend(p);
+    sc.querySelector("#cmChallenge").onclick = () => {
+      [...sheetStack].reverse().forEach((e) => { if (e.el && e.el.classList && e.el.classList.contains("kb-screen")) e.close(); });
+      kabineCloseScreen();
+      navigate("duels");
+      setTimeout(() => dzOpenNew({ friendId: p.id }), 250);
+    };
   };
   document.addEventListener("frchange", paint); paint();
   frCall("friend_stats", { p_user: p.id }).then((r) => { if (r.ok && r.data) st = r.data; else stMsg = r.ok ? "Noch keine Werte." : r.message; paint(); });
@@ -19955,6 +20052,152 @@ function kabineOpenPrivacy() {
   };
   document.addEventListener("frchange", paint); paint(); frRefresh(true);
 }
+// ---------- Duell ueber den Server (K6b) ----------
+// Ein Server-Duell steht als profile.duels[<uuid>] mit server:true (gleiches Format wie ein Link-Duell), damit Zentrale, Spielen und Abpfiff
+// unveraendert laufen. Quelle der Wahrheit ist der Server: sdSync() holt Gegner-Runden und Ergebnis, sdFlush() sendet meine Runden (die
+// Warteschlange ergibt sich aus d.mine.length - d.subm; sie ueberlebt Neustarts, weil profile.duels gespeichert wird).
+const SD = { busy: false, unavailable: false, lastAt: 0 };
+const SD_SEEN_KEY = "startelo_sd_seen", SD_FINAL_ERR = ["duel_closed", "deadline_passed", "bad_round", "bad_correct", "bad_seconds", "too_fast", "bad_mask", "bad_left", "bad_solved", "no_duel", "not_started", "round_order", "not_allowed"];
+function sdSeenGet() { try { const a = JSON.parse(localStorage.getItem(SD_SEEN_KEY) || "[]"); return new Set(Array.isArray(a) ? a : []); } catch (e) { return new Set(); } }
+function sdSeenAdd(id) { try { const s = sdSeenGet(); s.add(id); localStorage.setItem(SD_SEEN_KEY, JSON.stringify([...s].slice(-100))); } catch (e) {} }
+function sdPaid(key) { if (!profile.duelsPaid.includes(key)) { profile.duelsPaid.push(key); if (profile.duelsPaid.length > 600) profile.duelsPaid = profile.duelsPaid.slice(-600); } }
+const sdActive = () => online.state === "member" && !online.stale && !SD.unavailable;
+// Antwort von get_duel -> Eintrag in profile.duels (row = Zeile aus list_duels, optional)
+function sdMirror(g, row) {
+  const id = g.id, n = g.rounds, meC = g.i_am === "creator", other = meC ? g.opponent : g.creator, rl = Array.isArray(g.rounds_list) ? g.rounds_list : [];
+  let d = profile.duels[id];
+  if (!d) d = profile.duels[id] = { server: true, mine: [], theirs: null, lineups: [], subm: 0, created: Date.parse(g.created_at) || Date.now(), updated: Date.now() };
+  d.server = true; d.role = meC ? "challenger" : "opponent";
+  d.opponent = { name: other.username, handle: other.username, deviceId: "u:" + other.id, userId: other.id, rank: other.rank || "", level: 0, crest: other.crest_color || "" };
+  d.settings = { rounds: n, seconds: g.seconds, difficulty: g.difficulty };
+  d.deadline = Date.parse(g.deadline) || 0;
+  if (row && row.updated_at) { d.srvUpd = row.updated_at; d.updated = Date.parse(row.updated_at) || d.updated; }
+  d.lineups = Array.from({ length: n }, (_, i) => (rl[i] && rl[i].lineup_id) || (d.lineups && d.lineups[i]) || null);
+  const rd = (x) => ({ correct: x.correct, seconds: x.seconds, left: x.left_app || 0, mask: x.mask == null ? 0 : x.mask, solvedAt: Array.isArray(x.solved) ? x.solved : [] });
+  const srvMine = []; for (let i = 0; i < n && rl[i] && rl[i].mine; i++) srvMine.push(rd(rl[i].mine));
+  d.mine = srvMine.concat((d.mine || []).slice(srvMine.length));
+  d.subm = Math.max(d.subm || 0, srvMine.length);
+  d.playedRounds = Math.max(d.playedRounds || 0, srvMine.length);
+  const th = []; for (let i = 0; i < n && rl[i] && rl[i].theirs; i++) th.push(rd(rl[i].theirs));
+  d.theirs = th.length ? th : null;
+  if (g.my_active && !d.active && !(duelRun && duelRun.id === id) && d.mine.length < g.my_active.round) d.active = { round: g.my_active.round - 1, startedAt: Date.now() - (g.my_active.elapsed || 0) * 1000 };
+  d.theirActive = !!g.their_active;
+  if (g.status === "finished") {
+    const pad = () => ({ correct: 0, seconds: g.seconds, left: 0, mask: 0, solvedAt: [] });
+    while (d.mine.length < n) d.mine.push(pad());
+    d.subm = d.mine.length;
+    d.theirs = Array.from({ length: n }, (_, i) => (rl[i] && rl[i].theirs ? rd(rl[i].theirs) : pad()));
+    const r = g.result || {}, myId = meC ? g.creator.id : g.opponent.id;
+    const outcome = r.winner == null ? "draw" : r.winner === myId ? "win" : "loss";
+    let rounds = Array.isArray(r.rounds) ? r.rounds.map((x) => ({ w: x.w === "draw" ? "draw" : ((x.w === "creator") === meC ? "me" : "op"), by: x.by })) : null;
+    if (!rounds) rounds = d.mine.map((m, i) => ({ w: duelRoundWinner(m, d.theirs[i]), by: "correct" }));
+    d.srvResult = { outcome, rounds, by: r.by === "forfeit" ? "forfeit" : (r.by || "draw"), mw: rounds.filter((x) => x.w === "me").length, ow: rounds.filter((x) => x.w === "op").length };
+    d.finished = Date.parse(g.finished_at) || Date.now();
+  } else {
+    d.status = d.mine.length >= n ? "waiting" : "todo";
+  }
+  return d;
+}
+// Eigene Runden senden (je Runde: erst start_round - idempotent -, dann submit_round). Netzfehler: liegen lassen; endgueltige Fehler: verwerfen
+function sdFlush() { if (!sdFlush.p) sdFlush.p = sdFlushRun().finally(() => { sdFlush.p = null; }); return sdFlush.p; }
+async function sdFlushRun() {
+  if (!sdActive() || !onlineHasNet()) return false;
+  let sent = false;
+  try {
+    for (const [id, d] of Object.entries(profile.duels)) {
+      if (!d || !d.server) continue;
+      while ((d.subm || 0) < d.mine.length) {
+        const i = d.subm || 0, m = d.mine[i];
+        const st = await frCall("start_round", { p_duel: id, p_round: i + 1 });
+        if (!st.ok && !SD_FINAL_ERR.includes(st.error)) return sent;
+        if (st.ok) {
+          const r = await frCall("submit_round", { p_duel: id, p_round: i + 1, p_correct: m.correct, p_seconds: Math.max(1, m.seconds), p_solved: Array.isArray(m.solvedAt) && m.solvedAt.length ? m.solvedAt : null, p_mask: m.mask == null ? null : m.mask, p_left: Math.min(100, m.left || 0) });
+          if (!r.ok && !SD_FINAL_ERR.includes(r.error)) return sent;
+          if (!r.ok) d.subErr = r.error;
+        } else { d.subErr = st.error; d.subm = d.mine.length; saveProfile(profile); break; }
+        d.subm = i + 1; sent = true; saveProfile(profile);
+      }
+    }
+  } catch (e) { /* Netz weg: bleibt liegen */ }
+  return sent;
+}
+// Abgleich: eigene Runden senden, Liste holen, Neues/Geaendertes laden. Leise bei Fehlern.
+async function sdSync() {
+  if (!sdActive() || SD.busy || !onlineHasNet()) return;
+  SD.busy = true; let changed = false;
+  try {
+    await sdFlush();
+    const r = await frCall("list_duels");
+    if (!r.ok) { if (r.error === "unavailable") SD.unavailable = true; return; }
+    const rows = Array.isArray(r.data) ? r.data : [], seen = sdSeenGet(); let fetched = 0;
+    for (const row of rows) {
+      const d = profile.duels[row.id], running = duelRun && duelRun.id === row.id, other = row.other && row.other.username ? "@" + row.other.username : "Dein Gegner";
+      if (profile.duelsDeleted.includes(row.id)) continue;
+      if (row.status !== "open" && row.status !== "finished") {
+        if (d && d.server && !running) {
+          if (row.status === "declined" && row.i_am === "creator") showToast(`<span class="tt-tx">${duelEsc(other)} hat dein Duell abgelehnt.</span>`);
+          else if (row.status === "cancelled" && row.i_am === "opponent") showToast(`<span class="tt-tx">${duelEsc(other)} hat das Duell zurückgezogen.</span>`);
+          delete profile.duels[row.id]; changed = true;
+        }
+        continue;
+      }
+      if (d && d.server && d.srvUpd === row.updated_at && !!d.theirActive === !!row.their_active && !(row.status === "finished" && d.status !== "done")) continue;
+      if (fetched >= 30) continue;
+      fetched++;
+      const g = await frCall("get_duel", { p_duel: row.id });
+      if (!g.ok) continue;
+      const wasNew = !d; sdMirror(g.data, row); changed = true;
+      if (wasNew && row.status === "open" && row.i_am === "opponent" && !seen.has(row.id)) { sdSeenAdd(row.id); showToast(`<span class="tt-tx"><b>${duelEsc(other)}</b> fordert dich zum Duell heraus.</span>`); }
+      if (row.status === "finished" && !(duelRun && duelRun.id === row.id)) evaluateDuel(row.id);
+    }
+    if (rows.length < 100) Object.entries(profile.duels).forEach(([id, d]) => { if (d.server && !rows.some((x) => x.id === id) && !(duelRun && duelRun.id === id) && (d.subm || 0) >= d.mine.length) { delete profile.duels[id]; changed = true; } });
+    SD.lastAt = Date.now();
+  } finally {
+    SD.busy = false;
+    if (changed) { saveProfile(profile); try { renderModeTiles(); renderProfileBar(); } catch (e) {} if (navStack[navStack.length - 1] === "duels" && !document.querySelector(".dz-sheet")) renderDuels(true); else if (navStack[navStack.length - 1] === "duelresult" && !duelRun) renderDuelResult(); document.dispatchEvent(new CustomEvent("sdchange")); }
+  }
+}
+// Duell anlegen -> { ok, id } oder { ok:false, message }
+async function sdCreate(friendId, draft) {
+  const r = await frCall("create_duel", { p_opponent: friendId, p_rounds: draft.rounds, p_seconds: draft.seconds, p_difficulty: draft.difficulty });
+  if (!r.ok) return r;
+  let g = await frCall("get_duel", { p_duel: r.data });
+  if (!g.ok) g = await frCall("get_duel", { p_duel: r.data });
+  if (!g.ok) return { ok: false, error: "server", message: "Das Duell ist angelegt – du findest es gleich in der Übersicht." };
+  sdMirror(g.data, null); saveProfile(profile);
+  return { ok: true, id: r.data };
+}
+// Runde beginnen: der Server gibt die Aufstellung erst jetzt heraus (und zaehlt die Runde ab hier)
+async function sdStartRound(id, i) {
+  const d = profile.duels[id];
+  const r = await frCall("start_round", { p_duel: id, p_round: i + 1 });
+  if (!r.ok) { if (SD_FINAL_ERR.includes(r.error)) sdSync(); return r; }
+  if (r.data && r.data.lineup_id) { d.lineups[i] = r.data.lineup_id; saveProfile(profile); }
+  if (!d.lineups[i] || !dailyMatchById(d.lineups[i])) return { ok: false, error: "server", message: "Diese Aufstellung kennt deine App-Version noch nicht – bitte aktualisiere die App." };
+  return r;
+}
+// Nach dem Abgeben einer Runde: senden, Duell neu laden (Gegner-Ergebnis dieser Runde, evtl. Ende), Zwischenkarte aktualisieren
+async function sdAfterRound(id) {
+  await sdFlush().catch(() => false);
+  if (!sdActive()) return;
+  const g = await frCall("get_duel", { p_duel: id });
+  if (!g.ok) return;
+  sdMirror(g.data, null); saveProfile(profile);
+  if (g.data.status === "finished" && !(duelRun && duelRun.id === id)) evaluateDuel(id);
+  if (duelRun && duelRun.id === id && duelRun.redrawReview) duelRun.redrawReview();
+  else if (!duelRun && navStack[navStack.length - 1] === "duelresult" && activeResultId === id) renderDuelResult();
+}
+async function sdRemoteDelete(id, d) {
+  if (!sdActive()) return;
+  if (d.status === "done") await frCall("hide_duel", { p_duel: id });
+  else if (d.role === "opponent" && !d.mine.length) await frCall("decline_duel", { p_duel: id });
+  else if (d.role === "challenger" && !(d.theirs && d.theirs.length)) await frCall("cancel_duel", { p_duel: id });
+}
+document.addEventListener("onlinechange", () => { if (sdActive()) sdSync(); });
+document.addEventListener("visibilitychange", () => { if (document.visibilityState === "visible" && sdActive()) sdSync(); });
+window.addEventListener("online", () => { if (sdActive()) sdSync(); });
+setInterval(() => { if (document.visibilityState === "visible" && sdActive() && ["duels", "duelresult", "start"].includes(navStack[navStack.length - 1])) sdSync(); }, 30000);
+whenSplashGone(() => { if (sdActive()) setTimeout(sdSync, 1500); });
 // Abgleich: beim Anmelden, beim Zurueckkehren in die App
 document.addEventListener("onlinechange", () => { if (online.state === "member" && !online.stale) { frRefresh().then(() => frHandlePending()); dailyFlush(); } else if (online.state === "guest") { frHandlePending(); } kbUpdateBadge(); });
 document.addEventListener("frchange", () => { kbUpdateBadge(); if (kb.open) kabineRender(); });

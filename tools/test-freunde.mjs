@@ -29,12 +29,13 @@ const MOCK = () => {
     auth: { getSession: async () => ({ data: { session: window.__mock.session } }), onAuthStateChange: () => ({ data: { subscription: { unsubscribe() {} } } }), signOut: async () => ({ error: null }) },
     rpc: async (name, a) => {
       window.__calls.push([name, a]); const s = window.__s;
-      if (s.err && !/^(my_profile|get_save|put_save|put_public_stats)$/.test(name)) { const e = s.err; if (!s.errKeep) s.err = null; return { data: null, error: { message: e } }; }
+      if (s.err && !/^(my_profile|get_save|put_save|put_public_stats|list_duels)$/.test(name)) { const e = s.err; if (!s.errKeep) s.err = null; return { data: null, error: { message: e } }; }
       switch (name) {
         case "my_profile": return { data: { ...window.__mock.profile, discoverable: s.discoverable }, error: null };
         case "get_save": return { data: null, error: null };
         case "put_save": return { data: 1, error: null };
         case "put_public_stats": return { data: null, error: null };
+        case "list_duels": return { data: [], error: null };
         case "friends_daily": return { data: s.daily || [], error: null };
         case "submit_daily": window.__submits = (window.__submits || 0) + 1; if (s.submitErr) return { data: null, error: { message: s.submitErr } }; return { data: { recorded: true }, error: null };
         case "friends_list": return { data: s.friends, error: null };

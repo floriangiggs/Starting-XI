@@ -83,6 +83,11 @@ async function profileJson(patch) {
     out.dailyKeys = Object.keys(M.daily).length; out.day2 = M.daily[day(2)].correct;
     out.streak = JSON.stringify(M.streak); out.lastIs3 = M.streak.lastDayKey === day(3);
     out.localOnly = JSON.stringify([M.drafts, M.duels, M.sound, M.deviceId]) === JSON.stringify([A.drafts, A.duels, A.sound, A.deviceId]);
+    { // Duell-Bilanz (K6b): Zaehler = das Hoehere, je Gegner das Hoehere; bezahlte Belohnungen vereinigt
+      const X = mergeProfiles(P({ duelsPaid: ["r:1", "s:1"], duelStats: { wins: 5, losses: 2, draws: 1, streak: 1, bestStreak: 3, sweeps: 1, form: ["w", "l", "w", "w", "d"], perOpponent: { "u:a": { name: "a", w: 3, l: 1, d: 0 }, k1: { name: "k", w: 1, l: 0, d: 0 } } } }),
+        P({ duelsPaid: ["s:1", "w:2"], duelStats: { wins: 4, losses: 4, draws: 0, streak: 0, bestStreak: 6, sweeps: 0, form: ["l", "l", "l", "w", "w"], perOpponent: { "u:a": { name: "a", w: 2, l: 3, d: 1 }, "u:b": { name: "b", w: 1, l: 0, d: 0 } } } }));
+      out.duelMerge = JSON.stringify([X.duelsPaid.slice().sort(), X.duelStats.wins, X.duelStats.losses, X.duelStats.draws, X.duelStats.bestStreak, X.duelStats.sweeps, X.duelStats.form.join(""), Object.keys(X.duelStats.perOpponent).sort(), X.duelStats.perOpponent["u:a"].w, X.duelStats.perOpponent["u:a"].l, X.duelStats.perOpponent["u:a"].d]);
+    }
     out.seed = M.prefillSeed; out.future = JSON.stringify(M.futureFeature);
     // Stabilitaet: nochmal zusammenfuehren aendert nichts
     out.idem = syncCanon(syncSnapshot(mergeProfiles(M, B))) === syncCanon(syncSnapshot(M));
@@ -95,7 +100,7 @@ async function profileJson(patch) {
     // Leerer Server / leeres Geraet
     out.emptyServer = syncCanon(syncSnapshot(mergeProfiles(A, {}))) === syncCanon(syncSnapshot(mergeProfiles(A, P({}))));
     out.hasProgress = [syncHasProgress(A), syncHasProgress(P({})), syncHasProgress(null)];
-    out.snapshot = Object.keys(syncSnapshot(A)).filter((k) => ["drafts", "duels", "deviceId", "sound", "duelStats", "hasSeenInstallTip"].includes(k));
+    out.snapshot = Object.keys(syncSnapshot(A)).filter((k) => ["drafts", "duels", "deviceId", "sound", "hasSeenInstallTip"].includes(k));
     return out;
   });
   ok(R.noMutate, "merge: veraendert die Eingaben nicht");
@@ -108,6 +113,7 @@ async function profileJson(patch) {
   ok(R.dailyKeys === 3 && R.day2 === 9, "merge: Tages-Challenge je Tag das bessere Ergebnis");
   ok(JSON.parse(R.streak).current === 3 && R.lastIs3 && JSON.parse(R.streak).best === 5, "merge: Serie aus den vereinigten Tagen (3 in Folge), beste Serie bleibt (" + R.streak + ")");
   ok(R.localOnly, "merge: Entwuerfe, Duelle, Ton, Geraete-ID bleiben lokal");
+  ok(R.duelMerge === JSON.stringify([["r:1", "s:1", "w:2"], 5, 4, 1, 6, 1, "wlwwd", ["k1", "u:a", "u:b"], 3, 3, 1]), "merge: Duell-Bilanz = je Zaehler das Hoehere, bezahlte Belohnungen vereinigt (" + R.duelMerge + ")");
   ok(R.seed === 777, "merge: Zufalls-Seed vom Server (gleiche Geschenke auf allen Geraeten)");
   ok(R.future === JSON.stringify({ x: 1 }), "merge: unbekannte Felder vom Server bleiben erhalten");
   ok(R.idem && R.idem2, "merge: nochmaliges Zusammenfuehren aendert nichts (stabil)");
