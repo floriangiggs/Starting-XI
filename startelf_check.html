@@ -2214,6 +2214,38 @@
   .modal-backdrop.kb-over { z-index: 70; }
   .kb-danger { background: rgba(120,25,15,0.25); box-shadow: inset 0 0 0 1.2px rgba(255,160,140,0.35); }
   .kb-danger b { color: #FFB4A6; }
+
+  /* ===== Freunde (Prompt K4) ===== */
+  .kb-screen.kb-top2 { z-index: 63; }
+  .kb-gold { min-height: 40px; padding: 0 14px; border: 0; border-radius: 20px; font: 500 15px 'Oswald', sans-serif; color: #13202A; background: linear-gradient(160deg, var(--gold-2), var(--gold)); box-shadow: 0 3px 0 #9C7422; cursor: pointer; flex-shrink: 0; }
+  .kb-gold:disabled { opacity: 0.6; box-shadow: none; }
+  .kb-frow { display: grid; grid-template-columns: 40px minmax(0,1fr) auto; align-items: center; gap: 11px; min-height: 56px; padding: 7px 8px; margin-bottom: 6px; border-radius: 12px; background: rgba(8,22,14,0.3); }
+  .kb-frow .who { min-width: 0; text-align: left; border: 0; background: none; color: inherit; padding: 0; font-family: inherit; cursor: pointer; }
+  .kb-frow .who b { display: block; font-weight: 500; font-size: 16px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .kb-frow .who small { display: block; font-weight: 300; font-size: 12.5px; color: rgba(244,241,232,0.7); }
+  .kb-frow .acts { display: flex; gap: 6px; align-items: center; }
+  .kb-fbtn { min-height: 36px; padding: 0 12px; border: 0; border-radius: 18px; font: 500 14px 'Oswald', sans-serif; color: var(--chalk); background: none; box-shadow: inset 0 0 0 1.3px rgba(244,241,232,0.35); cursor: pointer; }
+  .kb-fbtn.gold { color: #13202A; background: linear-gradient(160deg, var(--gold-2), var(--gold)); box-shadow: 0 2px 0 #9C7422; }
+  .kb-fbtn:disabled { opacity: 0.55; cursor: default; }
+  .kb-ok { font-weight: 500; font-size: 14px; color: #7FE0A8; } .kb-mute { font-weight: 300; font-size: 14px; color: rgba(244,241,232,0.7); }
+  .kb-empty { padding: 10px 4px; font-weight: 300; font-size: 14px; line-height: 1.4; color: rgba(244,241,232,0.78); text-align: center; }
+  .kb-sec em { font-style: normal; font-weight: 300; color: rgba(244,241,232,0.7); }
+  .kb-res { display: grid; gap: 0; margin-top: 8px; min-height: 6px; }
+  .kb-or { display: flex; align-items: center; gap: 10px; margin: 14px 0 12px; font-weight: 300; font-size: 13.5px; color: rgba(244,241,232,0.7); }
+  .kb-or::before, .kb-or::after { content: ""; flex: 1; height: 1.5px; background: rgba(244,241,232,0.22); }
+  .kb-codein { display: grid; grid-template-columns: minmax(0,1fr) auto; gap: 8px; align-items: center; }
+  .kb-share { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-top: 10px; }
+  .kb-share button { min-height: 40px; border: 0; border-radius: 11px; display: inline-flex; align-items: center; justify-content: center; gap: 6px; font: 500 14px 'Oswald', sans-serif; color: #FFF1C8; background: linear-gradient(180deg, #2F7A50, #1F5A3A); box-shadow: 0 2px 0 #143A26; cursor: pointer; }
+  .kb-share button svg { width: 14px; height: 14px; }
+  .kb-stats { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; margin: 10px 0; }
+  .kb-stats div { padding: 8px 4px; border-radius: 10px; background: rgba(8,22,14,0.3); }
+  .kb-stats b { display: block; font-family: 'Anton', Impact, sans-serif; font-weight: 400; font-size: 22px; color: var(--gold-2); }
+  .kb-stats span { display: block; font-weight: 300; font-size: 12px; color: rgba(244,241,232,0.75); }
+  .kb-fbtns { display: grid; grid-template-columns: repeat(3, 1fr); gap: 6px; margin-bottom: 8px; }
+  .kb-fbtns .save-btn { padding-left: 4px; padding-right: 4px; font-size: 14px; }
+  .kb-cnt { min-width: 22px; height: 22px; padding: 0 6px; border-radius: 11px; display: inline-grid; place-items: center; margin-right: 6px; font-family: 'Anton', Impact, sans-serif; font-size: 13px; color: #13202A; background: radial-gradient(circle at 35% 30%, #FFF4CF, var(--gold) 65%, #A8771A); }
+  .kb-mi .end { display: flex; align-items: center; }
+  .kb-board > .kb-mi { width: 100%; margin-bottom: 6px; padding-top: 7px; padding-bottom: 7px; }
 </style>
 </head>
 <body>
@@ -19067,7 +19099,7 @@ async function onlineRefresh() {
     if (error) { online.stale = true; if (!online.account) online.state = "needsName"; return online.state; }
     online.stale = false;
     if (!data) { online.account = null; online.state = "needsName"; onlineSaveAccount(null); }
-    else { online.account = { username: data.username, crest: data.crest_color, code: data.friend_code, changedAt: data.username_changed_at || null }; online.state = "member"; onlineSaveAccount(online.account); }
+    else { online.account = { username: data.username, crest: data.crest_color, code: data.friend_code, changedAt: data.username_changed_at || null, discoverable: data.discoverable || "all" }; online.state = "member"; onlineSaveAccount(online.account); }
     return online.state;
   } catch (e) {
     online.stale = true; // Bibliothek/Netz nicht erreichbar: bei bekanntem Konto weiter anzeigen
@@ -19145,6 +19177,7 @@ const KB_SV = {
   check: '<svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="#7FE0A8" stroke-width="2.8" stroke-linecap="round" stroke-linejoin="round" width="17" height="17"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg>',
   warn: '<svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="#FFC9A8" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" width="17" height="17"><path d="M12 4l9 16H3z"/><path d="M12 10v4.5M12 17.4v.1"/></svg>',
   info: '<svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="rgba(244,241,232,0.75)" stroke-width="2.2" stroke-linecap="round" width="17" height="17"><circle cx="12" cy="12" r="8.5"/><path d="M12 11v5M12 8v.1"/></svg>',
+  checkDark: '<svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="#1F5A3A" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg>',
   // Symbole fuer die Menue-Kacheln (dunkle Linien auf hellem Grund)
   vs: '<svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="#3E2A16" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round"><path d="M4 7h12l-3-3M20 17H8l3 3"/></svg>',
   pass: '<svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="#3E2A16" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round"><rect x="5" y="3.5" width="14" height="17" rx="2.5"/><circle cx="12" cy="10" r="2.6"/><path d="M8.5 16.5h7"/></svg>',
@@ -19162,7 +19195,7 @@ function kbCrest(ci, letter, w, h) {
     + `<path d="M20 2 L37 7 V20 C37 31 29 39 20 43 C11 39 3 31 3 20 V7 Z" fill="#FFF1C8"/><path d="M20 5 L34 9.2 V20 C34 29.3 27.5 36 20 39.6 C12.5 36 6 29.3 6 20 V9.2 Z" fill="url(#${id})"/><path d="M20 5 L34 9.2 V14 H6 V9.2 Z" fill="rgba(255,255,255,0.14)"/>`
     + `<text x="20" y="31" text-anchor="middle" font-family="Anton, Impact, sans-serif" font-size="18" fill="${light ? "#13202A" : "#FFF1C8"}">${duelEsc((letter || "?").toUpperCase())}</text></svg></span>`;
 }
-function kbUpdateBadge() { const d = document.getElementById("kbDot"); if (d) d.hidden = online.state !== "needsName"; }
+function kbUpdateBadge() { const d = document.getElementById("kbDot"); let req = 0; try { req = FR.incoming.length; } catch (e) {} if (d) d.hidden = !(online.state === "needsName" || (online.state === "member" && req > 0)); }
 function kabineClose() {
   const o = kb.open; if (!o) return;
   kb.open = null;
@@ -19182,7 +19215,7 @@ function kabineOpen() {
   requestAnimationFrame(() => { dim.classList.add("on"); drawer.classList.add("on"); });
 }
 function kbMi(id, icon, title, sub, opts = {}) {
-  return `<button class="kb-mi${opts.lock ? " lock" : ""}" type="button" id="${id}"><span class="t">${icon}</span><span><b>${title}</b><small>${sub}</small></span><span class="end">${opts.lock ? KB_SV.lock : KB_SV.chev}</span></button>`;
+  return `<button class="kb-mi${opts.lock ? " lock" : ""}" type="button" id="${id}"><span class="t">${icon}</span><span><b>${title}</b><small>${sub}</small></span><span class="end">${opts.count ? `<span class="kb-cnt">${opts.count}</span>` : ""}${opts.lock ? KB_SV.lock : KB_SV.chev}</span></button>`;
 }
 function kabineRender() {
   const o = kb.open; if (!o) return;
@@ -19203,7 +19236,7 @@ function kabineRender() {
   o.drawer.innerHTML = `<div class="kb-in"><div class="kb-top"><b>Kabine</b><button class="kb-x" type="button" id="kbX" data-sheet-x aria-label="Schließen">${KB_SV.x}</button></div>${card}
     <div class="kb-menu">
       <div class="kb-mg">Spielen</div>
-      ${kbMi("kbFr", KB_SV.people, "Freunde", member ? "Kommt bald" : "Mit Konto – kommt bald", { lock: true })}
+      ${(() => { let n = 0, r = 0; try { n = FR.friends.length; r = FR.incoming.length; } catch (e) {} return kbMi("kbFr", KB_SV.people, "Freunde", member ? (n ? n + (n === 1 ? " Freund" : " Freunde") : "Freunde hinzufügen") + (r ? " · " + r + (r === 1 ? " Anfrage" : " Anfragen") : "") : "Mit Konto verfügbar", { lock: !member, count: member ? r : 0 }); })()}
       ${kbMi("kbDu", KB_SV.vs, "Duelle", "Herausforderungen und Bilanz")}
       ${kbMi("kbSp", KB_SV.pass, "Scout-Profil", "Statistik, Trophäen, Liga-Rang")}
       <div class="kb-mg">Einstellungen</div>
@@ -19220,7 +19253,7 @@ function kabineRender() {
   if ($("kbOut1")) $("kbOut1").onclick = kabineSignOut;
   if ($("kbOut")) $("kbOut").onclick = kabineSignOut;
   if ($("kbCopy")) $("kbCopy").onclick = () => { const t = online.account && online.account.code || ""; try { navigator.clipboard.writeText(t).then(() => showToast(`<span class="tt-tx">Freundescode <b>${duelEsc(t)}</b> kopiert</span>`)); } catch (e) { showToast('<span class="tt-tx">Kopieren geht hier nicht</span>'); } };
-  $("kbFr").onclick = () => showToast('<span class="tt-tx">Freunde kommen bald – mit deinem Konto bist du dann gleich dabei.</span>');
+  $("kbFr").onclick = member ? go(() => kabineOpenFriends()) : () => showToast('<span class="tt-tx">Für Freunde brauchst du ein Konto – melde dich oben an.</span>');
   $("kbDu").onclick = go(() => navigate("duels"));
   $("kbSp").onclick = go(() => openProfileSheet());
   $("kbSe").onclick = go(() => kabineOpenSettings());
@@ -19321,6 +19354,7 @@ function kabineOpenSettings() {
       ${member ? `${kbMi("kbSName", KB_SV.user, "Name ändern", nextChange ? "Erst wieder ab " + nextChange : "@" + duelEsc(online.account.username) + " · alle 30 Tage möglich")}${kbMi("kbSOut", KB_SV.door, "Abmelden", "Dein Spielstand bleibt auf dem Gerät")}` : `<div class="sub" style="margin:0 2px 4px;font-weight:300;font-size:14px;color:rgba(244,241,232,0.8)">Du spielst als Gast. Ein Konto legst du in der Kabine an (Logo oben links).</div>`}
       </div>
       ${member ? `<div class="kb-sec">Spielstand in der Cloud</div><div class="kb-menu" style="margin:0;overflow:visible;-webkit-mask-image:none;mask-image:none"><div class="sub" id="kbSyncTxt" role="status" style="margin:0 2px 4px;font-weight:300;font-size:14px;color:rgba(244,241,232,0.8)"></div>${kbMi("kbSSync", KB_SV.cloud, "Jetzt sichern", "Gleicht deinen Spielstand mit dem Konto ab")}</div>` : ""}
+      ${member ? `<div class="kb-sec">Privatsphäre</div><div class="kb-menu" style="margin:0;overflow:visible;-webkit-mask-image:none;mask-image:none">${kbMi("kbSPriv", KB_SV.people, "Privatsphäre", "Wer dich finden darf · Blockierte Spieler")}</div>` : ""}
       <div class="kb-sec">Ton und Spielstand</div><div class="kb-menu" style="margin:0;overflow:visible;-webkit-mask-image:none;mask-image:none">${kbMi("kbSProf", KB_SV.gear, "Ton, Spielstand sichern und laden", "Im Scout-Profil, Reiter Übersicht")}</div>
       ${member ? `<div class="kb-sec">Konto entfernen</div><button class="kb-mi kb-danger" type="button" id="kbSDel" style="width:100%"><span class="t">${KB_SV.lock}</span><span><b>Konto löschen</b><small style="color:rgba(255,200,190,0.8)">Entfernt dein Konto und deine Online-Daten</small></span><span class="end">${KB_SV.chev}</span></button>` : ""}</div>`;
   const $ = (id) => sc.querySelector("#" + id);
@@ -19329,6 +19363,7 @@ function kabineOpenSettings() {
   if ($("kbSName")) $("kbSName").onclick = () => { if (nextChange) { showToast(`<span class="tt-tx">Du kannst deinen Namen erst wieder ab ${nextChange} ändern.</span>`); return; } entry.close(); setTimeout(() => kabineOpenNameScreen("change"), 150); };
   if ($("kbSOut")) $("kbSOut").onclick = async () => { entry.close(); await kabineSignOut(); };
   if ($("kbSDel")) $("kbSDel").onclick = () => kabineConfirmDelete(entry);
+  if ($("kbSPriv")) $("kbSPriv").onclick = () => { entry.close(); setTimeout(() => kabineOpenPrivacy(), 150); };
   const paintSync = () => { const t = $("kbSyncTxt"); if (!t) return; t.textContent = sync.state === "syncing" ? "Wird gesichert …" : sync.state === "offline" ? "Offline – wird gesichert, sobald du wieder Netz hast." : sync.state === "error" ? "Das hat gerade nicht geklappt – wir versuchen es später noch einmal." : sync.state === "paused" ? "Noch nicht zusammengeführt – tippe auf „Jetzt sichern“." : "Zuletzt gesichert: " + syncAgo(); };
   if ($("kbSSync")) { $("kbSSync").onclick = async () => { await syncRun("manuell"); paintSync(); }; paintSync(); const h = () => { if (!sc.isConnected) document.removeEventListener("syncchange", h); else paintSync(); }; document.addEventListener("syncchange", h); }
 }
@@ -19524,6 +19559,237 @@ function syncAgo() {
 document.addEventListener("onlinechange", () => { if (online.state === "member" && !online.stale) syncRun("anmeldung").catch(() => {}); });
 document.addEventListener("visibilitychange", () => { if (document.visibilityState === "hidden") { if (online.state === "member" && sync.meta.dirty) { clearTimeout(sync.timer); syncRun("hintergrund").catch(() => {}); } } else if (online.state === "member") { syncRun("zurueck").catch(() => {}); } });
 window.addEventListener("online", () => { if (online.state === "member") syncRun("netz").catch(() => {}); });
+
+
+/* ================= FREUNDE (Prompt K4): Liste, Anfragen, Suche, Code, Einladungslink, Blockieren, Melden, Privatsphaere =================
+   Alles laeuft ueber die Server-Funktionen aus supabase/migrations/0005 (jede prueft Anmeldung, Sperren und Limits). Push gibt es erst mit der nativen App;
+   bis dahin wird beim Oeffnen und Zurueckkehren in die App abgeglichen. */
+const FR = { friends: [], incoming: [], outgoing: [], blocked: [], loadedAt: 0, loading: false };
+const FR_LINK = (code) => "https://startelo.de/f/" + code;
+const FR_PENDING_KEY = "startelo_pending_friend";
+const FR_ERR = { rate_limited: "Zu viele Versuche – bitte kurz warten.", too_short: "Mindestens 3 Zeichen.", self: "Das bist du selbst.", friend_limit: "Die Freundesliste ist voll.", too_many_requests: "Du hast schon viele offene Anfragen – warte, bis welche beantwortet sind.",
+  you_blocked_user: "Du hast diesen Spieler blockiert. Hebe die Sperre erst auf.", no_request: "Diese Anfrage gibt es nicht mehr.", not_friends: "Ihr seid nicht befreundet.", bad_target: "Das geht hier nicht.", no_profile: "Lege zuerst deinen Namen an.", offline: "Du bist offline – mit Netz geht es weiter.", server: "Das hat gerade nicht geklappt. Bitte später noch einmal." };
+// Ruft eine Server-Funktion auf. Ergebnis: { ok, data } oder { ok:false, error:<Code>, message }
+async function frCall(name, args) {
+  if (online.state !== "member") return { ok: false, error: "no_profile", message: FR_ERR.no_profile };
+  if (!onlineHasNet()) return { ok: false, error: "offline", message: FR_ERR.offline };
+  try {
+    const sb = await onlineClient();
+    const { data, error } = await sb.rpc(name, args || {});
+    if (error) { const m = (error.message || "").match(/(rate_limited|too_short|self|friend_limit|too_many_requests|you_blocked_user|no_request|not_friends|bad_target|no_profile|too_many)/); const code = m ? m[1] : "server"; return { ok: false, error: code, message: FR_ERR[code] || FR_ERR.server }; }
+    return { ok: true, data };
+  } catch (e) { return { ok: false, error: "server", message: FR_ERR.server }; }
+}
+function frEmit() { try { document.dispatchEvent(new CustomEvent("frchange")); } catch (e) {} }
+// Listen laden (Freunde, Anfragen, ausgehende); leise bei Fehlern
+async function frRefresh(withBlocked) {
+  if (online.state !== "member" || FR.loading) return;
+  FR.loading = true;
+  try {
+    const [a, b, c, d] = await Promise.all([frCall("friends_list"), frCall("incoming_requests"), frCall("outgoing_requests"), withBlocked ? frCall("blocked_list") : Promise.resolve(null)]);
+    if (a.ok) FR.friends = a.data || []; if (b.ok) FR.incoming = b.data || []; if (c.ok) FR.outgoing = c.data || []; if (d && d.ok) FR.blocked = d.data || [];
+    if (a.ok || b.ok) FR.loadedAt = Date.now();
+  } finally { FR.loading = false; frEmit(); }
+}
+const frRankLevel = (p) => duelEsc(p.rank || "Kreisliga");
+function frRow(p, actions) {
+  const ci = kbCrestIdx(p.crest_color), [c1, c2] = ONLINE_CRESTS[ci];
+  return `<div class="kb-frow" data-id="${duelEsc(p.id)}" style="--c1:${c1};--c2:${c2}">${kbCrest(ci, (p.username || "?")[0], 40)}<button type="button" class="who" data-act="open"><b>@${duelEsc(p.username)}</b><small>${frRankLevel(p)}</small></button><span class="acts">${actions || ""}</span></div>`;
+}
+const frBtn = (act, label, cls) => `<button type="button" class="kb-fbtn ${cls || ""}" data-act="${act}">${label}</button>`;
+// ---------- Einladung ueber Link / Code ----------
+function frCaptureInvite() { // ?f=CODE (die 404-Seite leitet /f/CODE hierher um); Code merken, damit er die Anmeldung ueberlebt
+  try {
+    const u = new URL(location.href), f = (u.searchParams.get("f") || "").toUpperCase();
+    if (!f) return;
+    u.searchParams.delete("f"); history.replaceState(history.state, "", u.pathname + (u.search || "") + u.hash);
+    if (/^[A-Z0-9-]{3,12}$/.test(f)) localStorage.setItem(FR_PENDING_KEY, f);
+  } catch (e) {}
+}
+async function frHandlePending() {
+  let code = null; try { code = localStorage.getItem(FR_PENDING_KEY); } catch (e) {}
+  if (!code) return;
+  if (online.state === "guest") { // erst anmelden
+    if (!frHandlePending.told) { frHandlePending.told = true; showToast('<span class="tt-tx">Melde dich an, um deinen Freund hinzuzufügen.</span>'); setTimeout(() => { if (!kb.open) kabineOpen(); }, 400); }
+    return;
+  }
+  if (online.state !== "member" || online.stale) return;
+  try { localStorage.removeItem(FR_PENDING_KEY); } catch (e) {}
+  if (online.account && online.account.code === code) { showToast('<span class="tt-tx">Das ist dein eigener Code.</span>'); return; }
+  const r = await frCall("find_by_code", { p_code: code });
+  if (!r.ok) { showToast(`<span class="tt-tx">${duelEsc(r.message)}</span>`); return; }
+  if (!r.data) { showToast('<span class="tt-tx">Den Freundescode gibt es nicht (mehr).</span>'); return; }
+  frConfirmAdd(r.data);
+}
+function frConfirmAdd(p, done) {
+  const backdrop = document.createElement("div"); backdrop.className = "modal-backdrop sp-sbd kb-over";
+  const ci = kbCrestIdx(p.crest_color);
+  backdrop.innerHTML = `<div class="sp-sheet" role="dialog" aria-modal="true" aria-label="Freund hinzufügen"><div class="in"><div class="duel-name-box" style="text-align:center">
+    <div style="display:grid;justify-items:center">${kbCrest(ci, p.username[0], 64)}</div>
+    <div class="guide-name-title" style="font-family:'Anton',Impact,sans-serif;font-size:26px">@${duelEsc(p.username)}</div>
+    <div style="font-family:'Oswald',sans-serif;font-weight:300;font-size:15px;color:var(--muted)">${frRankLevel(p)} – als Freund hinzufügen?</div>
+    <div id="frCfMsg" role="alert" style="font-family:'Oswald',sans-serif;font-size:14px;color:#FFC9A8;min-height:18px"></div>
+    <button type="button" class="save-btn main" id="frCfYes">Anfrage senden</button><button type="button" class="save-btn quiet" id="frCfNo">Abbrechen</button></div></div></div>`;
+  document.body.appendChild(backdrop);
+  backdrop.querySelector("#frCfNo").onclick = () => backdrop.remove(); backdrop.onclick = (e) => { if (e.target === backdrop) backdrop.remove(); };
+  const yes = backdrop.querySelector("#frCfYes");
+  yes.onclick = async () => {
+    yes.disabled = true; const r = await frCall("send_request", { p_user: p.id });
+    if (!r.ok) { yes.disabled = false; backdrop.querySelector("#frCfMsg").textContent = r.message; return; }
+    backdrop.remove(); frToastResult(r.data, p); await frRefresh(); if (done) done(r.data);
+  };
+}
+function frToastResult(res, p) {
+  const n = duelEsc(p.username);
+  showToast(`<span class="tt-tx">${res === "accepted" ? `Ihr seid jetzt Freunde: <b>@${n}</b>` : res === "already_friends" ? `<b>@${n}</b> ist schon dein Freund.` : res === "already_sent" ? `Die Anfrage an <b>@${n}</b> ist schon unterwegs.` : `Anfrage an <b>@${n}</b> gesendet.`}</span>`);
+}
+// ---------- Freunde-Bildschirm ----------
+function kabineOpenFriends() {
+  kabineCloseScreen();
+  const sc = document.createElement("section"); sc.className = "kb-screen"; sc.setAttribute("role", "dialog"); sc.setAttribute("aria-modal", "true"); sc.setAttribute("aria-label", "Freunde");
+  document.body.appendChild(sc); kb.screen = sc;
+  const entry = { el: sc, sheet: sc, close: () => { kabineCloseScreen(); document.removeEventListener("frchange", paint); const i = sheetStack.indexOf(entry); if (i >= 0) sheetStack.splice(i, 1); }, opener: null };
+  sheetStack.push(entry);
+  const paint = () => {
+    if (!sc.isConnected) { document.removeEventListener("frchange", paint); return; }
+    const inc = FR.incoming, out = FR.outgoing, fr = FR.friends;
+    sc.innerHTML = `<div class="kb-bar"><button class="kb-back" type="button" id="frBack">${KB_SV.back}Kabine</button><h1>Freunde</h1><button class="kb-gold" type="button" id="frAdd">+ Neu</button></div>
+      <div class="kb-board">
+        ${inc.length ? `<div class="kb-sec" style="margin-top:0">Anfragen <em>${inc.length}</em></div>${inc.map((p) => frRow(p, frBtn("yes", "Annehmen", "gold") + frBtn("no", "Ablehnen", ""))).join("")}` : ""}
+        <div class="kb-sec"${inc.length ? "" : ' style="margin-top:0"'}>Deine Freunde <em>${fr.length}</em></div>
+        ${fr.length ? fr.map((p) => frRow(p, "")).join("") : `<div class="kb-empty">Noch keine Freunde.<br>Tippe auf <b>+ Neu</b> – per Namen, Code oder Einladungslink.</div>`}
+        ${out.length ? `<div class="kb-sec">Wartet auf Antwort <em>${out.length}</em></div>${out.map((p) => frRow(p, frBtn("withdraw", "Zurückziehen", ""))).join("")}` : ""}
+      </div>`;
+    sc.querySelector("#frBack").onclick = () => { entry.close(); setTimeout(() => kabineOpen(), 150); };
+    sc.querySelector("#frAdd").onclick = () => kabineOpenAddFriend();
+    sc.querySelectorAll(".kb-frow").forEach((row) => row.addEventListener("click", async (e) => {
+      const b = e.target.closest("button"); if (!b) return; const id = row.dataset.id, act = b.dataset.act;
+      const person = [...FR.friends, ...FR.incoming, ...FR.outgoing].find((x) => x.id === id); if (!person) return;
+      if (act === "open") { if (FR.friends.some((x) => x.id === id)) frOpenFriend(person); return; }
+      b.disabled = true;
+      const r = act === "yes" ? await frCall("answer_request", { p_user: id, p_yes: true }) : act === "no" ? await frCall("answer_request", { p_user: id, p_yes: false }) : await frCall("remove_friend", { p_user: id });
+      if (!r.ok) { b.disabled = false; showToast(`<span class="tt-tx">${duelEsc(r.message)}</span>`); if (r.error === "no_request") frRefresh(); return; }
+      if (act === "yes") showToast(`<span class="tt-tx">Ihr seid jetzt Freunde: <b>@${duelEsc(person.username)}</b></span>`);
+      await frRefresh();
+    }));
+  };
+  document.addEventListener("frchange", paint);
+  paint(); frRefresh();
+}
+// ---------- Freund hinzufuegen ----------
+function kabineOpenAddFriend() {
+  const sc = document.createElement("section"); sc.className = "kb-screen kb-top2"; sc.setAttribute("role", "dialog"); sc.setAttribute("aria-modal", "true"); sc.setAttribute("aria-label", "Freund hinzufügen");
+  document.body.appendChild(sc);
+  const entry = { el: sc, sheet: sc, close: () => { sc.remove(); const i = sheetStack.indexOf(entry); if (i >= 0) sheetStack.splice(i, 1); }, opener: null };
+  sheetStack.push(entry);
+  const code = online.account ? online.account.code : "";
+  const opp = [...new Set(Object.values(profile.duels || {}).map((d) => d && d.opponent && d.opponent.deviceId).filter(Boolean))].slice(0, 100);
+  sc.innerHTML = `<div class="kb-bar"><button class="kb-back" type="button" id="faBack">${KB_SV.back}Zurück</button><h1>Freund hinzufügen</h1><span class="kb-ghost">Zurück</span></div>
+    <div class="kb-board">
+      <label class="kb-field"><span class="at">@</span><input id="faName" placeholder="Name suchen" maxlength="15" autocomplete="off" autocapitalize="none" autocorrect="off" spellcheck="false" aria-label="Name suchen"></label>
+      <div id="faRes" class="kb-res" role="status"></div>
+      <div class="kb-or">oder</div>
+      <div class="kb-codein"><label class="kb-field"><input id="faCode" placeholder="Freundescode, z. B. XI-7K4P" maxlength="12" autocomplete="off" autocapitalize="characters" spellcheck="false" aria-label="Freundescode"></label><button type="button" class="kb-gold" id="faGo">Suchen</button></div>
+      <div id="faCRes" class="kb-res" role="status"></div>
+      <div class="kb-sec">Dein Code</div>
+      <div class="kb-id" style="color:#13202A"><div class="code" style="margin:0;padding:0;border:0">Freundescode <b>${duelEsc(code)}</b></div>
+        <div class="kb-share"><button type="button" id="faCopy">${KB_SV.copy}Code kopieren</button><button type="button" id="faShare">Einladungslink teilen</button></div>
+        <div class="note" style="margin-top:8px">${duelEsc(FR_LINK(code))}</div></div>
+      <div id="faOpp"></div>
+    </div>`;
+  const $ = (id) => sc.querySelector("#" + id);
+  $("faBack").onclick = () => entry.close();
+  const resRow = (p) => { const f = FR.friends.some((x) => x.id === p.id), o = FR.outgoing.some((x) => x.id === p.id);
+    return frRow(p, f ? '<span class="kb-ok">Befreundet</span>' : o ? '<span class="kb-mute">Angefragt</span>' : frBtn("add", "Hinzufügen", "gold")); };
+  const wire = (box) => box.querySelectorAll(".kb-frow").forEach((row) => row.addEventListener("click", async (e) => {
+    const b = e.target.closest("button"); if (!b || b.dataset.act !== "add") return;
+    const id = row.dataset.id; b.disabled = true; const r = await frCall("send_request", { p_user: id });
+    if (!r.ok) { b.disabled = false; showToast(`<span class="tt-tx">${duelEsc(r.message)}</span>`); return; }
+    const p = box._people.find((x) => x.id === id); frToastResult(r.data, p); await frRefresh();
+    b.outerHTML = r.data === "accepted" || r.data === "already_friends" ? '<span class="kb-ok">Befreundet</span>' : '<span class="kb-mute">Angefragt</span>';
+  }));
+  const show = (box, people, empty) => { box._people = people; box.innerHTML = people.length ? people.map(resRow).join("") : (empty ? `<div class="kb-empty">${empty}</div>` : ""); wire(box); };
+  let timer = null, seq = 0;
+  $("faName").oninput = () => {
+    $("faName").value = $("faName").value.toLowerCase().replace(/[^a-z0-9._]/g, ""); clearTimeout(timer); const q = $("faName").value; const my = ++seq;
+    if (q.length < 3) { $("faRes").innerHTML = q ? '<div class="kb-empty">Mindestens 3 Zeichen.</div>' : ""; return; }
+    timer = setTimeout(async () => { const r = await frCall("search_users", { p_prefix: q }); if (my !== seq) return; if (!r.ok) { $("faRes").innerHTML = `<div class="kb-empty">${duelEsc(r.message)}</div>`; return; } show($("faRes"), r.data || [], "Niemand gefunden. Manche Spieler sind nur per Code oder Link zu finden."); }, 400);
+  };
+  const byCode = async () => {
+    const c = $("faCode").value.trim().toUpperCase(); if (c.length < 3) return;
+    if (online.account && c === online.account.code) { $("faCRes").innerHTML = '<div class="kb-empty">Das ist dein eigener Code.</div>'; return; }
+    const r = await frCall("find_by_code", { p_code: c }); if (!r.ok) { $("faCRes").innerHTML = `<div class="kb-empty">${duelEsc(r.message)}</div>`; return; }
+    show($("faCRes"), r.data ? [r.data] : [], "Diesen Code gibt es nicht.");
+  };
+  $("faGo").onclick = byCode; $("faCode").addEventListener("keydown", (e) => { if (e.key === "Enter") byCode(); });
+  $("faCopy").onclick = () => { try { navigator.clipboard.writeText(code).then(() => showToast(`<span class="tt-tx">Freundescode <b>${duelEsc(code)}</b> kopiert</span>`)); } catch (e) { showToast('<span class="tt-tx">Kopieren geht hier nicht</span>'); } };
+  $("faShare").onclick = async () => {
+    const text = "Spiel mit mir Startelo XI – die Startelf-Quiz-App. Mein Freundescode: " + code, url = FR_LINK(code);
+    try { if (navigator.share) { await navigator.share({ title: "Startelo XI", text, url }); return; } } catch (e) { if (e && e.name === "AbortError") return; }
+    try { await navigator.clipboard.writeText(text + " " + url); showToast('<span class="tt-tx">Einladung kopiert</span>'); } catch (e) { showToast('<span class="tt-tx">Teilen geht hier nicht</span>'); }
+  };
+  if (opp.length) frCall("match_legacy", { p_device_ids: opp }).then((r) => { if (r.ok && r.data && r.data.length && sc.isConnected) { const box = $("faOpp"); box.innerHTML = '<div class="kb-sec">Aus deinen Duellen</div><div class="kb-res" id="faOppRes"></div>'; show(box.querySelector("#faOppRes"), r.data, ""); } });
+  frRefresh();
+}
+// ---------- Freund ansehen / entfernen / blockieren / melden ----------
+function frOpenFriend(p) {
+  const backdrop = document.createElement("div"); backdrop.className = "modal-backdrop sp-sbd kb-over"; const ci = kbCrestIdx(p.crest_color);
+  backdrop.innerHTML = `<div class="sp-sheet" role="dialog" aria-modal="true" aria-label="@${duelEsc(p.username)}"><div class="in"><div class="duel-name-box" style="text-align:center">
+    <div style="display:grid;justify-items:center">${kbCrest(ci, p.username[0], 64)}</div>
+    <div class="guide-name-title" style="font-family:'Anton',Impact,sans-serif;font-size:26px">@${duelEsc(p.username)}</div>
+    <div id="frSt" class="kb-stats" style="font-family:'Oswald',sans-serif"><div class="kb-empty">Lädt …</div></div>
+    <div id="frMsg" role="alert" style="font-family:'Oswald',sans-serif;font-size:14px;color:#FFC9A8;min-height:18px"></div>
+    <div class="kb-fbtns"><button type="button" class="save-btn quiet" id="frRm">Entfernen</button><button type="button" class="save-btn quiet" id="frBl">Blockieren</button><button type="button" class="save-btn quiet" id="frRp">Melden</button></div>
+    <button type="button" class="save-btn main" id="frOk">Schließen</button></div></div></div>`;
+  document.body.appendChild(backdrop);
+  const $ = (id) => backdrop.querySelector("#" + id), close = () => backdrop.remove();
+  $("frOk").onclick = close; backdrop.onclick = (e) => { if (e.target === backdrop) close(); };
+  frCall("friend_stats", { p_user: p.id }).then((r) => {
+    if (!backdrop.isConnected) return;
+    if (!r.ok || !r.data) { $("frSt").innerHTML = `<div class="kb-empty">${duelEsc(r.ok ? "Noch keine Werte." : r.message)}</div>`; return; }
+    const s = r.data, cell = (v, l) => `<div><b>${v == null ? "–" : duelEsc(v)}</b><span>${l}</span></div>`;
+    $("frSt").innerHTML = cell(s.level, "Level") + cell(s.campaign_stars, "Sterne") + cell(s.trophies, "Trophäen") + cell(s.streak_current, "Serie") + cell(s.quote == null ? null : s.quote + " %", "Trefferquote") + cell(s.lineups_played, "Gespielt");
+  });
+  const ask = (title, text, label, danger, run) => { const dlg = document.createElement("div"); dlg.className = "modal-backdrop sp-sbd kb-over"; dlg.style.zIndex = 80;
+    dlg.innerHTML = `<div class="sp-sheet" role="alertdialog" aria-modal="true"><div class="in"><div class="duel-name-box"><div class="guide-name-title" style="font-family:'Anton',Impact,sans-serif;font-size:24px">${title}</div><div style="font-family:'Oswald',sans-serif;font-weight:300;font-size:14.5px;color:var(--muted);line-height:1.45">${text}</div><div class="kdMsg" role="alert" style="font-family:'Oswald',sans-serif;font-size:14px;color:#FFC9A8;min-height:18px"></div><button type="button" class="save-btn main kdYes"${danger ? ' style="background:linear-gradient(180deg,#C1392B,#8E2419);color:#fff"' : ""}>${label}</button><button type="button" class="save-btn quiet kdNo">Abbrechen</button></div></div></div>`;
+    document.body.appendChild(dlg); dlg.querySelector(".kdNo").onclick = () => dlg.remove(); dlg.onclick = (e) => { if (e.target === dlg) dlg.remove(); };
+    dlg.querySelector(".kdYes").onclick = async (e) => { e.target.disabled = true; const r = await run(); if (r.ok) { dlg.remove(); close(); await frRefresh(true); } else { e.target.disabled = false; dlg.querySelector(".kdMsg").textContent = r.message; } }; };
+  $("frRm").onclick = () => ask("Freund entfernen?", `<b>@${duelEsc(p.username)}</b> wird aus deiner Freundesliste entfernt. @${duelEsc(p.username)} bekommt keine Nachricht.`, "Entfernen", false, () => frCall("remove_friend", { p_user: p.id }));
+  $("frBl").onclick = () => ask("Blockieren?", `<b>@${duelEsc(p.username)}</b> kann dich nicht mehr finden oder anfragen. Eure Freundschaft und offene Duelle enden. Aufheben kannst du das unter Einstellungen → Privatsphäre.`, "Blockieren", true, () => frCall("block_user", { p_user: p.id }));
+  $("frRp").onclick = () => ask("Melden", `Du meldest den Namen <b>@${duelEsc(p.username)}</b> (z. B. beleidigend oder Name eines echten Spielers). Wir prüfen die Meldung. Der Spieler erfährt nichts davon.`, "Melden", false, () => frCall("report_user", { p_target: p.id, p_reason: "Name unangemessen" }).then((r) => { if (r.ok) showToast('<span class="tt-tx">Danke – wir prüfen die Meldung.</span>'); return r; }));
+}
+// ---------- Privatsphaere + blockierte Spieler ----------
+function kabineOpenPrivacy() {
+  kabineCloseScreen();
+  const sc = document.createElement("section"); sc.className = "kb-screen"; sc.setAttribute("role", "dialog"); sc.setAttribute("aria-modal", "true"); sc.setAttribute("aria-label", "Privatsphäre");
+  document.body.appendChild(sc); kb.screen = sc;
+  const entry = { el: sc, sheet: sc, close: () => { kabineCloseScreen(); document.removeEventListener("frchange", paint); const i = sheetStack.indexOf(entry); if (i >= 0) sheetStack.splice(i, 1); }, opener: null };
+  sheetStack.push(entry);
+  const OPT = [["all", "Alle", "Andere finden dich über deinen Namen."], ["code", "Nur per Code oder Link", "Wer deinen Code oder Link kennt, kann dich finden."], ["none", "Niemand", "Du bist nicht auffindbar – nur du kannst anfragen."]];
+  const paint = () => {
+    if (!sc.isConnected) { document.removeEventListener("frchange", paint); return; }
+    const cur = (online.account && online.account.discoverable) || "all";
+    sc.innerHTML = `<div class="kb-bar"><button class="kb-back" type="button" id="pvBack">${KB_SV.back}Zurück</button><h1>Privatsphäre</h1><span class="kb-ghost">Zurück</span></div>
+      <div class="kb-board"><div class="kb-sec" style="margin-top:0">Wer darf mich finden?</div>
+      ${OPT.map(([v, t, s]) => `<button type="button" class="kb-mi" data-v="${v}" aria-pressed="${v === cur}"><span class="t">${v === cur ? KB_SV.checkDark : ""}</span><span><b>${t}</b><small style="white-space:normal">${s}</small></span><span class="end"></span></button>`).join("")}
+      <div class="kb-sec">Blockierte Spieler <em>${FR.blocked.length}</em></div>
+      ${FR.blocked.length ? FR.blocked.map((p) => frRow(p, frBtn("unblock", "Aufheben", ""))).join("") : '<div class="kb-empty">Du hast niemanden blockiert.</div>'}</div>`;
+    sc.querySelector("#pvBack").onclick = () => entry.close();
+    sc.querySelectorAll("[data-v]").forEach((b) => b.onclick = async () => {
+      const v = b.dataset.v; if (v === cur) return; const r = await frCall("set_discoverable", { p_mode: v });
+      if (!r.ok) { showToast(`<span class="tt-tx">${duelEsc(r.message)}</span>`); return; }
+      if (online.account) { online.account.discoverable = v; onlineSaveAccount(online.account); } paint();
+    });
+    sc.querySelectorAll(".kb-frow").forEach((row) => row.addEventListener("click", async (e) => { const b = e.target.closest("button"); if (!b || b.dataset.act !== "unblock") return; b.disabled = true;
+      const r = await frCall("unblock_user", { p_user: row.dataset.id }); if (!r.ok) { b.disabled = false; showToast(`<span class="tt-tx">${duelEsc(r.message)}</span>`); return; } await frRefresh(true); }));
+  };
+  document.addEventListener("frchange", paint); paint(); frRefresh(true);
+}
+// Abgleich: beim Anmelden, beim Zurueckkehren in die App
+document.addEventListener("onlinechange", () => { if (online.state === "member" && !online.stale) { frRefresh().then(() => frHandlePending()); } else if (online.state === "guest") { frHandlePending(); } kbUpdateBadge(); });
+document.addEventListener("frchange", () => { kbUpdateBadge(); if (kb.open) kabineRender(); });
+document.addEventListener("visibilitychange", () => { if (document.visibilityState === "visible" && online.state === "member" && Date.now() - FR.loadedAt > 30000) frRefresh(); });
+frCaptureInvite(); whenSplashGone(() => { if (online.state === "guest" || online.state === "member") frHandlePending(); });
 
 if ("serviceWorker" in navigator) {
   window.addEventListener("load", () => navigator.serviceWorker.register("./sw.js"));

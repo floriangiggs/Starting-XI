@@ -5457,6 +5457,8 @@ Google später (Supabase „Allow manual linking“ dann einschalten), Freunde (
 
 **Stand K3 (Cloud-Spielstand, 31.10.2026):** Der Spielstand wird für angemeldete Spieler gesichert und zusammengeführt (`mergeProfiles`: Vereinigung, das Höhere, Token nie addieren; lokal bleiben Entwürfe, Geräte-ID, Ton, Duelle). Abgleich beim Öffnen/Anmelden, nach 15 s Ruhe, im Hintergrund und bei Netz; Fall 1 Server leer = hochladen, Fall 2 frisches Gerät = laden („Willkommen zurück“), Fall 3 beide haben Fortschritt = Übersicht + Rückfrage + Sicherung (`startelo_backup_vor_abgleich`). Einstellungen: „Zuletzt gesichert“ + „Jetzt sichern“. `tools/test-sync.mjs` (50 Prüfungen). Duelle gehen mit K6 vom Server.
 
+**Stand K4 (Freunde, 02.11.2026):** Kabine → „Freunde“ (nur für Angemeldete): Anfragen annehmen/ablehnen/zurückziehen, Freundesliste mit Blatt (Level, Sterne, Trophäen, Serie, Quote, Gespielt via `friend_stats`; Entfernen, Blockieren, Melden), „+ Neu“: Namenssuche (ab 3 Zeichen, 400 ms Entprellung), Freundescode, eigener Code kopieren/teilen (`https://startelo.de/f/<Code>`), „Aus deinen Duellen“ (`match_legacy`). Einladungslink `/f/<Code>` → `404.html` leitet zu `?f=<Code>` um; Gast bekommt Anmeldung, danach Rückfrage „Freund hinzufügen?“. Privatsphäre in den Einstellungen (`set_discoverable`: Alle / Nur per Code / Niemand) + Sperrliste. Goldener Punkt am Logo bei offenen Anfragen. `tools/test-freunde.mjs` (41 Prüfungen), Service Worker v81. **Noch offen:** echter Test mit zwei Konten (mit einem Freund), QR-Code, K5 „Heute unter Freunden“.
+
 ---
 
 ## Prompt 61b – Duell-Pool Paket 2: Spanien (26 Aufstellungen)

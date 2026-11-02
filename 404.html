@@ -1,0 +1,19 @@
+<!doctype html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Startelo XI</title>
+<meta name="theme-color" content="#173A29">
+<!-- GitHub Pages liefert diese Seite fuer alle unbekannten Adressen. /f/<Freundescode> (Einladungslink) wird zur App umgeleitet:
+     startelo.de/f/XI-7K4P -> startelf_check.html?f=XI-7K4P. Alles andere: freundlicher Hinweis. Spaeter: Universal Links der nativen App. -->
+<script>
+(function () {
+  var m = location.pathname.match(/^\/f\/([A-Za-z0-9-]{3,12})\/?$/);
+  if (m) location.replace("/startelf_check.html?f=" + encodeURIComponent(m[1].toUpperCase()));
+})();
+</script>
+<style>html,body{margin:0;height:100%;background:#173A29;color:#F2EFE6;font:16px/1.45 system-ui,sans-serif}body{display:grid;place-items:center;text-align:center;padding:24px}a{color:#F4D58D}h1{font-size:28px;margin:0 0 8px}</style>
+</head>
+<body><main><h1>Startelo XI</h1><p>Diese Seite gibt es nicht. <a href="/startelf_check.html">Zur App</a></p></main></body>
+</html>
