@@ -244,6 +244,25 @@ await pa.click("#cmChallenge"); await pa.waitForTimeout(1200);
 ok(await pa.evaluate((bid) => { const b = document.querySelector('.dz-sheet [data-fr="s:' + bid + '"]'); return !!b && b.getAttribute("aria-pressed") === "true"; }, U.ben), "Vergleich: 'Herausfordern' oeffnet das Blatt mit Ben vorgewaehlt");
 
 if (shots) await pa.screenshot({ path: path.join(shots, "anna_herausfordern.png") });
+// 13b) K6c: Code einfuegen nur noch als Notweg in der Kabine (Mitglieder), Offline-Hinweis in der Zentrale
+await pa.evaluate(() => { dzCloseSheet(); navigate("start"); }); await pa.waitForTimeout(400);
+await pa.evaluate(() => navigate("duels")); await pa.waitForTimeout(600);
+ok((await pa.locator("#duelPasteToggle").count()) === 0, "Mitglied: Zentrale hat kein 'Code einfügen' mehr");
+await pa.evaluate(() => { Object.defineProperty(navigator, "onLine", { get: () => false, configurable: true }); renderDuels(true); });
+ok(/Du bist offline/.test(await txt(pa, "#duelsView")), "Offline: Zentrale zeigt den Hinweis");
+await pa.evaluate(() => { Object.defineProperty(navigator, "onLine", { get: () => true, configurable: true }); renderDuels(true); });
+ok(!/Du bist offline/.test(await txt(pa, "#duelsView")), "Online: Hinweis weg");
+const code = await pb.evaluate(() => { const id = createDuel({ rounds: 1, seconds: 60, difficulty: 1 }); return duelChallengeCode(id); });
+await pa.evaluate(() => navigate("start")); await pa.waitForTimeout(300);
+await pa.click("#kbLogo"); await pa.waitForTimeout(700);
+ok((await pa.locator("#kbCode").count()) === 1, "Kabine: 'Duell-Code einlösen' für Mitglieder");
+await pa.click("#kbCode"); await pa.waitForTimeout(900);
+await pa.fill("#kcInput", "kein code"); await pa.click("#kcGo"); await pa.waitForTimeout(300);
+ok((await txt(pa, "#kcMsg")).length > 5, "Notweg: ungültiger Code -> Meldung");
+await pa.fill("#kcInput", code); await pa.click("#kcGo"); await pa.waitForTimeout(900);
+ok(await pa.evaluate(() => navStack[navStack.length - 1] === "duelinvite"), "Notweg: gültiger Code öffnet die Einladung (Link-Duell)");
+ok(await pa.evaluate(() => Object.values(profile.duels).some((d) => !d.server && d.role === "opponent")), "Notweg: Link-Duell wird lokal angelegt (Gast-Duell bleibt möglich)");
+
 // 14) Keine Skriptfehler
 ok(pa.errs.length === 0 && pb.errs.length === 0, "Keine Skriptfehler (" + [...pa.errs, ...pb.errs].join(" | ") + ")");
 

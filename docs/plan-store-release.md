@@ -115,6 +115,32 @@ zwei Konten, Zeit per Test-Hook gerafft), danach einmal von Hand auf **iPhone + 
 **Schutz (Stufe A)**: ungültige Werte (Richtige > 11, Zeit unter Mindestzeit, Runde doppelt, fremdes Duell) werden
 vom Server abgelehnt – eigene Regeltests in K1/K6.
 
+**Stand K6 (02.11.2026) – automatisiert abgedeckt** (`tools/test-duell-server.mjs`: zwei App-Instanzen gegen eine echte
+Datenbank, Migrationen 0001–0010; `tools/test-db.mjs`: Regeln auf Datenbankebene). Von Hand auf zwei echten Geräten
+(iPhone + Android, echtes Apple-Konto je Gerät) steht jede Zeile noch aus.
+
+| Punkt | Stand | Wo geprüft |
+|---|---|---|
+| D1 herausfordern | automatisiert (Push erst mit 8b) | Herausfordern aus Vergleich/Zentrale, Server legt an, Gegner sieht es beim Abgleich |
+| D2 spielen | automatisiert (Push erst mit 8b) | start_round/submit_round, Abpfiff auf beiden Seiten |
+| D3 gleiches Ergebnis | automatisiert | Anna 1:2, Ben 2:1, beide aus demselben Server-Ergebnis |
+| D4 Versiegelung | automatisiert, auch direkt am Server | test-db (Funktion + Tabelle), test-duell-server (Zwischenkarte) |
+| D5 einmalig | automatisiert | `duelsPaid` + `mergeDuelStats`; „neues Gerät“ vergibt nichts doppelt |
+| D6 Revanche | automatisiert | Revanche legt neues Duell an |
+| D7 löschen/aufräumen | automatisiert | Bilanz bleibt; beendete → `hide_duel`, offene → `decline`/`cancel` |
+| D8 Gast per Link/Code | unverändert (bestehende Tests) + Notweg in der Kabine | test-duell*.mjs, Kabine „Duell-Code einlösen“ |
+| D9 Zwischenstand | Zwischenstand nach jeder Runde: ja. **Vorzeitiges Ende: nein** (bewusst: Server beendet erst, wenn beide alle Runden abgegeben haben; die Wertung kennt Richtige/Zeit insgesamt) | – |
+| F1 offline absenden | automatisiert | Warteschlange (`d.mine.length - d.subm`), später genau einmal gesendet |
+| F2 doppelt senden | automatisiert | `recorded:false`, eindeutiger Schlüssel (test-db) |
+| F3 App mitten in der Runde schließen | Runde zählt 0 („aufgegeben“); Server kennt den Start | test-db (hängende Runde, Zeitplaner), App: `d.active` |
+| F4 Neuinstallation | Duelle kommen per Abgleich zurück; Belohnungen nicht doppelt | test-duell-server („neues Gerät“) |
+| F5 zwei Geräte | dieselbe Runde nur einmal abgebbar | test-db |
+| F6 Frist | automatisiert | test-db (Sieg für den, der gespielt hat; Erinnerung); Ticket zeigt „noch X Std“ |
+| F7 Freundschaft endet | automatisiert | test-db (Duell `cancelled`), App entfernt es beim Abgleich |
+| F8 Uhr falsch | Serverzeit zählt | Zeitprüfung gegen `started_at` (test-db) |
+| F9 keine Verbindung | Hinweis in der Zentrale; Runde braucht Netz zum Anpfiff | test-duell-server |
+| F10 Serverfehler | verständliche Meldungen, nichts geht verloren (Warteschlange) | `FR_ERR`, test-duell-server |
+
 ## 7. Entscheidungen, die ich von dir brauche
 
 | | Frage | Empfehlung |

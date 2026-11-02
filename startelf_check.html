@@ -16789,6 +16789,7 @@ function dzPageHTML() {
   const rise = (i) => `class="du-rise" style="animation-delay:${(i * 0.05).toFixed(2)}s"`;
   return `<div class="lv-top"><button type="button" class="tb back" id="dzBack">${chev}Start</button><span class="lv-sp"></span><button type="button" class="tb gold" data-new>${DU_SV.plus}Neues Duell</button></div>
     <div class="du-body" id="dzBodyEl">
+      ${online.state === "member" && !onlineHasNet() ? `<p class="dz-note" style="margin:0 0 10px;text-align:center">Du bist offline – Online-Duelle brauchen für jeden Anpfiff Netz. Gespielte Runden werden später automatisch gesendet.</p>` : ""}
       <div class="dz-pass du-rise"><div class="row">${duelMagHTML(me, 56)}<div class="who"><small>Duell-Pass</small>${profile.duelName || me.name !== "Spieler"
           ? `<b>${duelEsc(profile.duelName || me.name)}</b><span>${me.handle ? "@" + duelEsc(me.handle) + " · " : ""}${duelEsc(me.rank)} · Level ${me.level}</span>`
           : `<b>Dein Name</b><span><button type="button" class="dz-link" id="dzNameBtn">Name und Benutzername festlegen</button></span>`}</div></div>
@@ -16822,7 +16823,7 @@ function dzPageHTML() {
         <div class="dz-grp" style="margin-top:12px">Duell-Trophäen <em>${won.filter(t => t.won).length} von ${won.length}</em></div>
         <div class="dz-troph">${won.map(t => `<div class="dz-tr ${t.won ? "" : "off"}">${TSV[t.id] || DU_SV.t1}<span>${t.name}</span></div>`).join("")}</div>
       </div>
-      <button class="dz-codelink" type="button" id="duelPasteToggle">Code einfügen</button>
+      ${online.state === "member" ? "" : `<button class="dz-codelink" type="button" id="duelPasteToggle">Code einfügen</button>`}
       <div class="dz-paste" id="duelPaste" hidden>
         <input type="text" id="duelPasteInput" placeholder="Duell-Link oder Code hier einfügen" autocomplete="off" spellcheck="false" aria-label="Duell-Link oder Code">
         <div class="msg" id="duelPasteMsg" role="status"></div>
@@ -16957,8 +16958,8 @@ function dzOpenMenu(btn, id) {
   const r = btn.getBoundingClientRect();
   const menu = document.createElement("div"); menu.className = "dz-ov dz-menu"; menu.setAttribute("role", "menu");
   const items = [];
-  if (d.status === "waiting") items.push(`<button type="button" role="menuitem" data-m="remind">${DZ_ICON.bell}${d.role === "challenger" ? "Erinnerung schicken" : "Ergebnis senden"}</button>`);
-  if (!d.opponent) items.push(`<button type="button" role="menuitem" data-m="label">${DZ_ICON.pen}Benennen</button>`);
+  if (d.status === "waiting" && !d.server) items.push(`<button type="button" role="menuitem" data-m="remind">${DZ_ICON.bell}${d.role === "challenger" ? "Erinnerung schicken" : "Ergebnis senden"}</button>`);
+  if (!d.opponent && !d.server) items.push(`<button type="button" role="menuitem" data-m="label">${DZ_ICON.pen}Benennen</button>`);
   items.push(`<button type="button" role="menuitem" class="dz-danger" data-m="del">${DZ_ICON.trash}Duell löschen</button>`);
   menu.innerHTML = items.join("");
   menu.style.top = Math.min(innerHeight - 160, r.bottom + 4) + "px";
@@ -17136,7 +17137,7 @@ function dzBind(root) {
   dzBindDetail(root);
   // Code einfuegen (unveraendert)
   const paste = document.getElementById("duelPaste"), input = document.getElementById("duelPasteInput"), msg = document.getElementById("duelPasteMsg");
-  document.getElementById("duelPasteToggle").onclick = () => { paste.hidden = !paste.hidden; if (!paste.hidden) input.focus(); };
+  const pt = document.getElementById("duelPasteToggle"); if (pt) pt.onclick = () => { paste.hidden = !paste.hidden; if (!paste.hidden) input.focus(); };
   document.getElementById("duelPasteGo").onclick = () => {
     const res = handleDuelInput(input.value);
     if (!res.ok) { msg.textContent = DUEL_ERRORS[res.error]; return; }
@@ -19391,6 +19392,7 @@ function kabineRender() {
       <div class="kb-mg">Spielen</div>
       ${(() => { let n = 0, r = 0; try { n = FR.friends.length; r = FR.incoming.length; } catch (e) {} return kbMi("kbFr", KB_SV.people, "Freunde", member ? (n ? n + (n === 1 ? " Freund" : " Freunde") : "Freunde hinzufügen") + (r ? " · " + r + (r === 1 ? " Anfrage" : " Anfragen") : "") : "Mit Konto verfügbar", { lock: !member, count: member ? r : 0 }); })()}
       ${kbMi("kbDu", KB_SV.vs, "Duelle", "Herausforderungen und Bilanz")}
+      ${member ? kbMi("kbCode", KB_SV.vs, "Duell-Code einlösen", "Link oder Code von jemandem ohne Konto") : ""}
       ${kbMi("kbSp", KB_SV.pass, "Scout-Profil", "Statistik, Trophäen, Liga-Rang")}
       <div class="kb-mg">Einstellungen</div>
       ${kbMi("kbSe", KB_SV.gear, "Einstellungen", member ? "Name ändern, Konto, Ton und Spielstand" : "Ton und Spielstand sichern")}
@@ -19408,6 +19410,7 @@ function kabineRender() {
   if ($("kbCopy")) $("kbCopy").onclick = () => { const t = online.account && online.account.code || ""; try { navigator.clipboard.writeText(t).then(() => showToast(`<span class="tt-tx">Freundescode <b>${duelEsc(t)}</b> kopiert</span>`)); } catch (e) { showToast('<span class="tt-tx">Kopieren geht hier nicht</span>'); } };
   $("kbFr").onclick = member ? go(() => kabineOpenFriends()) : () => showToast('<span class="tt-tx">Für Freunde brauchst du ein Konto – melde dich oben an.</span>');
   $("kbDu").onclick = go(() => navigate("duels"));
+  if ($("kbCode")) $("kbCode").onclick = go(() => kabineOpenCode());
   $("kbSp").onclick = go(() => openProfileSheet());
   $("kbSe").onclick = go(() => kabineOpenSettings());
   $("kbHe").onclick = go(() => openGuideModal());
@@ -20025,6 +20028,17 @@ function kabineOpenCompare(p) {
   frCall("friend_stats", { p_user: p.id }).then((r) => { if (r.ok && r.data) st = r.data; else stMsg = r.ok ? "Noch keine Werte." : r.message; paint(); });
   if (FR_DAILY.day !== localDateKey()) dailyTableLoad();
 }
+// Notweg: Duell-Link oder -Code von jemandem ohne Konto einloesen (Mitglieder; Gaeste haben das Feld in der Duell-Zentrale)
+function kabineOpenCode() {
+  dzOpenSheet(`<h3>Duell-Code einlösen</h3><p class="dz-lead2">Jemand ohne Konto hat dir einen Duell-Link oder Code geschickt? Füge ihn hier ein.</p>
+    <div class="dz-fld"><div class="dz-paste" style="display:block;margin:0"><input type="text" id="kcInput" placeholder="Duell-Link oder Code hier einfügen" autocomplete="off" spellcheck="false" aria-label="Duell-Link oder Code"><div class="msg" id="kcMsg" role="status"></div>
+      <div class="row2"><button type="button" id="kcClip">${DU_SV.clip}Aus Zwischenablage</button><button type="button" id="kcGo">Öffnen</button></div></div></div>`, (sheet) => {
+    const input = sheet.querySelector("#kcInput"), msg = sheet.querySelector("#kcMsg");
+    const go = () => { const res = handleDuelInput(input.value); if (!res.ok) { msg.textContent = DUEL_ERRORS[res.error]; return; } dzCloseSheet(); finishDuelOpen(res); };
+    sheet.querySelector("#kcGo").onclick = go;
+    sheet.querySelector("#kcClip").onclick = async () => { try { input.value = await navigator.clipboard.readText(); go(); } catch (e) { msg.textContent = "Die Zwischenablage ist nicht lesbar - füge den Link bitte ins Feld ein."; } };
+  });
+}
 // ---------- Privatsphaere + blockierte Spieler ----------
 function kabineOpenPrivacy() {
   kabineCloseScreen();
@@ -20196,6 +20210,7 @@ async function sdRemoteDelete(id, d) {
 document.addEventListener("onlinechange", () => { if (sdActive()) sdSync(); });
 document.addEventListener("visibilitychange", () => { if (document.visibilityState === "visible" && sdActive()) sdSync(); });
 window.addEventListener("online", () => { if (sdActive()) sdSync(); });
+["online", "offline"].forEach((ev) => window.addEventListener(ev, () => { if (navStack[navStack.length - 1] === "duels" && online.state === "member" && !document.querySelector(".dz-sheet")) renderDuels(true); }));
 setInterval(() => { if (document.visibilityState === "visible" && sdActive() && ["duels", "duelresult", "start"].includes(navStack[navStack.length - 1])) sdSync(); }, 30000);
 whenSplashGone(() => { if (sdActive()) setTimeout(sdSync, 1500); });
 // Abgleich: beim Anmelden, beim Zurueckkehren in die App
