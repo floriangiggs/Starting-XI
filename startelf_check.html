@@ -2245,6 +2245,42 @@
   .kb-fbtns .save-btn { padding-left: 4px; padding-right: 4px; font-size: 14px; }
   .kb-cnt { min-width: 22px; height: 22px; padding: 0 6px; border-radius: 11px; display: inline-grid; place-items: center; margin-right: 6px; font-family: 'Anton', Impact, sans-serif; font-size: 13px; color: #13202A; background: radial-gradient(circle at 35% 30%, #FFF4CF, var(--gold) 65%, #A8771A); }
   .kb-mi .end { display: flex; align-items: center; }
+  /* K5: Heute unter Freunden + Vergleich (Optik: prototypes/kabine-freunde.html) */
+  .kb-tt { display: grid; gap: 4px; }
+  .kb-tr { display: grid; grid-template-columns: 22px 30px minmax(0,1fr) auto auto; align-items: center; gap: 9px; height: 44px; padding: 0 10px 0 8px; border-radius: 11px; background: rgba(8,22,14,0.26); }
+  .kb-tr .rk { font-family: 'Anton', Impact, sans-serif; font-size: 17px; text-align: center; color: rgba(244,241,232,0.85); }
+  .kb-tr .nm { min-width: 0; font-weight: 500; font-size: 15.5px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .kb-tr .nm small { font-weight: 300; font-size: 12px; color: rgba(244,241,232,0.65); margin-left: 4px; }
+  .kb-tr .sc { font-family: 'Anton', Impact, sans-serif; font-size: 18px; line-height: 1; text-align: right; }
+  .kb-tr .sc i { font-style: normal; font-size: 13px; color: rgba(244,241,232,0.6); }
+  .kb-tr .sc small { font-family: 'Oswald', sans-serif; font-weight: 400; font-size: 12px; color: rgba(244,241,232,0.62); margin-left: 5px; font-variant-numeric: tabular-nums; }
+  .kb-tr .st { display: inline-flex; align-items: center; gap: 2px; min-width: 34px; justify-content: flex-end; font-family: 'Anton', Impact, sans-serif; font-size: 14px; color: #FFD9B0; }
+  .kb-tr .st svg { width: 15px; height: 15px; }
+  .kb-tr.me { background: linear-gradient(90deg, rgba(247,217,142,0.28), rgba(247,217,142,0.1)); box-shadow: inset 0 0 0 1.4px rgba(247,217,142,0.7); }
+  .kb-tr.me .rk { color: #F7D98E; }
+  .kb-tr.first .rk { color: #13202A; width: 22px; height: 22px; border-radius: 50%; display: grid; place-items: center; font-size: 13px; background: radial-gradient(circle at 35% 30%, #FFF4CF, #E8B23D 65%, #A8771A); }
+  .kb-tr.open { opacity: 0.6; }
+  .kb-tr.open .sc { font-family: 'Oswald', sans-serif; font-weight: 300; font-size: 13px; }
+  .kb-note { margin-top: 10px; font-weight: 300; font-size: 12.5px; color: rgba(244,241,232,0.7); }
+  .kb-more { flex-shrink: 0; width: 40px; height: 40px; border: 0; border-radius: 50%; display: grid; place-items: center; color: var(--chalk); background: rgba(8,22,14,0.4); box-shadow: inset 0 0 0 1.3px rgba(244,241,232,0.3); cursor: pointer; }
+  .kb-more svg { width: 20px; height: 20px; }
+  .kb-vs { display: grid; grid-template-columns: 1fr auto 1fr; align-items: center; gap: 8px; margin: 2px 0 14px; }
+  .kb-vs .side { display: grid; justify-items: center; gap: 5px; text-align: center; min-width: 0; }
+  .kb-vs .side b { font-weight: 600; font-size: 16px; max-width: 140px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .kb-vs .side small { font-weight: 300; font-size: 12.5px; color: rgba(244,241,232,0.75); margin-top: -2px; }
+  .kb-vs .mid { width: 46px; height: 46px; border-radius: 50%; display: grid; place-items: center; font-family: 'Anton', Impact, sans-serif; font-size: 18px; color: #FFF1C8; background: #7A5532; box-shadow: inset 0 0 0 2px #3E2A16, 0 4px 10px rgba(0,0,0,0.4); }
+  .kb-cmp { display: grid; gap: 11px; }
+  .kb-cr .l { display: grid; grid-template-columns: 1fr auto 1fr; align-items: baseline; gap: 8px; }
+  .kb-cr .l b { font-family: 'Anton', Impact, sans-serif; font-weight: 400; font-size: 20px; line-height: 1; color: rgba(244,241,232,0.85); }
+  .kb-cr .l.tx b { font-family: 'Oswald', sans-serif; font-weight: 500; font-size: 16px; }
+  .kb-cr .l b:last-child { text-align: right; }
+  .kb-cr .l b.win { color: #F7D98E; }
+  .kb-cr .l span { font-weight: 400; font-size: 13.5px; color: rgba(244,241,232,0.78); text-align: center; }
+  .kb-cr .bar { display: grid; grid-template-columns: 1fr 1fr; gap: 3px; margin-top: 5px; }
+  .kb-cr .bar i { display: block; height: 7px; border-radius: 4px; background: rgba(244,241,232,0.12); overflow: hidden; position: relative; }
+  .kb-cr .bar i u { position: absolute; top: 0; bottom: 0; border-radius: 4px; background: rgba(244,241,232,0.55); }
+  .kb-cr .bar i:first-child u { right: 0; }
+  .kb-cr .bar i u.win { background: linear-gradient(90deg, #E8B23D, #F7D98E); }
   .kb-board > .kb-mi { width: 100%; margin-bottom: 6px; padding-top: 7px; padding-bottom: 7px; }
 </style>
 </head>
@@ -4613,7 +4649,7 @@ function showScreen(id, dir) {
   const cur = document.querySelector(".screen:not([hidden])");
   const next = document.getElementById("screen-" + id);
   if (!next || cur === next) return;
-  if (cur && cur.id === "screen-game") { flushDraft(); draftCtx = null; } // Zurueck-Geste/Abbrechen: Entwurf sichern (Prompt 34)
+  if (cur && cur.id === "screen-game") { flushDraft(); dailyClockPause(); draftCtx = null; } // Zurueck-Geste/Abbrechen: Entwurf sichern (Prompt 34)
   refreshScreenContent(id, dir);
   next.hidden = false;
   if (id === "worldmap") wmLayout();
@@ -7050,6 +7086,7 @@ window.addEventListener("resize", () => {
 
 function startMatch(m) {
   currentMatch = m;
+  dailyClockPause();
   draftCtx = null; // bis renderPitch() die Aufstellung (neu) aufbaut
   if (navStack[navStack.length - 1] !== "game") navigate("game");
   const gameScreen = document.getElementById("screen-game");
@@ -7093,8 +7130,29 @@ function discardDraft() {
   draftCtx = null;
 }
 function flushDraft() { if (draftCtx) draftCtx.save(); }
-document.addEventListener("visibilitychange", () => { if (document.hidden) flushDraft(); });
-window.addEventListener("pagehide", flushDraft);
+document.addEventListener("visibilitychange", () => { if (document.hidden) { flushDraft(); dailyClockPause(); } else if (draftCtx && dailyClock.day && draftCtx.key === "d:" + dailyClock.day) dailyClock.since = Date.now(); });
+window.addEventListener("pagehide", () => { flushDraft(); dailyClockPause(); });
+
+/* ---- Tages-Challenge: aktive Spielzeit (K5) ----
+   Laeuft nur, solange die Aufstellung auf dem Spielfeld offen und die App sichtbar ist. Der Stand liegt in localStorage
+   (nicht im Profil - jedes Geraet misst selbst), damit Weiterspielen am selben Tag korrekt weiterzaehlt. */
+const DAILY_CLOCK_KEY = "startelo_daily_clock";
+const dailyClock = { day: null, acc: 0, since: 0 };
+function dailyClockSave() { try { localStorage.setItem(DAILY_CLOCK_KEY, JSON.stringify({ day: dailyClock.day, sec: Math.round(dailyClock.acc) })); } catch (e) {} }
+function dailyClockResume(day) { // Anpfiff der heutigen Tages-Challenge (auch beim Fortsetzen eines Entwurfs)
+  if (dailyClock.day !== day) {
+    let sec = 0; try { const o = JSON.parse(localStorage.getItem(DAILY_CLOCK_KEY) || "null"); if (o && o.day === day && o.sec > 0) sec = o.sec; } catch (e) {}
+    dailyClock.day = day; dailyClock.acc = sec;
+  }
+  dailyClock.since = document.hidden ? 0 : Date.now();
+}
+function dailyClockPause() { if (dailyClock.since) { dailyClock.acc += (Date.now() - dailyClock.since) / 1000; dailyClock.since = 0; dailyClockSave(); } }
+function dailyClockTake(day) { // Sekunden fuer den Tag (1 bis 7200) und Uhr zuruecksetzen
+  dailyClockPause();
+  const s = dailyClock.day === day ? Math.max(1, Math.min(7200, Math.round(dailyClock.acc))) : null;
+  dailyClock.day = null; dailyClock.acc = 0; dailyClock.since = 0; try { localStorage.removeItem(DAILY_CLOCK_KEY); } catch (e) {}
+  return s;
+}
 function draftMatch(d) { return LINEUP_CHALLENGES.find(x => x.id === d.id) || dailyMatchById(d.id); }
 function campaignDraftLevel() { // angefangenes Level der aktuellen Welt (oder null)
   const tier = currentCampaignTier();
@@ -15630,6 +15688,7 @@ function renderPitch() {
   }
   myCtx.save = saveDraft;
   draftCtx = myCtx;
+  if (currentDailyChallenge) dailyClockResume(currentDailyChallenge.dateKey);
   function scheduleDraft() { clearTimeout(myCtx.timer); myCtx.timer = setTimeout(saveDraft, 400); }
   function restoreDraft() {
     const d = profile.drafts[draftKey];
@@ -15970,7 +16029,9 @@ function evaluatePitch() {
     // Je Position das Ergebnis fuers Teilen-Bild (Prompt 24): g = richtig, y = mit Hilfe, x = falsch
     const cells = {};
     PITCH_LAYOUTS[m.formation].forEach(p => { cells[p.abbr] = !correctAbbrs.includes(p.abbr) ? "x" : hintedAbbrs.has(p.abbr) ? "y" : "g"; });
+    const seconds = dailyClockTake(dateKey); // aktive Spielzeit (K5), null wenn nicht gemessen
     profile.daily[dateKey] = { id: m.id, correct, grid, stars, cells };
+    if (seconds) { profile.daily[dateKey].seconds = seconds; try { dailyOutboxAdd({ day: dateKey, lineup: m.id, correct, seconds }); } catch (e) {} }
 
     const yesterday = localDateKey(new Date(new Date(dateKey + "T00:00:00").getTime() - 86400000));
     profile.streak.current = profile.streak.lastDayKey === yesterday ? profile.streak.current + 1 : 1;
@@ -19166,6 +19227,7 @@ async function onlineBoot() {
 
 /* ================= KABINE (Prompt K2b): Konto-Menue am Logo, Namen waehlen, Einstellungen ================= */
 const KB_SV = {
+  more: '<svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="5" cy="12" r="2.2" fill="currentColor"/><circle cx="12" cy="12" r="2.2" fill="currentColor"/><circle cx="19" cy="12" r="2.2" fill="currentColor"/></svg>',
   x: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18" stroke="currentColor" stroke-width="2.6" stroke-linecap="round"/></svg>',
   chev: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M9 5l7 7-7 7" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/></svg>',
   back: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M15 5l-7 7 7 7" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/></svg>',
@@ -19448,7 +19510,8 @@ function mergeProfiles(a, b) {
   const da = isObj(a.daily) ? a.daily : {}, db = isObj(b.daily) ? b.daily : {};
   new Set([...Object.keys(da), ...Object.keys(db)]).forEach((k) => {
     const x = da[k], y = db[k]; if (!x || !y) { r.daily[k] = x || y; return; }
-    r.daily[k] = num(y.correct) > num(x.correct) || (num(y.correct) === num(x.correct) && num(y.stars) > num(x.stars)) ? y : x;
+    const sx = num(x.seconds) || 1e9, sy = num(y.seconds) || 1e9; // ohne Zeit zaehlt als langsamer
+    r.daily[k] = num(y.correct) > num(x.correct) || (num(y.correct) === num(x.correct) && (num(y.stars) > num(x.stars) || (num(y.stars) === num(x.stars) && sy < sx))) ? y : x;
   });
   const keys = Object.keys(r.daily).sort(), sA = isObj(a.streak) ? a.streak : {}, sB = isObj(b.streak) ? b.streak : {};
   const last = keys.length ? keys[keys.length - 1] : (sA.lastDayKey || sB.lastDayKey || null);
@@ -19567,7 +19630,7 @@ window.addEventListener("online", () => { if (online.state === "member") syncRun
 const FR = { friends: [], incoming: [], outgoing: [], blocked: [], loadedAt: 0, loading: false };
 const FR_LINK = (code) => "https://startelo.de/f/" + code;
 const FR_PENDING_KEY = "startelo_pending_friend";
-const FR_ERR = { rate_limited: "Zu viele Versuche – bitte kurz warten.", too_short: "Mindestens 3 Zeichen.", self: "Das bist du selbst.", friend_limit: "Die Freundesliste ist voll.", too_many_requests: "Du hast schon viele offene Anfragen – warte, bis welche beantwortet sind.",
+const FR_ERR = { rate_limited: "Zu viele Versuche – bitte kurz warten.", too_short: "Mindestens 3 Zeichen.", self: "Das bist du selbst.", friend_limit: "Die Freundesliste ist voll.", bad_day: "Dieser Tag zählt nicht mehr.", wrong_lineup: "Das war nicht die Aufstellung des Tages.", bad_correct: "Das Ergebnis ist ungültig.", bad_seconds: "Die Zeit ist ungültig.", too_many_requests: "Du hast schon viele offene Anfragen – warte, bis welche beantwortet sind.",
   you_blocked_user: "Du hast diesen Spieler blockiert. Hebe die Sperre erst auf.", no_request: "Diese Anfrage gibt es nicht mehr.", not_friends: "Ihr seid nicht befreundet.", bad_target: "Das geht hier nicht.", no_profile: "Lege zuerst deinen Namen an.", offline: "Du bist offline – mit Netz geht es weiter.", server: "Das hat gerade nicht geklappt. Bitte später noch einmal." };
 // Ruft eine Server-Funktion auf. Ergebnis: { ok, data } oder { ok:false, error:<Code>, message }
 async function frCall(name, args) {
@@ -19576,7 +19639,7 @@ async function frCall(name, args) {
   try {
     const sb = await onlineClient();
     const { data, error } = await sb.rpc(name, args || {});
-    if (error) { const m = (error.message || "").match(/(rate_limited|too_short|self|friend_limit|too_many_requests|you_blocked_user|no_request|not_friends|bad_target|no_profile|too_many)/); const code = m ? m[1] : "server"; return { ok: false, error: code, message: FR_ERR[code] || FR_ERR.server }; }
+    if (error) { const m = (error.message || "").match(/(rate_limited|too_short|self|friend_limit|too_many_requests|you_blocked_user|no_request|not_friends|bad_target|no_profile|too_many|bad_day|wrong_lineup|bad_correct|bad_seconds)/); const code = m ? m[1] : "server"; return { ok: false, error: code, message: FR_ERR[code] || FR_ERR.server }; }
     return { ok: true, data };
   } catch (e) { return { ok: false, error: "server", message: FR_ERR.server }; }
 }
@@ -19590,6 +19653,54 @@ async function frRefresh(withBlocked) {
     if (a.ok) FR.friends = a.data || []; if (b.ok) FR.incoming = b.data || []; if (c.ok) FR.outgoing = c.data || []; if (d && d.ok) FR.blocked = d.data || [];
     if (a.ok || b.ok) FR.loadedAt = Date.now();
   } finally { FR.loading = false; frEmit(); }
+}
+// ---------- Tages-Challenge melden + "Heute unter Freunden" (K5) ----------
+const DAILY_OUTBOX_KEY = "startelo_daily_outbox", DAILY_FINAL_ERR = ["bad_day", "wrong_lineup", "bad_correct", "bad_seconds"];
+function dailyOutboxGet() { try { const a = JSON.parse(localStorage.getItem(DAILY_OUTBOX_KEY) || "[]"); return Array.isArray(a) ? a : []; } catch (e) { return []; } }
+function dailyOutboxSet(a) { try { if (a.length) localStorage.setItem(DAILY_OUTBOX_KEY, JSON.stringify(a)); else localStorage.removeItem(DAILY_OUTBOX_KEY); } catch (e) {} }
+function dailyOutboxAdd(e) { dailyOutboxSet([...dailyOutboxGet().filter((x) => x.day !== e.day), e].slice(-10)); dailyFlush(); }
+// Wartende Tagesergebnisse senden; bei Netz-/Serverfehler bleiben sie liegen, endgueltige Fehler werden verworfen
+async function dailyFlush() {
+  if (dailyFlush.busy || online.state !== "member" || online.stale || !onlineHasNet()) return;
+  dailyFlush.busy = true;
+  try {
+    let sent = false;
+    for (const e of dailyOutboxGet()) {
+      const r = await frCall("submit_daily", { p_day: e.day, p_lineup: e.lineup, p_correct: e.correct, p_seconds: e.seconds });
+      if (!r.ok && !DAILY_FINAL_ERR.includes(r.error)) break;
+      dailyOutboxSet(dailyOutboxGet().filter((x) => !(x.day === e.day && x.lineup === e.lineup))); sent = sent || r.ok;
+    }
+    if (sent) dailyTableLoad();
+  } finally { dailyFlush.busy = false; }
+}
+const FR_DAILY = { day: null, rows: [], loadedAt: 0 };
+async function dailyTableLoad() {
+  if (online.state !== "member") return;
+  const day = localDateKey(), r = await frCall("friends_daily", { p_day: day });
+  if (r.ok) { FR_DAILY.day = day; FR_DAILY.rows = Array.isArray(r.data) ? r.data : []; FR_DAILY.loadedAt = Date.now(); frEmit(); }
+}
+const dailyFmtTime = (s) => Math.floor(s / 60) + ":" + String(s % 60).padStart(2, "0");
+const KB_FLAME = '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2c1 3.5 5 5.5 5 10.2A5 5 0 0 1 12 17a5 5 0 0 1-5-4.8c0-2 1-3.2 2-4.2.2 1.4.9 2.2 1.7 2.5C10.2 8 10.5 4.5 12 2z" fill="currentColor"/></svg>';
+// Zeilen der Tages-Tabelle: Server-Ergebnisse + Freunde ohne Ergebnis ("noch offen") + ich selbst (auch lokal, falls noch nicht gesendet)
+function dailyBoardRows() {
+  const day = localDateKey(), srv = FR_DAILY.day === day ? FR_DAILY.rows : [], acc = online.account || {}, mine = srv.find((r) => r.mine), loc = profile.daily[day];
+  const rows = srv.filter((r) => !r.mine).map((r) => ({ id: r.id, username: r.username, crest: r.crest_color, correct: r.correct, seconds: r.seconds, streak: r.streak || 0 }));
+  const me = mine ? { id: mine.id, username: mine.username, crest: mine.crest_color, correct: mine.correct, seconds: mine.seconds, streak: mine.streak || 0, me: true }
+    : { id: "me", username: acc.username || "", crest: acc.crest, correct: loc && loc.seconds ? loc.correct : null, seconds: loc && loc.seconds ? loc.seconds : null, streak: profile.streak.current || 0, me: true };
+  rows.push(me);
+  FR.friends.forEach((f) => { if (!rows.some((r) => r.id === f.id)) rows.push({ id: f.id, username: f.username, crest: f.crest_color, correct: null, seconds: null, streak: 0 }); });
+  const played = (r) => r.correct != null;
+  rows.sort((a, b) => (played(b) ? 1 : 0) - (played(a) ? 1 : 0) || (played(a) && played(b) ? b.correct - a.correct || a.seconds - b.seconds : 0) || (b.me ? 1 : 0) - (a.me ? 1 : 0));
+  return rows;
+}
+function dailyBoardHtml() {
+  const rows = dailyBoardRows(); let rk = 0;
+  const html = rows.map((r) => {
+    const ok = r.correct != null; if (ok) rk++;
+    const ci = kbCrestIdx(r.crest), [c1, c2] = ONLINE_CRESTS[ci];
+    return `<div class="kb-tr${r.me ? " me" : ""}${ok && rk === 1 ? " first" : ""}${ok ? "" : " open"}" style="--c1:${c1};--c2:${c2}"><span class="rk">${ok ? rk : "–"}</span>${kbCrest(ci, (r.username || "?")[0], 28)}<span class="nm">${r.me ? "Du" : "@" + duelEsc(r.username)}${r.me && r.username ? `<small>@${duelEsc(r.username)}</small>` : ""}</span><span class="sc">${ok ? `${r.correct}<i>/11</i><small>${dailyFmtTime(r.seconds)}</small>` : "noch offen"}</span><span class="st">${r.streak ? KB_FLAME + r.streak : ""}</span></div>`;
+  }).join("");
+  return `<div class="kb-sec" style="margin-top:0">Heute unter Freunden</div><div class="kb-tt" id="frTT">${html}</div><div class="kb-note">Gleiche Aufstellung für alle. Bei gleich vielen Richtigen gewinnt die schnellere Zeit.</div>`;
 }
 const frRankLevel = (p) => duelEsc(p.rank || "Kreisliga");
 function frRow(p, actions) {
@@ -19656,7 +19767,8 @@ function kabineOpenFriends() {
     sc.innerHTML = `<div class="kb-bar"><button class="kb-back" type="button" id="frBack">${KB_SV.back}Kabine</button><h1>Freunde</h1><button class="kb-gold" type="button" id="frAdd">+ Neu</button></div>
       <div class="kb-board">
         ${inc.length ? `<div class="kb-sec" style="margin-top:0">Anfragen <em>${inc.length}</em></div>${inc.map((p) => frRow(p, frBtn("yes", "Annehmen", "gold") + frBtn("no", "Ablehnen", ""))).join("")}` : ""}
-        <div class="kb-sec"${inc.length ? "" : ' style="margin-top:0"'}>Deine Freunde <em>${fr.length}</em></div>
+        ${fr.length ? dailyBoardHtml() : ""}
+        <div class="kb-sec"${inc.length || fr.length ? "" : ' style="margin-top:0"'}>Deine Freunde <em>${fr.length}</em></div>
         ${fr.length ? fr.map((p) => frRow(p, "")).join("") : `<div class="kb-empty">Noch keine Freunde.<br>Tippe auf <b>+ Neu</b> – per Namen, Code oder Einladungslink.</div>`}
         ${out.length ? `<div class="kb-sec">Wartet auf Antwort <em>${out.length}</em></div>${out.map((p) => frRow(p, frBtn("withdraw", "Zurückziehen", ""))).join("")}` : ""}
       </div>`;
@@ -19665,7 +19777,7 @@ function kabineOpenFriends() {
     sc.querySelectorAll(".kb-frow").forEach((row) => row.addEventListener("click", async (e) => {
       const b = e.target.closest("button"); if (!b) return; const id = row.dataset.id, act = b.dataset.act;
       const person = [...FR.friends, ...FR.incoming, ...FR.outgoing].find((x) => x.id === id); if (!person) return;
-      if (act === "open") { if (FR.friends.some((x) => x.id === id)) frOpenFriend(person); return; }
+      if (act === "open") { if (FR.friends.some((x) => x.id === id)) kabineOpenCompare(person); return; }
       b.disabled = true;
       const r = act === "yes" ? await frCall("answer_request", { p_user: id, p_yes: true }) : act === "no" ? await frCall("answer_request", { p_user: id, p_yes: false }) : await frCall("remove_friend", { p_user: id });
       if (!r.ok) { b.disabled = false; showToast(`<span class="tt-tx">${duelEsc(r.message)}</span>`); if (r.error === "no_request") frRefresh(); return; }
@@ -19674,7 +19786,7 @@ function kabineOpenFriends() {
     }));
   };
   document.addEventListener("frchange", paint);
-  paint(); frRefresh();
+  paint(); frRefresh().then(() => dailyTableLoad());
 }
 // ---------- Freund hinzufuegen ----------
 function kabineOpenAddFriend() {
@@ -19737,19 +19849,12 @@ function frOpenFriend(p) {
   backdrop.innerHTML = `<div class="sp-sheet" role="dialog" aria-modal="true" aria-label="@${duelEsc(p.username)}"><div class="in"><div class="duel-name-box" style="text-align:center">
     <div style="display:grid;justify-items:center">${kbCrest(ci, p.username[0], 64)}</div>
     <div class="guide-name-title" style="font-family:'Anton',Impact,sans-serif;font-size:26px">@${duelEsc(p.username)}</div>
-    <div id="frSt" class="kb-stats" style="font-family:'Oswald',sans-serif"><div class="kb-empty">Lädt …</div></div>
     <div id="frMsg" role="alert" style="font-family:'Oswald',sans-serif;font-size:14px;color:#FFC9A8;min-height:18px"></div>
     <div class="kb-fbtns"><button type="button" class="save-btn quiet" id="frRm">Entfernen</button><button type="button" class="save-btn quiet" id="frBl">Blockieren</button><button type="button" class="save-btn quiet" id="frRp">Melden</button></div>
     <button type="button" class="save-btn main" id="frOk">Schließen</button></div></div></div>`;
   document.body.appendChild(backdrop);
   const $ = (id) => backdrop.querySelector("#" + id), close = () => backdrop.remove();
   $("frOk").onclick = close; backdrop.onclick = (e) => { if (e.target === backdrop) close(); };
-  frCall("friend_stats", { p_user: p.id }).then((r) => {
-    if (!backdrop.isConnected) return;
-    if (!r.ok || !r.data) { $("frSt").innerHTML = `<div class="kb-empty">${duelEsc(r.ok ? "Noch keine Werte." : r.message)}</div>`; return; }
-    const s = r.data, cell = (v, l) => `<div><b>${v == null ? "–" : duelEsc(v)}</b><span>${l}</span></div>`;
-    $("frSt").innerHTML = cell(s.level, "Level") + cell(s.campaign_stars, "Sterne") + cell(s.trophies, "Trophäen") + cell(s.streak_current, "Serie") + cell(s.quote == null ? null : s.quote + " %", "Trefferquote") + cell(s.lineups_played, "Gespielt");
-  });
   const ask = (title, text, label, danger, run) => { const dlg = document.createElement("div"); dlg.className = "modal-backdrop sp-sbd kb-over"; dlg.style.zIndex = 80;
     dlg.innerHTML = `<div class="sp-sheet" role="alertdialog" aria-modal="true"><div class="in"><div class="duel-name-box"><div class="guide-name-title" style="font-family:'Anton',Impact,sans-serif;font-size:24px">${title}</div><div style="font-family:'Oswald',sans-serif;font-weight:300;font-size:14.5px;color:var(--muted);line-height:1.45">${text}</div><div class="kdMsg" role="alert" style="font-family:'Oswald',sans-serif;font-size:14px;color:#FFC9A8;min-height:18px"></div><button type="button" class="save-btn main kdYes"${danger ? ' style="background:linear-gradient(180deg,#C1392B,#8E2419);color:#fff"' : ""}>${label}</button><button type="button" class="save-btn quiet kdNo">Abbrechen</button></div></div></div>`;
     document.body.appendChild(dlg); dlg.querySelector(".kdNo").onclick = () => dlg.remove(); dlg.onclick = (e) => { if (e.target === dlg) dlg.remove(); };
@@ -19757,6 +19862,38 @@ function frOpenFriend(p) {
   $("frRm").onclick = () => ask("Freund entfernen?", `<b>@${duelEsc(p.username)}</b> wird aus deiner Freundesliste entfernt. @${duelEsc(p.username)} bekommt keine Nachricht.`, "Entfernen", false, () => frCall("remove_friend", { p_user: p.id }));
   $("frBl").onclick = () => ask("Blockieren?", `<b>@${duelEsc(p.username)}</b> kann dich nicht mehr finden oder anfragen. Eure Freundschaft und offene Duelle enden. Aufheben kannst du das unter Einstellungen → Privatsphäre.`, "Blockieren", true, () => frCall("block_user", { p_user: p.id }));
   $("frRp").onclick = () => ask("Melden", `Du meldest den Namen <b>@${duelEsc(p.username)}</b> (z. B. beleidigend oder Name eines echten Spielers). Wir prüfen die Meldung. Der Spieler erfährt nichts davon.`, "Melden", false, () => frCall("report_user", { p_target: p.id, p_reason: "Name unangemessen" }).then((r) => { if (r.ok) showToast('<span class="tt-tx">Danke – wir prüfen die Meldung.</span>'); return r; }));
+}
+// ---------- Vergleich mit einem Freund (K5) ----------
+function kabineOpenCompare(p) {
+  const sc = document.createElement("section"); sc.className = "kb-screen kb-top2"; sc.setAttribute("role", "dialog"); sc.setAttribute("aria-modal", "true"); sc.setAttribute("aria-label", "Vergleich mit @" + p.username);
+  document.body.appendChild(sc);
+  const entry = { el: sc, sheet: sc, close: () => { sc.remove(); document.removeEventListener("frchange", paint); const i = sheetStack.indexOf(entry); if (i >= 0) sheetStack.splice(i, 1); }, opener: null };
+  sheetStack.push(entry);
+  const acc = online.account || {}, my = syncPublicStats(profile), me = { level: my.p_level, campaign_stars: my.p_campaign_stars, trophies: my.p_trophies, streak_current: my.p_streak_current, quote: my.p_quote, rank: my.p_rank };
+  let st = null, stMsg = "Lädt …";
+  const crest = (name, color, w, h) => { const ci = kbCrestIdx(color), [c1, c2] = ONLINE_CRESTS[ci]; return `<span style="--c1:${c1};--c2:${c2};display:grid;justify-items:center">${kbCrest(ci, (name || "?")[0], w, h)}</span>`; };
+  const today = () => { const rows = dailyBoardRows(), a = rows.find((r) => r.me), b = rows.find((r) => r.id === p.id), pl = (r) => r && r.correct != null;
+    const better = (x, y) => pl(x) && (!pl(y) || x.correct > y.correct || (x.correct === y.correct && x.seconds < y.seconds));
+    const txt = (r, none) => pl(r) ? `${r.correct}/11 · ${dailyFmtTime(r.seconds)}` : none;
+    return `<div class="kb-cr"><div class="l tx"><b class="${better(a, b) ? "win" : ""}">${txt(a, "offen")}</b><span>Heute</span><b class="${better(b, a) ? "win" : ""}">${txt(b, "noch offen")}</b></div></div>`; };
+  const row = (lab, a, b, fmt) => { if (a == null && b == null) return ""; const x = a == null ? 0 : a, y = b == null ? 0 : b, mx = Math.max(x, y, 1), f = fmt || ((v) => v);
+    return `<div class="kb-cr"><div class="l"><b class="${x > y ? "win" : ""}">${a == null ? "–" : f(a)}</b><span>${lab}</span><b class="${y > x ? "win" : ""}">${b == null ? "–" : f(b)}</b></div>
+      <div class="bar"><i><u class="${x > y ? "win" : ""}" style="width:${(x / mx * 100).toFixed(0)}%"></u></i><i><u class="${y > x ? "win" : ""}" style="width:${(y / mx * 100).toFixed(0)}%"></u></i></div></div>`; };
+  const paint = () => {
+    if (!sc.isConnected) { document.removeEventListener("frchange", paint); return; }
+    const f = st || {};
+    sc.innerHTML = `<div class="kb-bar"><button class="kb-back" type="button" id="cmBack">${KB_SV.back}Freunde</button><h1>Vergleich</h1><button class="kb-more" type="button" id="cmMore" aria-label="Mehr">${KB_SV.more}</button></div>
+      <div class="kb-board">
+        <div class="kb-vs"><div class="side">${crest(acc.username, acc.crest, 56, 64)}<b>Du</b><small>@${duelEsc(acc.username || "")}</small></div><span class="mid">VS</span><div class="side">${crest(p.username, p.crest_color, 56, 64)}<b>@${duelEsc(p.username)}</b><small>${duelEsc(f.rank || p.rank || "Kreisliga")}</small></div></div>
+        <div class="kb-cmp">${today()}${st ? row("Level", me.level, f.level) + row("Kampagne-Sterne", me.campaign_stars, f.campaign_stars) + row("Trophäen", me.trophies, f.trophies) + row("Tages-Serie", me.streak_current, f.streak_current) + row("Trefferquote", me.quote, f.quote, (v) => v + " %")
+          + `<div class="kb-cr"><div class="l tx"><b>${duelEsc(me.rank)}</b><span>Liga-Rang</span><b>${duelEsc(f.rank || "–")}</b></div></div>` : `<div class="kb-empty">${duelEsc(stMsg)}</div>`}</div>
+      </div>`;
+    sc.querySelector("#cmBack").onclick = () => entry.close();
+    sc.querySelector("#cmMore").onclick = () => frOpenFriend(p);
+  };
+  document.addEventListener("frchange", paint); paint();
+  frCall("friend_stats", { p_user: p.id }).then((r) => { if (r.ok && r.data) st = r.data; else stMsg = r.ok ? "Noch keine Werte." : r.message; paint(); });
+  if (FR_DAILY.day !== localDateKey()) dailyTableLoad();
 }
 // ---------- Privatsphaere + blockierte Spieler ----------
 function kabineOpenPrivacy() {
@@ -19786,9 +19923,10 @@ function kabineOpenPrivacy() {
   document.addEventListener("frchange", paint); paint(); frRefresh(true);
 }
 // Abgleich: beim Anmelden, beim Zurueckkehren in die App
-document.addEventListener("onlinechange", () => { if (online.state === "member" && !online.stale) { frRefresh().then(() => frHandlePending()); } else if (online.state === "guest") { frHandlePending(); } kbUpdateBadge(); });
+document.addEventListener("onlinechange", () => { if (online.state === "member" && !online.stale) { frRefresh().then(() => frHandlePending()); dailyFlush(); } else if (online.state === "guest") { frHandlePending(); } kbUpdateBadge(); });
 document.addEventListener("frchange", () => { kbUpdateBadge(); if (kb.open) kabineRender(); });
-document.addEventListener("visibilitychange", () => { if (document.visibilityState === "visible" && online.state === "member" && Date.now() - FR.loadedAt > 30000) frRefresh(); });
+document.addEventListener("visibilitychange", () => { if (document.visibilityState === "visible" && online.state === "member") { dailyFlush(); if (Date.now() - FR.loadedAt > 30000) frRefresh(); } });
+window.addEventListener("online", () => dailyFlush());
 frCaptureInvite(); whenSplashGone(() => { if (online.state === "guest" || online.state === "member") frHandlePending(); });
 
 if ("serviceWorker" in navigator) {

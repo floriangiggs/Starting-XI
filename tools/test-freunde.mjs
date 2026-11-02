@@ -35,6 +35,8 @@ const MOCK = () => {
         case "get_save": return { data: null, error: null };
         case "put_save": return { data: 1, error: null };
         case "put_public_stats": return { data: null, error: null };
+        case "friends_daily": return { data: s.daily || [], error: null };
+        case "submit_daily": window.__submits = (window.__submits || 0) + 1; if (s.submitErr) return { data: null, error: { message: s.submitErr } }; return { data: { recorded: true }, error: null };
         case "friends_list": return { data: s.friends, error: null };
         case "incoming_requests": return { data: s.incoming, error: null };
         case "outgoing_requests": return { data: s.outgoing, error: null };
@@ -95,12 +97,13 @@ const txt = async (page, sel) => (await page.locator(sel).first().innerText()).r
   await page.click('.kb-frow[data-id="r1"] [data-act="no"]'); await page.waitForTimeout(400);
   ok(await page.evaluate(() => FR.incoming.length === 0 && FR.friends.length === 1), "Anfrage ablehnen: weg, kein Freund");
   await page.click('.kb-frow[data-id="f1"] [data-act="open"]'); await page.waitForTimeout(500);
-  const st = await txt(page, ".modal-backdrop");
-  ok(/@lisa_kickt/.test(st) && /12\s*Level/.test(st) && /64\s*Sterne/.test(st) && /9\s*Trophäen/.test(st) && /78 %\s*Trefferquote/.test(st), "Freundesblatt zeigt die Werte (" + st.slice(0, 160) + ")");
+  const st = await txt(page, ".kb-screen.kb-top2");
+  ok(/@lisa_kickt/.test(st) && /\bLevel\s*12/.test(st) && /Kampagne-Sterne\s*64/.test(st) && /Trophäen\s*9/.test(st) && /Trefferquote\s*78 %/.test(st), "Vergleich zeigt die Werte (" + st.slice(0, 200) + ")");
+  await page.click("#cmMore"); await page.waitForTimeout(400);
   await page.click("#frRp"); await page.waitForTimeout(300); await page.click(".kdYes"); await page.waitForTimeout(500);
   ok(await page.evaluate(() => window.__calls.some((c) => c[0] === "report_user" && c[1].p_target === "f1" && c[1].p_reason.length > 3)), "Melden: report_user mit Grund");
   await page.evaluate(() => document.querySelectorAll(".modal-backdrop").forEach((b) => b.remove()));
-  await page.click('.kb-frow[data-id="f1"] [data-act="open"]'); await page.waitForTimeout(400);
+  await page.click("#cmMore"); await page.waitForTimeout(400);
   await page.click("#frBl"); await page.waitForTimeout(300);
   ok(/kann dich nicht mehr finden/.test(await txt(page, ".modal-backdrop:last-of-type")), "Blockieren: Klartext-Rückfrage");
   await page.click(".kdYes"); await page.waitForTimeout(600);
