@@ -1,0 +1,13 @@
+{
+  "applinks": {
+    "details": [
+      {
+        "appIDs": ["CS9J7W6JPM.de.startelo.app"],
+        "components": [
+          { "/": "/f/*", "comment": "Freundes-Einladung (startelo.de/f/CODE)" },
+          { "/": "/startelf_check.html", "#": "duel*", "comment": "Duell-Link fuer Gaeste (#duel= / #duelr=)" }
+        ]
+      }
+    ]
+  }
+}

@@ -17,6 +17,15 @@ const src = fs.readFileSync(html, "utf8");
 check("Service Worker wird in der App nicht registriert", /"serviceWorker" in navigator && !IS_NATIVE/.test(src));
 check("kein Rest der alten GitHub-Pages-Adresse", !/github\.io/.test(src));
 
+/* ---- 1b) Universal Links: Apple-Datei, Berechtigung, Projekt ---- */
+const aasa = JSON.parse(fs.readFileSync(path.join(root, ".well-known/apple-app-site-association"), "utf8"));
+const capCfg = JSON.parse(fs.readFileSync(path.join(root, "capacitor.config.json"), "utf8"));
+const ent = fs.readFileSync(path.join(root, "ios/App/App/App.entitlements"), "utf8"), pbx = fs.readFileSync(path.join(root, "ios/App/App.xcodeproj/project.pbxproj"), "utf8");
+const det = aasa.applinks && aasa.applinks.details && aasa.applinks.details[0];
+check("Universal Links: apple-app-site-association nennt Team-ID.Bundle-ID und die Pfade /f/* und Duell-Link", !!det && det.appIDs[0] === "CS9J7W6JPM." + capCfg.appId && det.components.some((c) => c["/"] === "/f/*") && det.components.some((c) => c["/"] === "/startelf_check.html" && /^duel/.test(c["#"])), JSON.stringify(det));
+check("Universal Links: .nojekyll da (sonst blendet GitHub Pages .well-known aus)", fs.existsSync(path.join(root, ".nojekyll")));
+check("Universal Links: Berechtigung applinks:startelo.de, im Xcode-Projekt verdrahtet (Team + Entitlements, Bundle-ID stimmt)", /applinks:startelo\.de/.test(ent) && (pbx.match(/CODE_SIGN_ENTITLEMENTS = App\/App\.entitlements;/g) || []).length === 2 && (pbx.match(/DEVELOPMENT_TEAM = CS9J7W6JPM;/g) || []).length === 2 && pbx.includes("PRODUCT_BUNDLE_IDENTIFIER = " + capCfg.appId + ";"));
+
 /* ---- 2) www/-Bundle ---- */
 const files = buildWww({ quiet: true });
 const has = (f) => files.includes(f);
@@ -39,6 +48,7 @@ const fakeCap = () => {
       Haptics: { impact: rec("impact"), notification: rec("notification") },
       Clipboard: { write: rec("clipWrite"), read: async () => ({ value: "aus-der-ablage", type: "text/plain" }) },
       SplashScreen: { hide: rec("splashHide") },
+      App: { addListener: (n, cb) => { (window.__listeners = window.__listeners || {})[n] = cb; return { remove() {} }; } },
       Preferences: window.__pref ? { set: async ({ key, value }) => { await window.__pref("set", key, value); }, get: async ({ key }) => ({ value: await window.__pref("get", key) }), remove: async ({ key }) => { await window.__pref("remove", key); }, keys: async () => ({ keys: await window.__pref("keys") }) } : undefined,
       Share: { share: async (a) => { window.__calls.push(["share", a]); if (a.text === "abbruch") throw new Error("Share canceled"); return { activityType: "x" }; } },
     },
@@ -143,6 +153,32 @@ async function open(native) {
     check("Speicher: keine Skriptfehler (Wiederherstellung)", errs.length === 0, errs.join(" | "));
     await ctx.close();
   }
+}
+{ // Universal Links in der App: appUrlOpen -> Freundescode merken / Duell-Hash verarbeiten
+  const ctx = await browser.newContext({ viewport: { width: 393, height: 852 }, serviceWorkers: "block" });
+  const page = await ctx.newPage(); const errs = [];
+  page.on("pageerror", (e) => errs.push(e.message)); await page.addInitScript(fakeCap);
+  await page.goto("file://" + html, { waitUntil: "domcontentloaded" });
+  await page.waitForFunction(() => window.__listeners && window.__listeners.appUrlOpen && !document.getElementById("splash"), null, { timeout: 15000 });
+  const r = await page.evaluate(async () => {
+    const out = {}, open = (url) => window.__listeners.appUrlOpen({ url }), wait = (ms) => new Promise((res) => setTimeout(res, ms));
+    window.__h = []; handleIncomingHash = (h) => { window.__h.push(h); };
+    open("https://evil.example/f/ABC123"); open("https://startelo.de/impressum.html"); await wait(1200);
+    out.fremd = localStorage.getItem("startelo_pending_friend"); out.hFremd = window.__h.length;
+    open("https://startelo.de/f/abc-123"); await wait(1200);
+    out.code = localStorage.getItem("startelo_pending_friend"); out.toast = document.getElementById("toastStack").innerText;
+    open("https://startelo.de/?f=XYZ789"); await wait(1200);
+    out.codeQ = localStorage.getItem("startelo_pending_friend");
+    open("https://startelo.de/startelf_check.html#duel=SXD1abc"); open("https://startelo.de/startelf_check.html#duelr=SXR1xyz"); await wait(1500);
+    out.hashes = window.__h.slice();
+    return out;
+  });
+  check("Links in der App: fremde Adressen und andere startelo.de-Seiten werden ignoriert", r.fremd === null && r.hFremd === 0, JSON.stringify([r.fremd, r.hFremd]));
+  check("Links in der App: startelo.de/f/CODE merkt den Freundescode (Grossbuchstaben) und fordert Gaeste zur Anmeldung auf", r.code === "ABC-123" && /Melde dich an/.test(r.toast), JSON.stringify([r.code, r.toast]));
+  check("Links in der App: auch ?f=CODE wird erkannt", r.codeQ === "XYZ789", r.codeQ);
+  check("Links in der App: Duell-Links (#duel= und #duelr=) gehen an die vorhandene Duell-Verarbeitung", JSON.stringify(r.hashes) === JSON.stringify(["#duel=SXD1abc", "#duelr=SXR1xyz"]), JSON.stringify(r.hashes));
+  check("Links in der App: keine Skriptfehler", errs.length === 0, errs.join(" | "));
+  await ctx.close();
 }
 await browser.close();
 console.log(fails ? `${fails} von ${total} Pruefungen FALSCH` : `Alle ${total} Pruefungen bestanden`);

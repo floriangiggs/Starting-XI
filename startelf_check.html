@@ -20300,6 +20300,18 @@ document.addEventListener("frchange", () => { kbUpdateBadge(); if (kb.open) kabi
 document.addEventListener("visibilitychange", () => { if (document.visibilityState === "visible" && online.state === "member") { dailyFlush(); if (Date.now() - FR.loadedAt > 30000) frRefresh(); } });
 window.addEventListener("online", () => dailyFlush());
 frCaptureInvite(); whenSplashGone(() => { if (online.state === "guest" || online.state === "member") frHandlePending(); });
+// Universal Links (8a-6): In der App oeffnet iOS Links https://startelo.de/f/CODE (Freundes-Einladung) und .../startelf_check.html#duel=... direkt in der App.
+// Der App-Plugin-Handler uebersetzt sie in das, was die Web-App schon kann (gemerkter Freundescode bzw. Duell-Hash). Kaltstart: das Plugin haelt den Link, bis ein Listener da ist.
+function nativeOpenUrl(raw) {
+  try {
+    const u = new URL(raw); if (u.hostname !== "startelo.de") return;
+    const m = u.pathname.match(/^\/f\/([A-Za-z0-9-]{3,12})\/?$/), q = (u.searchParams.get("f") || "").toUpperCase();
+    const code = m ? m[1].toUpperCase() : /^[A-Z0-9-]{3,12}$/.test(q) ? q : "";
+    if (code) { localStorage.setItem(FR_PENDING_KEY, code); frHandlePending.told = false; frHandlePending(); return; }
+    if (/^#duelr?=/.test(u.hash)) handleIncomingHash(u.hash);
+  } catch (e) { /* unbekannter Link: ignorieren */ }
+}
+(function () { const A = capPlugin("App"); if (A) A.addListener("appUrlOpen", (e) => { const url = e && e.url; if (url) whenSplashGone(() => setTimeout(() => nativeOpenUrl(url), 300)); }); })();
 // App, erster Start mit leerem Spielstand und ohne Konto: Wer vorher im Browser gespielt hat, startet bei null - einmaliger Hinweis auf den Cloud-Spielstand (8a-4)
 whenSplashGone(() => setTimeout(() => {
   try {
