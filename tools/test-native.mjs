@@ -39,6 +39,7 @@ const fakeCap = () => {
       Haptics: { impact: rec("impact"), notification: rec("notification") },
       Clipboard: { write: rec("clipWrite"), read: async () => ({ value: "aus-der-ablage", type: "text/plain" }) },
       SplashScreen: { hide: rec("splashHide") },
+      Preferences: window.__pref ? { set: async ({ key, value }) => { await window.__pref("set", key, value); }, get: async ({ key }) => ({ value: await window.__pref("get", key) }), remove: async ({ key }) => { await window.__pref("remove", key); }, keys: async () => ({ keys: await window.__pref("keys") }) } : undefined,
       Share: { share: async (a) => { window.__calls.push(["share", a]); if (a.text === "abbruch") throw new Error("Share canceled"); return { activityType: "x" }; } },
     },
   };
@@ -110,6 +111,38 @@ async function open(native) {
   check("Uebergang: natives Start-Bild wird genau einmal ausgeblendet (250 ms)", hides.length === 1 && hides[0][1].fadeOutDuration === 250, JSON.stringify(hides));
   check("Uebergang: keine Skriptfehler", errs.length === 0, errs.join(" | "));
   await ctx.close();
+}
+{ // Speicher-Sicherung (8a-4): spiegeln, nach geraeumtem localStorage zurueckspielen, Hinweis nur bei leerem Spielstand
+  const store = new Map();
+  const mk = async () => {
+    const ctx = await browser.newContext({ viewport: { width: 393, height: 852 }, serviceWorkers: "block" });
+    await ctx.exposeFunction("__pref", (op, key, value) => { if (op === "set") store.set(key, value); else if (op === "remove") store.delete(key); else if (op === "get") return store.has(key) ? store.get(key) : null; else if (op === "keys") return [...store.keys()]; });
+    const page = await ctx.newPage(); const errs = []; page.on("pageerror", (e) => errs.push(e.message)); await page.addInitScript(fakeCap);
+    return { ctx, page, errs };
+  };
+  { // frischer Start: Hinweis, Spiegelung
+    const { ctx, page, errs } = await mk();
+    await page.goto("file://" + html, { waitUntil: "domcontentloaded" });
+    await page.waitForFunction(() => /Schon im Browser gespielt/.test(document.getElementById("toastStack").innerText), null, { timeout: 15000 }).then(() => check("Speicher: leerer Spielstand ohne Konto -> einmaliger Hinweis auf die Kabine", true)).catch(() => check("Speicher: leerer Spielstand ohne Konto -> einmaliger Hinweis auf die Kabine", false));
+    await page.evaluate(() => { profile.totalXP = 777; saveProfile(profile); localStorage.setItem("sb-test-auth-token", '{"a":1}'); localStorage.setItem(PROFILE_KEY + "_backup", "x"); });
+    await page.waitForTimeout(2200);
+    const keys = [...store.keys()];
+    check("Speicher: Profil, Sitzung und Hinweis-Merker werden in die Sicherung gespiegelt", JSON.parse(store.get("anstoss_profile") || "{}").totalXP === 777 && store.get("sb-test-auth-token") === '{"a":1}' && store.has("startelo_native_hint"), keys.join(","));
+    check("Speicher: Sicherungskopien (backup) werden nicht doppelt gespiegelt", !keys.some((k) => /backup/.test(k)), keys.join(","));
+    check("Speicher: keine Skriptfehler (frischer Start)", errs.length === 0, errs.join(" | "));
+    await ctx.close();
+  }
+  { // geraeumter WebView-Speicher: neuer Kontext = leeres localStorage, die Sicherung steht noch
+    const { ctx, page, errs } = await mk();
+    await page.goto("file://" + html, { waitUntil: "domcontentloaded" });
+    await page.waitForFunction(() => typeof profile !== "undefined" && profile.totalXP === 777, null, { timeout: 10000 }).then(() => check("Speicher: leerer localStorage + Sicherung -> Profil wird zurueckgespielt", true)).catch(() => check("Speicher: leerer localStorage + Sicherung -> Profil wird zurueckgespielt", false));
+    const r = await page.evaluate(() => ({ session: localStorage.getItem("sb-test-auth-token"), xp: profile.totalXP, calls: window.__calls.filter((c) => c[0] === "splashHide").length }));
+    await page.waitForTimeout(600);
+    const hides = await page.evaluate(() => window.__calls.filter((c) => c[0] === "splashHide").length);
+    check("Speicher: Sitzung kommt mit zurueck, Start-Bild wird danach genau einmal ausgeblendet", r.session === '{"a":1}' && hides === 1, JSON.stringify([r, hides]));
+    check("Speicher: keine Skriptfehler (Wiederherstellung)", errs.length === 0, errs.join(" | "));
+    await ctx.close();
+  }
 }
 await browser.close();
 console.log(fails ? `${fails} von ${total} Pruefungen FALSCH` : `Alle ${total} Pruefungen bestanden`);

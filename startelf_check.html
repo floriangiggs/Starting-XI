@@ -2416,6 +2416,36 @@ if (IS_NATIVE) {
   };
   try { Object.defineProperty(navigator, "clipboard", { value: clip, configurable: true }); } catch (e) { /* bleibt WebView-Standard */ }
 }
+/* ---- Speicher-Sicherung (8a-4): iOS kann den WebView-Speicher (localStorage) bei Platzmangel raeumen. In der App wird alles Wichtige
+   (Profil, Sitzung, Konto, Ausgang) zusaetzlich in Capacitor Preferences (UserDefaults) gespiegelt. Ist localStorage beim Start leer, aber die
+   Sicherung da, wird zurueckgespielt und einmal neu geladen (hinter dem Start-Bild). Im Browser: kein Effekt. */
+let nativeStoreReady = Promise.resolve(), nativeRestored = false;
+(function nativeStore() {
+  const P = capPlugin("Preferences"); if (!P) return;
+  const keep = (k) => /^(anstoss_|startelo_|sb-)/.test(k) && !/backup/.test(k);
+  const origSet = Storage.prototype.setItem, origRem = Storage.prototype.removeItem;
+  const dirty = new Set(); let timer = 0, live = false;
+  const flush = async () => {
+    timer = 0; if (!live) return;
+    for (const k of [...dirty]) { dirty.delete(k); try { const v = localStorage.getItem(k); if (v === null) await P.remove({ key: k }); else await P.set({ key: k, value: v }); } catch (e) { dirty.add(k); } }
+  };
+  const mark = (k) => { if (!keep(k)) return; dirty.add(k); if (!timer) timer = setTimeout(flush, 1500); };
+  Storage.prototype.setItem = function (k, v) { origSet.call(this, k, v); if (this === localStorage) mark(String(k)); };
+  Storage.prototype.removeItem = function (k) { origRem.call(this, k); if (this === localStorage) mark(String(k)); };
+  document.addEventListener("visibilitychange", () => { if (document.visibilityState === "hidden") flush(); });
+  window.addEventListener("pagehide", flush);
+  const empty = !localStorage.getItem("anstoss_profile");
+  nativeStoreReady = (async () => {
+    try {
+      if (empty) {
+        const { keys } = await P.keys(); let got = false;
+        for (const k of keys.filter(keep)) { const { value } = await P.get({ key: k }); if (value != null) { origSet.call(localStorage, k, value); if (k === "anstoss_profile") got = true; } }
+        if (got) { nativeRestored = true; location.reload(); await new Promise(() => {}); } // Seite startet neu; dieser Lauf endet hier
+      } else Object.keys(localStorage).forEach(mark); // vorhandenen Stand einmal in die Sicherung uebernehmen
+    } catch (e) { /* ohne Sicherung weiter */ }
+    live = true; if (dirty.size) flush();
+  })();
+})();
 
 /* ================= FORMATIONEN ================= */
 const PITCH_LAYOUTS = {
@@ -16295,9 +16325,10 @@ const SPLASH_T = { beams: [0, 700], brand: [150, 700], claim: [480, 950], board:
   note: [1750, 2250], kick: [3650, 3950], out: [4050, 4500], END: 4500, HOLD: 3600 };
 const SPLASH_RT = { END: 1100, OUT: 800 };
 let nativeSplashHidden = false;
-function nativeSplashHide() { // App: natives Start-Bild ausblenden, wenn die Web-Buehne darunter steht (zwei rAF = erstes Bild ist gemalt)
+function nativeSplashHide(force) { // App: natives Start-Bild ausblenden, wenn die Web-Buehne darunter steht (zwei rAF = erstes Bild ist gemalt) und die Sicherung geprueft ist
   if (nativeSplashHidden) return; const S = capPlugin("SplashScreen"); if (!S) return; nativeSplashHidden = true;
-  requestAnimationFrame(() => requestAnimationFrame(() => { try { S.hide({ fadeOutDuration: 250 }); } catch (e) { /* bleibt stehen bis Auto-Ende */ } }));
+  const go = () => requestAnimationFrame(() => requestAnimationFrame(() => { try { S.hide({ fadeOutDuration: 250 }); } catch (e) { /* bleibt stehen bis Auto-Ende */ } }));
+  if (force) go(); else nativeStoreReady.then(go);
 }
 let splashRaf = 0, splashOutDone = false;
 function runSplash() {
@@ -16335,7 +16366,7 @@ function runSplash() {
   // kurz vor dem ersten Magneten ein (T0) und ueberspringt den Aufbau; das Start-Bild wird ausgeblendet, sobald Schriften da sind und das erste Bild steht.
   const HANDOFF = IS_NATIVE && !R, T0 = HANDOFF ? 1000 : 0;
   Promise.resolve(document.fonts ? document.fonts.ready : null).then(() => { ready = true; nativeSplashHide(); });
-  if (IS_NATIVE) setTimeout(nativeSplashHide, 4000); // Sicherheitsnetz
+  if (IS_NATIVE) setTimeout(() => nativeSplashHide(true), 4000); // Sicherheitsnetz
   const render = (t) => {
     let p = Math.round(100 * (R ? eio(seg(t, 0, 800)) : curve(seg(t, 200, 3600))));
     if (!ready || (!R && t < T.HOLD)) p = Math.min(p, 99);
@@ -20269,6 +20300,15 @@ document.addEventListener("frchange", () => { kbUpdateBadge(); if (kb.open) kabi
 document.addEventListener("visibilitychange", () => { if (document.visibilityState === "visible" && online.state === "member") { dailyFlush(); if (Date.now() - FR.loadedAt > 30000) frRefresh(); } });
 window.addEventListener("online", () => dailyFlush());
 frCaptureInvite(); whenSplashGone(() => { if (online.state === "guest" || online.state === "member") frHandlePending(); });
+// App, erster Start mit leerem Spielstand und ohne Konto: Wer vorher im Browser gespielt hat, startet bei null - einmaliger Hinweis auf den Cloud-Spielstand (8a-4)
+whenSplashGone(() => setTimeout(() => {
+  try {
+    if (!IS_NATIVE || nativeRestored || localStorage.getItem("startelo_native_hint") || online.state !== "guest") return;
+    const fresh = !(profile.totalXP > 0) && !Object.keys((profile.campaign && profile.campaign.levelPassed) || {}).length;
+    localStorage.setItem("startelo_native_hint", "1");
+    if (fresh) showToast('<span class="tt-tx">Schon im Browser gespielt? Melde dich in der Kabine an – dann kommt dein Spielstand mit.</span>');
+  } catch (e) { /* nur ein Hinweis */ }
+}, 1500));
 
 if ("serviceWorker" in navigator && !IS_NATIVE) { // in der App ist alles gebuendelt - ein Service Worker waere nur eine zweite, veraltbare Kopie
   window.addEventListener("load", () => navigator.serviceWorker.register("./sw.js"));
