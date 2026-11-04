@@ -4,6 +4,8 @@
   "version": "1.0.0",
   "description": "Dev-Tooling fuer startelf_check.html (Overlap-Check etc.)",
   "devDependencies": {
+    "@capacitor/assets": "^4.0.0",
+    "@capacitor/cli": "^8.6.0",
     "@electric-sql/pglite": "^0.5.10",
     "@supabase/supabase-js": "^2.118.0",
     "jsqr": "^1.4.0",
@@ -12,6 +14,20 @@
   },
   "scripts": {
     "test:db": "node tools/test-db.mjs",
-    "gen:seed": "node tools/gen-supabase-seed.mjs"
+    "gen:seed": "node tools/gen-supabase-seed.mjs",
+    "build:www": "node tools/build-www.mjs",
+    "cap:sync": "node tools/build-www.mjs && cap sync ios",
+    "cap:open": "cap open ios"
+  },
+  "dependencies": {
+    "@capacitor/app": "^8.1.2",
+    "@capacitor/clipboard": "^8.0.1",
+    "@capacitor/core": "^8.6.0",
+    "@capacitor/haptics": "^8.0.2",
+    "@capacitor/ios": "^8.6.0",
+    "@capacitor/preferences": "^8.0.1",
+    "@capacitor/share": "^8.0.3",
+    "@capacitor/splash-screen": "^8.0.2",
+    "@capacitor/status-bar": "^8.0.4"
   }
 }

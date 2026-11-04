@@ -1,0 +1,19 @@
+{
+  "appId": "de.startelo.app",
+  "appName": "Startelo XI",
+  "webDir": "www",
+  "backgroundColor": "#173A29",
+  "ios": {
+    "contentInset": "never",
+    "backgroundColor": "#173A29",
+    "limitsNavigationsToAppBoundDomains": false
+  },
+  "plugins": {
+    "SplashScreen": {
+      "launchAutoHide": true,
+      "launchShowDuration": 600,
+      "backgroundColor": "#173A29",
+      "showSpinner": false
+    }
+  }
+}
