@@ -4994,7 +4994,7 @@ const XP_RULES = {
   firstPlayXP: 20,  // "Erstmals gespielt" - unabhaengig von Sternen/Verbesserung
   starBonus: { 1: 50, 2: 75, 3: 125 }, // einmalig, beim ERSTEN Erreichen der jeweiligen Stufe
   dailyStreakBonusPerDay: 0.10, dailyStreakBonusMax: 0.50, // Prompt 13: +10%/Serientag, Deckel 50%
-  duelRoundXP: 15, duelWinXP: 40 // Duell (Prompt 26): je gespielter Aufstellung / fuer den Duellsieg - keine Token, keine Sterne
+  duelRoundXP: 15, duelWinXP: 40 // Duell (Prompt 26): je GEWERTETER Aufstellung (nicht verlassen, mind. 1 richtig; Abbruch/Aufgabe = 0 XP) / fuer den Duellsieg - keine Token, keine Sterne
 };
 
 const NATIONAL_TEAM_LEAGUES = new Set(["Weltmeisterschaft", "Europameisterschaft", "Copa América", "Afrika-Cup"]);
@@ -17522,6 +17522,7 @@ function duelAward(amount, reason) {
 }
 
 // Rundenbonus (15 XP je gespielter Aufstellung) genau einmal; bei Server-Duellen zusaetzlich ueber profile.duelsPaid geschuetzt
+function duelXPRounds(d) { return (d.mine || []).filter((m) => m && !m.left && m.correct > 0).length; } // Rundenbonus nur fuer wirklich gespielte Runden
 function duelRoundsXP(id, d, played) {
   if (!d.xp) d.xp = { rounds: 0, win: 0 };
   if (d.xp.rounds) return;
@@ -17541,7 +17542,7 @@ function evaluateDuel(id) {
   d.result = { outcome: o.outcome, mw: o.mw, ow: o.ow, by: o.by, rounds: o.rounds };
   if (!(d.server && profile.duelsPaid.includes("s:" + id))) { applyDuelStats(d, o); if (d.server) sdPaid("s:" + id); } // Server-Duell: Bilanz nur einmal je Duell, auch ueber Geraete/Neuinstallation
   if (!d.xp) d.xp = { rounds: 0, win: 0 };
-  if (d.server) duelRoundsXP(id, d, d.playedRounds || 0);
+  if (d.server) duelRoundsXP(id, d, duelXPRounds(d));
   if (o.outcome === "win") { if (d.server && profile.duelsPaid.includes("w:" + id)) d.xp.win = XP_RULES.duelWinXP; else { d.xp.win = duelAward(XP_RULES.duelWinXP, "Duellsieg"); if (d.server) sdPaid("w:" + id); } }
   d.status = "done";
   d.finished = Date.now(); d.updated = d.finished;
@@ -17586,8 +17587,7 @@ function endDuelRun() {
   clearInterval(r.tick);
   duelRun = null; // vor dem Navigieren: der popstate-Guard darf nicht mehr greifen
   const d = profile.duels[id];
-  const played = d.playedRounds || d.mine.length;
-  duelRoundsXP(id, d, played); // nur einmal (Prompt 54: erneutes Oeffnen/Reload im Rundenende)
+  duelRoundsXP(id, d, duelXPRounds(d)); // nur einmal (Prompt 54: erneutes Oeffnen/Reload im Rundenende)
   d.lineups.filter(Boolean).forEach(l => { profile.duelRecent = profile.duelRecent.filter(x => x !== l); profile.duelRecent.push(l); });
   profile.duelRecent = profile.duelRecent.slice(-40);
   d.status = d.result ? "done" : "waiting";
@@ -18506,7 +18506,7 @@ function renderDuelResult() {
   const o = d.opponent, name = o ? duelEsc(o.name) : "dein Freund", nameDat = o ? duelEsc(o.name) : "deinem Freund";
   const me = duelMeInfo(), oppP = o || { name: "Freund", deviceId: "" };
   const wait = !d.result, res = d.result, won = !wait && res.outcome === "win";
-  const played = d.playedRounds || d.mine.length, fairMe = d.mine.every(r => !r.left);
+  const played = duelXPRounds(d), fairMe = d.mine.every(r => !r.left);
   if (won && duelWinSounded !== activeResultId) { duelWinSounded = activeResultId; sfx("duelWin"); } // Fanfare beim Abpfiff "Sieg!" (einmal je Duell)
   const cls = wait ? "w" : won ? "w" : res.outcome === "loss" ? "l" : "d";
   const word = wait ? "Gespielt!" : won ? "Sieg!" : res.outcome === "loss" ? "Niederlage" : "Remis";
@@ -18527,7 +18527,7 @@ function renderDuelResult() {
   }).join("");
   const fairOp = !wait && d.theirs.every(r => !r.left), rec = !wait && o && profile.duelStats.perOpponent[o.deviceId];
   const xpTotal = d.xp ? d.xp.rounds + (d.xp.win || 0) : 0;
-  const xpDetail = `${played} ${played === 1 ? "Spiel" : "Spiele"} · ${XP_RULES.duelRoundXP} XP${d.xp && d.xp.win ? ` + Siegbonus ${XP_RULES.duelWinXP} XP` : ""}`;
+  const xpDetail = `${played ? `${played} ${played === 1 ? "Runde" : "Runden"} gewertet · ${XP_RULES.duelRoundXP} XP` : "Keine Runde gewertet"}${d.xp && d.xp.win ? ` + Siegbonus ${XP_RULES.duelWinXP} XP` : ""}`;
   const sendLabel = wait ? (d.role === "challenger" ? "Link teilen" : "Ergebnis senden") : `Ergebnis an ${name} senden`;
   const showSend = !d.server && (wait || d.role === "opponent");
   root.innerHTML = duTopHTML({ id: "duelResBack", label: "Duelle" }, "Abpfiff") + `

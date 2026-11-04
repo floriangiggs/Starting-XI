@@ -140,6 +140,12 @@ const a2 = await S(pa, D1);
 ok(a2.status === "waiting" && a2.mine === 3 && a2.subm === 3 && a2.result === null, "Anna: Abpfiff 'gespielt', alles gesendet " + JSON.stringify(a2));
 ok(/Gespielt!/.test(await txt(pa, "#duelResultView")) && /ben_bolzt ist dran/.test(await txt(pa, "#duelResultView")) && (await pa.locator("#duelResSend").count()) === 0, "Anna: Abpfiff zeigt Warten ohne Link-Teilen");
 ok(a2.xp && a2.xp.rounds === 45 && (await pa.evaluate((id) => profile.duelsPaid.includes("r:" + id), D1)), "Anna: Rundenbonus (45 XP) einmal vergeben und gemerkt");
+// Rundenbonus nur fuer wirklich gespielte Runden: Abbruch, Verlassen und 0 Richtige geben keine XP
+const xr = await pa.evaluate(() => [
+  duelXPRounds({ mine: [{ correct: 3, left: 0 }, { correct: 0, left: 0 }, { correct: 2, left: 1 }, { correct: 1 }] }),
+  duelXPRounds({ mine: [{ correct: 0, left: 1 }, { correct: 0, left: 0 }, { correct: 0, left: 0 }] }),
+  duelXPRounds({ mine: [] })]);
+ok(xr[0] === 2 && xr[1] === 0 && xr[2] === 0, "Rundenbonus nur fuer gespielte Runden (nicht verlassen, mind. 1 richtig)", JSON.stringify(xr));
 
 // 4) Versiegelung: Ben sieht Annas Ergebnisse nicht, bis er selbst spielt
 await sync(pb);
