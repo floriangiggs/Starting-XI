@@ -4,7 +4,6 @@
   "version": "1.0.0",
   "description": "Dev-Tooling fuer startelf_check.html (Overlap-Check etc.)",
   "devDependencies": {
-    "@capacitor/assets": "^4.0.0",
     "@capacitor/cli": "^8.6.0",
     "@electric-sql/pglite": "^0.5.10",
     "@supabase/supabase-js": "^2.118.0",

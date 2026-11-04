@@ -2382,6 +2382,41 @@
 <script>
 const APP_VERSION = "1.0";
 
+/* ================= APP-HUELLE (Capacitor, 8a-2) =================
+   In der iOS-/Android-App (Capacitor) ist window.Capacitor da; im Browser/PWA nicht - dort aendert dieser Block NICHTS.
+   Plugins werden ohne Bundler ueber Capacitor.Plugins angesprochen. Die Web-APIs Teilen und Zwischenablage werden in der App
+   durch die nativen Plugins ersetzt (WKWebView ist dort unzuverlaessig), damit der restliche Code unveraendert bleibt. */
+const IS_NATIVE = !!(window.Capacitor && typeof window.Capacitor.isNativePlatform === "function" && window.Capacitor.isNativePlatform());
+function capPlugin(name) { try { return IS_NATIVE && window.Capacitor.Plugins ? window.Capacitor.Plugins[name] || null : null; } catch (e) { return null; } }
+// Haptik: Zahl (ms) = leichter/mittlerer Schlag, Muster (Array) = Erfolgs-Haptik. Im Browser: navigator.vibrate (nur Android).
+function vibrate(pattern) {
+  try {
+    const H = capPlugin("Haptics");
+    if (H) {
+      if (Array.isArray(pattern)) H.notification({ type: "SUCCESS" });
+      else H.impact({ style: pattern <= 10 ? "LIGHT" : pattern <= 20 ? "MEDIUM" : "HEAVY" });
+    } else if (navigator.vibrate) navigator.vibrate(pattern);
+  } catch (e) { /* iPhone-Browser/Desktop: ignorieren */ }
+}
+if (IS_NATIVE) {
+  const origShare = navigator.share ? navigator.share.bind(navigator) : null;
+  const abort = () => { const e = new Error("Share canceled"); e.name = "AbortError"; return e; };
+  const nativeShare = async (data) => { // Dateien kann das Share-Plugin ohne Dateisystem nicht - dafuer bleibt die WebView-Funktion
+    data = data || {};
+    if (data.files && data.files.length) { if (origShare) return origShare(data); throw new Error("share files unsupported"); }
+    const S = capPlugin("Share");
+    if (!S) { if (origShare) return origShare(data); throw new Error("share unsupported"); }
+    try { await S.share({ title: data.title, text: data.text, url: data.url }); } catch (e) { throw /cancel/i.test(String(e && (e.message || e))) ? abort() : e; }
+  };
+  try { Object.defineProperty(navigator, "share", { value: nativeShare, configurable: true, writable: true }); } catch (e) { /* bleibt WebView-Standard */ }
+  const origClip = navigator.clipboard;
+  const clip = {
+    async writeText(t) { const C = capPlugin("Clipboard"); if (C) return C.write({ string: String(t) }); if (origClip) return origClip.writeText(t); throw new Error("clipboard unsupported"); },
+    async readText() { const C = capPlugin("Clipboard"); if (C) { const r = await C.read(); return r && r.value != null ? String(r.value) : ""; } if (origClip) return origClip.readText(); throw new Error("clipboard unsupported"); },
+  };
+  try { Object.defineProperty(navigator, "clipboard", { value: clip, configurable: true }); } catch (e) { /* bleibt WebView-Standard */ }
+}
+
 /* ================= FORMATIONEN ================= */
 const PITCH_LAYOUTS = {
   "4-4-2": [
@@ -16259,6 +16294,11 @@ const SPLASH_T = { beams: [0, 700], brand: [150, 700], claim: [480, 950], board:
   mag0: 1350, magStep: 135, magDur: 300, arrows: [[2950, 3300], [3020, 3370], [3090, 3440]], heads: [[3250, 3380], [3320, 3450], [3390, 3520]],
   note: [1750, 2250], kick: [3650, 3950], out: [4050, 4500], END: 4500, HOLD: 3600 };
 const SPLASH_RT = { END: 1100, OUT: 800 };
+let nativeSplashHidden = false;
+function nativeSplashHide() { // App: natives Start-Bild ausblenden, wenn die Web-Buehne darunter steht (zwei rAF = erstes Bild ist gemalt)
+  if (nativeSplashHidden) return; const S = capPlugin("SplashScreen"); if (!S) return; nativeSplashHidden = true;
+  requestAnimationFrame(() => requestAnimationFrame(() => { try { S.hide({ fadeOutDuration: 250 }); } catch (e) { /* bleibt stehen bis Auto-Ende */ } }));
+}
 let splashRaf = 0, splashOutDone = false;
 function runSplash() {
   const splash = document.getElementById("splash"), $ = (id) => document.getElementById("ld" + id), S = (id) => $(id).style;
@@ -16277,6 +16317,11 @@ function runSplash() {
   probe.style.cssText = "position:absolute;visibility:hidden;pointer-events:none;padding:env(safe-area-inset-top,0px) env(safe-area-inset-right,0px) env(safe-area-inset-bottom,0px) env(safe-area-inset-left,0px)";
   splash.appendChild(probe);
   function fit() {
+    if (IS_NATIVE) { // App: deckungsgleich mit dem nativen Start-Bild (1290x2796 = 430x932 @3x, aspectFill, mittig) - sonst saehe man beim Uebergang einen Sprung
+      const w = splash.clientWidth, h = splash.clientHeight, k = Math.max(w / 430, h / 932), st = $("Stage").style;
+      st.transform = "scale(" + (k * 430 / 390) + ")"; st.left = ((w - 430 * k) / 2) + "px"; st.top = ((h - 932 * k) / 2) + "px";
+      return;
+    }
     const cs = getComputedStyle(probe), sT = parseFloat(cs.paddingTop) || 0, sB = parseFloat(cs.paddingBottom) || 0, sL = parseFloat(cs.paddingLeft) || 0, sR = parseFloat(cs.paddingRight) || 0;
     const aw = splash.clientWidth - sL - sR, ah = splash.clientHeight - sT - sB, sc = Math.min(aw / 390, ah / 844);
     const st = $("Stage").style; st.transform = "scale(" + sc + ")"; st.left = (sL + (aw - 390 * sc) / 2) + "px"; st.top = (sT + (ah - 844 * sc) / 2) + "px";
@@ -16286,7 +16331,11 @@ function runSplash() {
   const curve = (x) => { const e = x < 0.5 ? 2 * x * x : 1 - Math.pow(-2 * x + 2, 2.4) / 2; return Math.min(1, e + 0.03 * Math.sin(x * 14) * (1 - x)); };
   let ready = false, lastSt = -1, lastP = -1;
   const t0 = performance.now();
-  Promise.resolve(document.fonts ? document.fonts.ready : null).then(() => { ready = true; });
+  // App: Das native Start-Bild zeigt die Buehne schon fertig (Lichtkegel, Titel, Claim, Tafel mit Spielfeld, Ablage). Die Animation steigt deshalb
+  // kurz vor dem ersten Magneten ein (T0) und ueberspringt den Aufbau; das Start-Bild wird ausgeblendet, sobald Schriften da sind und das erste Bild steht.
+  const HANDOFF = IS_NATIVE && !R, T0 = HANDOFF ? 1000 : 0;
+  Promise.resolve(document.fonts ? document.fonts.ready : null).then(() => { ready = true; nativeSplashHide(); });
+  if (IS_NATIVE) setTimeout(nativeSplashHide, 4000); // Sicherheitsnetz
   const render = (t) => {
     let p = Math.round(100 * (R ? eio(seg(t, 0, 800)) : curve(seg(t, 200, 3600))));
     if (!ready || (!R && t < T.HOLD)) p = Math.min(p, 99);
@@ -16303,13 +16352,14 @@ function runSplash() {
       const o = seg(t, SPLASH_RT.OUT, SPLASH_RT.END); splash.style.opacity = 1 - o; splash.style.transform = "none";
       return;
     }
-    const bm = eo3(seg(t, ...T.beams)); S("Bl").opacity = bm; S("Br").opacity = bm;
-    const br = eo5(seg(t, ...T.brand)); S("Brand").opacity = br; S("Brand").transform = `translateY(${(22 * (1 - br)).toFixed(1)}px) scale(${lerp(0.94, 1, br).toFixed(3)})`;
-    const cl = eo3(seg(t, ...T.claim)); S("Claim").opacity = cl; S("Claim").transform = `translateY(${(10 * (1 - cl)).toFixed(1)}px)`;
-    const bo = seg(t, ...T.board), boE = back(bo, 1.2); S("Board").opacity = eo3(bo); S("Board").transform = `translateY(${(48 * (1 - boE)).toFixed(1)}px) scale(${lerp(1.05, 1, eo3(bo)).toFixed(3)})`;
-    const le = eo3(seg(t, 280, 760)); S("Ledge").opacity = le; S("Ledge").transform = `translateY(${(30 * (1 - le)).toFixed(1)}px)`;
-    const me = eo3(seg(t, 420, 900)); S("Meter").opacity = me; S("Ver").opacity = me;
-    T.lines.forEach(([a, b], i) => { S("L" + i).strokeDashoffset = (1 - eio(seg(t, a, b))).toFixed(4); });
+    const te = HANDOFF ? 1e9 : t; // Aufbau-Teile sind in der App schon fertig
+    const bm = eo3(seg(te, ...T.beams)); S("Bl").opacity = bm; S("Br").opacity = bm;
+    const br = eo5(seg(te, ...T.brand)); S("Brand").opacity = br; S("Brand").transform = `translateY(${(22 * (1 - br)).toFixed(1)}px) scale(${lerp(0.94, 1, br).toFixed(3)})`;
+    const cl = eo3(seg(te, ...T.claim)); S("Claim").opacity = cl; S("Claim").transform = `translateY(${(10 * (1 - cl)).toFixed(1)}px)`;
+    const bo = seg(te, ...T.board), boE = back(bo, 1.2); S("Board").opacity = eo3(bo); S("Board").transform = `translateY(${(48 * (1 - boE)).toFixed(1)}px) scale(${lerp(1.05, 1, eo3(bo)).toFixed(3)})`;
+    const le = eo3(seg(te, 280, 760)); S("Ledge").opacity = le; S("Ledge").transform = `translateY(${(30 * (1 - le)).toFixed(1)}px)`;
+    const me = eo3(seg(t - T0, 420, 900)); S("Meter").opacity = me; S("Ver").opacity = me;
+    T.lines.forEach(([a, b], i) => { S("L" + i).strokeDashoffset = (1 - eio(seg(te, a, b))).toFixed(4); });
     XI.forEach((_, i) => {
       const a = T.mag0 + i * T.magStep, x = seg(t, a, a + T.magDur), e = back(x, 2.2);
       S("M" + i).opacity = clamp(x * 3); S("M" + i).transform = `translateY(${(-34 * (1 - e)).toFixed(1)}px) scale(${lerp(1.45, 1, eo3(x)).toFixed(3)})`;
@@ -16326,7 +16376,7 @@ function runSplash() {
     const o = eio(seg(t, ...T.out)); splash.style.opacity = (1 - o).toFixed(3); splash.style.transform = `scale(${lerp(1, 1.08, o).toFixed(4)})`;
   };
   // Zeitachse: wartet bei HOLD (bzw. 790 ms reduziert), bis Schriften geladen sind; nach 8 s wird trotzdem beendet
-  let t = 0, last = t0, outFired = false;
+  let t = T0, last = t0, outFired = false;
   const holdAt = R ? 790 : T.HOLD - 1;
   const frame = (now) => {
     const dt = Math.min(now - last, 100); last = now;
@@ -16337,7 +16387,7 @@ function runSplash() {
     render(t); splashRaf = requestAnimationFrame(frame);
   };
   if (typeof window.SPLASH_TEST_T === "number") { ready = true; render(window.SPLASH_TEST_T); return; } // nur fuer Screenshot-Serien (ohne Wirkung im Normalbetrieb)
-  render(0);
+  render(T0);
   splashRaf = requestAnimationFrame(frame);
 }
 // Die Startseite startet ihre Einblend-Animation genau beim Ausblenden des Ladebildschirms (Prompt 44/46)
@@ -16360,7 +16410,7 @@ function finishSplash() {
    "Spielen" und "Annehmen & Anpfiff" sind hier bewusst nur Hinweis-Stubs. Optik aus
    prototypes/duell.html. Alle Namen aus Links sind Fremdtext und werden vor dem Einsetzen in
    HTML escaped. */
-const APP_URL = "https://floriangiggs.github.io/Starting-XI/startelf_check.html";
+const APP_URL = "https://startelo.de/startelf_check.html"; // feste Adresse fuer Links (in der App ist der WebView-Origin capacitor://localhost)
 const DUEL_CODE_VERSION = 2; // 2 (Prompt 39): + Benutzername, 60-s-Zeit, Ergebniszeilen mit mask/solvedAt; Version 1 bleibt lesbar
 const DUEL_FORMATS = [{ rounds: 1, label: "Einzel", sub: "1 Spiel" }, { rounds: 3, label: "Best of 3", sub: "3 Spiele" }, { rounds: 5, label: "Best of 5", sub: "5 Spiele" }];
 const DUEL_TIMES = [{ seconds: 60, label: "1 Min", sub: "Express" }, { seconds: 120, label: "2 Min", sub: "Blitz" }, { seconds: 180, label: "3 Min", sub: "Standard" }, { seconds: 300, label: "5 Min", sub: "Entspannt" }];
@@ -16432,13 +16482,13 @@ function duelMaintenance(now = Date.now()) {
   return changed;
 }
 
-// App-Adresse fuer Links: unter https die aktuelle Adresse, sonst (lokale Datei/http) die feste Pages-Adresse.
+// App-Adresse fuer Links: im Browser unter https die aktuelle Adresse, sonst (App, lokale Datei/http) die feste Adresse.
 function duelBaseUrl() {
-  return location.protocol === "https:" ? location.origin + location.pathname : APP_URL;
+  return !IS_NATIVE && location.protocol === "https:" ? location.origin + location.pathname : APP_URL;
 }
 // Installierte Home-Bildschirm-App (iOS: navigator.standalone) - dort oeffnen sich Links NICHT, deshalb zwei Wege in der Einladung.
 function isStandalone() {
-  return !!((window.matchMedia && matchMedia("(display-mode: standalone)").matches) || navigator.standalone);
+  return IS_NATIVE || !!((window.matchMedia && matchMedia("(display-mode: standalone)").matches) || navigator.standalone);
 }
 function randomHex(bytes) {
   const a = new Uint8Array(bytes);
@@ -18165,7 +18215,7 @@ function runWalkout(d) {
 
   // ---------- Abspielen ----------
   let t = 0, last = 0, raf = 0, running = false, stopped = false, lastCd = -2, vibKo = false;
-  const vib = (ms) => { try { if (navigator.vibrate) navigator.vibrate(ms); } catch (e) { /* iPhone/Desktop: ignorieren */ } };
+  const vib = vibrate;
   function stop() {
     if (stopped) return;
     stopped = true; running = false; cancelAnimationFrame(raf); sfxStop("walk", 0.2); sfxStop("walkKnock", 0.1);
@@ -19092,8 +19142,8 @@ function sfxStop(name, fade = 0.2) {
   try { g.gain.cancelScheduledValues(t); g.gain.setValueAtTime(g.gain.value, t); g.gain.linearRampToValueAtTime(0.0001, t + fade); } catch (e) { /* schon beendet */ }
   delete sfxGroups[name];
 }
-function haptic(name) { // Haken fuer Capacitor (Prompt 8); bis dahin nur navigator.vibrate (Android)
-  try { if (navigator.vibrate && SFX_HAPTIC[name]) navigator.vibrate(SFX_HAPTIC[name]); } catch (e) { /* iPhone/Desktop: ignorieren */ }
+function haptic(name) { // App: Capacitor-Haptik; Browser: navigator.vibrate (Android) - siehe vibrate()
+  if (SFX_HAPTIC[name]) vibrate(SFX_HAPTIC[name]);
 }
 /* ---- Klang-Bausteine (ohne Rauschen) ---- */
 function sfxEnv(g, t, a, d, peak, hold = 0) { g.gain.cancelScheduledValues(t); g.gain.setValueAtTime(0.0001, t); g.gain.linearRampToValueAtTime(peak, t + a); if (hold) g.gain.setValueAtTime(peak, t + a + hold); g.gain.exponentialRampToValueAtTime(0.0001, t + a + hold + d); }
@@ -20220,7 +20270,7 @@ document.addEventListener("visibilitychange", () => { if (document.visibilitySta
 window.addEventListener("online", () => dailyFlush());
 frCaptureInvite(); whenSplashGone(() => { if (online.state === "guest" || online.state === "member") frHandlePending(); });
 
-if ("serviceWorker" in navigator) {
+if ("serviceWorker" in navigator && !IS_NATIVE) { // in der App ist alles gebuendelt - ein Service Worker waere nur eine zweite, veraltbare Kopie
   window.addEventListener("load", () => navigator.serviceWorker.register("./sw.js"));
 }
 

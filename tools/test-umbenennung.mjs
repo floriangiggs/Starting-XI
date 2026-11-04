@@ -18,7 +18,7 @@ const check = (label, cond, extra = "") => { total++; if (!cond) { fails++; cons
 /* ---- 1) statisch ---- */
 const src = fs.readFileSync(html, "utf8"), manifest = fs.readFileSync(path.join(root, "manifest.json"), "utf8"), sw = fs.readFileSync(path.join(root, "sw.js"), "utf8");
 const left = src.split("\n").map((l, i) => [i + 1, l]).filter(([, l]) => /starting/i.test(l));
-check("Sichtbar kein 'Starting XI' mehr: einziger Rest ist APP_URL (GitHub-Pages-Pfad)", left.length === 1 && /const APP_URL = /.test(left[0][1]), JSON.stringify(left.map(([n, l]) => n + ":" + l.trim().slice(0, 80))));
+check("Sichtbar kein 'Starting XI' mehr (auch APP_URL zeigt auf startelo.de, nicht mehr auf den alten GitHub-Pages-Pfad)", left.length === 0 && /const APP_URL = "https:\/\/startelo\.de\//.test(src), JSON.stringify(left.map(([n, l]) => n + ":" + l.trim().slice(0, 80))));
 check("manifest.json: name + short_name = Startelo XI, kein 'Starting'", /"name": "Startelo XI"/.test(manifest) && /"short_name": "Startelo XI"/.test(manifest) && !/starting/i.test(manifest));
 check("title + apple-mobile-web-app-title", /<title>Startelo XI<\/title>/.test(src) && /apple-mobile-web-app-title" content="Startelo XI"/.test(src));
 check("Logo, Ladebildschirm (h1 + aria-label)", /<b>Startelo <em>XI<\/em><\/b>/.test(src) && /<h1>Startelo <em>XI<\/em><\/h1>/.test(src) && /aria-label="Startelo XI wird geladen"/.test(src));
