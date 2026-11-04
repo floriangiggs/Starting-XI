@@ -19340,7 +19340,27 @@ async function onlineRefresh() {
     return online.state;
   } finally { online.busy = false; onlineEmit(); }
 }
+// App (iOS): Apples eigenes Anmeldefenster, danach Token an Supabase. Apple bekommt die SHA-256-Pruefsumme des Nonce, Supabase das rohe Nonce.
+async function onlineNonce() {
+  const raw = Array.from(crypto.getRandomValues(new Uint8Array(32)), (b) => b.toString(16).padStart(2, "0")).join("");
+  const dig = await crypto.subtle.digest("SHA-256", new TextEncoder().encode(raw));
+  return { raw, hashed: Array.from(new Uint8Array(dig), (b) => b.toString(16).padStart(2, "0")).join("") };
+}
+async function onlineSignInAppleNative(AS) {
+  if (!onlineHasNet()) return { ok: false, error: "offline" };
+  try {
+    const n = await onlineNonce();
+    let res;
+    try { res = await AS.signIn({ scopes: ["EMAIL", "FULL_NAME"], nonce: n.hashed }); }
+    catch (e) { return { ok: false, error: e && e.code === "SIGN_IN_CANCELED" ? "cancel" : "auth" }; }
+    if (!res || !res.idToken) return { ok: false, error: "auth" };
+    const sb = await onlineClient();
+    const { error } = await sb.auth.signInWithIdToken({ provider: "apple", token: res.idToken, nonce: n.raw });
+    return error ? { ok: false, error: "auth" } : { ok: true, native: true };
+  } catch (e) { return { ok: false, error: onlineHasNet() ? "lib" : "offline" }; }
+}
 async function onlineSignInApple() {
+  const AS = capPlugin("AppleSignIn"); if (AS) return onlineSignInAppleNative(AS);
   if (!/^https?:$/.test(location.protocol)) return { ok: false, error: "origin" }; // file:// kann nicht zurueckkehren
   if (!onlineHasNet()) return { ok: false, error: "offline" };
   try {
@@ -19504,7 +19524,9 @@ async function kabineSignIn() {
   const btn = kb.open && kb.open.drawer.querySelector("#kbApple"); if (btn) { btn.disabled = true; btn.querySelector("span").textContent = "Einen Moment …"; }
   const r = await onlineSignInApple();
   kb.signing = false;
-  if (r.ok) return; // Weiterleitung zu Apple laeuft
+  if (r.ok && !r.native) return; // Weiterleitung zu Apple laeuft
+  if (r.ok) { await onlineRefresh().catch(() => {}); kb.msg = ""; if (kb.open) kabineRender(); return; }
+  if (r.error === "cancel") { kb.msg = ""; kabineRender(); return; } // Fenster weggewischt: keine Fehlermeldung
   kb.msg = r.error === "offline" ? "Du bist offline – zum Anmelden brauchst du Netz." : r.error === "origin" ? "Anmelden geht nur in der Web-App, nicht aus einer lokalen Datei." : "Anmeldung gerade nicht möglich – bitte später noch einmal.";
   kabineRender();
 }

@@ -180,6 +180,49 @@ async function open(native) {
   check("Links in der App: keine Skriptfehler", errs.length === 0, errs.join(" | "));
   await ctx.close();
 }
+{ // Apple-Login in der App (8b-1): nativer Weg mit Nonce, Abbruch ohne Fehlermeldung; im Browser unveraendert
+  check("Apple-Login: Berechtigung 'Sign in with Apple' im Projekt, Plugin eingebunden", /com\.apple\.developer\.applesignin/.test(ent) && /CapawesomeCapacitorAppleSignIn/.test(fs.readFileSync(path.join(root, "ios/App/CapApp-SPM/Package.swift"), "utf8")));
+  const ctx = await browser.newContext({ viewport: { width: 393, height: 852 }, serviceWorkers: "block" });
+  const page = await ctx.newPage(); const errs = [];
+  page.on("pageerror", (e) => errs.push(e.message));
+  await page.addInitScript(() => {
+    window.__apple = { calls: [], mode: "ok" };
+    window.__idp = [];
+    window.__fakeCapPlugins = true;
+  });
+  await page.addInitScript(fakeCap);
+  await page.addInitScript(() => { window.Capacitor.Plugins.AppleSignIn = { signIn: async (o) => { window.__apple.calls.push(o); if (window.__apple.mode === "cancel") { const e = new Error("x"); e.code = "SIGN_IN_CANCELED"; throw e; } if (window.__apple.mode === "fail") throw new Error("boom"); return { idToken: "ID.TOKEN.X", authorizationCode: "code1", user: "u1", email: null, givenName: null, familyName: null }; } }; });
+  await page.goto("file://" + html, { waitUntil: "domcontentloaded" });
+  await page.waitForFunction(() => window.__listeners && !document.getElementById("splash"), null, { timeout: 15000 });
+  const r = await page.evaluate(async () => {
+    const out = {};
+    onlineClient = async () => ({ auth: { signInWithIdToken: async (a) => { window.__idp.push(a); return { error: window.__apple.supaFail ? { message: "x" } : null }; } } });
+    out.ok = await onlineSignInApple();
+    const c = window.__apple.calls[0], a = window.__idp[0];
+    const dig = await crypto.subtle.digest("SHA-256", new TextEncoder().encode(a.nonce));
+    out.hashOk = c.nonce === Array.from(new Uint8Array(dig), (b) => b.toString(16).padStart(2, "0")).join("");
+    out.scopes = c.scopes; out.rawLen = a.nonce.length; out.diff = c.nonce !== a.nonce; out.idp = { provider: a.provider, token: a.token };
+    window.__apple.mode = "cancel"; out.cancel = await onlineSignInApple();
+    window.__apple.mode = "fail"; out.fail = await onlineSignInApple();
+    window.__apple.mode = "ok"; window.__apple.supaFail = true; out.supaFail = await onlineSignInApple();
+    window.__apple.supaFail = false; const before = window.__idp.length;
+    const o = navigator.onLine; Object.defineProperty(navigator, "onLine", { value: false, configurable: true }); out.offline = await onlineSignInApple(); out.offNoCall = window.__idp.length === before; Object.defineProperty(navigator, "onLine", { value: o, configurable: true });
+    const n1 = await onlineNonce(), n2 = await onlineNonce(); out.nonces = [n1.raw.length, n1.hashed.length, n1.raw !== n2.raw];
+    return out;
+  });
+  check("Apple-Login in der App: Anmeldung gelingt, Token geht mit Provider apple an Supabase", r.ok.ok === true && r.ok.native === true && r.idp.provider === "apple" && r.idp.token === "ID.TOKEN.X", JSON.stringify(r.ok));
+  check("Apple-Login in der App: Apple bekommt die SHA-256-Pruefsumme, Supabase das rohe Nonce", r.hashOk && r.diff && r.rawLen === 64, JSON.stringify([r.hashOk, r.diff, r.rawLen]));
+  check("Apple-Login in der App: Name und E-Mail werden angefragt", JSON.stringify(r.scopes) === JSON.stringify(["EMAIL", "FULL_NAME"]), JSON.stringify(r.scopes));
+  check("Apple-Login in der App: Abbruch im Apple-Fenster = cancel (keine Fehlermeldung), anderer Fehler = auth", r.cancel.error === "cancel" && r.fail.error === "auth", JSON.stringify([r.cancel, r.fail]));
+  check("Apple-Login in der App: Supabase lehnt ab -> auth; offline -> offline ohne Aufruf", r.supaFail.error === "auth" && r.offline.error === "offline" && r.offNoCall, JSON.stringify([r.supaFail, r.offline, r.offNoCall]));
+  check("Apple-Login in der App: Nonce ist 64 Zeichen, Pruefsumme 64 Zeichen, jedes Mal neu", JSON.stringify(r.nonces) === JSON.stringify([64, 64, true]), JSON.stringify(r.nonces));
+  check("Apple-Login in der App: keine Skriptfehler", errs.length === 0, errs.join(" | "));
+  await ctx.close();
+  const p2 = await (await browser.newContext({ serviceWorkers: "block" })).newPage();
+  await p2.goto("file://" + html, { waitUntil: "domcontentloaded" });
+  const web = await p2.evaluate(() => onlineSignInApple());
+  check("Apple-Login im Browser: unveraendert (file:// meldet origin, kein nativer Weg)", web.ok === false && web.error === "origin", JSON.stringify(web));
+}
 await browser.close();
 console.log(fails ? `${fails} von ${total} Pruefungen FALSCH` : `Alle ${total} Pruefungen bestanden`);
 process.exit(fails ? 1 : 0);
