@@ -166,7 +166,7 @@ Datenbank, Migrationen 0001–0010; `tools/test-db.mjs`: Regeln auf Datenbankebe
 | E4 | **Impressumsdienstleister** (nur Privatadresse vorhanden) | Dienst mit ladungsfähiger Anschrift wählen; vorher beim Anbieter klären, ob die Adresse auch als Händleradresse bei Apple/Google angegeben werden darf (Checkliste 8a) |
 | E5 | **Erst iPhone, danach Android** | 8b wird zweigeteilt: **8b-iOS** (Apple, TestFlight), später **8b-Android**. Google Play Console (25 $) und der 14-Tage-Test erst vor 8b-Android, Tester dann früh sammeln |
 | E6 | noch offen → **gilt Empfehlung:** iOS 16+, Android 8+ | – |
-| E7 | **Ja** – App-ID `de.startingxi.app`, **vorbehaltlich der Domain** | Die ID muss zur gekauften Domain passen (umgekehrt geschrieben); endgültig erst festlegen, wenn die Domain gekauft ist, danach nie mehr änderbar |
+| E7 | **Ja** – App-ID **`de.startelo.app`** (statt `de.startingxi.app`; Domain startelo.de gekauft, ID am 04.11.2026 im Apple-Konto angelegt, jetzt unveränderlich) | Die ID muss zur gekauften Domain passen (umgekehrt geschrieben); endgültig erst festlegen, wenn die Domain gekauft ist, danach nie mehr änderbar |
 | E8 | **Ja** – Duell nur mit Konto, Gäste behalten den Notfall-Code | Gastmodus bleibt im Store |
 | E9 | „wie es am besten ist“ → **Empfehlung:** Zielgruppe ab 12; Konto ab 16 oder mit Elternhäkchen; Store-Fragebogen ehrlich ausfüllen (Namen/Melden = nutzergenerierte Inhalte angeben) | in K2 (Häkchen) und K8 (Fragebogen) |
 | E10 | **Ja** – Einnahmen schrittweise nach dem Start | nicht Teil von 1.0, Checkliste 8a vorher |
@@ -357,3 +357,32 @@ Checkliste Review-Ablehnungsgründe. Markenrecherche-Ergebnis (E2) einarbeiten. 
    Apple Developer, Domain).
 3. Ich beginne mit **8a**, sobald E2/E7 grob stehen – oder, wenn du schneller sichtbaren Fortschritt
    willst, mit **K1** (läuft ohne Domain und ohne Apple-Konto).
+
+
+---
+
+## 13. Stand Capacitor/iOS (05.11.2026)
+
+**8a fertig (iPhone, Simulator, echtes Gerät):** 8a-1 Gerüst (Capacitor 8.6, Swift Package Manager, iOS 16, iPhone, Hochformat), 8a-2/8a-3 Hülle
+(Haptik, Teilen, Zwischenablage über Plugins, Links immer `https://startelo.de/…`, kein Service Worker in der App, Start-Bild und Icon),
+8a-4 App-Speicher (Profil, Sitzung, Konto, Ausgang in Capacitor Preferences gespiegelt, Wiederherstellung bei geräumtem WebView-Speicher),
+8a-6 Universal Links (`.well-known/apple-app-site-association` für `/f/*` und Duell-Link, `.nojekyll`, Entitlement `applinks:startelo.de`,
+`appUrlOpen`); **auf dem iPhone bestätigt (04.11.2026: Link in Notizen öffnet die App)**. Apple-CDN liefert die Datei aus.
+Xcode: Team `CS9J7W6JPM`, automatisches Signing, App-ID per Xcode angelegt.
+
+**8b-1 fertig:** Nativer Apple-Login (`@capawesome/capacitor-apple-sign-in`, Nonce: SHA-256 an Apple, roh an Supabase, `signInWithIdToken`);
+Supabase Apple „Client IDs“: `de.startelo.login.web,de.startelo.app`. Auf dem iPhone geprüft: dasselbe Konto wie im Web, Spielstand-Abgleich läuft.
+
+**8b-2 fertig, auf dem iPhone geprüft (05.11.2026):** Edge Function `delete-account` (Supabase, „Verify JWT“ aus, die Function prüft die Anmeldung selbst):
+Apple-Bestätigung beim Löschen, Code-Tausch, Widerruf, erst dann `auth.admin.deleteUser`. Secrets: `APPLE_TEAM_ID`, `APPLE_KEY_ID`, `APPLE_P8_KEY`.
+**Wichtig (erster Versuch scheiterte mit `invalid_client`):** Der Schlüssel für den Code-Tausch muss „Sign in with Apple“ mit Primary App ID `de.startelo.app` haben.
+Der Web-Schlüssel `VKCJ4XFY29` hängt an `de.startelo.login` (nur Web-Secret in Supabase, nicht ändern). Für die App gibt es den Schlüssel
+„Startelo App Sign in with Apple“ (Key ID `7SUA53SDGT`, Primary App ID `de.startelo.app`); er steht in `APPLE_KEY_ID`/`APPLE_P8_KEY`.
+Der Push-Schlüssel `27TX242J83` ist für APNs (8b-3) gedacht; die Datei liegt wie die anderen in `~/Documents/Startelo-Schluessel/`
+(`.p8` nie ins Repo: `.gitignore` `*.p8`, `AuthKey_*`; Kopie im Passwort-Manager, Apple gibt sie nicht noch einmal heraus).
+Test: `tools/test-delete-function.mjs` (20 Prüfungen) und echter Lauf auf dem Haupt-iPhone: Konto entfernen, Apple-Bestätigung, App steht danach als Gast da.
+Noch abzuhaken: „Startelo XI“ ist aus iPhone-Einstellungen › Anmelden mit Apple verschwunden, Benutzer fehlt in Supabase › Authentication › Users.
+
+**Offen:** 8b-3 Push (APNs direkt, derselbe Schlüssel `27TX242J83`, Edge Function `send-push`, Ruhezeit 22–8 Uhr), 8b-4 Geräte-Test und Duell-Matrix
+D1–D9/F1–F10, danach K8 (Impressum, Datenschutz, AVV, Store-Texte, TestFlight). Web-Löschen (startelo.de) widerruft das Apple-Token nicht
+(nur die App tut das).

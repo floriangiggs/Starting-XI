@@ -7,3 +7,15 @@ www/
 ios/App/Pods/
 ios/DerivedData/
 ios/App/build/
+
+# Apple-Schluessel nie ins Repo
+*.p8
+AuthKey_*
+
+# Social-Media-Medien (Videos, Stimmen, Musik) nie ins Repo: GitHub Pages wuerde sie veroeffentlichen
+Musik fuer Reels/
+Musik für Reels/
+social/aufnahme/
+social/**/*.mp4
+social/**/*.wav
+social/**/*.mp3

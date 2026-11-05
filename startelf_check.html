@@ -19398,8 +19398,26 @@ async function onlineClaimName(name, crestHex) {
     return { ok: true, username: data.username };
   } catch (e) { return { ok: false, error: "lib", message: "Verbindung nicht möglich – bitte später noch einmal." }; }
 }
+// App: Loeschen mit Apple-Widerruf. Der Spieler bestaetigt noch einmal bei Apple, die Edge Function "delete-account" widerruft das Token und loescht erst dann.
+async function onlineDeleteAccountNative(AS) {
+  try {
+    let res;
+    try { res = await AS.signIn({}); } catch (e) { return { ok: false, error: e && e.code === "SIGN_IN_CANCELED" ? "cancel" : "apple" }; }
+    if (!res || !res.authorizationCode) return { ok: false, error: "apple" };
+    const sb = await onlineClient();
+    const { data, error } = await sb.functions.invoke("delete-account", { body: { authorizationCode: res.authorizationCode } });
+    if (error || !data || !data.ok) {
+      let code = data && data.error; // bei Fehlerstatus liegt die Antwort im Kontext der Meldung
+      try { if (!code && error && error.context && typeof error.context.json === "function") code = (await error.context.json()).error; } catch (e) {}
+      return { ok: false, error: code === "wrong_account" ? "wrong_account" : code === "apple" ? "apple" : "server" };
+    }
+    await onlineSignOut();
+    return { ok: true };
+  } catch (e) { return { ok: false, error: onlineHasNet() ? "lib" : "offline" }; }
+}
 async function onlineDeleteAccount() {
   if (!onlineHasNet()) return { ok: false, error: "offline" };
+  const AS = capPlugin("AppleSignIn"); if (AS && online.state !== "guest") return onlineDeleteAccountNative(AS);
   try {
     const sb = await onlineClient();
     const { error } = await sb.rpc("delete_account");
@@ -19630,7 +19648,7 @@ function kabineConfirmDelete(settingsEntry) {
   const backdrop = document.createElement("div"); backdrop.className = "modal-backdrop sp-sbd kb-over";
   backdrop.innerHTML = `<div class="sp-sheet" role="alertdialog" aria-modal="true" aria-label="Konto löschen"><div class="in"><div class="duel-name-box">
     <div class="guide-name-title" style="font-family:'Anton',Impact,sans-serif;font-size:24px">Konto wirklich löschen?</div>
-    <div style="font-family:'Oswald',sans-serif;font-weight:300;font-size:14.5px;color:var(--muted);line-height:1.45">Dein Konto, dein Name @${duelEsc(online.account ? online.account.username : "")} und alle Online-Daten werden endgültig gelöscht. Dein Spielstand auf diesem Gerät bleibt erhalten. Das lässt sich nicht rückgängig machen.</div>
+    <div style="font-family:'Oswald',sans-serif;font-weight:300;font-size:14.5px;color:var(--muted);line-height:1.45">Dein Konto, dein Name @${duelEsc(online.account ? online.account.username : "")} und alle Online-Daten werden endgültig gelöscht. Dein Spielstand auf diesem Gerät bleibt erhalten. Das lässt sich nicht rückgängig machen.${capPlugin("AppleSignIn") ? " Zur Sicherheit bestätigst du das gleich noch einmal bei Apple." : ""}</div>
     <div id="kbDelMsg" role="alert" style="font-family:'Oswald',sans-serif;font-size:14px;color:#FFC9A8;min-height:18px"></div>
     <button type="button" class="save-btn main" id="kbDelYes" style="background:linear-gradient(180deg,#C1392B,#8E2419);color:#fff">Konto endgültig löschen</button><button type="button" class="save-btn quiet" id="kbDelNo">Abbrechen</button></div></div></div>`;
   document.body.appendChild(backdrop);
@@ -19642,7 +19660,11 @@ function kabineConfirmDelete(settingsEntry) {
     const r = await onlineDeleteAccount();
     if (r.ok) { backdrop.remove(); if (settingsEntry) settingsEntry.close(); showToast('<span class="tt-tx">Dein Konto wurde gelöscht.</span>'); return; }
     yes.disabled = false; yes.textContent = "Konto endgültig löschen";
-    msg.textContent = r.error === "offline" ? "Du bist offline – zum Löschen brauchst du Netz." : "Das hat gerade nicht geklappt. Bitte später noch einmal versuchen.";
+    msg.textContent = r.error === "offline" ? "Du bist offline – zum Löschen brauchst du Netz."
+      : r.error === "cancel" ? "Nicht bestätigt – dein Konto ist noch da."
+      : r.error === "wrong_account" ? "Das war ein anderes Apple-Konto. Bitte mit dem Apple-Konto bestätigen, mit dem du angemeldet bist."
+      : r.error === "apple" ? "Apple konnte die Bestätigung nicht abschließen. Es wurde nichts gelöscht – bitte noch einmal versuchen."
+      : "Das hat gerade nicht geklappt. Bitte später noch einmal versuchen.";
   };
 }
 document.addEventListener("onlinechange", () => { kbUpdateBadge(); if (kb.open) kabineRender(); });

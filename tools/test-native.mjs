@@ -223,6 +223,38 @@ async function open(native) {
   const web = await p2.evaluate(() => onlineSignInApple());
   check("Apple-Login im Browser: unveraendert (file:// meldet origin, kein nativer Weg)", web.ok === false && web.error === "origin", JSON.stringify(web));
 }
+{ // Konto loeschen in der App (8b-2): erst Apple bestaetigen, dann Edge Function "delete-account"; Web-Weg unveraendert
+  const ctx = await browser.newContext({ viewport: { width: 393, height: 852 }, serviceWorkers: "block" });
+  const page = await ctx.newPage(); const errs = [];
+  page.on("pageerror", (e) => errs.push(e.message));
+  await page.addInitScript(fakeCap);
+  await page.addInitScript(() => { window.__apple = { calls: [], mode: "ok" }; window.__fn = []; window.__rpc = []; window.Capacitor.Plugins.AppleSignIn = { signIn: async (o) => { window.__apple.calls.push(o); if (window.__apple.mode === "cancel") { const e = new Error("x"); e.code = "SIGN_IN_CANCELED"; throw e; } if (window.__apple.mode === "fail") throw new Error("boom"); return { idToken: "T", authorizationCode: "CODE-" + window.__apple.calls.length, user: "u" }; } }; });
+  await page.goto("file://" + html, { waitUntil: "domcontentloaded" });
+  await page.waitForFunction(() => window.__listeners && !document.getElementById("splash"), null, { timeout: 15000 });
+  const r = await page.evaluate(async () => {
+    const out = {}; let reply = { data: { ok: true, revoked: true }, error: null };
+    online.state = "member"; online.userId = "u1"; online.account = { username: "flo_xi", crest: "#C8A24B", code: "XI-TEST", discoverable: "all" };
+    onlineClient = async () => ({ auth: { signOut: async () => ({}) }, rpc: async (n) => { window.__rpc.push(n); return { error: null }; }, functions: { invoke: async (n, o) => { window.__fn.push([n, o]); return reply; } } });
+    out.ok = await onlineDeleteAccount(); out.fn = window.__fn[0]; out.signIn = window.__apple.calls[0]; out.rpc = window.__rpc.length; out.state = online.state;
+    online.state = "member"; window.__apple.mode = "cancel"; out.cancel = await onlineDeleteAccount(); out.cancelFn = window.__fn.length;
+    window.__apple.mode = "fail"; out.fail = await onlineDeleteAccount(); out.failFn = window.__fn.length;
+    window.__apple.mode = "ok"; reply = { data: null, error: { message: "x", context: { json: async () => ({ ok: false, error: "wrong_account" }) } } }; out.wrong = await onlineDeleteAccount();
+    reply = { data: null, error: { message: "x", context: { json: async () => ({ ok: false, error: "apple" }) } } }; out.apple = await onlineDeleteAccount();
+    reply = { data: null, error: { message: "x", context: { json: async () => ({ ok: false, error: "delete" }) } } }; out.server = await onlineDeleteAccount();
+    out.stillMember = online.state === "member";
+    online.state = "guest"; return out;
+  });
+  check("Konto loeschen in der App: Apple wird noch einmal gefragt, Code geht an die Function delete-account, kein direktes delete_account", r.ok.ok === true && r.fn[0] === "delete-account" && r.fn[1].body.authorizationCode === "CODE-1" && r.rpc === 0 && r.signIn && r.signIn.nonce === undefined, JSON.stringify([r.ok, r.fn, r.rpc]));
+  check("Konto loeschen in der App: danach abgemeldet (Gast)", r.state === "guest", r.state);
+  check("Konto loeschen in der App: Abbruch bei Apple = cancel, Function wird nicht aufgerufen; Apple-Fehler = apple", r.cancel.error === "cancel" && r.cancelFn === 1 && r.fail.error === "apple" && r.failFn === 1, JSON.stringify([r.cancel, r.cancelFn, r.fail, r.failFn]));
+  check("Konto loeschen in der App: Antworten der Function werden richtig gemeldet (wrong_account, apple, sonst server), Konto bleibt", r.wrong.error === "wrong_account" && r.apple.error === "apple" && r.server.error === "server" && r.stillMember, JSON.stringify([r.wrong, r.apple, r.server]));
+  check("Konto loeschen in der App: keine Skriptfehler", errs.length === 0, errs.join(" | "));
+  await ctx.close();
+  const p2 = await (await browser.newContext({ serviceWorkers: "block" })).newPage();
+  await p2.goto("file://" + html, { waitUntil: "domcontentloaded" });
+  const web = await p2.evaluate(async () => { const rpc = []; online.state = "member"; online.userId = "u"; onlineClient = async () => ({ auth: { signOut: async () => ({}) }, rpc: async (n) => { rpc.push(n); return { error: null }; } }); const x = await onlineDeleteAccount(); return { x, rpc }; });
+  check("Konto loeschen im Browser: unveraendert ueber delete_account", web.x.ok === true && web.rpc[0] === "delete_account", JSON.stringify(web));
+}
 await browser.close();
 console.log(fails ? `${fails} von ${total} Pruefungen FALSCH` : `Alle ${total} Pruefungen bestanden`);
 process.exit(fails ? 1 : 0);
