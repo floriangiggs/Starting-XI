@@ -14,6 +14,7 @@ const OUT = join(ROOT, "www");
 const DIRS = {
   fonts: (f) => /\.woff2$/.test(f),
   vendor: (f) => /\.js$/.test(f),
+  audio: (f) => /\.m4a$/.test(f), // leise Hintergrundmusik (Schleife)
   icons: (f) => /\.png$/.test(f) && f !== "icon-1024.png", // 1024er gehoert in die Xcode-Assets, nicht ins Web-Bundle
 };
 

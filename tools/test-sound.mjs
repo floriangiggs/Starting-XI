@@ -11,7 +11,7 @@ const src = fs.readFileSync(html, "utf8");
 let total = 0, fails = 0;
 const check = (label, cond, extra = "") => { total++; if (!cond) { fails++; console.log(`FALSCH ${label}${extra ? ": " + extra : ""}`); } };
 // Statische Pruefungen: kein Rauschen/Wisch-Klang, nur die elf Namen
-const block = src.slice(src.indexOf("/* ================= TÖNE (Prompt 55)"), src.indexOf("/* ================= INIT ================="));
+const block = src.slice(src.indexOf("/* ================= TÖNE (Prompt 55)"), src.indexOf("/* ---- Hintergrundmusik"));
 check("kein createBuffer/Rauschen im Ton-Block", !/createBuffer|Math\.random|noise|crowd/.test(block));
 check("keine Audiodateien/externe Quellen", !/\.mp3|\.wav|\.ogg|new Audio\(|fetch\(/.test(block));
 for (const n of ["near", "shift", "pick", "coinOut", "reveal", "deny", "load", "pass", "fail", "streak", "trophy", "tick", "roundWin", "roundLose", "duelLose", "sheet"]) check(`Ton "${n}" nicht eingebaut`, !new RegExp(`\\n\\s{2}${n}:\\s*\\(`).test(block));
@@ -122,10 +122,44 @@ log = await page.evaluate(() => window.__log.slice());
 check("Duell gewonnen: duelWin genau einmal", log.filter(x => x === "duelWin").length === 1, JSON.stringify(log));
 await page.evaluate(() => { window.__log.length = 0; renderDuelResult(); });
 check("Erneutes Zeichnen: kein zweiter Sieges-Ton", (await page.evaluate(() => window.__log.filter(x => x === "duelWin").length)) === 0);
+// 4b) Hintergrundmusik: Schleife, Schalter, Lautstaerke, Duell leiser, Hintergrund = aus
+{
+  const mus = src.slice(src.indexOf("/* ---- Hintergrundmusik"), src.indexOf("/* ================= INIT ================= */"));
+  check("Musik: nutzt denselben AudioContext (Stummschalter wirkt), keine Audio-Elemente", /sfxCtx/.test(mus) && !/new Audio\(|<audio/.test(mus));
+  const root = path.dirname(html);
+  const mfile = path.join(root, "audio", "hintergrund.m4a");
+  check("Musik: Datei audio/hintergrund.m4a da, 0,5-3 MB", fs.existsSync(mfile) && fs.statSync(mfile).size > 5e5 && fs.statSync(mfile).size < 3e6);
+  check("Musik: im Service-Worker-Vorrat und im www-Bundle", /audio\/hintergrund\.m4a/.test(fs.readFileSync(path.join(root, "sw.js"), "utf8")) && /audio:/.test(fs.readFileSync(path.join(root, "tools", "build-www.mjs"), "utf8")));
+  check("Musik: eigener Schalter UND eigener Regler in den Einstellungen (Profil > Ton)", /id="musicToggle"/.test(src) && /id="musicVol"/.test(src) && /id="sndVol"/.test(src));
+  const b64 = fs.existsSync(mfile) ? fs.readFileSync(mfile).toString("base64") : "";
+  const r = await page.evaluate(async (b64) => {
+    const o = {}; const realFetch = window.fetch;
+    window.fetch = async (u) => { if (String(u).includes("hintergrund")) { const bin = atob(b64), a = new Uint8Array(bin.length); for (let i = 0; i < bin.length; i++) a[i] = bin.charCodeAt(i); return new Response(a.buffer, { status: 200 }); } return realFetch(u); };
+    profile.sound = { on: true, volume: 0.7, music: true, musicVolume: 0.7 };
+    const c = sfxContext(); await c.resume(); o.state = c.state;
+    musicSync(); await new Promise((r) => setTimeout(r, 2500)); musicSync();
+    o.started = !!musicSrc; o.loop = !!(musicSrc && musicSrc.loop); o.len = musicBuf ? Math.round(musicBuf.duration * 10) / 10 : 0;
+    await new Promise((r) => setTimeout(r, 1600)); o.vol = Math.round(musicGain.gain.value * 1000) / 1000; o.want = Math.round(musicTarget() * 1000) / 1000;
+    const w0 = duelRun; duelRun = { phase: "play" }; o.duel = Math.round(musicTarget() * 1000) / 1000; duelRun = w0;
+    profile.sound.music = false; musicSync(); o.offMusic = !musicSrc; profile.sound.music = true; musicSync(); o.again = !!musicSrc;
+    profile.sound.on = false; musicSync(); o.musikOhneToene = !!musicSrc; o.sfxAus = sfx("ok", { combo: 1 }) === null; profile.sound.on = true;
+    profile.sound.music = false; o.sfxOhneMusik = sfx("ok", { combo: 1 }) !== null; musicSync(); profile.sound.music = true; musicSync();
+    profile.sound.musicVolume = 0.35; o.halb = Math.round(musicTarget() * 1000) / 1000; profile.sound.musicVolume = 0; o.stumm = musicTarget(); profile.sound.musicVolume = 0.7;
+    window.fetch = realFetch; return o;
+  }, b64);
+  check("Musik: AudioContext laeuft, Schleife startet mit der 87-s-Datei", r.state === "running" && r.started && r.loop && r.len === 87, JSON.stringify(r));
+  check("Musik: leise (Musik-Regler 0,7 x 0,22 = 0,154), eigener Regler wirkt (0,35 = 0,077, 0 = stumm)", r.want === 0.154 && Math.abs(r.vol - 0.154) < 0.01 && r.halb === 0.077 && r.stumm === 0, JSON.stringify(r));
+  check("Musik: im Duell waehrend der Runde leiser", r.duel > 0 && r.duel < r.want, JSON.stringify(r));
+  check("Musik: Schalter Musik aus stoppt sie, wieder an startet sie", r.offMusic && r.again, JSON.stringify(r));
+  check("Musik und Toene sind unabhaengig: Toene aus -> Musik laeuft, Musik aus -> Toene laufen", r.musikOhneToene && r.sfxAus && r.sfxOhneMusik, JSON.stringify(r));
+  const hid = await page.evaluate(() => { Object.defineProperty(document, "hidden", { configurable: true, get: () => true }); const t = musicTarget(); delete document.hidden; return t; });
+  check("Musik: App im Hintergrund = Ziel-Lautstaerke 0", hid === 0);
+  await page.evaluate(() => { profile.sound = { on: true, volume: 0.7, music: true, musicVolume: 0.7 }; musicSync(); });
+}
 // 5) Migration: altes Profil ohne sound
 const mig = await page.evaluate(() => { const raw = JSON.parse(localStorage.getItem(PROFILE_KEY)); delete raw.sound; localStorage.setItem(PROFILE_KEY, JSON.stringify(raw)); return true; });
 await page.reload(); await page.waitForTimeout(6500);
-check("Migration: Standard an, 70 %", await page.evaluate(() => profile.sound && profile.sound.on === true && profile.sound.volume === 0.7));
+check("Migration: Standard an, 70 %, Musik an", await page.evaluate(() => profile.sound && profile.sound.on === true && profile.sound.volume === 0.7 && profile.sound.music === true && profile.sound.musicVolume === 0.7));
 check("Konsolenfehler", !errs.length, errs.join("|"));
 await browser.close();
 console.log(fails ? `\n${fails} von ${total} FALSCH` : `OK - ${total} Ton-Prüfungen bestanden`);

@@ -4997,7 +4997,7 @@ const defaultProfile = {
   trophiesWon: [], // Kampagne-Trophaeen-IDs (Achievements laufen weiter ueber profile.achievements)
   streak: { current: 0, best: 0, lastDayKey: null }, // NUR Tages-Challenge zaehlt, kein Serien-Schutz (Prompt 13)
   daily: {}, // dateKey ("YYYY-MM-DD") -> { id, correct, grid, stars }
-  sound: { on: true, volume: 0.7 }, // Toene (Prompt 55): Schalter + Lautstaerke 0-1
+  sound: { on: true, volume: 0.7, music: true, musicVolume: 0.7 }, // Toene (Prompt 55): Schalter + Lautstaerke 0-1; music/musicVolume = Hintergrundmusik (eigener Schalter und Regler)
   freeplayForm: [], // Trefferzahlen (0-11) der letzten 5 Freispiel-Ergebnisse, aelteste zuerst (Prompt 18)
   deviceId: null, // Duell (Prompt 25): einmalig zufaellige Geraete-ID, wird in loadProfile() vergeben
   duelName: null, // Anzeigename im Duell (max. 16 Zeichen), beim ersten Duell abgefragt
@@ -5141,7 +5141,9 @@ function loadProfile() {
     // Prompt 59: gespeicherte Gegner-Raenge auf die neuen Namen abbilden
     if (profile.duels && typeof profile.duels === "object") Object.values(profile.duels).forEach((d) => { if (d && d.opponent && typeof d.opponent.rank === "string") d.opponent.rank = rankLabel(d.opponent.rank); });
     if (profile.duelStats && profile.duelStats.perOpponent) Object.values(profile.duelStats.perOpponent).forEach((f) => { if (f && typeof f.rank === "string") f.rank = rankLabel(f.rank); });
-    if (!profile.sound || typeof profile.sound !== "object") profile.sound = { on: true, volume: 0.7 };
+    if (!profile.sound || typeof profile.sound !== "object") profile.sound = { on: true, volume: 0.7, music: true, musicVolume: 0.7 };
+    if (typeof profile.sound.music !== "boolean") profile.sound.music = true;
+    if (typeof profile.sound.musicVolume !== "number" || !isFinite(profile.sound.musicVolume)) profile.sound.musicVolume = 0.7;
     if (typeof profile.sound.on !== "boolean") profile.sound.on = true;
     if (typeof profile.sound.volume !== "number" || !isFinite(profile.sound.volume)) profile.sound.volume = 0.7;
     // Duell (Prompt 25): fehlende Felder bei bestehenden Profilen anlegen
@@ -5695,7 +5697,7 @@ const GUIDE_TABS = [
       <div class="num"><span class="n">1</span><div><b>Nachname reicht</b><p>Vorname brauchst du nicht – einfach den Nachnamen ins Feld tippen.</p></div></div>
       <div class="num"><span class="n">2</span><div><b>Falsche Zeile? Kein Problem</b><p>Der Spieler rutscht automatisch auf seine richtige Position – sofern er zu keiner anderen offenen Position passt.</p></div></div>
       <div class="num"><span class="n">3</span><div><b>Fast richtig</b><p>Kleiner Tippfehler? Das Feld wird <span class="field gold">gold</span> und bekommt einen Stift. Tipp auf den Stift (oder unten auf „Korrigieren“), um die richtige Schreibweise zu übernehmen – für etwas weniger XP.</p></div></div>
-      <div class="num"><span class="n">4</span><div><b>Mit Ton</b><p>Im Scout-Profil schaltest du die Töne aus. Der iPhone-Stummschalter wirkt auch.</p></div></div>
+      <div class="num"><span class="n">4</span><div><b>Mit Ton</b><p>Im Scout-Profil schaltest du Töne und Musik getrennt an oder aus und stellst die Lautstärke ein. Der iPhone-Stummschalter wirkt auch.</p></div></div>
     </div>` },
   { id: "hilfen", icon: tokenCoin(), label: "Hilfen", render: () => `
     <p class="t">Tipp eine Position an – unten auf der Holzleiste: Tipps, Scout-Rad, Aufdecken (<b>Scout-Token ${tokenCoin()}</b>).</p>
@@ -6913,8 +6915,10 @@ function profileOverviewHTML() {
     <div class="hm-lbl">Duell-Name</div>
     <div class="hm-namecard"><div><b>${profile.duelName ? duelEsc(profile.duelName) : "Noch kein Name"}</b><small>${h ? "@" + duelEsc(h) + " · so sehen dich deine Gegner" : "Wird beim ersten Duell festgelegt"}</small>${s.wins + s.losses + s.draws ? `<small>Duelle ${s.wins} : ${s.losses}${s.draws ? " · " + s.draws + " Remis" : ""}${s.streak ? " · Serie " + s.streak : ""}</small>` : ""}</div><button type="button" id="duelNameEdit">${profile.duelName ? "Ändern" : "Festlegen"}</button></div>
     <div class="hm-lbl">Ton</div>
-    <div class="hm-sound"><button type="button" class="du-fair" id="sndToggle" aria-pressed="${sfxOn()}"><span class="du-sw${sfxOn() ? " on" : ""}"></span><span><b>Töne</b><small>${sfxOn() ? "An – Stummschalter und Musik im Hintergrund bleiben unberührt" : "Aus"}</small></span></button>
-      <label class="hm-vol${sfxOn() ? "" : " off"}"><span>Lautstärke</span><input type="range" id="sndVol" min="0" max="100" step="5" value="${Math.round(sfxVolume() * 100)}" ${sfxOn() ? "" : "disabled"} aria-label="Lautstärke"><b id="sndVolN">${Math.round(sfxVolume() * 100)} %</b></label></div>
+    <div class="hm-sound"><button type="button" class="du-fair" id="sndToggle" aria-pressed="${sfxOn()}"><span class="du-sw${sfxOn() ? " on" : ""}"></span><span><b>Töne</b><small>${sfxOn() ? "An – der iPhone-Stummschalter wirkt" : "Aus"}</small></span></button>
+      <label class="hm-vol${sfxOn() ? "" : " off"}"><span>Lautstärke</span><input type="range" id="sndVol" min="0" max="100" step="5" value="${Math.round(sfxVolume() * 100)}" ${sfxOn() ? "" : "disabled"} aria-label="Lautstärke der Töne"><b id="sndVolN">${Math.round(sfxVolume() * 100)} %</b></label>
+      <button type="button" class="du-fair" id="musicToggle" aria-pressed="${musicOn()}"><span class="du-sw${musicOn() ? " on" : ""}"></span><span><b>Musik</b><small>${musicOn() ? "An – leise im Hintergrund" : "Aus"}</small></span></button>
+      <label class="hm-vol${musicOn() ? "" : " off"}"><span>Lautstärke</span><input type="range" id="musicVol" min="0" max="100" step="5" value="${Math.round(musicVolume() * 100)}" ${musicOn() ? "" : "disabled"} aria-label="Lautstärke der Musik"><b id="musicVolN">${Math.round(musicVolume() * 100)} %</b></label></div>
     <div class="hm-wbtns"><button class="hm-wbtn" type="button" id="saveExportBtn">${HM_SV.save}Spielstand sichern</button><button class="hm-wbtn" type="button" id="saveImportBtn">${HM_SV.load}Spielstand laden</button></div>`;
 }
 
@@ -17512,12 +17516,24 @@ function bindSoundRow() {
   tg.onclick = () => {
     profile.sound.on = !sfxOn(); saveProfile(profile);
     tg.setAttribute("aria-pressed", String(profile.sound.on)); tg.querySelector(".du-sw").classList.toggle("on", profile.sound.on);
-    tg.querySelector("small").textContent = profile.sound.on ? "An – Stummschalter und Musik im Hintergrund bleiben unberührt" : "Aus";
+    tg.querySelector("small").textContent = profile.sound.on ? "An – der iPhone-Stummschalter wirkt" : "Aus";
     vol.disabled = !profile.sound.on; vol.closest(".hm-vol").classList.toggle("off", !profile.sound.on);
     if (profile.sound.on) sfx("ok", { combo: 2 }); // kurze Probe
   };
   vol.oninput = () => { profile.sound.volume = vol.value / 100; n.textContent = vol.value + " %"; sfxApplyVolume(); };
   vol.onchange = () => { saveProfile(profile); sfx("ok", { combo: 2 }); };
+  const mt = document.getElementById("musicToggle"), mv = document.getElementById("musicVol"), mn = document.getElementById("musicVolN");
+  if (mt && mv) {
+    mt.onclick = () => {
+      profile.sound.music = !musicOn(); saveProfile(profile);
+      mt.setAttribute("aria-pressed", String(profile.sound.music)); mt.querySelector(".du-sw").classList.toggle("on", profile.sound.music);
+      mt.querySelector("small").textContent = profile.sound.music ? "An – leise im Hintergrund" : "Aus";
+      mv.disabled = !profile.sound.music; mv.closest(".hm-vol").classList.toggle("off", !profile.sound.music);
+      musicSync();
+    };
+    mv.oninput = () => { profile.sound.musicVolume = mv.value / 100; mn.textContent = mv.value + " %"; musicApplyVolume(); };
+    mv.onchange = () => { saveProfile(profile); };
+  }
 }
 function bindSaveRow() {
   bindSoundRow();
@@ -19248,6 +19264,49 @@ function sfx(name, opts = {}) {
   if (c.state === "suspended") c.resume().then(() => { if (c.state === "running") sfxPlay(name, opts); }).catch(() => {});
   return null;
 }
+
+/* ---- Hintergrundmusik: eine leise, nahtlose Schleife (audio/hintergrund.m4a, 87 s, KI-generiert mit ElevenLabs Music) ----
+   Laeuft auf demselben AudioContext wie die Toene (Stummschalter wirkt), erst nach der ersten Beruehrung, nur bei sichtbarer App.
+   Eigener Schalter und eigener Regler: Profil > Ton > Musik (profile.sound.music / musicVolume), unabhaengig von den Toenen.
+   Lautstaerke = Regler x MUSIC_LEVEL; im Duell waehrend einer Runde leiser. */
+const MUSIC_URL = "audio/hintergrund.m4a", MUSIC_LEVEL = 0.22, MUSIC_DUEL = 0.45;
+let musicBuf = null, musicLoading = false, musicSrc = null, musicGain = null;
+function musicOn() { return sfxSettings().music !== false; }
+function musicVolume() { const v = Number(sfxSettings().musicVolume); return isFinite(v) ? Math.min(1, Math.max(0, v)) : 0.7; }
+function musicTarget() {
+  if (!musicOn() || document.hidden) return 0;
+  const inDuel = typeof duelRun !== "undefined" && duelRun && duelRun.phase === "play";
+  return musicVolume() * MUSIC_LEVEL * (inDuel ? MUSIC_DUEL : 1);
+}
+function musicApplyVolume() {
+  if (!musicGain || !sfxCtx) return;
+  const v = musicTarget(), t = sfxCtx.currentTime;
+  try { musicGain.gain.cancelScheduledValues(t); musicGain.gain.setValueAtTime(musicGain.gain.value, t); musicGain.gain.linearRampToValueAtTime(v, t + (v ? 1.2 : 0.4)); } catch (e) { musicGain.gain.value = v; }
+}
+function musicSync() {
+  const c = sfxCtx;
+  if (!c || c.state !== "running") return;
+  const want = musicTarget() > 0;
+  if (want && !musicSrc) {
+    if (!musicBuf) {
+      if (musicLoading) return; musicLoading = true;
+      fetch(MUSIC_URL).then(r => { if (!r.ok) throw new Error("musik " + r.status); return r.arrayBuffer(); })
+        .then(ab => new Promise((res, rej) => c.decodeAudioData(ab, res, rej)))
+        .then(b => { musicBuf = b; musicLoading = false; musicSync(); })
+        .catch(() => { musicLoading = false; }); // keine Musik ist besser als ein Fehler
+      return;
+    }
+    musicGain = c.createGain(); musicGain.gain.value = 0; musicGain.connect(c.destination);
+    musicSrc = c.createBufferSource(); musicSrc.buffer = musicBuf; musicSrc.loop = true; musicSrc.connect(musicGain); musicSrc.start();
+    musicApplyVolume();
+  } else if (!want && musicSrc) {
+    const src = musicSrc, g = musicGain; musicSrc = null; musicGain = null;
+    try { const t = c.currentTime; g.gain.cancelScheduledValues(t); g.gain.setValueAtTime(g.gain.value, t); g.gain.linearRampToValueAtTime(0, t + 0.4); src.stop(t + 0.45); } catch (e) { try { src.stop(); } catch (e2) { /* schon beendet */ } }
+    setTimeout(() => { try { g.disconnect(); } catch (e) { /* weg */ } }, 700);
+  } else if (musicSrc) musicApplyVolume();
+}
+document.addEventListener("visibilitychange", () => setTimeout(musicSync, 0));
+setInterval(musicSync, 1500); // faengt Wechsel auf, die ohne Ereignis kommen (Duell-Runde, Kontext laeuft erst nach der ersten Geste)
 
 /* ================= INIT ================= */
 renderProfileBar();
