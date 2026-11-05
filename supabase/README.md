@@ -71,6 +71,7 @@ Nur der Server (Rolle `service_role`): `process_deadlines()`, `enqueue_deadline_
 - Eingespielt über den SQL Editor mit den Dateien in `einspielen/` (1 Schema + Regeln = Migrationen 0001–0008, 2 Seed, 3 Zeitplaner, 4 Prüfung).
   Prüfung: 18 Tabellen, 0 ohne RLS, 297 Aufstellungen, 400 Tage Tages-Plan, 1466 Namensregeln, 2 Zeitplaner-Jobs.
 - Nachtrag K6a (noch einzuspielen): `einspielen/6-duell-v2.sql` (Migration 0010), danach `einspielen/7-katalog-spalten.sql` (Katalog mit Kategorien/Mannschaften).
+- Push (8b-3): `einspielen/8-push-zeitplaner.sql` (pg_cron + pg_net + Vault, Anleitung im Kopf der Datei) und Edge Function `functions/send-push`.
 - `einspielen/` ist erzeugt (Kopie von `migrations/` + `seed.sql`) – bei Änderungen neu bündeln, nicht von Hand ändern.
 - Keine Schlüssel im Repo. In die App gehört später nur der öffentliche `anon key`.
 

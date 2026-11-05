@@ -19514,6 +19514,7 @@ const KB_SV = {
   vs: '<svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="#3E2A16" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round"><path d="M4 7h12l-3-3M20 17H8l3 3"/></svg>',
   pass: '<svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="#3E2A16" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round"><rect x="5" y="3.5" width="14" height="17" rx="2.5"/><circle cx="12" cy="10" r="2.6"/><path d="M8.5 16.5h7"/></svg>',
   people: '<svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="#3E2A16" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="8.5" r="3"/><path d="M3.5 19c.5-3.2 2.7-5 5.5-5s5 1.8 5.5 5M16 6.2a3 3 0 0 1 0 5.6M17.5 14.3c1.7.6 2.7 2 3 4.7"/></svg>',
+  bell: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 17V11a6 6 0 0 1 12 0v6l1.6 2H4.4L6 17zM10 21h4" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg>',
   gear: '<svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="#3E2A16" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M12 3v2.5M12 18.5V21M3 12h2.5M18.5 12H21M5.6 5.6l1.8 1.8M16.6 16.6l1.8 1.8M18.4 5.6l-1.8 1.8M7.4 16.6l-1.8 1.8"/></svg>',
   book: '<svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="#3E2A16" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round"><path d="M5 4.5h10a3 3 0 0 1 3 3V20H8a3 3 0 0 1-3-3zM5 17a3 3 0 0 1 3-3h10"/></svg>',
   cloud: '<svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="#3E2A16" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round"><path d="M7 18a4.5 4.5 0 0 1-.6-8.96A6 6 0 0 1 18 8.5a4.8 4.8 0 0 1-.5 9.5z"/></svg>',
@@ -19608,6 +19609,7 @@ async function kabineSignIn() {
   kabineRender();
 }
 async function kabineSignOut() {
+  await pushUnregister(); // dieses Geraet bekommt keine Push mehr fuer das abgemeldete Konto
   await onlineSignOut(); kb.msg = "";
   if (kb.open) kabineRender();
   showToast('<span class="tt-tx">Abgemeldet – dein Spielstand bleibt auf dem Gerät.</span>');
@@ -19690,6 +19692,7 @@ function kabineOpenSettings() {
       ${member ? `${kbMi("kbSName", KB_SV.user, "Name ändern", nextChange ? "Erst wieder ab " + nextChange : "@" + duelEsc(online.account.username) + " · alle 30 Tage möglich")}${kbMi("kbSOut", KB_SV.door, "Abmelden", "Dein Spielstand bleibt auf dem Gerät")}` : `<div class="sub" style="margin:0 2px 4px;font-weight:300;font-size:14px;color:rgba(244,241,232,0.8)">Du spielst als Gast. Ein Konto legst du in der Kabine an (Logo oben links).</div>`}
       </div>
       ${member ? `<div class="kb-sec">Spielstand in der Cloud</div><div class="kb-menu" style="margin:0;overflow:visible;-webkit-mask-image:none;mask-image:none"><div class="sub" id="kbSyncTxt" role="status" style="margin:0 2px 4px;font-weight:300;font-size:14px;color:rgba(244,241,232,0.8)"></div>${kbMi("kbSSync", KB_SV.cloud, "Jetzt sichern", "Gleicht deinen Spielstand mit dem Konto ab")}</div>` : ""}
+      ${member && pushAvailable() ? `<div class="kb-sec">Benachrichtigungen</div><div class="kb-menu" style="margin:0;overflow:visible;-webkit-mask-image:none;mask-image:none">${kbMi("kbSPush", KB_SV.bell, "Benachrichtigungen", "Herausforderungen, Anfragen, auslaufende Frist")}</div>` : ""}
       ${member ? `<div class="kb-sec">Privatsphäre</div><div class="kb-menu" style="margin:0;overflow:visible;-webkit-mask-image:none;mask-image:none">${kbMi("kbSPriv", KB_SV.people, "Privatsphäre", "Wer dich finden darf · Blockierte Spieler")}</div>` : ""}
       <div class="kb-sec">Ton und Spielstand</div><div class="kb-menu" style="margin:0;overflow:visible;-webkit-mask-image:none;mask-image:none">${kbMi("kbSProf", KB_SV.gear, "Ton, Spielstand sichern und laden", "Im Scout-Profil, Reiter Übersicht")}</div>
       ${member ? `<div class="kb-sec">Konto entfernen</div><button class="kb-mi kb-danger" type="button" id="kbSDel" style="width:100%"><span class="t">${KB_SV.lock}</span><span><b>Konto löschen</b><small style="color:rgba(255,200,190,0.8)">Entfernt dein Konto und deine Online-Daten</small></span><span class="end">${KB_SV.chev}</span></button>` : ""}</div>`;
@@ -19699,6 +19702,7 @@ function kabineOpenSettings() {
   if ($("kbSName")) $("kbSName").onclick = () => { if (nextChange) { showToast(`<span class="tt-tx">Du kannst deinen Namen erst wieder ab ${nextChange} ändern.</span>`); return; } entry.close(); setTimeout(() => kabineOpenNameScreen("change"), 150); };
   if ($("kbSOut")) $("kbSOut").onclick = async () => { entry.close(); await kabineSignOut(); };
   if ($("kbSDel")) $("kbSDel").onclick = () => kabineConfirmDelete(entry);
+  if ($("kbSPush")) $("kbSPush").onclick = () => { entry.close(); setTimeout(() => kabineOpenNotify(), 150); };
   if ($("kbSPriv")) $("kbSPriv").onclick = () => { entry.close(); setTimeout(() => kabineOpenPrivacy(), 150); };
   const paintSync = () => { const t = $("kbSyncTxt"); if (!t) return; t.textContent = sync.state === "syncing" ? "Wird gesichert …" : sync.state === "offline" ? "Offline – wird gesichert, sobald du wieder Netz hast." : sync.state === "error" ? "Das hat gerade nicht geklappt – wir versuchen es später noch einmal." : sync.state === "paused" ? "Noch nicht zusammengeführt – tippe auf „Jetzt sichern“." : "Zuletzt gesichert: " + syncAgo(); };
   if ($("kbSSync")) { $("kbSSync").onclick = async () => { await syncRun("manuell"); paintSync(); }; paintSync(); const h = () => { if (!sc.isConnected) document.removeEventListener("syncchange", h); else paintSync(); }; document.addEventListener("syncchange", h); }
@@ -20055,7 +20059,7 @@ function frConfirmAdd(p, done) {
   yes.onclick = async () => {
     yes.disabled = true; const r = await frCall("send_request", { p_user: p.id });
     if (!r.ok) { yes.disabled = false; backdrop.querySelector("#frCfMsg").textContent = r.message; return; }
-    backdrop.remove(); frToastResult(r.data, p); await frRefresh(); if (done) done(r.data);
+    backdrop.remove(); frToastResult(r.data, p); pushAsk("friend"); await frRefresh(); if (done) done(r.data); // Push-Frage erst NACH dem Senden und nie blockierend
   };
 }
 function frToastResult(res, p) {
@@ -20129,6 +20133,7 @@ function kabineOpenAddFriend() {
     if (!r.ok) { b.disabled = false; showToast(`<span class="tt-tx">${duelEsc(r.message)}</span>`); return; }
     const p = box._people.find((x) => x.id === id); frToastResult(r.data, p); await frRefresh();
     b.outerHTML = r.data === "accepted" || r.data === "already_friends" ? '<span class="kb-ok">Befreundet</span>' : '<span class="kb-mute">Angefragt</span>';
+    pushAsk("friend"); // erst nach dem Senden fragen, nie blockierend
   }));
   const show = (box, people, empty) => { box._people = people; box.innerHTML = people.length ? people.map(resRow).join("") : (empty ? `<div class="kb-empty">${empty}</div>` : ""); wire(box); };
   let timer = null, seq = 0;
@@ -20363,6 +20368,7 @@ async function sdCreate(friendId, draft) {
   if (!g.ok) g = await frCall("get_duel", { p_duel: r.data });
   if (!g.ok) return { ok: false, error: "server", message: "Das Duell ist angelegt – du findest es gleich in der Übersicht." };
   sdMirror(g.data, null); saveProfile(profile);
+  pushAsk("duel"); // erste Herausforderung gesendet: jetzt Benachrichtigungen anbieten (nach dem Senden, nie blockierend)
   return { ok: true, id: r.data };
 }
 // Runde beginnen: der Server gibt die Aufstellung erst jetzt heraus (und zaehlt die Runde ab hier)
@@ -20415,6 +20421,123 @@ function nativeOpenUrl(raw) {
   } catch (e) { /* unbekannter Link: ignorieren */ }
 }
 (function () { const A = capPlugin("App"); if (A) A.addListener("appUrlOpen", (e) => { const url = e && e.url; if (url) whenSplashGone(() => setTimeout(() => nativeOpenUrl(url), 300)); }); })();
+/* ---- Push-Benachrichtigungen (8b-3): nur in der App, iOS direkt ueber APNs ----
+   Server: Edge Function send-push (jede Minute aus der Warteschlange). Hier: Erlaubnis erst mit Vorab-Karte beim ersten Duell/der ersten Anfrage,
+   Token -> register_device, Schalter je Art -> set_notify, Antippen oeffnet Duelle bzw. Freunde. Im Browser passiert nichts (kein Plugin). */
+const PUSH_PREFS = [
+  ["friend_request", "Freundschaftsanfrage", "Jemand möchte dein Freund sein"],
+  ["friend_accepted", "Anfrage angenommen", "Deine Anfrage wurde angenommen"],
+  ["duel_challenge", "Herausforderung", "Ein Freund fordert dich zum Duell heraus"],
+  ["duel_your_turn", "Du bist dran", "Dein Gegner hat seine Runde gespielt"],
+  ["duel_finished", "Duell beendet", "Ergebnis, abgelehnt, zurückgezogen oder abgelaufen"],
+  ["duel_deadline_warning", "Frist läuft ab", "Ein Duell endet bald"],
+];
+const PUSH_ASK_KEY = "startelo_push_ask", PUSH_PREFS_KEY = "startelo_push_prefs", PUSH_TOKEN_KEY = "startelo_push_token";
+let pushWired = false, pushToken = "";
+const pushDiag = { err: "", reg: "" }; // Grund, falls kein Token kommt oder das Konto ihn nicht annimmt (wird in Einstellungen > Benachrichtigungen angezeigt)
+function pushPlugin() { return capPlugin("PushNotifications"); }
+function pushAvailable() { return !!pushPlugin(); }
+function pushPrefsGet() { try { const o = JSON.parse(localStorage.getItem(PUSH_PREFS_KEY) || "{}"); return o && typeof o === "object" ? o : {}; } catch (e) { return {}; } }
+async function pushSendToken() { // Token dem Konto zuordnen und die gespeicherten Schalter mitgeben (neues Geraet = alles an)
+  if (!pushToken || online.state !== "member") return;
+  const r = await frCall("register_device", { p_token: pushToken, p_platform: "ios" });
+  pushDiag.reg = r.ok ? "ok" : String(r.error || r.message || "fehler");
+  if (!r.ok) return;
+  try { localStorage.setItem(PUSH_TOKEN_KEY, pushToken); } catch (e) { /* weg */ }
+  const prefs = pushPrefsGet(); if (Object.keys(prefs).length) await frCall("set_notify", { p_prefs: prefs });
+}
+function pushRoute(data) { // Antippen einer Push: Duelle bzw. Freunde oeffnen (nicht mitten in einer Runde)
+  const kind = String((data && data.kind) || "");
+  whenSplashGone(() => setTimeout(async () => {
+    try {
+      if (/^friend_/.test(kind)) { if (online.state === "member") { await frRefresh().catch(() => {}); kabineOpenFriends(); } return; }
+      if (!/^duel_/.test(kind)) return;
+      if (sdActive()) await sdSync().catch(() => {});
+      const top = navStack[navStack.length - 1];
+      if (top === "duelplay") return;
+      if (top === "duels") renderDuels(true); else navigate("duels");
+    } catch (e) { /* nur eine Weiterleitung */ }
+  }, 300));
+}
+function pushWire(P) {
+  if (pushWired) return; pushWired = true;
+  P.addListener("registration", (t) => { pushToken = (t && t.value) || ""; pushSendToken(); });
+  P.addListener("registrationError", (e) => { pushDiag.err = String((e && (e.error || e.message)) || "unbekannt").slice(0, 160); }); // kein Token: keine Push, kein Fehler fuer den Spieler
+  P.addListener("pushNotificationReceived", (n) => { // App ist offen: kein Banner, nur Stand aktualisieren
+    try { const k = String((n && n.data && n.data.kind) || ""); if (/^duel_/.test(k) && sdActive()) sdSync(); else if (/^friend_/.test(k) && online.state === "member") frRefresh(); } catch (e) { /* egal */ }
+  });
+  P.addListener("pushNotificationActionPerformed", (a) => pushRoute(a && a.notification && a.notification.data));
+}
+async function pushEnsure() { // bei jedem Start und nach der Anmeldung: Erlaubnis da -> Token holen und dem Konto zuordnen
+  const P = pushPlugin(); if (!P || online.state !== "member") return;
+  try { pushWire(P); const st = await P.checkPermissions(); if (st && st.receive === "granted") await P.register(); } catch (e) { pushDiag.err = String((e && e.message) || e).slice(0, 160); /* Push ist nur ein Zusatz */ }
+}
+async function pushUnregister() { // Abmelden: dieses Geraet aus dem Konto nehmen
+  try { const t = pushToken || localStorage.getItem(PUSH_TOKEN_KEY); if (t && online.state === "member") await Promise.race([frCall("unregister_device", { p_token: t }), new Promise((r) => setTimeout(r, 2500))]); localStorage.removeItem(PUSH_TOKEN_KEY); } catch (e) { /* egal */ }
+}
+function pushPreCard(why) { // eigene Karte vor dem iOS-Dialog: erklaert, wofuer, und laesst "Nicht jetzt" zu, ohne die einmalige iOS-Frage zu verbrauchen
+  return new Promise((resolve) => {
+    const bd = document.createElement("div"); bd.className = "modal-backdrop sp-sbd"; bd.style.zIndex = "90"; // ueber Kabine (62) und allen Blaettern
+    const t = why === "friend" ? "Sag Bescheid, wenn dein Freund antwortet?" : "Sag Bescheid, wenn dein Gegner spielt?";
+    const sub = why === "friend" ? "Dann melden wir uns, sobald deine Anfrage angenommen wird oder jemand dich anfragt." : "Dann melden wir uns bei einer Herausforderung, wenn du dran bist, beim Ergebnis und kurz vor Fristende.";
+    bd.innerHTML = `<div class="sp-sheet" role="dialog" aria-modal="true" aria-label="Benachrichtigungen"><div class="in"><div class="duel-name-box">
+      <div class="guide-name-title" style="font-family:'Anton',Impact,sans-serif;font-size:24px">${t}</div>
+      <div style="font-family:'Oswald',sans-serif;font-weight:300;font-size:14.5px;color:var(--muted);line-height:1.45">${sub} Nachts von 22 bis 8 Uhr bleibt es still. Du kannst jede Art später in der Kabine unter Einstellungen ausschalten.</div>
+      <button type="button" class="save-btn main" id="pushYes">Ja, benachrichtigen</button><button type="button" class="save-btn quiet" id="pushNo">Nicht jetzt</button>
+    </div></div></div>`;
+    document.body.appendChild(bd);
+    const done = (v) => { bd.remove(); resolve(v); };
+    bd.querySelector("#pushYes").onclick = () => done(true); bd.querySelector("#pushNo").onclick = () => done(false);
+  });
+}
+async function pushAsk(why) { // vor der ersten Herausforderung/Anfrage: Karte -> iOS-Erlaubnis -> registrieren. Nie beim Start, hoechstens 3-mal im Abstand von 3 Tagen.
+  const P = pushPlugin(); if (!P || online.state !== "member") return;
+  try {
+    const st = await P.checkPermissions();
+    if (st.receive === "granted") { pushEnsure(); return; }
+    if (st.receive === "denied") return; // iOS fragt nicht noch einmal - Hinweis steht in den Einstellungen
+    const rec = JSON.parse(localStorage.getItem(PUSH_ASK_KEY) || "{}");
+    if ((rec.n || 0) >= 3 || (rec.t && Date.now() - rec.t < 3 * 86400000)) return;
+    localStorage.setItem(PUSH_ASK_KEY, JSON.stringify({ n: (rec.n || 0) + 1, t: Date.now() }));
+    if (!(await pushPreCard(why))) return;
+    const r = await P.requestPermissions();
+    if (r && r.receive === "granted") await pushEnsure();
+  } catch (e) { /* Push ist nur ein Zusatz: nie die eigentliche Aktion blockieren */ }
+}
+function kabineOpenNotify() { // Kabine -> Einstellungen -> Benachrichtigungen
+  kabineCloseScreen();
+  const sc = document.createElement("section"); sc.className = "kb-screen"; sc.setAttribute("role", "dialog"); sc.setAttribute("aria-modal", "true"); sc.setAttribute("aria-label", "Benachrichtigungen");
+  document.body.appendChild(sc); kb.screen = sc;
+  const entry = { el: sc, sheet: sc, close: () => { kabineCloseScreen(); const i = sheetStack.indexOf(entry); if (i >= 0) sheetStack.splice(i, 1); }, opener: null };
+  sheetStack.push(entry);
+  const P = pushPlugin();
+  const paint = async () => {
+    let perm = "prompt"; try { perm = (await P.checkPermissions()).receive; } catch (e) { /* egal */ }
+    if (!sc.isConnected) return;
+    const prefs = pushPrefsGet(), sw = (on) => `<span class="du-sw${on ? " on" : ""}"></span>`;
+    const head = perm === "granted" ? "" : perm === "denied"
+      ? `<div class="kb-menu" style="margin:0 0 10px;overflow:visible;-webkit-mask-image:none;mask-image:none"><div class="sub" role="status" style="margin:0 2px 8px;white-space:normal">Benachrichtigungen sind für Startelo XI in den iPhone-Einstellungen ausgeschaltet.</div>${kbMi("pnSet", KB_SV.gear, "iPhone-Einstellungen öffnen", "Dort „Mitteilungen“ erlauben")}</div>`
+      : `<div class="kb-menu" style="margin:0 0 10px;overflow:visible;-webkit-mask-image:none;mask-image:none">${kbMi("pnAllow", KB_SV.bell, "Benachrichtigungen erlauben", "Damit du nichts verpasst")}</div>`;
+    sc.innerHTML = `<div class="kb-bar"><button class="kb-back" type="button" id="pnBack">${KB_SV.back}Zurück</button><h1>Benachrichtigungen</h1><span class="kb-ghost">Zurück</span></div>
+      <div class="kb-board">${head}<div class="kb-sec" style="margin-top:0">Was soll dich erreichen?</div><div class="kb-menu" style="margin:0;overflow:visible;-webkit-mask-image:none;mask-image:none">
+      ${PUSH_PREFS.map(([k, t, sub]) => { const on = prefs[k] !== false; return `<button class="kb-mi" type="button" data-k="${k}" aria-pressed="${on}"><span class="t">${KB_SV.bell}</span><span><b>${t}</b><small>${sub}</small></span><span class="end">${sw(on)}</span></button>`; }).join("")}
+      </div><div class="sub" style="margin:10px 2px 0;white-space:normal">Von 22 bis 8 Uhr bleibt es still – nur auslaufende Fristen melden sich.</div>
+      <div class="sub" id="pnState" role="status" style="margin:6px 2px 0;white-space:normal;opacity:.7">${perm !== "granted" ? "" : pushDiag.err ? "Kein Gerätecode von iOS: " + duelEsc(pushDiag.err) : pushDiag.reg && pushDiag.reg !== "ok" ? "Gerät nicht angemeldet: " + duelEsc(pushDiag.reg) : pushToken && pushDiag.reg === "ok" ? "Dieses iPhone ist angemeldet." : "Gerät wird angemeldet …"}</div></div>`;
+    sc.querySelector("#pnBack").onclick = () => entry.close();
+    const allow = sc.querySelector("#pnAllow"); if (allow) allow.onclick = async () => { try { const r = await P.requestPermissions(); if (r.receive === "granted") await pushEnsure(); } catch (e) { /* egal */ } paint(); };
+    const set = sc.querySelector("#pnSet"); if (set) set.onclick = () => { try { const A = capPlugin("App"); if (A && A.openUrl) A.openUrl({ url: "app-settings:" }); } catch (e) { /* egal */ } };
+    sc.querySelectorAll("[data-k]").forEach((b) => b.onclick = async () => {
+      const k = b.dataset.k, cur = pushPrefsGet(), on = !(cur[k] !== false); cur[k] = on;
+      try { localStorage.setItem(PUSH_PREFS_KEY, JSON.stringify(cur)); } catch (e) { /* weg */ }
+      b.setAttribute("aria-pressed", String(on)); b.querySelector(".du-sw").classList.toggle("on", on);
+      const r = await frCall("set_notify", { p_prefs: cur }); // gilt fuer alle Geraete des Kontos; ohne Netz wird es beim naechsten Registrieren nachgereicht
+      if (!r.ok && r.error === "offline") showToast('<span class="tt-tx">Du bist offline – die Einstellung gilt, sobald du wieder Netz hast.</span>');
+    });
+  };
+  paint();
+}
+document.addEventListener("onlinechange", () => { if (online.state === "member" && !online.stale) pushEnsure(); });
+whenSplashGone(() => setTimeout(pushEnsure, 2000));
 // App, erster Start mit leerem Spielstand und ohne Konto: Wer vorher im Browser gespielt hat, startet bei null - einmaliger Hinweis auf den Cloud-Spielstand (8a-4)
 whenSplashGone(() => setTimeout(() => {
   try {

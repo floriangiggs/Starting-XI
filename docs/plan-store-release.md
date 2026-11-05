@@ -383,6 +383,20 @@ Der Push-Schlüssel `27TX242J83` ist für APNs (8b-3) gedacht; die Datei liegt w
 Test: `tools/test-delete-function.mjs` (20 Prüfungen) und echter Lauf auf dem Haupt-iPhone: Konto entfernen, Apple-Bestätigung, App steht danach als Gast da.
 Noch abzuhaken: „Startelo XI“ ist aus iPhone-Einstellungen › Anmelden mit Apple verschwunden, Benutzer fehlt in Supabase › Authentication › Users.
 
-**Offen:** 8b-3 Push (APNs direkt, derselbe Schlüssel `27TX242J83`, Edge Function `send-push`, Ruhezeit 22–8 Uhr), 8b-4 Geräte-Test und Duell-Matrix
+**8b-3 fertig, auf dem Haupt-iPhone geprüft (05.11.2026):** Push über APNs direkt. Server: Edge Function `supabase/functions/send-push` (liest `notification_queue`, Text je Art, Schalter je Art aus `devices.notify`,
+Ruhezeit 22–8 Uhr Berlin außer Fristwarnung, Verfall nach 12 h, Production → Sandbox-Fallback, tote Tokens löschen, bei Apple-/Netzfehlern Wiederholung) und Zeitplaner
+`supabase/einspielen/8-push-zeitplaner.sql` (pg_cron jede Minute → pg_net → Function; URL und Geheimnis im Vault, nicht im Repo). Secrets: `APNS_KEY_ID`, `APNS_P8_KEY`, `CRON_SECRET`
+(+ `APPLE_TEAM_ID`). App: Plugin `@capacitor/push-notifications`, Entitlement `aps-environment`, AppDelegate-Weiterleitung, Vorab-Karte vor der ersten Herausforderung/Anfrage (nicht beim Start),
+`register_device`/`set_notify`/`unregister_device` (Push-Frage immer NACH dem Senden und nie blockierend; erster Versuch 05.11. hatte die Karte hinter der Kabine versteckt, die Anfrage ging nie raus), Antippen öffnet Duelle/Freunde, Kabine → Einstellungen → Benachrichtigungen (6 Schalter). Tests: `tools/test-push-function.mjs` (52), `tools/test-native.mjs` (94).
+**Einrichtung (Florian):** App-ID `de.startelo.app` muss „Push Notifications“ angehakt haben (Save + Confirm, nicht „Configure“); APNs-Schlüssel (`27TX242J83`) mit Dienst APNs;
+Supabase: Erweiterungen `pg_net` und `pg_cron`, Secrets, Function ausrollen (Verify JWT aus), Vault-Einträge `push_cron_secret`/`push_function_url`, dann `8-push-zeitplaner.sql`.
+Geräte-Test (Xcode-Lauf = Sandbox, Function probiert Production und dann Sandbox): iOS-Erlaubnis über Karte bzw. Kabine → Einstellungen → Benachrichtigungen, Token landet in `devices`, Test-Push über
+`select private.enqueue(user_id, 'friend_request', ...) from public.devices` kam innerhalb einer Minute an, Antippen öffnet die Freundesliste (App beendet), Schalter aus = keine Push.
+Stolpersteine: Edge Function bekam den Slug `swift-handler` (Adresse im Vault `push_function_url`), `CRON_SECRET` mit Buchstaben O, `service_role` brauchte Rechte (`0011_push_rechte.sql`), Verify JWT aus.
+Das CRON-Secret stand einmal im Chat (Screenshot): vor dem Store-Start erneuern (`cron-secret.txt` neu erzeugen, Secret in Supabase und Vault ersetzen).
+**Noch offen für 8b-4:** Push auf zweitem Gerät/Konto bei echtem Duell (Herausforderung, Du bist dran, Ergebnis), TestFlight-Build (Production-Token) prüfen.
+Schlüssel `27TX242J83` („Startelo Server“): APNs (Team scoped, Sandbox & Production) und „Sign in with Apple“ für `de.startelo.app`, geprüft 05.11.2026. Er ist der Push-Schlüssel; für „Konto löschen“ steht in den Secrets `7SUA53SDGT`.
+
+**Offen:** 8b-4 Geräte-Test und Duell-Matrix
 D1–D9/F1–F10, danach K8 (Impressum, Datenschutz, AVV, Store-Texte, TestFlight). Web-Löschen (startelo.de) widerruft das Apple-Token nicht
 (nur die App tut das).

@@ -32,6 +32,18 @@ const one = async (sql, params = []) => (await db.query(sql, params)).rows;
 const U = {}; // Nutzer
 for (const n of ["anna", "ben", "cora", "dave", "emil", "fritz"]) { const r = await one("insert into auth.users (email) values ($1) returning id", [n + "@test.de"]); U[n] = r[0].id; }
 
+/* ---------- Push (8b-3): Rechte des Servers (auf echtem Supabase fehlen sie ohne 0011: "permission denied"; PGlite kennt keine Standardrechte, der Test sichert die Datei und die Sperre fuer Spieler) ---------- */
+{
+  const sr = await asRole("service_role", "", async () => {
+    const out = {};
+    for (const [k, sql] of [["lesen", "select count(*) from public.notification_queue"], ["markieren", "update public.notification_queue set sent_at = now() where false"], ["geraete lesen", "select count(*) from public.devices"], ["geraete loeschen", "delete from public.devices where false"]]) out[k] = await db.query(sql).then(() => "ok", (e) => e.message);
+    return out;
+  });
+  check("Push: Server (service_role) darf die Warteschlange lesen und markieren, Geraete lesen und loeschen", sr.lesen === "ok" && sr.markieren === "ok" && sr["geraete lesen"] === "ok" && sr["geraete loeschen"] === "ok", JSON.stringify(sr));
+  const au = await sqlAs(U.anna, "select count(*) from public.notification_queue").then(() => "ok", (e) => e.message);
+  check("Push: Spieler (authenticated) kommen nicht an die Warteschlange", /permission denied/.test(au), au);
+}
+
 /* ---------- Rechte & Zugriffsregeln ---------- */
 {
   const direct = await sqlAs(U.anna, "insert into public.profiles (id, username, friend_code) values ($1, 'hack', 'XI-HACK')", [U.anna]).then(() => "ok", (e) => e.message);
